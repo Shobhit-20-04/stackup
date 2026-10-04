@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { getCurrentUser, signOutUser } from '@/lib/auth/session';
 import { 
   BookOpen, 
   Cpu, 
@@ -19,34 +20,51 @@ import {
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: { full_name?: string; avatar_url?: string } } | null>(null);
+  const [user, setUser] = useState<{ id: string; email?: string; full_name?: string; avatar_url?: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
-    
-    // Check initial session
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    // Check session from universal auth (Supabase + Demo)
+    getCurrentUser().then((u) => {
+      if (u) {
+        setUser({
+          id: u.id,
+          email: u.email,
+          full_name: u.full_name,
+          avatar_url: u.avatar_url,
+        });
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     }).catch(() => {
       setLoading(false);
     });
 
-    // Listen for auth state changes
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    const supabase = createClient();
+    try {
+      const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email,
+            full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0],
+            avatar_url: session.user.user_metadata?.avatar_url,
+          });
+        }
+      });
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+      return () => {
+        authListener?.subscription?.unsubscribe();
+      };
+    } catch {
+      // ignore
+    }
   }, []);
 
   const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await signOutUser();
     setUser(null);
     router.push('/login');
     router.refresh();
@@ -110,19 +128,19 @@ export default function Navbar() {
                   }`}
                 >
                   <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden">
-                    {user.user_metadata?.avatar_url ? (
+                    {user.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={user.user_metadata.avatar_url}
+                        src={user.avatar_url}
                         alt="Avatar"
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'
+                      user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'
                     )}
                   </div>
                   <span className="text-sm font-medium max-w-[120px] truncate">
-                    {user.user_metadata?.full_name || user.email?.split('@')[0] || 'Profile'}
+                    {user.full_name || user.email?.split('@')[0] || 'Profile'}
                   </span>
                 </Link>
                 <button

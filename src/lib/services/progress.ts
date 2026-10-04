@@ -112,3 +112,16 @@ export function getLocalSectionProgress(sectionSlug: string, defaultPercent = 0)
     return defaultPercent;
   }
 }
+
+export function setLocalSectionProgress(sectionSlug: string, percent: number): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY_PROGRESS);
+    const map = raw ? JSON.parse(raw) : {};
+    map[sectionSlug] = Math.min(100, Math.max(0, percent));
+    localStorage.setItem(LOCAL_STORAGE_KEY_PROGRESS, JSON.stringify(map));
+  } catch {
+    // ignore
+  }
+}
+

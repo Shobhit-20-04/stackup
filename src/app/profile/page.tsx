@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { getCurrentUser, signOutUser } from '@/lib/auth/session';
 import { getLocalQuizAttempts, getLocalSectionProgress } from '@/lib/services/progress';
 import { 
   Flame, 
@@ -116,36 +117,43 @@ export default function ProfilePage() {
   useEffect(() => {
     async function loadUserData() {
       try {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const activeUser = await getCurrentUser();
 
-        if (!user) {
+        if (!activeUser) {
           // If not logged in, redirect to login
           router.push('/login?redirect=/profile');
           return;
         }
 
-        // Try to fetch profile from Supabase profiles table
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        const profileRow = profileData as {
+        const supabase = createClient();
+        type ProfileRowType = {
           full_name?: string | null;
           avatar_url?: string | null;
           phone?: string | null;
           created_at?: string;
-        } | null;
+        };
+        let profileRow: ProfileRowType | null = null;
+
+        try {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', activeUser.id)
+            .maybeSingle();
+          if (profileData) {
+            profileRow = profileData as ProfileRowType;
+          }
+        } catch {
+          // ignore error if supabase is offline
+        }
 
         setProfile({
-          id: user.id,
-          full_name: profileRow?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'StackUp Student',
-          avatar_url: profileRow?.avatar_url || user.user_metadata?.avatar_url || null,
-          email: user.email,
-          phone: profileRow?.phone || user.phone,
-          created_at: profileRow?.created_at || user.created_at || '2026-09-23T00:00:00.000Z',
+          id: activeUser.id,
+          full_name: profileRow?.full_name || activeUser.full_name || 'StackUp Student',
+          avatar_url: profileRow?.avatar_url || activeUser.avatar_url || null,
+          email: activeUser.email,
+          phone: profileRow?.phone || activeUser.phone,
+          created_at: profileRow?.created_at || '2026-09-23T00:00:00.000Z',
         });
 
         // Check local storage attempts first or merge with db
@@ -172,44 +180,74 @@ export default function ProfilePage() {
         ]);
 
         // Try to fetch real quiz attempts from database
-        const { data: attempts } = await supabase
-          .from('quiz_attempts')
-          .select('id, score, total, attempted_at, topics(title)')
-          .eq('user_id', user.id)
-          .order('attempted_at', { ascending: true })
-          .limit(10);
+        try {
+          const { data: attempts } = await supabase
+            .from('quiz_attempts')
+            .select('id, score, total, attempted_at, topics(title)')
+            .eq('user_id', activeUser.id)
+            .order('attempted_at', { ascending: true })
+            .limit(10);
 
-        if (attempts && attempts.length > 0) {
-          const rawAttempts = attempts as unknown as DbQuizAttempt[];
-          const mappedAttempts: QuizAttempt[] = rawAttempts.map((a) => ({
-            id: a.id,
-            topic: a.topics?.title || 'Quiz Topic',
-            score: a.score,
-            total: a.total,
-            percentage: Math.round((a.score / a.total) * 100),
-            date: new Date(a.attempted_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
-          }));
-          setQuizHistory(mappedAttempts);
+          if (attempts && attempts.length > 0) {
+            const rawAttempts = attempts as unknown as DbQuizAttempt[];
+            const mappedAttempts: QuizAttempt[] = rawAttempts.map((a) => ({
+              id: a.id,
+              topic: a.topics?.title || 'Quiz Topic',
+              score: a.score,
+              total: a.total,
+              percentage: Math.round((a.score / a.total) * 100),
+              date: new Date(a.attempted_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
+            }));
+            setQuizHistory(mappedAttempts);
+          }
+        } catch {
+          // ignore if supabase is offline
+        }
+
+        // Check local storage for resume analyses
+        if (typeof window !== 'undefined') {
+          const localResRaw = localStorage.getItem('stackup_local_resumes');
+          if (localResRaw) {
+            try {
+              const parsed = JSON.parse(localResRaw);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                const mappedLocal: ResumeAnalysisItem[] = parsed.map((r: { id: string; filename: string; ats_score: number; created_at: string }) => ({
+                  id: r.id,
+                  filename: r.filename,
+                  ats_score: r.ats_score,
+                  created_at: new Date(r.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+                  status: r.ats_score >= 80 ? 'Good Match' : r.ats_score >= 60 ? 'Reviewed' : 'Action Required',
+                }));
+                setResumeHistory((prev) => [...mappedLocal, ...prev].slice(0, 10));
+              }
+            } catch {
+              // ignore
+            }
+          }
         }
 
         // Try to fetch real resume analyses from database
-        const { data: analyses } = await supabase
-          .from('resume_analyses')
-          .select('id, filename, ats_score, created_at')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
+        try {
+          const { data: analyses } = await supabase
+            .from('resume_analyses')
+            .select('id, filename, ats_score, created_at')
+            .eq('user_id', activeUser.id)
+            .order('created_at', { ascending: false });
 
-        if (analyses && analyses.length > 0) {
-          const rawAnalyses = analyses as unknown as DbResumeAnalysis[];
-          setResumeHistory(
-            rawAnalyses.map((a) => ({
-              id: a.id,
-              filename: a.filename,
-              ats_score: a.ats_score,
-              created_at: new Date(a.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
-              status: a.ats_score >= 80 ? 'Good Match' : a.ats_score >= 60 ? 'Reviewed' : 'Action Required',
-            }))
-          );
+          if (analyses && analyses.length > 0) {
+            const rawAnalyses = analyses as unknown as DbResumeAnalysis[];
+            setResumeHistory(
+              rawAnalyses.map((a) => ({
+                id: a.id,
+                filename: a.filename,
+                ats_score: a.ats_score,
+                created_at: new Date(a.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+                status: a.ats_score >= 80 ? 'Good Match' : a.ats_score >= 60 ? 'Reviewed' : 'Action Required',
+              }))
+            );
+          }
+        } catch {
+          // ignore if supabase is offline
         }
       } catch (err) {
         console.error('Error loading profile data:', err);
@@ -222,8 +260,7 @@ export default function ProfilePage() {
   }, [router]);
 
   const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await signOutUser();
     router.push('/login');
     router.refresh();
   };
