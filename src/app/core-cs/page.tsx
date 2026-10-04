@@ -1,0 +1,11 @@
+import type { Metadata } from 'next';
+import SectionPage from '@/components/curriculum/SectionPage';
+
+export const metadata: Metadata = {
+  title: 'Core CS Subjects — StackUp',
+  description: 'Operating Systems, DBMS, Computer Networks, and OOPs revision summaries and high-frequency interview quizzes.',
+};
+
+export default function CoreCsRoute() {
+  return <SectionPage sectionKey="core-cs" />;
+}

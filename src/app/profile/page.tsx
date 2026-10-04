@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { getLocalQuizAttempts, getLocalSectionProgress } from '@/lib/services/progress';
 import { 
   Flame, 
   FileCheck2, 
@@ -79,7 +80,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   
   // Progress across core sections
-  const [progressList] = useState<ProgressItem[]>([
+  const [progressList, setProgressList] = useState<ProgressItem[]>([
     { section_name: 'Quantitative & Logical Aptitude', slug: 'aptitude', percent: 65, completed_items: 26, total_items: 40, color: 'bg-blue-600' },
     { section_name: 'Core CS (OS, DBMS, CN, OOPs)', slug: 'core-cs', percent: 45, completed_items: 18, total_items: 40, color: 'bg-purple-600' },
     { section_name: 'DSA Curated Hub', slug: 'dsa', percent: 30, completed_items: 45, total_items: 150, color: 'bg-emerald-600' },
@@ -146,6 +147,29 @@ export default function ProfilePage() {
           phone: profileRow?.phone || user.phone,
           created_at: profileRow?.created_at || user.created_at || '2026-09-23T00:00:00.000Z',
         });
+
+        // Check local storage attempts first or merge with db
+        const localAttempts = getLocalQuizAttempts();
+        if (localAttempts.length > 0) {
+          const mappedLocal: QuizAttempt[] = localAttempts.map((la) => ({
+            id: la.id,
+            topic: la.topicTitle,
+            score: la.score,
+            total: la.total,
+            percentage: la.percentage,
+            date: new Date(la.attemptedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
+          }));
+          setQuizHistory((prev) => [...prev, ...mappedLocal].slice(-10));
+        }
+
+        // Dynamically update section progress
+        const aptProgress = getLocalSectionProgress('aptitude', 65);
+        const csProgress = getLocalSectionProgress('core-cs', 45);
+        setProgressList([
+          { section_name: 'Quantitative & Logical Aptitude', slug: 'aptitude', percent: aptProgress, completed_items: Math.round((aptProgress / 100) * 40), total_items: 40, color: 'bg-blue-600' },
+          { section_name: 'Core CS (OS, DBMS, CN, OOPs)', slug: 'core-cs', percent: csProgress, completed_items: Math.round((csProgress / 100) * 40), total_items: 40, color: 'bg-purple-600' },
+          { section_name: 'DSA Curated Hub', slug: 'dsa', percent: 30, completed_items: 45, total_items: 150, color: 'bg-emerald-600' },
+        ]);
 
         // Try to fetch real quiz attempts from database
         const { data: attempts } = await supabase
