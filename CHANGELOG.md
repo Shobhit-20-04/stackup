@@ -15,3 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Authentication flow supporting Google OAuth and Phone OTP with automatic redirection for unauthenticated requests.
 - Profile dashboard featuring user statistics, streak tracker, per-section progress bars, quiz score history chart (Recharts), and resume analysis history cards.
 - Vitest automated testing suite for CI verification.
+- Phase 2 Quantitative & Logical Aptitude module (`/aptitude`) with structured notes and timed MCQs.
+- Phase 2 Core CS Subjects module (`/core-cs`) covering OS, DBMS, Computer Networks, and OOPs.
+- Interactive Quiz Engine with countdown timers, question palette, instant scorecards, and solution explanations.
+- Automatic quiz attempt recording and real-time curriculum progress synchronization with Profile dashboard.
