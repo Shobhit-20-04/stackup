@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ATS Resume Checker (`/resume-checker` & `/api/resume-analysis`) supporting PDF/DOCX file uploads, 5MB validation, keyword analysis, STAR rewrites, and scorecard persistence.
 - Context-Aware AI Chatbot Widget (`/api/chat` + floating UI) with section-specific recommendations and sliding-window rate limiting.
 - Seamless 1-Click Instant Demo Login and simulated fallback auth handling when cloud Supabase credentials are not connected.
+- In-App Supabase & Claude API Credentials Manager (`/api/config/credentials` and `CredentialsModal.tsx`) with real-time connection verification.
+- Live Database status badge in Navbar and Profile dashboard (`Supabase Connected` vs `Demo Mode`).
+- Modernized Landing Page UI with interactive preview tabs (DSA engine, ATS scanner, Core CS quiz), stats strip, and bento showcase.
 
 ### Fixed
 - Fixed TypeScript type narrowing and active user scope issues in `src/app/profile/page.tsx`.
