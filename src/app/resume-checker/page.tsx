@@ -48,50 +48,6 @@ interface AnalysisResult {
   }[];
 }
 
-const SAMPLE_STRONG_RESUME = `
-SHOBHIT AGRAWAL
-Email: shobhit.student@gmail.com | Phone: +91 98765 43210
-LinkedIn: linkedin.com/in/shobhit-agrawal | GitHub: github.com/shobhit-dev | Portfolio: shobhit.tech
-
-EDUCATION
-Bachelor of Technology in Computer Science & Engineering | 2022 - 2026 | CGPA: 9.1/10
-
-TECHNICAL SKILLS
-Languages: TypeScript, JavaScript, Python, Java, C++, SQL
-Frameworks & Libraries: React, Next.js, Node.js, Express, Tailwind CSS, Redux
-Databases & Cloud: PostgreSQL, MongoDB, Redis, Docker, AWS (S3, EC2), Git, CI/CD
-Core Concepts: Data Structures & Algorithms, System Design, REST APIs, Microservices, Unit Testing
-
-WORK EXPERIENCE
-Software Engineering Intern | CloudScale Solutions | May 2025 - July 2025
-- Architected and deployed scalable RESTful microservices in Node.js and TypeScript, handling over 250,000 daily requests.
-- Optimized PostgreSQL database queries and implemented Redis caching, reducing p95 API response latency by 44%.
-- Integrated automated CI/CD pipeline using GitHub Actions and Docker, reducing team deployment cycle time from 40 mins to 8 mins.
-- Authored comprehensive unit and integration test suites using Vitest, boosting code test coverage from 62% to 91%.
-
-PROJECTS
-StackUp - All-in-One Tech Interview Preparation Platform | Next.js, Supabase, Tailwind CSS, TypeScript
-- Engineered full-stack platform serving interactive quizzes, algorithmic roadmap, and ATS diagnostics.
-- Implemented Supabase Row Level Security (RLS) and JWT auth, ensuring strict zero-trust data segregation.
-- Achieved 98+ Google Lighthouse performance score by leveraging Vercel Edge caching and dynamic code splitting.
-`;
-
-const SAMPLE_WEAK_RESUME = `
-Alex Smith
-Phone: 555-0199
-
-Objective: Looking for a good software job to learn programming.
-
-Experience:
-Web Helper at Local Tech
-- Helped make websites for clients.
-- Fixed some bugs in the code.
-- Worked with team members on daily tasks.
-
-Education:
-College student studying computer subjects.
-`;
-
 export default function ResumeCheckerPage() {
   const [file, setFile] = useState<File | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -167,35 +123,6 @@ export default function ResumeCheckerPage() {
     }
   };
 
-  const handleTestWithSample = async (type: 'strong' | 'weak') => {
-    setAnalyzing(true);
-    setErrorMsg('');
-    setSavedSuccess(false);
-
-    const sampleText = type === 'strong' ? SAMPLE_STRONG_RESUME : SAMPLE_WEAK_RESUME;
-    const filename = type === 'strong' ? 'Shobhit_SDE_Resume.pdf' : 'Draft_Resume_Incomplete.docx';
-
-    try {
-      const res = await fetch('/api/resume-analysis', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: sampleText, filename }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || 'Failed to run sample analysis.');
-      }
-
-      const data: AnalysisResult = await res.json();
-      setResult(data);
-    } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Sample analysis failed.');
-    } finally {
-      setAnalyzing(false);
-    }
-  };
-
   const handleSaveToProfile = async () => {
     if (!result) return;
     try {
@@ -263,23 +190,10 @@ export default function ResumeCheckerPage() {
               </p>
             </div>
 
-            {/* Quick action buttons for demo testing */}
-            <div className="flex flex-col sm:flex-row items-center gap-2">
-              <button
-                onClick={() => handleTestWithSample('strong')}
-                disabled={analyzing}
-                className="w-full sm:w-auto px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all shadow-sm"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Try Sample SDE Resume</span>
-              </button>
-              <button
-                onClick={() => handleTestWithSample('weak')}
-                disabled={analyzing}
-                className="w-full sm:w-auto px-4 py-2.5 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all"
-              >
-                <span>Try Incomplete CV</span>
-              </button>
+            {/* Mandatory Upload Info Tag */}
+            <div className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-750 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+              <UploadCloud className="w-4 h-4 text-indigo-500" />
+              <span>Resume Upload Mandatory • PDF, DOCX, TXT</span>
             </div>
           </div>
         </div>

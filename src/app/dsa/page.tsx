@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { 
   Code2, 
   ExternalLink, 
@@ -19,10 +20,13 @@ import {
   Lightbulb,
   FileText,
   Terminal,
-  Loader2
+  Loader2,
+  Lock,
+  ArrowRight
 } from 'lucide-react';
 import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
+import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 
 export default function DsaHubPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -42,6 +46,15 @@ export default function DsaHubPage() {
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const observerTarget = useRef<HTMLDivElement>(null);
 
+  // Authentication state for feature gating
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
+  const [authPromptReason, setAuthPromptReason] = useState('');
+
+  useEffect(() => {
+    getCurrentUser().then((u) => setCurrentUser(u));
+  }, []);
+
   // Solved problem IDs persisted in localStorage (lazy initializer for SSR & React 19)
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -55,6 +68,12 @@ export default function DsaHubPage() {
 
   // Save to localStorage and update section progress for profile
   const toggleSolved = (id: string) => {
+    if (!currentUser) {
+      setAuthPromptReason('Sign in to track your solved problems and sync your interview preparation progress to your profile.');
+      setAuthPromptOpen(true);
+      return;
+    }
+
     const nextSolved = solvedIds.includes(id)
       ? solvedIds.filter((item) => item !== id)
       : [...solvedIds, id];
@@ -677,22 +696,32 @@ export default function DsaHubPage() {
                               ))}
                             </div>
 
-                            <button
-                              onClick={() => handleCopyCode(problem.solutions[activeLang], problem.id)}
-                              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-750 transition-colors shadow-sm"
-                            >
-                              {copiedId === problem.id ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3.5 h-3.5 text-zinc-400" />
-                                  <span>Copy Solution</span>
-                                </>
-                              )}
-                            </button>
+                            {currentUser ? (
+                              <button
+                                onClick={() => handleCopyCode(problem.solutions[activeLang], problem.id)}
+                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-750 transition-colors shadow-sm"
+                              >
+                                {copiedId === problem.id ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                                    <span>Copy Solution</span>
+                                  </>
+                                )}
+                              </button>
+                            ) : (
+                              <Link
+                                href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm"
+                              >
+                                <Lock className="w-3 h-3 text-indigo-500" />
+                                <span>Sign In to Copy</span>
+                              </Link>
+                            )}
                           </div>
 
                           {/* Code Display */}
@@ -701,9 +730,43 @@ export default function DsaHubPage() {
                               <span>Solution • {activeLang.toUpperCase()}</span>
                               <span>Verified on LeetCode</span>
                             </div>
-                            <pre className="p-4 overflow-x-auto leading-relaxed max-h-[400px]">
-                              <code>{problem.solutions[activeLang]}</code>
-                            </pre>
+                            
+                            {currentUser ? (
+                              <pre className="p-4 overflow-x-auto leading-relaxed max-h-[400px]">
+                                <code>{problem.solutions[activeLang]}</code>
+                              </pre>
+                            ) : (
+                              <div className="relative min-h-[220px]">
+                                {/* Preview snippet (First 3 lines) */}
+                                <pre className="p-4 overflow-hidden leading-relaxed opacity-40 select-none">
+                                  <code>
+                                    {problem.solutions[activeLang].split('\n').slice(0, 3).join('\n')}
+                                    {'\n    # ... [Sign in to view full verified code implementation] ...'}
+                                    {'\n    # ... Supports Python 3, C++, Java, and TypeScript ...'}
+                                  </code>
+                                </pre>
+
+                                {/* Locked overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/90 to-zinc-950 flex flex-col items-center justify-center p-6 text-center">
+                                  <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-2.5 border border-indigo-500/30">
+                                    <Lock className="w-5 h-5 text-indigo-400" />
+                                  </div>
+                                  <h4 className="text-sm font-bold text-white mb-1">
+                                    Sign in to view full multi-language code
+                                  </h4>
+                                  <p className="text-xs text-zinc-400 max-w-xs mb-3">
+                                    Unlock full implementations, optimal time/space solutions, and one-click copy.
+                                  </p>
+                                  <Link
+                                    href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all flex items-center space-x-1.5"
+                                  >
+                                    <span>Sign In to Unlock</span>
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                  </Link>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}
@@ -714,6 +777,40 @@ export default function DsaHubPage() {
             })
           )}
         </div>
+
+        {/* Auth Prompt Modal */}
+        {authPromptOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-1">
+                <Lock className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                  Sign In Required
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                  {authPromptReason || 'Sign in to access this feature and sync your data with your personal profile dashboard.'}
+                </p>
+              </div>
+              <div className="flex items-center space-x-3 pt-2">
+                <Link
+                  href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs text-center shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <span>Sign In to Continue</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <button
+                  onClick={() => setAuthPromptOpen(false)}
+                  className="py-2.5 px-4 rounded-xl border border-zinc-200 dark:border-zinc-750 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Scroll Sentinel for Progressive Loading */}
         <div ref={observerTarget} className="pt-8 pb-4 flex flex-col items-center justify-center">

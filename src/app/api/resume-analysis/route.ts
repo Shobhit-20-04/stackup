@@ -230,7 +230,7 @@ export async function POST(req: NextRequest) {
       const file = formData.get('file') as File | null;
 
       if (!file) {
-        return NextResponse.json({ error: 'No resume file uploaded.' }, { status: 400 });
+        return NextResponse.json({ error: 'A valid resume file (.pdf, .docx, or .txt) upload is mandatory.' }, { status: 400 });
       }
 
       if (file.size > MAX_FILE_SIZE) {
@@ -276,12 +276,10 @@ export async function POST(req: NextRequest) {
         );
       }
     } else {
-      // JSON body support (e.g. sample resume testing)
-      const body = await req.json();
-      resumeText = body.text || '';
-      filename = body.filename || 'Sample_Resume.pdf';
-      fileSize = Buffer.byteLength(resumeText, 'utf8');
-      mimeType = 'text/plain';
+      return NextResponse.json(
+        { error: 'A valid resume file (.pdf, .docx, or .txt) upload is mandatory.' },
+        { status: 400 }
+      );
     }
 
     if (!resumeText || resumeText.trim().length === 0) {
