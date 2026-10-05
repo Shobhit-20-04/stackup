@@ -7,6 +7,17 @@ import mammoth from 'mammoth';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+// Polyfills for Node.js PDF.js environment
+if (typeof (globalThis as unknown as { DOMMatrix: unknown }).DOMMatrix === 'undefined') {
+  (globalThis as unknown as { DOMMatrix: unknown }).DOMMatrix = class DOMMatrix {};
+}
+if (typeof (globalThis as unknown as { ImageData: unknown }).ImageData === 'undefined') {
+  (globalThis as unknown as { ImageData: unknown }).ImageData = class ImageData {};
+}
+if (typeof (globalThis as unknown as { Path2D: unknown }).Path2D === 'undefined') {
+  (globalThis as unknown as { Path2D: unknown }).Path2D = class Path2D {};
+}
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 // Comprehensive Technical Skills Ontology with canonical patterns and aliases
