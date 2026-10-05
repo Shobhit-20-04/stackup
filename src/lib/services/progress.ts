@@ -47,12 +47,13 @@ export async function recordQuizAttempt(params: RecordAttemptParams): Promise<St
       parsed.push(newAttempt);
       localStorage.setItem(LOCAL_STORAGE_KEY_ATTEMPTS, JSON.stringify(parsed));
 
-      // Update section completion progress in local storage
+      // Update section completion progress in local storage based on unique topics completed
       const progressRaw = localStorage.getItem(LOCAL_STORAGE_KEY_PROGRESS);
       const progressMap: Record<string, number> = progressRaw ? JSON.parse(progressRaw) : {};
-      const current = progressMap[params.sectionSlug] || 0;
-      // Increment progress by 15% per unique topic quiz completed up to 100%
-      progressMap[params.sectionSlug] = Math.min(100, current + 20);
+      const sectionAttempts = parsed.filter((a) => a.sectionSlug === params.sectionSlug);
+      const uniqueTopicIds = new Set(sectionAttempts.map((a) => a.topicId));
+      const totalTopics = params.sectionSlug === 'aptitude' ? 3 : params.sectionSlug === 'core-cs' ? 5 : 10;
+      progressMap[params.sectionSlug] = Math.min(100, Math.round((uniqueTopicIds.size / totalTopics) * 100));
       localStorage.setItem(LOCAL_STORAGE_KEY_PROGRESS, JSON.stringify(progressMap));
     }
   } catch (err) {
@@ -124,4 +125,47 @@ export function setLocalSectionProgress(sectionSlug: string, percent: number): v
     // ignore
   }
 }
+
+export interface SectionMetrics {
+  percent: number;
+  completed: number;
+  total: number;
+}
+
+export const SECTION_TOTAL_ITEMS: Record<string, number> = {
+  aptitude: 3,
+  'core-cs': 5,
+  dsa: 30,
+};
+
+export function getSectionMetrics(sectionSlug: string): SectionMetrics {
+  const total = SECTION_TOTAL_ITEMS[sectionSlug] || 10;
+  if (typeof window === 'undefined') {
+    return { percent: 0, completed: 0, total };
+  }
+
+  if (sectionSlug === 'dsa') {
+    try {
+      const stored = localStorage.getItem('stackup_solved_dsa');
+      const solvedIds: string[] = stored ? JSON.parse(stored) : [];
+      const completed = solvedIds.length;
+      const percent = Math.min(100, Math.round((completed / total) * 100));
+      return { percent, completed, total };
+    } catch {
+      return { percent: 0, completed: 0, total };
+    }
+  }
+
+  try {
+    const attempts = getLocalQuizAttempts();
+    const sectionAttempts = attempts.filter((a) => a.sectionSlug === sectionSlug);
+    const uniqueTopics = new Set(sectionAttempts.map((a) => a.topicId));
+    const completed = uniqueTopics.size;
+    const percent = Math.min(100, Math.round((completed / total) * 100));
+    return { percent, completed, total };
+  } catch {
+    return { percent: 0, completed: 0, total };
+  }
+}
+
 

@@ -15,7 +15,7 @@ import {
   ArrowLeft 
 } from 'lucide-react';
 import { CURRICULUM_DATA, type Topic } from '@/lib/data/curriculum';
-import { getLocalSectionProgress } from '@/lib/services/progress';
+import { getSectionMetrics } from '@/lib/services/progress';
 import TopicNotes from './TopicNotes';
 import QuizEngine from './QuizEngine';
 
@@ -28,11 +28,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [activeView, setActiveView] = useState<'list' | 'notes' | 'quiz'>('list');
-  const [progressPercent] = useState(() => {
-    return typeof window !== 'undefined'
-      ? getLocalSectionProgress(sectionKey, sectionKey === 'aptitude' ? 65 : 45)
-      : (sectionKey === 'aptitude' ? 65 : 45);
-  });
+  const metrics = React.useMemo(() => getSectionMetrics(sectionKey), [sectionKey]);
 
   if (!section) {
     return (
@@ -80,9 +76,6 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     );
   }
 
-  // Filter topics by search query
-  const totalTopics = section.categories.reduce((acc, cat) => acc + cat.topics.length, 0);
-
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
       case 'Cpu': return <Cpu className="w-5 h-5 text-purple-500" />;
@@ -113,16 +106,16 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         <div className="p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850/60 w-full md:w-64 space-y-3 flex-shrink-0">
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="text-zinc-500 uppercase tracking-wider">Completion</span>
-            <span className="text-indigo-600 dark:text-indigo-400">{progressPercent}%</span>
+            <span className="text-indigo-600 dark:text-indigo-400">{metrics.percent}%</span>
           </div>
           <div className="w-full h-2 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
             <div
               className="h-full bg-indigo-600 rounded-full transition-all duration-500"
-              style={{ width: `${progressPercent}%` }}
+              style={{ width: `${metrics.percent}%` }}
             />
           </div>
           <div className="text-[11px] text-zinc-400">
-            {totalTopics} curated topics ready for study
+            {metrics.completed} of {metrics.total} topics completed
           </div>
         </div>
       </div>

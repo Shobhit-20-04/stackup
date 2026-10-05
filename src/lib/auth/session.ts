@@ -13,11 +13,11 @@ const DEMO_STORAGE_KEY = 'stackup_demo_user_session';
 const COOKIE_KEY = 'sb-demo-user';
 
 export const DEFAULT_DEMO_USER: UserSession = {
-  id: 'demo-student-001',
-  email: 'shobhit.student@stackup.xyz',
-  full_name: 'Shobhit Agrawal',
-  avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  phone: '+91 98765 43210',
+  id: 'student-demo',
+  email: 'guest@stackup.xyz',
+  full_name: 'Guest Student',
+  avatar_url: null,
+  phone: null,
   isDemo: true,
 };
 
