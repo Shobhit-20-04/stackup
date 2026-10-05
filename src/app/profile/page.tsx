@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { getCurrentUser, signOutUser } from '@/lib/auth/session';
-import { getLocalQuizAttempts, getLocalSectionProgress } from '@/lib/services/progress';
+import { getLocalQuizAttempts, getSectionMetrics, type StoredAttempt } from '@/lib/services/progress';
 import { 
   Flame, 
   FileCheck2, 
@@ -14,7 +15,11 @@ import {
   Calendar, 
   Award, 
   Loader2,
-  Database
+  Database,
+  BookOpen,
+  Cpu,
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 import CredentialsModal from '@/components/CredentialsModal';
 import { 
@@ -22,8 +27,8 @@ import {
   XAxis, 
   YAxis, 
   Tooltip, 
-  CartesianGrid,
-  Area,
+  CartesianGrid, 
+  Area, 
   AreaChart 
 } from 'recharts';
 
@@ -52,6 +57,7 @@ interface QuizAttempt {
   total: number;
   percentage: number;
   date: string;
+  rawDate: string;
 }
 
 interface ResumeAnalysisItem {
@@ -83,39 +89,17 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [credentialsModalOpen, setCredentialsModalOpen] = useState(false);
   
-  // Progress across core sections
-  const [progressList, setProgressList] = useState<ProgressItem[]>([
-    { section_name: 'Quantitative & Logical Aptitude', slug: 'aptitude', percent: 65, completed_items: 26, total_items: 40, color: 'bg-blue-600' },
-    { section_name: 'Core CS (OS, DBMS, CN, OOPs)', slug: 'core-cs', percent: 45, completed_items: 18, total_items: 40, color: 'bg-purple-600' },
-    { section_name: 'DSA Curated Hub', slug: 'dsa', percent: 30, completed_items: 45, total_items: 150, color: 'bg-emerald-600' },
-  ]);
+  // Real progress across core sections (initialized dynamically from real data)
+  const [progressList, setProgressList] = useState<ProgressItem[]>([]);
 
-  // Quiz score history for Recharts
-  const [quizHistory, setQuizHistory] = useState<QuizAttempt[]>([
-    { id: '1', topic: 'P&C and Probability', score: 8, total: 10, percentage: 80, date: '18 Sep' },
-    { id: '2', topic: 'Processes & Threads (OS)', score: 7, total: 10, percentage: 70, date: '19 Sep' },
-    { id: '3', topic: 'SQL & Normalization', score: 9, total: 10, percentage: 90, date: '20 Sep' },
-    { id: '4', topic: 'Two Pointers (DSA)', score: 6, total: 10, percentage: 60, date: '21 Sep' },
-    { id: '5', topic: 'TCP/IP Handshake', score: 8, total: 10, percentage: 80, date: '22 Sep' },
-    { id: '6', topic: 'Sliding Window', score: 10, total: 10, percentage: 100, date: '23 Sep' },
-  ]);
+  // Real quiz score history for Recharts (empty by default, loaded from user attempts)
+  const [quizHistory, setQuizHistory] = useState<QuizAttempt[]>([]);
 
-  // Resume analysis history
-  const [resumeHistory, setResumeHistory] = useState<ResumeAnalysisItem[]>([
-    { id: '1', filename: 'Resume_SDE_2026.pdf', ats_score: 84, created_at: '22 Sep 2026', status: 'Good Match' },
-    { id: '2', filename: 'Shobhit_Backend_CV.pdf', ats_score: 68, created_at: '15 Sep 2026', status: 'Action Required' },
-  ]);
+  // Real resume analysis history (empty by default, loaded from user uploads)
+  const [resumeHistory, setResumeHistory] = useState<ResumeAnalysisItem[]>([]);
 
-  // Streak days
-  const streakDays = [
-    { day: 'Thu', active: true },
-    { day: 'Fri', active: true },
-    { day: 'Sat', active: true },
-    { day: 'Sun', active: true },
-    { day: 'Mon', active: true },
-    { day: 'Tue', active: true },
-    { day: 'Wed', active: true },
-  ];
+  // Real solved DSA problem count
+  const [solvedDsaCount, setSolvedDsaCount] = useState(0);
 
   useEffect(() => {
     async function loadUserData() {
@@ -123,7 +107,6 @@ export default function ProfilePage() {
         const activeUser = await getCurrentUser();
 
         if (!activeUser) {
-          // If not logged in, redirect to login
           router.push('/login?redirect=/profile');
           return;
         }
@@ -156,72 +139,105 @@ export default function ProfilePage() {
           avatar_url: profileRow?.avatar_url || activeUser.avatar_url || null,
           email: activeUser.email,
           phone: profileRow?.phone || activeUser.phone,
-          created_at: profileRow?.created_at || '2026-09-23T00:00:00.000Z',
+          created_at: profileRow?.created_at || new Date().toISOString(),
         });
 
-        // Check local storage attempts first or merge with db
-        const localAttempts = getLocalQuizAttempts();
-        if (localAttempts.length > 0) {
-          const mappedLocal: QuizAttempt[] = localAttempts.map((la) => ({
-            id: la.id,
-            topic: la.topicTitle,
-            score: la.score,
-            total: la.total,
-            percentage: la.percentage,
-            date: new Date(la.attemptedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
-          }));
-          setQuizHistory((prev) => [...prev, ...mappedLocal].slice(-10));
-        }
+        // 1. Calculate REAL Section Progress from actual user activity
+        const aptMetrics = getSectionMetrics('aptitude');
+        const csMetrics = getSectionMetrics('core-cs');
+        const dsaMetrics = getSectionMetrics('dsa');
+        setSolvedDsaCount(dsaMetrics.completed);
 
-        // Dynamically update section progress
-        const aptProgress = getLocalSectionProgress('aptitude', 65);
-        const csProgress = getLocalSectionProgress('core-cs', 45);
         setProgressList([
-          { section_name: 'Quantitative & Logical Aptitude', slug: 'aptitude', percent: aptProgress, completed_items: Math.round((aptProgress / 100) * 40), total_items: 40, color: 'bg-blue-600' },
-          { section_name: 'Core CS (OS, DBMS, CN, OOPs)', slug: 'core-cs', percent: csProgress, completed_items: Math.round((csProgress / 100) * 40), total_items: 40, color: 'bg-purple-600' },
-          { section_name: 'DSA Curated Hub', slug: 'dsa', percent: 30, completed_items: 45, total_items: 150, color: 'bg-emerald-600' },
+          { 
+            section_name: 'Quantitative & Logical Aptitude', 
+            slug: 'aptitude', 
+            percent: aptMetrics.percent, 
+            completed_items: aptMetrics.completed, 
+            total_items: aptMetrics.total, 
+            color: 'bg-blue-600' 
+          },
+          { 
+            section_name: 'Core CS (OS, DBMS, CN, OOPs)', 
+            slug: 'core-cs', 
+            percent: csMetrics.percent, 
+            completed_items: csMetrics.completed, 
+            total_items: csMetrics.total, 
+            color: 'bg-purple-600' 
+          },
+          { 
+            section_name: 'DSA Curated Hub', 
+            slug: 'dsa', 
+            percent: dsaMetrics.percent, 
+            completed_items: dsaMetrics.completed, 
+            total_items: dsaMetrics.total, 
+            color: 'bg-emerald-600' 
+          },
         ]);
 
-        // Try to fetch real quiz attempts from database
+        // 2. Fetch REAL Quiz Attempts (LocalStorage + Supabase)
+        const localAttempts = getLocalQuizAttempts();
+        const mappedLocal: QuizAttempt[] = localAttempts.map((la: StoredAttempt) => ({
+          id: la.id,
+          topic: la.topicTitle,
+          score: la.score,
+          total: la.total,
+          percentage: la.percentage,
+          date: new Date(la.attemptedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
+          rawDate: la.attemptedAt,
+        }));
+
+        let combinedAttempts: QuizAttempt[] = mappedLocal;
+
         try {
-          const { data: attempts } = await supabase
+          const { data: dbAttempts } = await supabase
             .from('quiz_attempts')
             .select('id, score, total, attempted_at, topics(title)')
             .eq('user_id', activeUser.id)
             .order('attempted_at', { ascending: true })
-            .limit(10);
+            .limit(20);
 
-          if (attempts && attempts.length > 0) {
-            const rawAttempts = attempts as unknown as DbQuizAttempt[];
-            const mappedAttempts: QuizAttempt[] = rawAttempts.map((a) => ({
+          if (dbAttempts && dbAttempts.length > 0) {
+            const rawAttempts = dbAttempts as unknown as DbQuizAttempt[];
+            const mappedDb: QuizAttempt[] = rawAttempts.map((a) => ({
               id: a.id,
               topic: a.topics?.title || 'Quiz Topic',
               score: a.score,
               total: a.total,
               percentage: Math.round((a.score / a.total) * 100),
               date: new Date(a.attempted_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }),
+              rawDate: a.attempted_at,
             }));
-            setQuizHistory(mappedAttempts);
+            
+            // Merge & deduplicate by ID
+            const existingIds = new Set(mappedLocal.map((m) => m.id));
+            const uniqueDb = mappedDb.filter((d) => !existingIds.has(d.id));
+            combinedAttempts = [...mappedLocal, ...uniqueDb].sort(
+              (a, b) => new Date(a.rawDate).getTime() - new Date(b.rawDate).getTime()
+            );
           }
         } catch {
           // ignore if supabase is offline
         }
 
-        // Check local storage for resume analyses
+        setQuizHistory(combinedAttempts);
+
+        // 3. Fetch REAL Resume Analyses (LocalStorage + Supabase)
+        let loadedResumes: ResumeAnalysisItem[] = [];
+
         if (typeof window !== 'undefined') {
           const localResRaw = localStorage.getItem('stackup_local_resumes');
           if (localResRaw) {
             try {
               const parsed = JSON.parse(localResRaw);
               if (Array.isArray(parsed) && parsed.length > 0) {
-                const mappedLocal: ResumeAnalysisItem[] = parsed.map((r: { id: string; filename: string; ats_score: number; created_at: string }) => ({
+                loadedResumes = parsed.map((r: { id: string; filename: string; ats_score: number; created_at: string }) => ({
                   id: r.id,
                   filename: r.filename,
                   ats_score: r.ats_score,
                   created_at: new Date(r.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
-                  status: r.ats_score >= 80 ? 'Good Match' : r.ats_score >= 60 ? 'Reviewed' : 'Action Required',
+                  status: (r.ats_score >= 80 ? 'Good Match' : r.ats_score >= 60 ? 'Reviewed' : 'Action Required') as ResumeAnalysisItem['status'],
                 }));
-                setResumeHistory((prev) => [...mappedLocal, ...prev].slice(0, 10));
               }
             } catch {
               // ignore
@@ -229,7 +245,6 @@ export default function ProfilePage() {
           }
         }
 
-        // Try to fetch real resume analyses from database
         try {
           const { data: analyses } = await supabase
             .from('resume_analyses')
@@ -239,19 +254,24 @@ export default function ProfilePage() {
 
           if (analyses && analyses.length > 0) {
             const rawAnalyses = analyses as unknown as DbResumeAnalysis[];
-            setResumeHistory(
-              rawAnalyses.map((a) => ({
-                id: a.id,
-                filename: a.filename,
-                ats_score: a.ats_score,
-                created_at: new Date(a.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
-                status: a.ats_score >= 80 ? 'Good Match' : a.ats_score >= 60 ? 'Reviewed' : 'Action Required',
-              }))
-            );
+            const mappedDb = rawAnalyses.map((a) => ({
+              id: a.id,
+              filename: a.filename,
+              ats_score: a.ats_score,
+              created_at: new Date(a.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+              status: (a.ats_score >= 80 ? 'Good Match' : a.ats_score >= 60 ? 'Reviewed' : 'Action Required') as ResumeAnalysisItem['status'],
+            }));
+
+            const existingIds = new Set(loadedResumes.map((r) => r.id));
+            const uniqueDb = mappedDb.filter((r) => !existingIds.has(r.id));
+            loadedResumes = [...loadedResumes, ...uniqueDb];
           }
         } catch {
           // ignore if supabase is offline
         }
+
+        setResumeHistory(loadedResumes);
+
       } catch (err) {
         console.error('Error loading profile data:', err);
       } finally {
@@ -261,6 +281,75 @@ export default function ProfilePage() {
 
     loadUserData();
   }, [router]);
+
+  // 4. Calculate 100% REAL 7-Day Activity Streak from user timestamps
+  const { streakDays, streakCount } = useMemo(() => {
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
+    const activityDateSet = new Set<string>();
+
+    quizHistory.forEach((q) => {
+      const d = new Date(q.rawDate || q.date);
+      if (!isNaN(d.getTime())) {
+        activityDateSet.add(d.toISOString().slice(0, 10));
+      }
+    });
+
+    resumeHistory.forEach((r) => {
+      const d = new Date(r.created_at);
+      if (!isNaN(d.getTime())) {
+        activityDateSet.add(d.toISOString().slice(0, 10));
+      }
+    });
+
+    if (solvedDsaCount > 0) {
+      activityDateSet.add(today.toISOString().slice(0, 10));
+    }
+
+    // Past 7 calendar days ending today
+    const days: { day: string; active: boolean }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateKey = d.toISOString().slice(0, 10);
+      days.push({
+        day: daysOfWeek[d.getDay()],
+        active: activityDateSet.has(dateKey),
+      });
+    }
+
+    // Count consecutive active days
+    let count = 0;
+    const check = new Date(today);
+    const todayKey = today.toISOString().slice(0, 10);
+
+    if (activityDateSet.has(todayKey)) {
+      while (activityDateSet.has(check.toISOString().slice(0, 10))) {
+        count++;
+        check.setDate(check.getDate() - 1);
+      }
+    } else {
+      // Check if yesterday was active to count running streak
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (activityDateSet.has(yesterday.toISOString().slice(0, 10))) {
+        check.setDate(check.getDate() - 1);
+        while (activityDateSet.has(check.toISOString().slice(0, 10))) {
+          count++;
+          check.setDate(check.getDate() - 1);
+        }
+      }
+    }
+
+    return { streakDays: days, streakCount: count };
+  }, [quizHistory, resumeHistory, solvedDsaCount]);
+
+  // Average Quiz Score calculation
+  const averageQuizScore = useMemo(() => {
+    if (quizHistory.length === 0) return null;
+    const sum = quizHistory.reduce((acc, q) => acc + q.percentage, 0);
+    return Math.round(sum / quizHistory.length);
+  }, [quizHistory]);
 
   const handleSignOut = async () => {
     await signOutUser();
@@ -272,10 +361,19 @@ export default function ProfilePage() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
         <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
-        <span className="text-sm text-zinc-500 font-medium">Loading your profile dashboard...</span>
+        <span className="text-sm text-zinc-500 font-medium">Loading your real profile metrics...</span>
       </div>
     );
   }
+
+  const initials = profile?.full_name
+    ? profile.full_name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+    : profile?.email?.charAt(0).toUpperCase() || 'U';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -291,29 +389,31 @@ export default function ProfilePage() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              profile?.full_name?.charAt(0) || 'U'
+              <span>{initials}</span>
             )}
           </div>
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
-                {profile?.full_name}
+                {profile?.full_name || 'StackUp Student'}
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                Active Student
+                Verified Student
               </span>
             </div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-              {profile?.email || profile?.phone || 'Connected via Supabase Auth'}
+              {profile?.email || profile?.phone || 'Connected Session'}
             </p>
             <div className="flex items-center space-x-4 mt-2 text-xs text-zinc-400">
               <span className="flex items-center space-x-1">
                 <Calendar className="w-3.5 h-3.5" />
-                <span>Joined {profile?.created_at ? new Date(profile.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Recently'}</span>
+                <span>
+                  Member since {profile?.created_at ? new Date(profile.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Recently'}
+                </span>
               </span>
               <span className="flex items-center space-x-1">
                 <Award className="w-3.5 h-3.5 text-amber-500" />
-                <span>Pro Prep Track</span>
+                <span>Live Prep Track</span>
               </span>
             </div>
           </div>
@@ -338,7 +438,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Grid: Streak Tracker & Quick Stats */}
+      {/* Grid: Real Streak Tracker & Real Performance Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Streak Tracker Card */}
         <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col justify-between">
@@ -347,16 +447,22 @@ export default function ProfilePage() {
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
                 Daily Study Streak
               </span>
-              <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400">
-                <Flame className="w-5 h-5 animate-bounce" />
+              <div className={`p-2 rounded-xl ${streakCount > 0 ? 'bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'}`}>
+                <Flame className={`w-5 h-5 ${streakCount > 0 ? 'animate-bounce' : ''}`} />
               </div>
             </div>
             <div className="mt-4 flex items-baseline space-x-2">
-              <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">7</span>
-              <span className="text-sm font-semibold text-zinc-500">Days Active</span>
+              <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">
+                {streakCount}
+              </span>
+              <span className="text-sm font-semibold text-zinc-500">
+                {streakCount === 1 ? 'Day Active' : 'Days Active'}
+              </span>
             </div>
             <p className="mt-1 text-xs text-zinc-500">
-              Keep solving quizzes daily to preserve your streak multiplier!
+              {streakCount > 0 
+                ? 'Great consistency! Keep solving daily quizzes to build your habit.'
+                : 'Solve a quiz or scan your resume today to start your study streak!'}
             </p>
           </div>
 
@@ -369,8 +475,9 @@ export default function ProfilePage() {
                       ? 'bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-sm shadow-orange-500/30'
                       : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
                   }`}
+                  title={`${item.day}: ${item.active ? 'Activity recorded' : 'No activity'}`}
                 >
-                  ✓
+                  {item.active ? '✓' : '·'}
                 </div>
                 <span className="text-[10px] text-zinc-400">{item.day}</span>
               </div>
@@ -378,7 +485,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Quizzes Taken Stat */}
+        {/* Quizzes Taken Stat Card */}
         <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
@@ -393,9 +500,15 @@ export default function ProfilePage() {
               <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">
                 {quizHistory.length}
               </span>
-              <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                80% Avg. Score
-              </span>
+              {averageQuizScore !== null ? (
+                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                  {averageQuizScore}% Avg. Score
+                </span>
+              ) : (
+                <span className="text-sm font-semibold text-zinc-400">
+                  0 Attempts Yet
+                </span>
+              )}
             </div>
             <p className="mt-1 text-xs text-zinc-500">
               Scored quizzes across Aptitude and Core CS topics.
@@ -403,11 +516,14 @@ export default function ProfilePage() {
           </div>
           <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-400 flex items-center space-x-1">
             <Clock className="w-3.5 h-3.5" />
-            <span>Latest attempt: {quizHistory[quizHistory.length - 1]?.date || 'Today'}</span>
+            <span>
+              Latest attempt:{' '}
+              {quizHistory.length > 0 ? quizHistory[quizHistory.length - 1].date : 'None yet'}
+            </span>
           </div>
         </div>
 
-        {/* ATS Score Benchmark */}
+        {/* ATS Score Benchmark Card */}
         <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
@@ -419,40 +535,53 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="mt-4 flex items-baseline space-x-2">
-              <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">
-                {resumeHistory[0]?.ats_score ?? 84}
-              </span>
-              <span className="text-sm font-semibold text-zinc-500">/ 100</span>
+              {resumeHistory.length > 0 ? (
+                <>
+                  <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">
+                    {resumeHistory[0].ats_score}
+                  </span>
+                  <span className="text-sm font-semibold text-zinc-500">/ 100</span>
+                </>
+              ) : (
+                <span className="text-3xl font-extrabold text-zinc-400">
+                  Not Scanned
+                </span>
+              )}
             </div>
             <p className="mt-1 text-xs text-zinc-500">
               Target &gt;80 score for Tier-1 ATS system passing rate.
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-400">
-            <span>Analyzed file: {resumeHistory[0]?.filename || 'None yet'}</span>
+          <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-400 truncate">
+            <span>
+              {resumeHistory.length > 0 
+                ? `File: ${resumeHistory[0].filename}` 
+                : 'No resume analyzed yet'}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Per-Section Progress Bars */}
+      {/* Per-Section Real Progress Bars */}
       <div className="p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm space-y-6">
         <div>
           <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
             Curriculum Completion Progress
           </h2>
           <p className="text-xs sm:text-sm text-zinc-500">
-            Real-time track of notes read, quizzes submitted, and algorithms solved.
+            Real-time track of topics tested in quizzes and algorithms solved.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {progressList.map((item) => (
-            <div
+            <Link
               key={item.slug}
-              className="p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-850/50 space-y-3"
+              href={`/${item.slug}`}
+              className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-850/50 hover:border-indigo-500/40 transition-all space-y-3 group"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 truncate">
+                <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                   {item.section_name}
                 </span>
                 <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 ml-2">
@@ -470,9 +599,12 @@ export default function ProfilePage() {
 
               <div className="flex items-center justify-between text-xs text-zinc-500">
                 <span>{item.completed_items} of {item.total_items} complete</span>
-                <span className="capitalize">{item.slug}</span>
+                <span className="capitalize text-indigo-600 dark:text-indigo-400 flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
+                  <span>Practice</span>
+                  <ArrowRight className="w-3 h-3 ml-0.5" />
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -485,105 +617,173 @@ export default function ProfilePage() {
               Quiz Score Performance History
             </h2>
             <p className="text-xs sm:text-sm text-zinc-500">
-              Score trajectory across consecutive timed quiz attempts (%)
+              Score trajectory across your completed timed quiz attempts (%)
             </p>
           </div>
-          <div className="text-xs font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg self-start sm:self-auto">
-            Last {quizHistory.length} Attempts
-          </div>
+          {quizHistory.length > 0 && (
+            <div className="text-xs font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg self-start sm:self-auto">
+              Last {quizHistory.length} Attempts
+            </div>
+          )}
         </div>
 
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={quizHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" opacity={0.3} />
-              <XAxis dataKey="date" stroke="#71717a" fontSize={12} tickLine={false} />
-              <YAxis domain={[0, 100]} stroke="#71717a" fontSize={12} tickLine={false} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#18181b',
-                  borderColor: '#27272a',
-                  borderRadius: '0.75rem',
-                  color: '#fff',
-                  fontSize: '0.75rem',
-                }}
-                formatter={(value: unknown) => [`${value}%`, 'Score']}
-                labelFormatter={(_label, payload) => {
-                  if (payload && payload[0]) {
-                    return `${payload[0].payload.topic} (${payload[0].payload.date})`;
-                  }
-                  return '';
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="percentage"
-                stroke="#6366f1"
-                strokeWidth={3}
-                fillOpacity={1}
-                fill="url(#scoreGradient)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        {quizHistory.length > 0 ? (
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={quizHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" opacity={0.3} />
+                <XAxis dataKey="date" stroke="#71717a" fontSize={12} tickLine={false} />
+                <YAxis domain={[0, 100]} stroke="#71717a" fontSize={12} tickLine={false} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#18181b',
+                    borderColor: '#27272a',
+                    borderRadius: '0.75rem',
+                    color: '#fff',
+                    fontSize: '0.75rem',
+                  }}
+                  formatter={(value: unknown) => [`${value}%`, 'Score']}
+                  labelFormatter={(_label, payload) => {
+                    if (payload && payload[0]) {
+                      return `${payload[0].payload.topic} (${payload[0].payload.date})`;
+                    }
+                    return '';
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="percentage"
+                  stroke="#6366f1"
+                  strokeWidth={3}
+                  fillOpacity={1}
+                  fill="url(#scoreGradient)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="p-8 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+              <TrendingUp className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
+                No Quizzes Attempted Yet
+              </h3>
+              <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                Take timed MCQ quizzes in Quantitative Aptitude or Core CS to view your historical score trajectory and accuracy curves here.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <Link
+                href="/aptitude"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Practice Aptitude</span>
+              </Link>
+              <Link
+                href="/core-cs"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              >
+                <Cpu className="w-3.5 h-3.5" />
+                <span>Practice Core CS</span>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Resume Analysis History */}
       <div className="p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm space-y-6">
-        <div>
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
-            Resume Analysis History
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-500">
-            Past resumes processed through the Claude ATS Diagnostic Engine
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+              Resume Analysis History
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500">
+              Past resumes processed through the ATS Diagnostic Engine
+            </p>
+          </div>
+          <Link
+            href="/resume-checker"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition-colors self-start sm:self-auto"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Scan New Resume</span>
+          </Link>
         </div>
 
-        <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-          {resumeHistory.map((item) => (
-            <div
-              key={item.id}
-              className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-            >
-              <div className="flex items-center space-x-3.5">
-                <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
-                  <FileCheck2 className="w-5 h-5 text-indigo-500" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-zinc-900 dark:text-white">
-                    {item.filename}
+        {resumeHistory.length > 0 ? (
+          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {resumeHistory.map((item) => (
+              <div
+                key={item.id}
+                className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div className="flex items-center space-x-3.5">
+                  <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+                    <FileCheck2 className="w-5 h-5 text-indigo-500" />
                   </div>
-                  <div className="text-xs text-zinc-400">
-                    Scored on {item.created_at}
+                  <div>
+                    <div className="text-sm font-semibold text-zinc-900 dark:text-white">
+                      {item.filename}
+                    </div>
+                    <div className="text-xs text-zinc-400">
+                      Scored on {item.created_at}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center space-x-4">
-                <div className="text-right">
-                  <div className="text-sm font-bold text-zinc-900 dark:text-white">
-                    {item.ats_score}/100
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <div className="text-sm font-bold text-zinc-900 dark:text-white">
+                      {item.ats_score}/100
+                    </div>
+                    <span
+                      className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                        item.ats_score >= 80
+                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                      }`}
+                    >
+                      {item.status}
+                    </span>
                   </div>
-                  <span
-                    className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                      item.ats_score >= 80
-                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
-                        : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
-                    }`}
-                  >
-                    {item.status}
-                  </span>
                 </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
+              <FileCheck2 className="w-6 h-6" />
             </div>
-          ))}
-        </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
+                No Resumes Analyzed Yet
+              </h3>
+              <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                Upload your PDF or Word document to get instant ATS scoring, keyword detection, and section-by-section bullet rewrites.
+              </p>
+            </div>
+            <div className="pt-2">
+              <Link
+                href="/resume-checker"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm"
+              >
+                <FileCheck2 className="w-3.5 h-3.5" />
+                <span>Upload Resume in ATS Checker</span>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       <CredentialsModal

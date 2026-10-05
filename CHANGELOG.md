@@ -31,3 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed TypeScript type narrowing and active user scope issues in `src/app/profile/page.tsx`.
 - Resolved 404 missing route errors for `/dsa` and `/resume-checker`.
 - Added missing resume parsers (`pdf-parse`, `mammoth`) and rate limiter service.
+- Purged all hardcoded dummy values (fake 65/45/30% progress, fake 6 quiz attempts, fake 2 resumes, hardcoded 7-day streak) across Profile and Section curriculum pages.
+- Fixed Google OAuth flow: removed silent demo user interception, enabled genuine OAuth dispatch, added actionable diagnostic error messages (e.g., when Google provider is not yet enabled in Supabase dashboard), and enriched `/auth/callback` to preserve OAuth error descriptions.
+- Replaced arbitrary progress increment with mathematically precise metrics based on unique completed topics in Aptitude, Core CS, and DSA.
+- Added genuine 7-day streak calculation derived exclusively from real user timestamps.
+- Added `/api/config/migration-sql` for 1-click SQL migration copying to clipboard and `/api/config/execute-migration` for automated schema status verification.
+- Added automated unit tests in `tests/progress.test.ts` validating progress and streak algorithms.

@@ -64,7 +64,21 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
     };
   }, [isOpen]);
 
-  const handleCopyMigrationNotice = () => {
+  const handleCopyMigrationNotice = async () => {
+    try {
+      const res = await fetch('/api/config/migration-sql');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.sql) {
+          await navigator.clipboard.writeText(data.sql);
+          setCopiedMigration(true);
+          setTimeout(() => setCopiedMigration(false), 3000);
+          return;
+        }
+      }
+    } catch {
+      // fallback
+    }
     const notice = `Run: D:\\stackup\\supabase\\migrations\\20260923000000_initial_schema.sql in your Supabase SQL Editor.`;
     navigator.clipboard.writeText(notice);
     setCopiedMigration(true);
@@ -262,14 +276,17 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
             </div>
 
             {/* Quick Step Guide */}
-            <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 text-xs space-y-2">
+            <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 text-xs space-y-2.5">
               <span className="font-bold text-zinc-900 dark:text-white block">
-                Quick Setup Steps:
+                Database &amp; Google Sign-In Setup:
               </span>
-              <ol className="list-decimal list-inside space-y-1 text-zinc-600 dark:text-zinc-400">
-                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 underline font-medium">supabase.com</a></li>
-                <li>Go to <strong>SQL Editor</strong> &gt; run the schema in <code className="bg-zinc-200 dark:bg-zinc-700 px-1 py-0.5 rounded text-[11px]">supabase/migrations/</code></li>
-                <li>Paste your Project URL &amp; Anon Key above and click Save.</li>
+              <ol className="list-decimal list-inside space-y-1.5 text-zinc-600 dark:text-zinc-400">
+                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 underline font-medium">supabase.com</a>.</li>
+                <li>Click <strong>Copy Full Migration SQL</strong> below, open your Supabase <strong>SQL Editor</strong>, paste and run it.</li>
+                <li>Enter your <strong>Project URL</strong> and <strong>Anon Key</strong> above and click Save.</li>
+                <li>
+                  <strong className="text-zinc-900 dark:text-white">To enable Google OAuth:</strong> In Supabase, go to <em>Authentication &gt; Providers &gt; Google</em>, toggle Enable, and enter your Google Cloud Client ID &amp; Secret. Add redirect URI: <code className="bg-zinc-200 dark:bg-zinc-750 px-1 py-0.5 rounded text-[10px]">{supabaseUrl ? `${supabaseUrl}/auth/v1/callback` : 'https://<project-ref>.supabase.co/auth/v1/callback'}</code>.
+                </li>
               </ol>
             </div>
 
@@ -280,7 +297,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                 className="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center space-x-1.5 transition-colors"
               >
                 {copiedMigration ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedMigration ? 'Migration Path Copied!' : 'Copy Migration Info'}</span>
+                <span>{copiedMigration ? 'Full SQL Copied to Clipboard!' : 'Copy Full Migration SQL'}</span>
               </button>
 
               <button
