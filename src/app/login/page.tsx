@@ -355,7 +355,7 @@ function LoginForm() {
                     {oauthHelp}
                   </p>
                 )}
-                {oauthHelp && (
+                {isAdminMode && oauthHelp && (
                   <button
                     onClick={() => setCredentialsModalOpen(true)}
                     className="inline-flex items-center space-x-1 text-xs font-bold text-red-800 dark:text-red-200 underline mt-2 hover:opacity-80"

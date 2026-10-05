@@ -278,15 +278,15 @@ export default function DsaHubPage() {
           </div>
 
           {/* Pattern / Category Pills */}
-          <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-zinc-100 dark:border-zinc-800">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider whitespace-nowrap pl-1">
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider pl-1 mr-1">
               Pattern:
             </span>
             {DSA_CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                   selectedCategory === cat
                     ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-500/20'
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'

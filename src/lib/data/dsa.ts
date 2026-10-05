@@ -31,17 +31,26 @@ export interface DsaProblem {
 }
 
 export const DSA_CATEGORIES = [
-  'All',
-  'Arrays & Hashing',
-  'Two Pointers',
-  'Sliding Window',
-  'Binary Search',
-  'Linked List',
-  'Trees & BST',
-  'Graphs',
-  'Dynamic Programming',
-  'Stack & Queue',
-  'Heap / Priority Queue',
+  "All",
+  "Arrays & Hashing",
+  "Two Pointers",
+  "Sliding Window",
+  "Binary Search",
+  "Linked List",
+  "Trees & BST",
+  "Trie",
+  "Heap / Priority Queue",
+  "Backtracking",
+  "Graphs",
+  "Advanced Graphs",
+  "Dynamic Programming",
+  "1-D Dynamic Programming",
+  "2-D Dynamic Programming",
+  "Greedy",
+  "Intervals",
+  "Stack & Queue",
+  "Bit Manipulation",
+  "Math & Geometry"
 ] as const;
 
 export const DSA_PROBLEMS: DsaProblem[] = [
@@ -1226,6 +1235,1790 @@ export const DSA_PROBLEMS: DsaProblem[] = [
       "cpp": "#include <vector>\n#include <queue>\nusing namespace std;\n\nclass Solution {\npublic:\n    int findKthLargest(vector<int>& nums, int k) {\n        priority_queue<int, vector<int>, greater<int>> minHeap;\n        for (int num : nums) {\n            minHeap.push(num);\n            if (minHeap.size() > k) minHeap.pop();\n        }\n        return minHeap.top();\n    }\n};",
       "java": "import java.util.PriorityQueue;\n\nclass Solution {\n    public int findKthLargest(int[] nums, int k) {\n        PriorityQueue<Integer> minHeap = new PriorityQueue<>();\n        for (int num : nums) {\n            minHeap.offer(num);\n            if (minHeap.size() > k) minHeap.poll();\n        }\n        return minHeap.peek();\n    }\n}",
       "typescript": "function findKthLargest(nums: number[], k: number): number {\n  // QuickSelect or Sorting fallback for JS standard library\n  nums.sort((a, b) => b - a);\n  return nums[k - 1];\n}"
+    }
+  },
+  {
+    "id": "dsa-31",
+    "title": "Contains Duplicate",
+    "difficulty": "Easy",
+    "pattern_tag": "Arrays & Hashing",
+    "leetcode_url": "https://leetcode.com/problems/contains-duplicate/",
+    "striver_url": "https://takeuforward.org/data-structure/contains-duplicate-check-if-a-value-appears-at-least-twice/",
+    "youtube_url": "https://www.youtube.com/watch?v=3OamzN90kPg",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Use a HashSet to detect duplicate values in a single pass O(n) time and O(n) space.",
+    "description": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "true"
+      },
+      {
+        "input": "nums = [1,2,3,4]",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "-10^9 <= nums[i] <= 10^9"
+    ],
+    "approach": "Iterate through nums while inserting into a hash set. If an element already exists in the set, return true. Otherwise return false after scanning all elements.",
+    "timeComplexity": "O(n) - Single pass through the array",
+    "spaceComplexity": "O(n) - Set stores at most n unique integers",
+    "solutions": {
+      "python": "class Solution:\n    def containsDuplicate(self, nums: list[int]) -> bool:\n        seen = set()\n        for n in nums:\n            if n in seen:\n                return True\n            seen.add(n)\n        return False",
+      "cpp": "#include <vector>\n#include <unordered_set>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        for (int n : nums) {\n            if (seen.count(n)) return true;\n            seen.insert(n);\n        }\n        return false;\n    }\n};",
+      "java": "import java.util.HashSet;\nimport java.util.Set;\n\nclass Solution {\n    public boolean containsDuplicate(int[] nums) {\n        Set<Integer> seen = new HashSet<>();\n        for (int n : nums) {\n            if (!seen.add(n)) return true;\n        }\n        return false;\n    }\n}",
+      "typescript": "function containsDuplicate(nums: number[]): boolean {\n  const seen = new Set<number>();\n  for (const n of nums) {\n    if (seen.has(n)) return true;\n    seen.add(n);\n  }\n  return false;\n}"
+    }
+  },
+  {
+    "id": "dsa-32",
+    "title": "Valid Anagram",
+    "difficulty": "Easy",
+    "pattern_tag": "Arrays & Hashing",
+    "leetcode_url": "https://leetcode.com/problems/valid-anagram/",
+    "striver_url": "https://takeuforward.org/data-structure/check-if-two-strings-are-anagrams-of-each-other/",
+    "youtube_url": "https://www.youtube.com/watch?v=9UtInBqnCgA",
+    "companies": [
+      "Amazon",
+      "Bloomberg",
+      "Google",
+      "Meta"
+    ],
+    "summary": "Compare character frequencies using a fixed 26-element array or hash map in O(n) time.",
+    "description": "Given two strings s and t, return true if t is an anagram of s, and false otherwise. An Anagram is a word formed by rearranging the letters of a different word using all the original letters exactly once.",
+    "examples": [
+      {
+        "input": "s = \"anagram\", t = \"nagaram\"",
+        "output": "true"
+      },
+      {
+        "input": "s = \"rat\", t = \"car\"",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "1 <= s.length, t.length <= 5 * 10^4",
+      "s and t consist of lowercase English letters."
+    ],
+    "approach": "If lengths differ, return false immediately. Maintain an array of size 26. Increment frequency for characters in s, decrement for characters in t. Verify all counts equal zero.",
+    "timeComplexity": "O(n) - Single pass over both strings",
+    "spaceComplexity": "O(1) - Fixed 26-element array",
+    "solutions": {
+      "python": "class Solution:\n    def isAnagram(self, s: str, t: str) -> bool:\n        if len(s) != len(t): return False\n        counts = [0] * 26\n        for c1, c2 in zip(s, t):\n            counts[ord(c1) - 97] += 1\n            counts[ord(c2) - 97] -= 1\n        return all(c == 0 for c in counts)",
+      "cpp": "#include <string>\n#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isAnagram(string s, string t) {\n        if (s.size() != t.size()) return false;\n        vector<int> count(26, 0);\n        for (int i = 0; i < s.size(); ++i) {\n            count[s[i] - 'a']++;\n            count[t[i] - 'a']--;\n        }\n        for (int c : count) if (c != 0) return false;\n        return true;\n    }\n};",
+      "java": "class Solution {\n    public boolean isAnagram(String s, String t) {\n        if (s.length() != t.length()) return false;\n        int[] count = new int[26];\n        for (int i = 0; i < s.length(); i++) {\n            count[s.charAt(i) - 'a']++;\n            count[t.charAt(i) - 'a']--;\n        }\n        for (int c : count) if (c != 0) return false;\n        return true;\n    }\n}",
+      "typescript": "function isAnagram(s: string, t: string): boolean {\n  if (s.length !== t.length) return false;\n  const count = new Array(26).fill(0);\n  for (let i = 0; i < s.length; i++) {\n    count[s.charCodeAt(i) - 97]++;\n    count[t.charCodeAt(i) - 97]--;\n  }\n  return count.every(c => c === 0);\n}"
+    }
+  },
+  {
+    "id": "dsa-33",
+    "title": "Group Anagrams",
+    "difficulty": "Medium",
+    "pattern_tag": "Arrays & Hashing",
+    "leetcode_url": "https://leetcode.com/problems/group-anagrams/",
+    "striver_url": "https://takeuforward.org/data-structure/group-anagrams/",
+    "youtube_url": "https://www.youtube.com/watch?v=vzdNOK2oQ2E",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Hash strings using character count tuples or sorted representations as keys in O(n * k log k).",
+    "description": "Given an array of strings strs, group the anagrams together. You can return the answer in any order.",
+    "examples": [
+      {
+        "input": "strs = [\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]",
+        "output": "[[\"bat\"],[\"nat\",\"tan\"],[\"ate\",\"eat\",\"tea\"]]"
+      }
+    ],
+    "constraints": [
+      "1 <= strs.length <= 10^4",
+      "0 <= strs[i].length <= 100",
+      "strs[i] consists of lowercase English letters."
+    ],
+    "approach": "Group strings using a hash map where the key is the sorted version of the string (or frequency tuple). Iterate through strs, compute the canonical key, and append to the list in map.",
+    "timeComplexity": "O(n * k log k) - Where n is number of strings and k is max string length",
+    "spaceComplexity": "O(n * k) - Hash map storing all strings",
+    "solutions": {
+      "python": "class Solution:\n    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:\n        from collections import defaultdict\n        groups = defaultdict(list)\n        for s in strs:\n            key = tuple(sorted(s))\n            groups[key].append(s)\n        return list(groups.values())",
+      "cpp": "#include <vector>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<vector<string>> groupAnagrams(vector<string>& strs) {\n        unordered_map<string, vector<string>> map;\n        for (string& s : strs) {\n            string key = s;\n            sort(key.begin(), key.end());\n            map[key].push_back(s);\n        }\n        vector<vector<string>> res;\n        for (auto& pair : map) res.push_back(pair.second);\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> map = new HashMap<>();\n        for (String s : strs) {\n            char[] chars = s.toCharArray();\n            Arrays.sort(chars);\n            String key = new String(chars);\n            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);\n        }\n        return new ArrayList<>(map.values());\n    }\n}",
+      "typescript": "function groupAnagrams(strs: string[]): string[][] {\n  const map = new Map<string, string[]>();\n  for (const s of strs) {\n    const key = s.split('').sort().join('');\n    if (!map.has(key)) map.set(key, []);\n    map.get(key)!.push(s);\n  }\n  return Array.from(map.values());\n}"
+    }
+  },
+  {
+    "id": "dsa-34",
+    "title": "Top K Frequent Elements",
+    "difficulty": "Medium",
+    "pattern_tag": "Arrays & Hashing",
+    "leetcode_url": "https://leetcode.com/problems/top-k-frequent-elements/",
+    "striver_url": "https://takeuforward.org/data-structure/top-k-frequent-elements/",
+    "youtube_url": "https://www.youtube.com/watch?v=YPTqKIgVk-v",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Use bucket sort indexed by frequency to achieve linear O(n) time complexity.",
+    "description": "Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.",
+    "examples": [
+      {
+        "input": "nums = [1,1,1,2,2,3], k = 2",
+        "output": "[1,2]"
+      },
+      {
+        "input": "nums = [1], k = 1",
+        "output": "[1]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "-10^4 <= nums[i] <= 10^4",
+      "k is in the range [1, the number of unique elements in the array]."
+    ],
+    "approach": "Count element frequencies with a hash map. Create buckets where bucket[i] contains numbers appearing i times. Traverse buckets backwards from n to 0 collecting numbers until k elements are retrieved.",
+    "timeComplexity": "O(n) - Frequency counting and bucket sort traversal",
+    "spaceComplexity": "O(n) - Buckets and frequency map",
+    "solutions": {
+      "python": "class Solution:\n    def topKFrequent(self, nums: list[int], k: int) -> list[int]:\n        count = {}\n        for n in nums: count[n] = count.get(n, 0) + 1\n        buckets = [[] for _ in range(len(nums) + 1)]\n        for n, c in count.items():\n            buckets[c].append(n)\n        res = []\n        for i in range(len(buckets) - 1, 0, -1):\n            for n in buckets[i]:\n                res.append(n)\n                if len(res) == k: return res\n        return res",
+      "cpp": "#include <vector>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> topKFrequent(vector<int>& nums, int k) {\n        unordered_map<int, int> count;\n        for (int n : nums) count[n]++;\n        vector<vector<int>> buckets(nums.size() + 1);\n        for (auto& p : count) buckets[p.second].push_back(p.first);\n        vector<int> res;\n        for (int i = buckets.size() - 1; i >= 0 && res.size() < k; --i) {\n            for (int num : buckets[i]) {\n                res.push_back(num);\n                if (res.size() == k) break;\n            }\n        }\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public int[] topKFrequent(int[] nums, int k) {\n        Map<Integer, Integer> count = new HashMap<>();\n        for (int n : nums) count.put(n, count.getOrDefault(n, 0) + 1);\n        List<Integer>[] buckets = new List[nums.length + 1];\n        for (int key : count.keySet()) {\n            int freq = count.get(key);\n            if (buckets[freq] == null) buckets[freq] = new ArrayList<>();\n            buckets[freq].add(key);\n        }\n        int[] res = new int[k];\n        int idx = 0;\n        for (int i = buckets.length - 1; i >= 0 && idx < k; i--) {\n            if (buckets[i] != null) {\n                for (int num : buckets[i]) {\n                    res[idx++] = num;\n                    if (idx == k) break;\n                }\n            }\n        }\n        return res;\n    }\n}",
+      "typescript": "function topKFrequent(nums: number[], k: number): number[] {\n  const map = new Map<number, number>();\n  for (const n of nums) map.set(n, (map.get(n) || 0) + 1);\n  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () => []);\n  for (const [num, freq] of map.entries()) {\n    buckets[freq].push(num);\n  }\n  const res: number[] = [];\n  for (let i = buckets.length - 1; i >= 0 && res.length < k; i--) {\n    for (const n of buckets[i]) {\n      res.push(n);\n      if (res.length === k) break;\n    }\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-35",
+    "title": "Implement Trie (Prefix Tree)",
+    "difficulty": "Medium",
+    "pattern_tag": "Trie",
+    "leetcode_url": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+    "striver_url": "https://takeuforward.org/data-structure/implement-trie-1/",
+    "youtube_url": "https://www.youtube.com/watch?v=oobqoCJlHA0",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Microsoft",
+      "Twitter"
+    ],
+    "summary": "Tree of character nodes with end-of-word flags enabling O(L) prefix search and insertion.",
+    "description": "A trie (pronounced as \"try\") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. Implement the Trie class with insert, search, and startsWith.",
+    "examples": [
+      {
+        "input": "trie.insert(\"apple\"); trie.search(\"apple\"); // return True; trie.startsWith(\"app\"); // return True",
+        "output": "[true, true]"
+      }
+    ],
+    "constraints": [
+      "1 <= word.length, prefix.length <= 2000",
+      "word and prefix consist only of lowercase English letters.",
+      "At most 3 * 10^4 calls in total to insert, search, and startsWith."
+    ],
+    "approach": "Each TrieNode contains an array of 26 children references and a boolean isEnd flag. Insert creates missing nodes. Search and startsWith traverse downwards matching characters.",
+    "timeComplexity": "O(L) - Where L is length of word or prefix",
+    "spaceComplexity": "O(N * L) - Trie node allocations",
+    "solutions": {
+      "python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n    def insert(self, word: str) -> None:\n        curr = self.root\n        for c in word:\n            if c not in curr.children:\n                curr.children[c] = TrieNode()\n            curr = curr.children[c]\n        curr.is_end = True\n    def search(self, word: str) -> bool:\n        curr = self.root\n        for c in word:\n            if c not in curr.children: return False\n            curr = curr.children[c]\n        return curr.is_end\n    def startsWith(self, prefix: str) -> bool:\n        curr = self.root\n        for c in prefix:\n            if c not in curr.children: return False\n            curr = curr.children[c]\n        return True",
+      "cpp": "class Trie {\n    struct Node {\n        Node* children[26] = {nullptr};\n        bool isEnd = false;\n    };\n    Node* root;\npublic:\n    Trie() { root = new Node(); }\n    void insert(string word) {\n        Node* curr = root;\n        for (char c : word) {\n            if (!curr->children[c - 'a']) curr->children[c - 'a'] = new Node();\n            curr = curr->children[c - 'a'];\n        }\n        curr->isEnd = true;\n    }\n    bool search(string word) {\n        Node* curr = root;\n        for (char c : word) {\n            if (!curr->children[c - 'a']) return false;\n            curr = curr->children[c - 'a'];\n        }\n        return curr->isEnd;\n    }\n    bool startsWith(string prefix) {\n        Node* curr = root;\n        for (char c : prefix) {\n            if (!curr->children[c - 'a']) return false;\n            curr = curr->children[c - 'a'];\n        }\n        return true;\n    }\n};",
+      "java": "class Trie {\n    private class Node {\n        Node[] children = new Node[26];\n        boolean isEnd = false;\n    }\n    private Node root = new Node();\n    public void insert(String word) {\n        Node curr = root;\n        for (char c : word.toCharArray()) {\n            if (curr.children[c - 'a'] == null) curr.children[c - 'a'] = new Node();\n            curr = curr.children[c - 'a'];\n        }\n        curr.isEnd = true;\n    }\n    public boolean search(String word) {\n        Node curr = root;\n        for (char c : word.toCharArray()) {\n            if (curr.children[c - 'a'] == null) return false;\n            curr = curr.children[c - 'a'];\n        }\n        return curr.isEnd;\n    }\n    public boolean startsWith(String prefix) {\n        Node curr = root;\n        for (char c : prefix.toCharArray()) {\n            if (curr.children[c - 'a'] == null) return false;\n            curr = curr.children[c - 'a'];\n        }\n        return true;\n    }\n}",
+      "typescript": "class TrieNode {\n  children = new Map<string, TrieNode>();\n  isEnd = false;\n}\nclass Trie {\n  root = new TrieNode();\n  insert(word: string): void {\n    let curr = this.root;\n    for (const c of word) {\n      if (!curr.children.has(c)) curr.children.set(c, new TrieNode());\n      curr = curr.children.get(c)!;\n    }\n    curr.isEnd = true;\n  }\n  search(word: string): boolean {\n    let curr = this.root;\n    for (const c of word) {\n      if (!curr.children.has(c)) return false;\n      curr = curr.children.get(c)!;\n    }\n    return curr.isEnd;\n  }\n  startsWith(prefix: string): boolean {\n    let curr = this.root;\n    for (const c of prefix) {\n      if (!curr.children.has(c)) return false;\n      curr = curr.children.get(c)!;\n    }\n    return true;\n  }\n}"
+    }
+  },
+  {
+    "id": "dsa-36",
+    "title": "Combination Sum",
+    "difficulty": "Medium",
+    "pattern_tag": "Backtracking",
+    "leetcode_url": "https://leetcode.com/problems/combination-sum/",
+    "striver_url": "https://takeuforward.org/data-structure/combination-sum-1/",
+    "youtube_url": "https://www.youtube.com/watch?v=GBKI9VSKdGg",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Backtracking with reuse: choose element again or advance index when target met.",
+    "description": "Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order. The same number may be chosen from candidates an unlimited number of times.",
+    "examples": [
+      {
+        "input": "candidates = [2,3,6,7], target = 7",
+        "output": "[[2,2,3],[7]]"
+      },
+      {
+        "input": "candidates = [2,3,5], target = 8",
+        "output": "[[2,2,2,2],[2,3,3],[3,5]]"
+      }
+    ],
+    "constraints": [
+      "1 <= candidates.length <= 30",
+      "2 <= candidates[i] <= 40",
+      "All elements are distinct.",
+      "1 <= target <= 40"
+    ],
+    "approach": "DFS state (index, current_combo, current_sum). If sum == target, record combination. If sum > target or index out of bounds, prune. Either pick candidate[index] again, or advance index to avoid duplicate permutations.",
+    "timeComplexity": "O(2^t) - Exponential decision tree based on target",
+    "spaceComplexity": "O(t / min(candidates)) - Maximum recursion depth",
+    "solutions": {
+      "python": "class Solution:\n    def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:\n        res = []\n        def dfs(i, cur, total):\n            if total == target:\n                res.append(cur.copy())\n                return\n            if i >= len(candidates) or total > target:\n                return\n            cur.append(candidates[i])\n            dfs(i, cur, total + candidates[i])\n            cur.pop()\n            dfs(i + 1, cur, total)\n        dfs(0, [], 0)\n        return res",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\n    void dfs(int i, vector<int>& candidates, int target, vector<int>& cur, vector<vector<int>>& res) {\n        if (target == 0) { res.push_back(cur); return; }\n        if (i >= candidates.size() || target < 0) return;\n        cur.push_back(candidates[i]);\n        dfs(i, candidates, target - candidates[i], cur, res);\n        cur.pop_back();\n        dfs(i + 1, candidates, target, cur, res);\n    }\npublic:\n    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {\n        vector<vector<int>> res;\n        vector<int> cur;\n        dfs(0, candidates, target, cur, res);\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    private void dfs(int i, int[] candidates, int target, List<Integer> cur, List<List<Integer>> res) {\n        if (target == 0) { res.add(new ArrayList<>(cur)); return; }\n        if (i >= candidates.length || target < 0) return;\n        cur.add(candidates[i]);\n        dfs(i, candidates, target - candidates[i], cur, res);\n        cur.remove(cur.size() - 1);\n        dfs(i + 1, candidates, target, cur, res);\n    }\n    public List<List<Integer>> combinationSum(int[] candidates, int target) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(0, candidates, target, new ArrayList<>(), res);\n        return res;\n    }\n}",
+      "typescript": "function combinationSum(candidates: number[], target: number): number[][] {\n  const res: number[][] = [];\n  function dfs(i: number, cur: number[], total: number) {\n    if (total === target) { res.push([...cur]); return; }\n    if (i >= candidates.length || total > target) return;\n    cur.push(candidates[i]);\n    dfs(i, cur, total + candidates[i]);\n    cur.pop();\n    dfs(i + 1, cur, total);\n  }\n  dfs(0, [], 0);\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-37",
+    "title": "Subsets",
+    "difficulty": "Medium",
+    "pattern_tag": "Backtracking",
+    "leetcode_url": "https://leetcode.com/problems/subsets/",
+    "striver_url": "https://takeuforward.org/data-structure/power-set-print-all-subsequences/",
+    "youtube_url": "https://www.youtube.com/watch?v=REOH22Xwdlk",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Binary decision tree: for each index either include or exclude element in O(2^n).",
+    "description": "Given an integer array nums of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets. Return the solution in any order.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3]",
+        "output": "[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]"
+      },
+      {
+        "input": "nums = [0]",
+        "output": "[[],[0]]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10",
+      "-10 <= nums[i] <= 10",
+      "All numbers are unique."
+    ],
+    "approach": "At each index i from 0 to n-1, branch into two decisions: include nums[i] in subset and recurse, then exclude nums[i] and recurse. When i == len(nums), append a copy of current subset to result.",
+    "timeComplexity": "O(n * 2^n) - 2^n subsets of average length n",
+    "spaceComplexity": "O(n) - Recursion stack depth",
+    "solutions": {
+      "python": "class Solution:\n    def subsets(self, nums: list[int]) -> list[list[int]]:\n        res = []\n        subset = []\n        def dfs(i):\n            if i >= len(nums):\n                res.append(subset.copy())\n                return\n            subset.append(nums[i])\n            dfs(i + 1)\n            subset.pop()\n            dfs(i + 1)\n        dfs(0)\n        return res",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\n    void dfs(int i, vector<int>& nums, vector<int>& sub, vector<vector<int>>& res) {\n        if (i >= nums.size()) { res.push_back(sub); return; }\n        sub.push_back(nums[i]);\n        dfs(i + 1, nums, sub, res);\n        sub.pop_back();\n        dfs(i + 1, nums, sub, res);\n    }\npublic:\n    vector<vector<int>> subsets(vector<int>& nums) {\n        vector<vector<int>> res;\n        vector<int> sub;\n        dfs(0, nums, sub, res);\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    private void dfs(int i, int[] nums, List<Integer> sub, List<List<Integer>> res) {\n        if (i >= nums.length) { res.add(new ArrayList<>(sub)); return; }\n        sub.add(nums[i]);\n        dfs(i + 1, nums, sub, res);\n        sub.remove(sub.size() - 1);\n        dfs(i + 1, nums, sub, res);\n    }\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(0, nums, new ArrayList<>(), res);\n        return res;\n    }\n}",
+      "typescript": "function subsets(nums: number[]): number[][] {\n  const res: number[][] = [];\n  const sub: number[] = [];\n  function dfs(i: number) {\n    if (i >= nums.length) { res.push([...sub]); return; }\n    sub.push(nums[i]);\n    dfs(i + 1);\n    sub.pop();\n    dfs(i + 1);\n  }\n  dfs(0);\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-38",
+    "title": "Word Search",
+    "difficulty": "Medium",
+    "pattern_tag": "Backtracking",
+    "leetcode_url": "https://leetcode.com/problems/word-search/",
+    "striver_url": "https://takeuforward.org/data-structure/word-search-problem/",
+    "youtube_url": "https://www.youtube.com/watch?v=pfiQ_PS1g8E",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Microsoft",
+      "Uber"
+    ],
+    "summary": "DFS with grid in-place visited marking and backtrack restoration in O(m * n * 4^L).",
+    "description": "Given an m x n grid of characters board and a string word, return true if word exists in the grid. The word can be constructed from letters of sequentially adjacent cells (horizontally or vertically). The same letter cell may not be used more than once.",
+    "examples": [
+      {
+        "input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"",
+        "output": "true"
+      },
+      {
+        "input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCB\"",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "m == board.length, n == board[i].length",
+      "1 <= m, n <= 6",
+      "1 <= word.length <= 15"
+    ],
+    "approach": "Iterate every cell. If cell matches word[0], launch DFS(r, c, 0). Mark visited by temporarily changing character to '#'. Recurse in 4 cardinal directions for index + 1. Restore original character upon backtrack.",
+    "timeComplexity": "O(m * n * 4^L) - Where L is word length",
+    "spaceComplexity": "O(L) - Call stack depth equals word length",
+    "solutions": {
+      "python": "class Solution:\n    def exist(self, board: list[list[str]], word: str) -> bool:\n        rows, cols = len(board), len(board[0])\n        def dfs(r, c, i):\n            if i == len(word): return True\n            if r < 0 or c < 0 or r >= rows or c >= cols or board[r][c] != word[i]:\n                return False\n            temp, board[r][c] = board[r][c], '#'\n            res = (dfs(r+1, c, i+1) or dfs(r-1, c, i+1) or\n                   dfs(r, c+1, i+1) or dfs(r, c-1, i+1))\n            board[r][c] = temp\n            return res\n        for r in range(rows):\n            for c in range(cols):\n                if dfs(r, c, 0): return True\n        return False",
+      "cpp": "#include <vector>\n#include <string>\nusing namespace std;\n\nclass Solution {\n    bool dfs(vector<vector<char>>& b, const string& w, int r, int c, int i) {\n        if (i == w.size()) return true;\n        if (r < 0 || c < 0 || r >= b.size() || c >= b[0].size() || b[r][c] != w[i]) return false;\n        char temp = b[r][c];\n        b[r][c] = '#';\n        bool res = dfs(b, w, r+1, c, i+1) || dfs(b, w, r-1, c, i+1) ||\n                   dfs(b, w, r, c+1, i+1) || dfs(b, w, r, c-1, i+1);\n        b[r][c] = temp;\n        return res;\n    }\npublic:\n    bool exist(vector<vector<char>>& board, string word) {\n        for (int r = 0; r < board.size(); ++r)\n            for (int c = 0; c < board[0].size(); ++c)\n                if (dfs(board, word, r, c, 0)) return true;\n        return false;\n    }\n};",
+      "java": "class Solution {\n    private boolean dfs(char[][] b, String w, int r, int c, int i) {\n        if (i == w.length()) return true;\n        if (r < 0 || c < 0 || r >= b.length || c >= b[0].length || b[r][c] != w.charAt(i)) return false;\n        char temp = b[r][c];\n        b[r][c] = '#';\n        boolean res = dfs(b, w, r+1, c, i+1) || dfs(b, w, r-1, c, i+1) ||\n                      dfs(b, w, r, c+1, i+1) || dfs(b, w, r, c-1, i+1);\n        b[r][c] = temp;\n        return res;\n    }\n    public boolean exist(char[][] board, String word) {\n        for (int r = 0; r < board.length; r++)\n            for (int c = 0; c < board[0].length; c++)\n                if (dfs(board, word, r, c, 0)) return true;\n        return false;\n    }\n}",
+      "typescript": "function exist(board: string[][], word: string): boolean {\n  const rows = board.length, cols = board[0].length;\n  function dfs(r: number, c: number, i: number): boolean {\n    if (i === word.length) return true;\n    if (r < 0 || c < 0 || r >= rows || c >= cols || board[r][c] !== word[i]) return false;\n    const temp = board[r][c];\n    board[r][c] = '#';\n    const res = dfs(r+1, c, i+1) || dfs(r-1, c, i+1) || dfs(r, c+1, i+1) || dfs(r, c-1, i+1);\n    board[r][c] = temp;\n    return res;\n  }\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (dfs(r, c, 0)) return true;\n    }\n  }\n  return false;\n}"
+    }
+  },
+  {
+    "id": "dsa-39",
+    "title": "Merge Intervals",
+    "difficulty": "Medium",
+    "pattern_tag": "Intervals",
+    "leetcode_url": "https://leetcode.com/problems/merge-intervals/",
+    "striver_url": "https://takeuforward.org/data-structure/merge-overlapping-sub-intervals/",
+    "youtube_url": "https://www.youtube.com/watch?v=44H3cEC2fFM",
+    "companies": [
+      "Amazon",
+      "Bloomberg",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Sort intervals by start time; merge overlapping intervals by extending the end boundary.",
+    "description": "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.",
+    "examples": [
+      {
+        "input": "intervals = [[1,3],[2,6],[8,10],[15,18]]",
+        "output": "[[1,6],[8,10],[15,18]]"
+      },
+      {
+        "input": "intervals = [[1,4],[4,5]]",
+        "output": "[[1,5]]"
+      }
+    ],
+    "constraints": [
+      "1 <= intervals.length <= 10^4",
+      "intervals[i].length == 2",
+      "0 <= starti <= endi <= 10^4"
+    ],
+    "approach": "Sort intervals by start time ascending. Iterate intervals: if the current interval starts before or at the previous interval's end, merge them by setting previous end = max(prev.end, curr.end). Otherwise, push current interval as a new entry.",
+    "timeComplexity": "O(n log n) - Dominated by sorting intervals",
+    "spaceComplexity": "O(n) - Merged intervals output array",
+    "solutions": {
+      "python": "class Solution:\n    def merge(self, intervals: list[list[int]]) -> list[list[int]]:\n        intervals.sort(key=lambda x: x[0])\n        merged = [intervals[0]]\n        for start, end in intervals[1:]:\n            prev_end = merged[-1][1]\n            if start <= prev_end:\n                merged[-1][1] = max(prev_end, end)\n            else:\n                merged.append([start, end])\n        return merged",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<vector<int>> merge(vector<vector<int>>& intervals) {\n        sort(intervals.begin(), intervals.end());\n        vector<vector<int>> merged = {intervals[0]};\n        for (int i = 1; i < intervals.size(); ++i) {\n            if (intervals[i][0] <= merged.back()[1]) {\n                merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n            } else {\n                merged.push_back(intervals[i]);\n            }\n        }\n        return merged;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> merged = new ArrayList<>();\n        merged.add(intervals[0]);\n        for (int i = 1; i < intervals.length; i++) {\n            int[] last = merged.get(merged.size() - 1);\n            if (intervals[i][0] <= last[1]) {\n                last[1] = Math.max(last[1], intervals[i][1]);\n            } else {\n                merged.add(intervals[i]);\n            }\n        }\n        return merged.toArray(new int[merged.size()][]);\n    }\n}",
+      "typescript": "function merge(intervals: number[][]): number[][] {\n  intervals.sort((a, b) => a[0] - b[0]);\n  const merged: number[][] = [intervals[0]];\n  for (let i = 1; i < intervals.length; i++) {\n    const last = merged[merged.length - 1];\n    if (intervals[i][0] <= last[1]) {\n      last[1] = Math.max(last[1], intervals[i][1]);\n    } else {\n      merged.push(intervals[i]);\n    }\n  }\n  return merged;\n}"
+    }
+  },
+  {
+    "id": "dsa-40",
+    "title": "Insert Interval",
+    "difficulty": "Medium",
+    "pattern_tag": "Intervals",
+    "leetcode_url": "https://leetcode.com/problems/insert-interval/",
+    "striver_url": "https://takeuforward.org/data-structure/insert-interval-in-interval-list/",
+    "youtube_url": "https://www.youtube.com/watch?v=A8NUOmlwOlM",
+    "companies": [
+      "Amazon",
+      "Google",
+      "LinkedIn",
+      "Meta"
+    ],
+    "summary": "Three-phase linear scan: collect non-overlapping before, merge overlapping, then append after.",
+    "description": "You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] sorted in ascending order by starti. You are also given an interval newInterval = [start, end]. Insert newInterval into intervals such that intervals is still sorted in ascending order and intervals still does not have any overlapping intervals.",
+    "examples": [
+      {
+        "input": "intervals = [[1,3],[6,9]], newInterval = [2,5]",
+        "output": "[[1,5],[6,9]]"
+      },
+      {
+        "input": "intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]",
+        "output": "[[1,2],[3,10],[12,16]]"
+      }
+    ],
+    "constraints": [
+      "0 <= intervals.length <= 10^4",
+      "intervals[i].length == 2",
+      "newInterval.length == 2"
+    ],
+    "approach": "Three steps in a single linear pass: 1) Add all intervals that end before newInterval begins. 2) While intervals overlap with newInterval, expand newInterval = [min(start), max(end)]. 3) Add newInterval, then add all remaining intervals.",
+    "timeComplexity": "O(n) - Single pass over intervals",
+    "spaceComplexity": "O(n) - Result array",
+    "solutions": {
+      "python": "class Solution:\n    def insert(self, intervals: list[list[int]], newInterval: list[int]) -> list[list[int]]:\n        res = []\n        i, n = 0, len(intervals)\n        while i < n and intervals[i][1] < newInterval[0]:\n            res.append(intervals[i])\n            i += 1\n        while i < n and intervals[i][0] <= newInterval[1]:\n            newInterval[0] = min(newInterval[0], intervals[i][0])\n            newInterval[1] = max(newInterval[1], intervals[i][1])\n            i += 1\n        res.append(newInterval)\n        while i < n:\n            res.append(intervals[i])\n            i += 1\n        return res",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {\n        vector<vector<int>> res;\n        int i = 0, n = intervals.size();\n        while (i < n && intervals[i][1] < newInterval[0]) res.push_back(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = min(newInterval[0], intervals[i][0]);\n            newInterval[1] = max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.push_back(newInterval);\n        while (i < n) res.push_back(intervals[i++]);\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "typescript": "function insert(intervals: number[][], newInterval: number[]): number[][] {\n  const res: number[][] = [];\n  let i = 0;\n  const n = intervals.length;\n  while (i < n && intervals[i][1] < newInterval[0]) res.push(intervals[i++]);\n  while (i < n && intervals[i][0] <= newInterval[1]) {\n    newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n    newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n    i++;\n  }\n  res.push(newInterval);\n  while (i < n) res.push(intervals[i++]);\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-41",
+    "title": "Non-overlapping Intervals",
+    "difficulty": "Medium",
+    "pattern_tag": "Intervals",
+    "leetcode_url": "https://leetcode.com/problems/non-overlapping-intervals/",
+    "striver_url": "https://takeuforward.org/data-structure/non-overlapping-intervals/",
+    "youtube_url": "https://www.youtube.com/watch?v=nONCGxWoUfM",
+    "companies": [
+      "Amazon",
+      "Meta",
+      "Google"
+    ],
+    "summary": "Greedy choice: sort by end time; keep intervals finishing earliest to minimize removals.",
+    "description": "Given an array of intervals intervals where intervals[i] = [starti, endi], return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.",
+    "examples": [
+      {
+        "input": "intervals = [[1,2],[2,3],[3,4],[1,3]]",
+        "output": "1",
+        "explanation": "[1,3] can be removed and the rest of the intervals are non-overlapping."
+      },
+      {
+        "input": "intervals = [[1,2],[1,2],[1,2]]",
+        "output": "2"
+      }
+    ],
+    "constraints": [
+      "1 <= intervals.length <= 10^5",
+      "intervals[i].length == 2"
+    ],
+    "approach": "Sort intervals by end times. Maintain prevEnd initialized to -infinity. If current start >= prevEnd, no overlap occurs so update prevEnd = current.end. Otherwise, increment removals count.",
+    "timeComplexity": "O(n log n) - Sorting by end time",
+    "spaceComplexity": "O(1) - Constant auxiliary pointers",
+    "solutions": {
+      "python": "class Solution:\n    def eraseOverlapIntervals(self, intervals: list[list[int]]) -> int:\n        intervals.sort(key=lambda x: x[1])\n        removals = 0\n        prev_end = float('-inf')\n        for start, end in intervals:\n            if start >= prev_end:\n                prev_end = end\n            else:\n                removals += 1\n        return removals",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    int eraseOverlapIntervals(vector<vector<int>>& intervals) {\n        sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {\n            return a[1] < b[1];\n        });\n        int removals = 0;\n        int prevEnd = -1e9;\n        for (auto& iv : intervals) {\n            if (iv[0] >= prevEnd) prevEnd = iv[1];\n            else removals++;\n        }\n        return removals;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public int eraseOverlapIntervals(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));\n        int removals = 0;\n        int prevEnd = Integer.MIN_VALUE;\n        for (int[] iv : intervals) {\n            if (iv[0] >= prevEnd) prevEnd = iv[1];\n            else removals++;\n        }\n        return removals;\n    }\n}",
+      "typescript": "function eraseOverlapIntervals(intervals: number[][]): number {\n  intervals.sort((a, b) => a[1] - b[1]);\n  let removals = 0;\n  let prevEnd = -Infinity;\n  for (const [start, end] of intervals) {\n    if (start >= prevEnd) prevEnd = end;\n    else removals++;\n  }\n  return removals;\n}"
+    }
+  },
+  {
+    "id": "dsa-42",
+    "title": "Jump Game",
+    "difficulty": "Medium",
+    "pattern_tag": "Greedy",
+    "leetcode_url": "https://leetcode.com/problems/jump-game/",
+    "striver_url": "https://takeuforward.org/data-structure/jump-game-i/",
+    "youtube_url": "https://www.youtube.com/watch?v=Yan0cv2cLy8",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Track max reachable index greedily; return true if max reachable >= last index.",
+    "description": "You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position. Return true if you can reach the last index, or false otherwise.",
+    "examples": [
+      {
+        "input": "nums = [2,3,1,1,4]",
+        "output": "true"
+      },
+      {
+        "input": "nums = [3,2,1,0,4]",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^4",
+      "0 <= nums[i] <= 10^5"
+    ],
+    "approach": "Maintain maxReach = 0. Iterate i from 0 to n-1. If i > maxReach, we are stranded so return false. Update maxReach = max(maxReach, i + nums[i]). If maxReach >= n - 1, return true.",
+    "timeComplexity": "O(n) - Single pass",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def canJump(self, nums: list[int]) -> bool:\n        max_reach = 0\n        for i, jump in enumerate(nums):\n            if i > max_reach: return False\n            max_reach = max(max_reach, i + jump)\n            if max_reach >= len(nums) - 1: return True\n        return True",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool canJump(vector<int>& nums) {\n        int maxReach = 0;\n        for (int i = 0; i < nums.size(); ++i) {\n            if (i > maxReach) return false;\n            maxReach = max(maxReach, i + nums[i]);\n            if (maxReach >= nums.size() - 1) return true;\n        }\n        return true;\n    }\n};",
+      "java": "class Solution {\n    public boolean canJump(int[] nums) {\n        int maxReach = 0;\n        for (int i = 0; i < nums.length; i++) {\n            if (i > maxReach) return false;\n            maxReach = Math.max(maxReach, i + nums[i]);\n            if (maxReach >= nums.length - 1) return true;\n        }\n        return true;\n    }\n}",
+      "typescript": "function canJump(nums: number[]): boolean {\n  let maxReach = 0;\n  for (let i = 0; i < nums.length; i++) {\n    if (i > maxReach) return false;\n    maxReach = Math.max(maxReach, i + nums[i]);\n    if (maxReach >= nums.length - 1) return true;\n  }\n  return true;\n}"
+    }
+  },
+  {
+    "id": "dsa-43",
+    "title": "Maximum Subarray (Kadane's Algorithm)",
+    "difficulty": "Medium",
+    "pattern_tag": "Greedy",
+    "leetcode_url": "https://leetcode.com/problems/maximum-subarray/",
+    "striver_url": "https://takeuforward.org/data-structure/kadanes-algorithm-maximum-subarray-sum-in-an-array/",
+    "youtube_url": "https://www.youtube.com/watch?v=5WZl3MMT0Eg",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft",
+      "Meta"
+    ],
+    "summary": "Kadane's algorithm: reset running sum to 0 whenever negative in O(n) time and O(1) space.",
+    "description": "Given an integer array nums, find the subarray with the largest sum, and return its sum.",
+    "examples": [
+      {
+        "input": "nums = [-2,1,-3,4,-1,2,1,-5,4]",
+        "output": "6",
+        "explanation": "The subarray [4,-1,2,1] has the largest sum 6."
+      },
+      {
+        "input": "nums = [1]",
+        "output": "1"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "-10^4 <= nums[i] <= 10^4"
+    ],
+    "approach": "Maintain curSum = 0 and maxSum = nums[0]. For each number n: add n to curSum, update maxSum = max(maxSum, curSum). If curSum < 0, reset curSum to 0 because a negative prefix hurts future sums.",
+    "timeComplexity": "O(n) - Single pass over array",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def maxSubArray(self, nums: list[int]) -> int:\n        max_sum = nums[0]\n        cur = 0\n        for n in nums:\n            cur = max(n, cur + n)\n            max_sum = max(max_sum, cur)\n        return max_sum",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    int maxSubArray(vector<int>& nums) {\n        int maxSum = nums[0], cur = 0;\n        for (int n : nums) {\n            cur = max(n, cur + n);\n            maxSum = max(maxSum, cur);\n        }\n        return maxSum;\n    }\n};",
+      "java": "class Solution {\n    public int maxSubArray(int[] nums) {\n        int maxSum = nums[0], cur = 0;\n        for (int n : nums) {\n            cur = Math.max(n, cur + n);\n            maxSum = Math.max(maxSum, cur);\n        }\n        return maxSum;\n    }\n}",
+      "typescript": "function maxSubArray(nums: number[]): number {\n  let maxSum = nums[0], cur = 0;\n  for (const n of nums) {\n    cur = Math.max(n, cur + n);\n    maxSum = Math.max(maxSum, cur);\n  }\n  return maxSum;\n}"
+    }
+  },
+  {
+    "id": "dsa-44",
+    "title": "Number of 1 Bits",
+    "difficulty": "Easy",
+    "pattern_tag": "Bit Manipulation",
+    "leetcode_url": "https://leetcode.com/problems/number-of-1-bits/",
+    "striver_url": "https://takeuforward.org/data-structure/count-number-of-set-bits/",
+    "youtube_url": "https://www.youtube.com/watch?v=5Km3utixwZs",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Microsoft"
+    ],
+    "summary": "Brian Kernighan's trick: n & (n - 1) clears the lowest set bit in O(set bits) time.",
+    "description": "Given a positive integer n, write a function that returns the number of set bits it has (also known as the Hamming weight).",
+    "examples": [
+      {
+        "input": "n = 11",
+        "output": "3",
+        "explanation": "11 in binary is 1011, which has three set bits."
+      }
+    ],
+    "constraints": [
+      "1 <= n <= 2^31 - 1"
+    ],
+    "approach": "Use n = n & (n - 1) in a loop until n reaches 0. Each operation removes the lowest set bit, running in time proportional to the count of set bits (at most 32 operations).",
+    "timeComplexity": "O(1) - At most 32 operations",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def hammingWeight(self, n: int) -> int:\n        count = 0\n        while n:\n            n &= (n - 1)\n            count += 1\n        return count",
+      "cpp": "class Solution {\npublic:\n    int hammingWeight(int n) {\n        int count = 0;\n        while (n) {\n            n &= (n - 1);\n            count++;\n        }\n        return count;\n    }\n};",
+      "java": "class Solution {\n    public int hammingWeight(int n) {\n        int count = 0;\n        while (n != 0) {\n            n &= (n - 1);\n            count++;\n        }\n        return count;\n    }\n}",
+      "typescript": "function hammingWeight(n: number): number {\n  let count = 0;\n  while (n !== 0) {\n    n &= (n - 1);\n    count++;\n  }\n  return count;\n}"
+    }
+  },
+  {
+    "id": "dsa-45",
+    "title": "Counting Bits",
+    "difficulty": "Easy",
+    "pattern_tag": "Bit Manipulation",
+    "leetcode_url": "https://leetcode.com/problems/counting-bits/",
+    "striver_url": "https://takeuforward.org/data-structure/counting-bits/",
+    "youtube_url": "https://www.youtube.com/watch?v=RyBM56RIWr8",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "DP relation: dp[i] = dp[i >> 1] + (i & 1) calculates set bits in linear O(n) time.",
+    "description": "Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of 1's in the binary representation of i.",
+    "examples": [
+      {
+        "input": "n = 2",
+        "output": "[0,1,1]"
+      },
+      {
+        "input": "n = 5",
+        "output": "[0,1,1,2,1,2]"
+      }
+    ],
+    "constraints": [
+      "0 <= n <= 10^5"
+    ],
+    "approach": "Notice that i has the same number of set bits as (i >> 1) plus 1 if the last bit is set (i & 1). Compute ans[i] = ans[i >> 1] + (i & 1) from 1 to n.",
+    "timeComplexity": "O(n) - Computes each value in O(1)",
+    "spaceComplexity": "O(n) - Result array",
+    "solutions": {
+      "python": "class Solution:\n    def countBits(self, n: int) -> list[int]:\n        dp = [0] * (n + 1)\n        for i in range(1, n + 1):\n            dp[i] = dp[i >> 1] + (i & 1)\n        return dp",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> countBits(int n) {\n        vector<int> dp(n + 1, 0);\n        for (int i = 1; i <= n; ++i) {\n            dp[i] = dp[i >> 1] + (i & 1);\n        }\n        return dp;\n    }\n};",
+      "java": "class Solution {\n    public int[] countBits(int n) {\n        int[] dp = new int[n + 1];\n        for (int i = 1; i <= n; i++) {\n            dp[i] = dp[i >> 1] + (i & 1);\n        }\n        return dp;\n    }\n}",
+      "typescript": "function countBits(n: number): number[] {\n  const dp = new Array(n + 1).fill(0);\n  for (let i = 1; i <= n; i++) {\n    dp[i] = dp[i >> 1] + (i & 1);\n  }\n  return dp;\n}"
+    }
+  },
+  {
+    "id": "dsa-46",
+    "title": "Missing Number",
+    "difficulty": "Easy",
+    "pattern_tag": "Bit Manipulation",
+    "leetcode_url": "https://leetcode.com/problems/missing-number/",
+    "striver_url": "https://takeuforward.org/data-structure/find-the-missing-number-in-an-array/",
+    "youtube_url": "https://www.youtube.com/watch?v=WnPLSRLSANE",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Microsoft",
+      "Meta"
+    ],
+    "summary": "XOR all indices 0...n with array elements; duplicates cancel leaving the missing number in O(n).",
+    "description": "Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.",
+    "examples": [
+      {
+        "input": "nums = [3,0,1]",
+        "output": "2"
+      },
+      {
+        "input": "nums = [0,1]",
+        "output": "2"
+      }
+    ],
+    "constraints": [
+      "n == nums.length",
+      "1 <= n <= 10^4",
+      "0 <= nums[i] <= n",
+      "All the numbers of nums are unique."
+    ],
+    "approach": "XOR property: x ^ x = 0 and x ^ 0 = x. Compute res = n. For each index i and element nums[i], update res ^= i ^ nums[i]. All present numbers cancel out, leaving the missing number.",
+    "timeComplexity": "O(n) - Single pass over array",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def missingNumber(self, nums: list[int]) -> int:\n        res = len(nums)\n        for i, n in enumerate(nums):\n            res ^= i ^ n\n        return res",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    int missingNumber(vector<int>& nums) {\n        int res = nums.size();\n        for (int i = 0; i < nums.size(); ++i) {\n            res ^= i ^ nums[i];\n        }\n        return res;\n    }\n};",
+      "java": "class Solution {\n    public int missingNumber(int[] nums) {\n        int res = nums.length;\n        for (int i = 0; i < nums.length; i++) {\n            res ^= i ^ nums[i];\n        }\n        return res;\n    }\n}",
+      "typescript": "function missingNumber(nums: number[]): number {\n  let res = nums.length;\n  for (let i = 0; i < nums.length; i++) {\n    res ^= i ^ nums[i];\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-47",
+    "title": "Rotate Image",
+    "difficulty": "Medium",
+    "pattern_tag": "Math & Geometry",
+    "leetcode_url": "https://leetcode.com/problems/rotate-image/",
+    "striver_url": "https://takeuforward.org/data-structure/rotate-image-by-90-degree/",
+    "youtube_url": "https://www.youtube.com/watch?v=fMSJSS7eO1w",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Transpose matrix across diagonal, then reverse each row horizontally for in-place 90 deg clockwise rotation.",
+    "description": "You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise). You have to rotate the image in-place, which means you have to modify the input 2D matrix directly.",
+    "examples": [
+      {
+        "input": "matrix = [[1,2,3],[4,5,6],[7,8,9]]",
+        "output": "[[7,4,1],[8,5,2],[9,6,3]]"
+      }
+    ],
+    "constraints": [
+      "n == matrix.length == matrix[i].length",
+      "1 <= n <= 20",
+      "-1000 <= matrix[i][j] <= 1000"
+    ],
+    "approach": "A 90-degree clockwise rotation is equivalent to two operations: 1) Transpose the matrix (swap matrix[i][j] with matrix[j][i]). 2) Reverse each row horizontally.",
+    "timeComplexity": "O(n^2) - Touches each matrix cell twice",
+    "spaceComplexity": "O(1) - Strictly in-place modification",
+    "solutions": {
+      "python": "class Solution:\n    def rotate(self, matrix: list[list[int]]) -> None:\n        n = len(matrix)\n        for i in range(n):\n            for j in range(i + 1, n):\n                matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]\n        for row in matrix:\n            row.reverse()",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    void rotate(vector<vector<int>>& matrix) {\n        int n = matrix.size();\n        for (int i = 0; i < n; ++i)\n            for (int j = i + 1; j < n; ++j)\n                swap(matrix[i][j], matrix[j][i]);\n        for (int i = 0; i < n; ++i)\n            reverse(matrix[i].begin(), matrix[i].end());\n    }\n};",
+      "java": "class Solution {\n    public void rotate(int[][] matrix) {\n        int n = matrix.length;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                int temp = matrix[i][j];\n                matrix[i][j] = matrix[j][i];\n                matrix[j][i] = temp;\n            }\n        }\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n / 2; j++) {\n                int temp = matrix[i][j];\n                matrix[i][j] = matrix[i][n - 1 - j];\n                matrix[i][n - 1 - j] = temp;\n            }\n        }\n    }\n}",
+      "typescript": "function rotate(matrix: number[][]): void {\n  const n = matrix.length;\n  for (let i = 0; i < n; i++) {\n    for (let j = i + 1; j < n; j++) {\n      const temp = matrix[i][j];\n      matrix[i][j] = matrix[j][i];\n      matrix[j][i] = temp;\n    }\n  }\n  for (let i = 0; i < n; i++) {\n    matrix[i].reverse();\n  }\n}"
+    }
+  },
+  {
+    "id": "dsa-48",
+    "title": "Spiral Matrix",
+    "difficulty": "Medium",
+    "pattern_tag": "Math & Geometry",
+    "leetcode_url": "https://leetcode.com/problems/spiral-matrix/",
+    "striver_url": "https://takeuforward.org/data-structure/spiral-traversal-of-matrix/",
+    "youtube_url": "https://www.youtube.com/watch?v=BJnMZNwUk1M",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Traverse boundary four edges (top, right, bottom, left) while shrinking boundaries inward.",
+    "description": "Given an m x n matrix, return all elements of the matrix in spiral order.",
+    "examples": [
+      {
+        "input": "matrix = [[1,2,3],[4,5,6],[7,8,9]]",
+        "output": "[1,2,3,6,9,8,7,4,5]"
+      }
+    ],
+    "constraints": [
+      "m == matrix.length",
+      "n == matrix[i].length",
+      "1 <= m, n <= 10"
+    ],
+    "approach": "Maintain 4 boundaries: top, bottom, left, right. Traverse top row (left->right), increment top. Traverse right col (top->bottom), decrement right. Traverse bottom row if top <= bottom (right->left), decrement bottom. Traverse left col if left <= right (bottom->top), increment left.",
+    "timeComplexity": "O(m * n) - Visits every cell once",
+    "spaceComplexity": "O(1) - Excluding output array",
+    "solutions": {
+      "python": "class Solution:\n    def spiralOrder(self, matrix: list[list[int]]) -> list[int]:\n        res = []\n        top, bottom = 0, len(matrix) - 1\n        left, right = 0, len(matrix[0]) - 1\n        while top <= bottom and left <= right:\n            for c in range(left, right + 1): res.append(matrix[top][c])\n            top += 1\n            for r in range(top, bottom + 1): res.append(matrix[r][right])\n            right -= 1\n            if top <= bottom:\n                for c in range(right, left - 1, -1): res.append(matrix[bottom][c])\n                bottom -= 1\n            if left <= right:\n                for r in range(bottom, top - 1, -1): res.append(matrix[r][left])\n                left += 1\n        return res",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> spiralOrder(vector<vector<int>>& matrix) {\n        vector<int> res;\n        int top = 0, bottom = matrix.size() - 1;\n        int left = 0, right = matrix[0].size() - 1;\n        while (top <= bottom && left <= right) {\n            for (int c = left; c <= right; ++c) res.push_back(matrix[top][c]);\n            top++;\n            for (int r = top; r <= bottom; ++r) res.push_back(matrix[r][right]);\n            right--;\n            if (top <= bottom) {\n                for (int c = right; c >= left; --c) res.push_back(matrix[bottom][c]);\n                bottom--;\n            }\n            if (left <= right) {\n                for (int r = bottom; r >= top; --r) res.push_back(matrix[r][left]);\n                left++;\n            }\n        }\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public List<Integer> spiralOrder(int[][] matrix) {\n        List<Integer> res = new ArrayList<>();\n        int top = 0, bottom = matrix.length - 1;\n        int left = 0, right = matrix[0].length - 1;\n        while (top <= bottom && left <= right) {\n            for (int c = left; c <= right; c++) res.add(matrix[top][c]);\n            top++;\n            for (int r = top; r <= bottom; r++) res.add(matrix[r][right]);\n            right--;\n            if (top <= bottom) {\n                for (int c = right; c >= left; c--) res.add(matrix[bottom][c]);\n                bottom--;\n            }\n            if (left <= right) {\n                for (int r = bottom; r >= top; r--) res.add(matrix[r][left]);\n                left++;\n            }\n        }\n        return res;\n    }\n}",
+      "typescript": "function spiralOrder(matrix: number[][]): number[] {\n  const res: number[] = [];\n  let top = 0, bottom = matrix.length - 1;\n  let left = 0, right = matrix[0].length - 1;\n  while (top <= bottom && left <= right) {\n    for (let c = left; c <= right; c++) res.push(matrix[top][c]);\n    top++;\n    for (let r = top; r <= bottom; r++) res.push(matrix[r][right]);\n    right--;\n    if (top <= bottom) {\n      for (let c = right; c >= left; c--) res.push(matrix[bottom][c]);\n      bottom--;\n    }\n    if (left <= right) {\n      for (let r = bottom; r >= top; r--) res.push(matrix[r][left]);\n      left++;\n    }\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-49",
+    "title": "Set Matrix Zeroes",
+    "difficulty": "Medium",
+    "pattern_tag": "Math & Geometry",
+    "leetcode_url": "https://leetcode.com/problems/set-matrix-zeroes/",
+    "striver_url": "https://takeuforward.org/data-structure/set-matrix-zero/",
+    "youtube_url": "https://www.youtube.com/watch?v=T41rL0L3Pnw",
+    "companies": [
+      "Amazon",
+      "Bloomberg",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Use first row and first column as in-place markers to achieve O(1) auxiliary space.",
+    "description": "Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's. You must do it in place.",
+    "examples": [
+      {
+        "input": "matrix = [[1,1,1],[1,0,1],[1,1,1]]",
+        "output": "[[1,0,1],[0,0,0],[1,0,1]]"
+      }
+    ],
+    "constraints": [
+      "m == matrix.length",
+      "n == matrix[0].length",
+      "1 <= m, n <= 200"
+    ],
+    "approach": "Use matrix[0][j] and matrix[i][0] as storage markers for whether row i or column j should be zeroed. Track firstRowHasZero separately. Populate inner cells, then zero out inner cells, and finally zero first row/col as needed.",
+    "timeComplexity": "O(m * n) - Two passes over matrix",
+    "spaceComplexity": "O(1) - Constant auxiliary storage",
+    "solutions": {
+      "python": "class Solution:\n    def setZeroes(self, matrix: list[list[int]]) -> None:\n        rows, cols = len(matrix), len(matrix[0])\n        row_zero = False\n        for r in range(rows):\n            for c in range(cols):\n                if matrix[r][c] == 0:\n                    matrix[0][c] = 0\n                    if r > 0: matrix[r][0] = 0\n                    else: row_zero = True\n        for r in range(1, rows):\n            for c in range(1, cols):\n                if matrix[0][c] == 0 or matrix[r][0] == 0:\n                    matrix[r][c] = 0\n        if matrix[0][0] == 0:\n            for r in range(rows): matrix[r][0] = 0\n        if row_zero:\n            for c in range(cols): matrix[0][c] = 0",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    void setZeroes(vector<vector<int>>& matrix) {\n        int rows = matrix.size(), cols = matrix[0].size();\n        bool rowZero = false;\n        for (int r = 0; r < rows; ++r) {\n            for (int c = 0; c < cols; ++c) {\n                if (matrix[r][c] == 0) {\n                    matrix[0][c] = 0;\n                    if (r > 0) matrix[r][0] = 0;\n                    else rowZero = true;\n                }\n            }\n        }\n        for (int r = 1; r < rows; ++r)\n            for (int c = 1; c < cols; ++c)\n                if (matrix[0][c] == 0 || matrix[r][0] == 0) matrix[r][c] = 0;\n        if (matrix[0][0] == 0)\n            for (int r = 0; r < rows; ++r) matrix[r][0] = 0;\n        if (rowZero)\n            for (int c = 0; c < cols; ++c) matrix[0][c] = 0;\n    }\n};",
+      "java": "class Solution {\n    public void setZeroes(int[][] matrix) {\n        int rows = matrix.length, cols = matrix[0].length;\n        boolean rowZero = false;\n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (matrix[r][c] == 0) {\n                    matrix[0][c] = 0;\n                    if (r > 0) matrix[r][0] = 0;\n                    else rowZero = true;\n                }\n            }\n        }\n        for (int r = 1; r < rows; r++)\n            for (int c = 1; c < cols; c++)\n                if (matrix[0][c] == 0 || matrix[r][0] == 0) matrix[r][c] = 0;\n        if (matrix[0][0] == 0)\n            for (int r = 0; r < rows; r++) matrix[r][0] = 0;\n        if (rowZero)\n            for (int c = 0; c < cols; c++) matrix[0][c] = 0;\n    }\n}",
+      "typescript": "function setZeroes(matrix: number[][]): void {\n  const rows = matrix.length, cols = matrix[0].length;\n  let rowZero = false;\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (matrix[r][c] === 0) {\n        matrix[0][c] = 0;\n        if (r > 0) matrix[r][0] = 0;\n        else rowZero = true;\n      }\n    }\n  }\n  for (let r = 1; r < rows; r++) {\n    for (let c = 1; c < cols; c++) {\n      if (matrix[r][c] === 0 || matrix[r][c] === 0) matrix[r][c] = 0;\n    }\n  }\n  if (matrix[0][0] === 0) for (let r = 0; r < rows; r++) matrix[r][0] = 0;\n  if (rowZero) for (let c = 0; c < cols; c++) matrix[0][c] = 0;\n}"
+    }
+  },
+  {
+    "id": "dsa-50",
+    "title": "House Robber",
+    "difficulty": "Medium",
+    "pattern_tag": "1-D Dynamic Programming",
+    "leetcode_url": "https://leetcode.com/problems/house-robber/",
+    "striver_url": "https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/",
+    "youtube_url": "https://www.youtube.com/watch?v=73r3KWiEvyk",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "State recurrence rob = max(rob1 + n, rob2) stored with two variables for O(1) space.",
+    "description": "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night. Return the maximum amount of money you can rob tonight without alerting the police.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "4",
+        "explanation": "Rob house 1 (money = 1) and then rob house 3 (money = 3). Total = 4."
+      },
+      {
+        "input": "nums = [2,7,9,3,1]",
+        "output": "12"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 100",
+      "0 <= nums[i] <= 400"
+    ],
+    "approach": "Let rob1 be the max amount robbed up to house i - 2 and rob2 up to house i - 1. For current house n, max money is max(n + rob1, rob2). Slide the two variables forward.",
+    "timeComplexity": "O(n) - Single pass through nums",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def rob(self, nums: list[int]) -> int:\n        rob1, rob2 = 0, 0\n        for n in nums:\n            temp = max(n + rob1, rob2)\n            rob1 = rob2\n            rob2 = temp\n        return rob2",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    int rob(vector<int>& nums) {\n        int rob1 = 0, rob2 = 0;\n        for (int n : nums) {\n            int temp = max(n + rob1, rob2);\n            rob1 = rob2;\n            rob2 = temp;\n        }\n        return rob2;\n    }\n};",
+      "java": "class Solution {\n    public int rob(int[] nums) {\n        int rob1 = 0, rob2 = 0;\n        for (int n : nums) {\n            int temp = Math.max(n + rob1, rob2);\n            rob1 = rob2;\n            rob2 = temp;\n        }\n        return rob2;\n    }\n}",
+      "typescript": "function rob(nums: number[]): number {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const temp = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = temp;\n  }\n  return rob2;\n}"
+    }
+  },
+  {
+    "id": "dsa-51",
+    "title": "House Robber II",
+    "difficulty": "Medium",
+    "pattern_tag": "1-D Dynamic Programming",
+    "leetcode_url": "https://leetcode.com/problems/house-robber-ii/",
+    "striver_url": "https://takeuforward.org/data-structure/dynamic-programming-house-robber-dp-6/",
+    "youtube_url": "https://www.youtube.com/watch?v=rWAJCfYYOvM",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Break circular arrangement into two linear subproblems: rob(0...n-2) vs rob(1...n-1).",
+    "description": "All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Adjacent houses have security systems connected. Return the maximum amount of money you can rob without alerting the police.",
+    "examples": [
+      {
+        "input": "nums = [2,3,2]",
+        "output": "3",
+        "explanation": "You cannot rob house 1 and house 3 as they are adjacent."
+      },
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "4"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 100",
+      "0 <= nums[i] <= 1000"
+    ],
+    "approach": "Since house 0 and house n-1 are adjacent, you cannot rob both. Solve House Robber I for two sub-arrays: nums[1:] and nums[:-1]. If nums has 1 element, simply return nums[0]. Result is max(nums[0], helper(nums[1:]), helper(nums[:-1])).",
+    "timeComplexity": "O(n) - Two passes over the array",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def rob(self, nums: list[int]) -> int:\n        if len(nums) == 1: return nums[0]\n        def helper(arr):\n            r1, r2 = 0, 0\n            for n in arr:\n                r1, r2 = r2, max(n + r1, r2)\n            return r2\n        return max(helper(nums[1:]), helper(nums[:-1]))",
+      "cpp": "#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\n    int helper(const vector<int>& nums, int start, int end) {\n        int r1 = 0, r2 = 0;\n        for (int i = start; i <= end; ++i) {\n            int temp = max(nums[i] + r1, r2);\n            r1 = r2;\n            r2 = temp;\n        }\n        return r2;\n    }\npublic:\n    int rob(vector<int>& nums) {\n        int n = nums.size();\n        if (n == 1) return nums[0];\n        return max(helper(nums, 1, n - 1), helper(nums, 0, n - 2));\n    }\n};",
+      "java": "class Solution {\n    private int helper(int[] nums, int start, int end) {\n        int r1 = 0, r2 = 0;\n        for (int i = start; i <= end; i++) {\n            int temp = Math.max(nums[i] + r1, r2);\n            r1 = r2;\n            r2 = temp;\n        }\n        return r2;\n    }\n    public int rob(int[] nums) {\n        if (nums.length == 1) return nums[0];\n        return Math.max(helper(nums, 1, nums.length - 1), helper(nums, 0, nums.length - 2));\n    }\n}",
+      "typescript": "function rob(nums: number[]): number {\n  if (nums.length === 1) return nums[0];\n  function helper(start: number, end: number): number {\n    let r1 = 0, r2 = 0;\n    for (let i = start; i <= end; i++) {\n      const temp = Math.max(nums[i] + r1, r2);\n      r1 = r2;\n      r2 = temp;\n    }\n    return r2;\n  }\n  return Math.max(helper(1, nums.length - 1), helper(0, nums.length - 2));\n}"
+    }
+  },
+  {
+    "id": "dsa-52",
+    "title": "Longest Palindromic Substring",
+    "difficulty": "Medium",
+    "pattern_tag": "1-D Dynamic Programming",
+    "leetcode_url": "https://leetcode.com/problems/longest-palindromic-substring/",
+    "striver_url": "https://takeuforward.org/data-structure/longest-palindromic-substring/",
+    "youtube_url": "https://www.youtube.com/watch?v=XYQecbcd6fY",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Expand around center for each of 2n-1 potential palindrome centers in O(n^2) and O(1) space.",
+    "description": "Given a string s, return the longest palindromic substring in s.",
+    "examples": [
+      {
+        "input": "s = \"babad\"",
+        "output": "\"bab\"",
+        "explanation": "\"aba\" is also a valid answer."
+      },
+      {
+        "input": "s = \"cbbd\"",
+        "output": "\"bb\""
+      }
+    ],
+    "constraints": [
+      "1 <= s.length <= 1000",
+      "s consist of only digits and English letters."
+    ],
+    "approach": "Every palindrome centers at either a single character (odd length) or between two characters (even length). For each index i, expand outward while characters match to find the maximum palindrome width.",
+    "timeComplexity": "O(n^2) - Expand from n centers",
+    "spaceComplexity": "O(1) - Constant auxiliary space",
+    "solutions": {
+      "python": "class Solution:\n    def longestPalindrome(self, s: str) -> str:\n        res = \"\"\n        def expand(l, r):\n            while l >= 0 and r < len(s) and s[l] == s[r]:\n                l -= 1\n                r += 1\n            return s[l + 1:r]\n        for i in range(len(s)):\n            p1 = expand(i, i)\n            p2 = expand(i, i + 1)\n            if len(p1) > len(res): res = p1\n            if len(p2) > len(res): res = p2\n        return res",
+      "cpp": "#include <string>\nusing namespace std;\n\nclass Solution {\n    string expand(const string& s, int l, int r) {\n        while (l >= 0 && r < s.size() && s[l] == s[r]) {\n            l--; r++;\n        }\n        return s.substr(l + 1, r - l - 1);\n    }\npublic:\n    string longestPalindrome(string s) {\n        string res = \"\";\n        for (int i = 0; i < s.size(); ++i) {\n            string s1 = expand(s, i, i);\n            string s2 = expand(s, i, i + 1);\n            if (s1.size() > res.size()) res = s1;\n            if (s2.size() > res.size()) res = s2;\n        }\n        return res;\n    }\n};",
+      "java": "class Solution {\n    private String expand(String s, int l, int r) {\n        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {\n            l--; r++;\n        }\n        return s.substring(l + 1, r);\n    }\n    public String longestPalindrome(String s) {\n        String res = \"\";\n        for (int i = 0; i < s.length(); i++) {\n            String s1 = expand(s, i, i);\n            String s2 = expand(s, i, i + 1);\n            if (s1.length() > res.length()) res = s1;\n            if (s2.length() > res.length()) res = s2;\n        }\n        return res;\n    }\n}",
+      "typescript": "function longestPalindrome(s: string): string {\n  let res = '';\n  function expand(l: number, r: number): string {\n    while (l >= 0 && r < s.length && s[l] === s[r]) {\n      l--; r++;\n    }\n    return s.slice(l + 1, r);\n  }\n  for (let i = 0; i < s.length; i++) {\n    const s1 = expand(i, i);\n    const s2 = expand(i, i + 1);\n    if (s1.length > res.length) res = s1;\n    if (s2.length > res.length) res = s2;\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-53",
+    "title": "Palindromic Substrings",
+    "difficulty": "Medium",
+    "pattern_tag": "1-D Dynamic Programming",
+    "leetcode_url": "https://leetcode.com/problems/palindromic-substrings/",
+    "striver_url": "https://takeuforward.org/data-structure/count-palindromic-substrings/",
+    "youtube_url": "https://www.youtube.com/watch?v=4RACzI5-du8",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta"
+    ],
+    "summary": "Count palindromes by expanding around all 2n-1 odd and even centers.",
+    "description": "Given a string s, return the number of palindromic substrings in it. A substring is a contiguous sequence of characters within the string.",
+    "examples": [
+      {
+        "input": "s = \"abc\"",
+        "output": "3",
+        "explanation": "Three palindromic strings: \"a\", \"b\", \"c\"."
+      },
+      {
+        "input": "s = \"aaa\"",
+        "output": "6",
+        "explanation": "Six palindromic strings: \"a\", \"a\", \"a\", \"aa\", \"aa\", \"aaa\"."
+      }
+    ],
+    "constraints": [
+      "1 <= s.length <= 1000",
+      "s consists of lowercase English letters."
+    ],
+    "approach": "Iterate through all potential centers (i, i) and (i, i+1). From each center, expand outward as long as characters match, incrementing the total count each time.",
+    "timeComplexity": "O(n^2) - Expanding at each index",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def countSubstrings(self, s: str) -> int:\n        res = 0\n        def count(l, r):\n            cnt = 0\n            while l >= 0 and r < len(s) and s[l] == s[r]:\n                cnt += 1\n                l -= 1\n                r += 1\n            return cnt\n        for i in range(len(s)):\n            res += count(i, i) + count(i, i + 1)\n        return res",
+      "cpp": "class Solution {\n    int count(const string& s, int l, int r) {\n        int cnt = 0;\n        while (l >= 0 && r < s.size() && s[l] == s[r]) {\n            cnt++; l--; r++;\n        }\n        return cnt;\n    }\npublic:\n    int countSubstrings(string s) {\n        int res = 0;\n        for (int i = 0; i < s.size(); ++i) {\n            res += count(s, i, i) + count(s, i, i + 1);\n        }\n        return res;\n    }\n};",
+      "java": "class Solution {\n    private int count(String s, int l, int r) {\n        int cnt = 0;\n        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {\n            cnt++; l--; r++;\n        }\n        return cnt;\n    }\n    public int countSubstrings(String s) {\n        int res = 0;\n        for (int i = 0; i < s.length(); i++) {\n            res += count(s, i, i) + count(s, i, i + 1);\n        }\n        return res;\n    }\n}",
+      "typescript": "function countSubstrings(s: string): number {\n  let res = 0;\n  function count(l: number, r: number): number {\n    let cnt = 0;\n    while (l >= 0 && r < s.length && s[l] === s[r]) {\n      cnt++; l--; r++;\n    }\n    return cnt;\n  }\n  for (let i = 0; i < s.length; i++) {\n    res += count(i, i) + count(i, i + 1);\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-54",
+    "title": "Decode Ways",
+    "difficulty": "Medium",
+    "pattern_tag": "1-D Dynamic Programming",
+    "leetcode_url": "https://leetcode.com/problems/decode-ways/",
+    "striver_url": "https://takeuforward.org/data-structure/decode-ways/",
+    "youtube_url": "https://www.youtube.com/watch?v=6aEyTjOwlJU",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Uber"
+    ],
+    "summary": "1D DP with single-digit (1-9) and two-digit (10-26) transition checks.",
+    "description": "A message containing letters from A-Z can be encoded into numbers using 'A' -> \"1\", 'B' -> \"2\", ... 'Z' -> \"26\". Given a string s containing digits, return the number of ways to decode it.",
+    "examples": [
+      {
+        "input": "s = \"12\"",
+        "output": "2",
+        "explanation": "\"12\" could be decoded as \"AB\" (1 2) or \"L\" (12)."
+      },
+      {
+        "input": "s = \"226\"",
+        "output": "3",
+        "explanation": "\"226\" could be decoded as \"BZ\" (2 26), \"VF\" (22 6), or \"BBF\" (2 2 6)."
+      },
+      {
+        "input": "s = \"06\"",
+        "output": "0"
+      }
+    ],
+    "constraints": [
+      "1 <= s.length <= 100",
+      "s contains only digits and may contain leading zero(s)."
+    ],
+    "approach": "dp[i] represents valid decodings for suffix starting at i. If s[i] == '0', dp[i] = 0. Otherwise dp[i] = dp[i+1], plus dp[i+2] if s[i:i+2] is between 10 and 26. Optimize to O(1) space using two variables.",
+    "timeComplexity": "O(n) - Single pass through string",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def numDecodings(self, s: str) -> int:\n        dp1, dp2 = 1, 0\n        for i in range(len(s) - 1, -1, -1):\n            cur = 0 if s[i] == '0' else dp1\n            if i + 1 < len(s) and (s[i] == '1' or (s[i] == '2' and s[i+1] in '0123456')):\n                cur += dp2\n            dp1, dp2 = cur, dp1\n        return dp1",
+      "cpp": "#include <string>\nusing namespace std;\n\nclass Solution {\npublic:\n    int numDecodings(string s) {\n        int dp1 = 1, dp2 = 0;\n        for (int i = s.size() - 1; i >= 0; --i) {\n            int cur = (s[i] == '0') ? 0 : dp1;\n            if (i + 1 < s.size() && (s[i] == '1' || (s[i] == '2' && s[i+1] <= '6'))) {\n                cur += dp2;\n            }\n            dp2 = dp1;\n            dp1 = cur;\n        }\n        return dp1;\n    }\n};",
+      "java": "class Solution {\n    public int numDecodings(String s) {\n        int dp1 = 1, dp2 = 0;\n        for (int i = s.length() - 1; i >= 0; i--) {\n            int cur = (s.charAt(i) == '0') ? 0 : dp1;\n            if (i + 1 < s.length() && (s.charAt(i) == '1' || (s.charAt(i) == '2' && s.charAt(i+1) <= '6'))) {\n                cur += dp2;\n            }\n            dp2 = dp1;\n            dp1 = cur;\n        }\n        return dp1;\n    }\n}",
+      "typescript": "function numDecodings(s: string): number {\n  let dp1 = 1, dp2 = 0;\n  for (let i = s.length - 1; i >= 0; i--) {\n    let cur = s[i] === '0' ? 0 : dp1;\n    if (i + 1 < s.length && (s[i] === '1' || (s[i] === '2' && s[i+1] <= '6'))) {\n      cur += dp2;\n    }\n    dp2 = dp1;\n    dp1 = cur;\n  }\n  return dp1;\n}"
+    }
+  },
+  {
+    "id": "dsa-55",
+    "title": "Unique Paths",
+    "difficulty": "Medium",
+    "pattern_tag": "2-D Dynamic Programming",
+    "leetcode_url": "https://leetcode.com/problems/unique-paths/",
+    "striver_url": "https://takeuforward.org/data-structure/grid-unique-paths-dp-on-grids-dp8/",
+    "youtube_url": "https://www.youtube.com/watch?v=IlEsdxuD4lY",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Grid DP: row[c] = row[c] + row[c+1] traversing bottom-up in O(m * n) time and O(n) space.",
+    "description": "There is a robot on an m x n grid. The robot is initially located at the top-left corner (grid[0][0]) and wants to reach bottom-right corner (grid[m - 1][n - 1]). The robot can only move either down or right at any point. Return the number of possible unique paths.",
+    "examples": [
+      {
+        "input": "m = 3, n = 7",
+        "output": "28"
+      },
+      {
+        "input": "m = 3, n = 2",
+        "output": "3"
+      }
+    ],
+    "constraints": [
+      "1 <= m, n <= 100"
+    ],
+    "approach": "At any cell (r, c), paths(r, c) = paths(r+1, c) + paths(r, c+1). Maintain a 1D row array of size n initialized to 1. For each row from bottom up, update row[c] = row[c] + row[c+1].",
+    "timeComplexity": "O(m * n) - Visits each grid cell once",
+    "spaceComplexity": "O(n) - Single 1D row array",
+    "solutions": {
+      "python": "class Solution:\n    def uniquePaths(self, m: int, n: int) -> int:\n        row = [1] * n\n        for _ in range(m - 1):\n            new_row = [1] * n\n            for j in range(n - 2, -1, -1):\n                new_row[j] = new_row[j + 1] + row[j]\n            row = new_row\n        return row[0]",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    int uniquePaths(int m, int n) {\n        vector<int> row(n, 1);\n        for (int i = 0; i < m - 1; ++i) {\n            for (int j = n - 2; j >= 0; --j) {\n                row[j] += row[j + 1];\n            }\n        }\n        return row[0];\n    }\n};",
+      "java": "import java.util.Arrays;\n\nclass Solution {\n    public int uniquePaths(int m, int n) {\n        int[] row = new int[n];\n        Arrays.fill(row, 1);\n        for (int i = 0; i < m - 1; i++) {\n            for (int j = n - 2; j >= 0; j--) {\n                row[j] += row[j + 1];\n            }\n        }\n        return row[0];\n    }\n}",
+      "typescript": "function uniquePaths(m: number, n: number): number {\n  const row = new Array(n).fill(1);\n  for (let i = 0; i < m - 1; i++) {\n    for (let j = n - 2; j >= 0; j--) {\n      row[j] += row[j + 1];\n    }\n  }\n  return row[0];\n}"
+    }
+  },
+  {
+    "id": "dsa-56",
+    "title": "Longest Common Subsequence",
+    "difficulty": "Medium",
+    "pattern_tag": "2-D Dynamic Programming",
+    "leetcode_url": "https://leetcode.com/problems/longest-common-subsequence/",
+    "striver_url": "https://takeuforward.org/data-structure/longest-common-subsequence-dp-25/",
+    "youtube_url": "https://www.youtube.com/watch?v=Ua0GhsJSlWM",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Classic 2D DP matrix: if chars match dp[i][j] = 1 + dp[i+1][j+1], else max(dp[i+1][j], dp[i][j+1]).",
+    "description": "Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.",
+    "examples": [
+      {
+        "input": "text1 = \"abcde\", text2 = \"ace\"",
+        "output": "3",
+        "explanation": "The longest common subsequence is \"ace\"."
+      },
+      {
+        "input": "text1 = \"abc\", text2 = \"abc\"",
+        "output": "3"
+      }
+    ],
+    "constraints": [
+      "1 <= text1.length, text2.length <= 1000",
+      "text1 and text2 consist of lowercase English characters."
+    ],
+    "approach": "Build a (len1 + 1) x (len2 + 1) table. Traverse backwards: if text1[i] == text2[j], dp[i][j] = 1 + dp[i+1][j+1]; otherwise dp[i][j] = max(dp[i+1][j], dp[i][j+1]).",
+    "timeComplexity": "O(m * n) - Matrix cells computed",
+    "spaceComplexity": "O(m * n) - Can be optimized to O(min(m, n))",
+    "solutions": {
+      "python": "class Solution:\n    def longestCommonSubsequence(self, text1: str, text2: str) -> int:\n        dp = [[0] * (len(text2) + 1) for _ in range(len(text1) + 1)]\n        for i in range(len(text1) - 1, -1, -1):\n            for j in range(len(text2) - 1, -1, -1):\n                if text1[i] == text2[j]:\n                    dp[i][j] = 1 + dp[i + 1][j + 1]\n                else:\n                    dp[i][j] = max(dp[i + 1][j], dp[i][j + 1])\n        return dp[0][0]",
+      "cpp": "#include <vector>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    int longestCommonSubsequence(string text1, string text2) {\n        int m = text1.size(), n = text2.size();\n        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));\n        for (int i = m - 1; i >= 0; --i) {\n            for (int j = n - 1; j >= 0; --j) {\n                if (text1[i] == text2[j]) dp[i][j] = 1 + dp[i + 1][j + 1];\n                else dp[i][j] = max(dp[i + 1][j], dp[i][j + 1]);\n            }\n        }\n        return dp[0][0];\n    }\n};",
+      "java": "class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = m - 1; i >= 0; i--) {\n            for (int j = n - 1; j >= 0; j--) {\n                if (text1.charAt(i) == text2.charAt(j)) dp[i][j] = 1 + dp[i + 1][j + 1];\n                else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);\n            }\n        }\n        return dp[0][0];\n    }\n}",
+      "typescript": "function longestCommonSubsequence(text1: string, text2: string): number {\n  const m = text1.length, n = text2.length;\n  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));\n  for (let i = m - 1; i >= 0; i--) {\n    for (let j = n - 1; j >= 0; j--) {\n      if (text1[i] === text2[j]) dp[i][j] = 1 + dp[i + 1][j + 1];\n      else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);\n    }\n  }\n  return dp[0][0];\n}"
+    }
+  },
+  {
+    "id": "dsa-57",
+    "title": "Pacific Atlantic Water Flow",
+    "difficulty": "Medium",
+    "pattern_tag": "Graphs",
+    "leetcode_url": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
+    "striver_url": "https://takeuforward.org/graph/pacific-atlantic-water-flow/",
+    "youtube_url": "https://www.youtube.com/watch?v=s-VKb831hk0",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Reverse DFS from Pacific (top/left) and Atlantic (bottom/right) ocean boundaries to find intersection.",
+    "description": "There is an m x n rectangular island that borders both the Pacific Ocean and Atlantic Ocean. Water flows from any cell to adjacent cells equal or lower in height. Return a list of grid coordinates where water can flow to both oceans.",
+    "examples": [
+      {
+        "input": "heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]",
+        "output": "[[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]"
+      }
+    ],
+    "constraints": [
+      "m == heights.length, n == heights[r].length",
+      "1 <= m, n <= 200",
+      "0 <= heights[r][c] <= 10^5"
+    ],
+    "approach": "Instead of starting from every cell, flow water uphill starting from the ocean edges. Perform DFS/BFS from Pacific borders into pacific_visited set, and from Atlantic borders into atlantic_visited set. Return the intersection of both sets.",
+    "timeComplexity": "O(m * n) - Each cell visited at most twice",
+    "spaceComplexity": "O(m * n) - Two visited sets and recursion stack",
+    "solutions": {
+      "python": "class Solution:\n    def pacificAtlantic(self, heights: list[list[int]]) -> list[list[int]]:\n        rows, cols = len(heights), len(heights[0])\n        pac, atl = set(), set()\n        def dfs(r, c, visit, prev_h):\n            if ((r, c) in visit or r < 0 or c < 0 or r >= rows or c >= cols or heights[r][c] < prev_h):\n                return\n            visit.add((r, c))\n            for dr, dc in [(1,0), (-1,0), (0,1), (0,-1)]:\n                dfs(r + dr, c + dc, visit, heights[r][c])\n        for c in range(cols):\n            dfs(0, c, pac, heights[0][c])\n            dfs(rows - 1, c, atl, heights[rows - 1][c])\n        for r in range(rows):\n            dfs(r, 0, pac, heights[r][0])\n            dfs(r, cols - 1, atl, heights[r][cols - 1])\n        return [[r, c] for r in range(rows) for c in range(cols) if (r, c) in pac and (r, c) in atl]",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\n    int rows, cols;\n    void dfs(int r, int c, vector<vector<bool>>& vis, int prevH, const vector<vector<int>>& h) {\n        if (r < 0 || c < 0 || r >= rows || c >= cols || vis[r][c] || h[r][c] < prevH) return;\n        vis[r][c] = true;\n        dfs(r + 1, c, vis, h[r][c], h);\n        dfs(r - 1, c, vis, h[r][c], h);\n        dfs(r, c + 1, vis, h[r][c], h);\n        dfs(r, c - 1, vis, h[r][c], h);\n    }\npublic:\n    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {\n        rows = heights.size(); cols = heights[0].size();\n        vector<vector<bool>> pac(rows, vector<bool>(cols, false));\n        vector<vector<bool>> atl(rows, vector<bool>(cols, false));\n        for (int c = 0; c < cols; ++c) {\n            dfs(0, c, pac, heights[0][c], heights);\n            dfs(rows - 1, c, atl, heights[rows - 1][c], heights);\n        }\n        for (int r = 0; r < rows; ++r) {\n            dfs(r, 0, pac, heights[r][0], heights);\n            dfs(r, cols - 1, atl, heights[r][cols - 1], heights);\n        }\n        vector<vector<int>> res;\n        for (int r = 0; r < rows; ++r)\n            for (int c = 0; c < cols; ++c)\n                if (pac[r][c] && atl[r][c]) res.push_back({r, c});\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    private int rows, cols;\n    private void dfs(int r, int c, boolean[][] vis, int prevH, int[][] h) {\n        if (r < 0 || c < 0 || r >= rows || c >= cols || vis[r][c] || h[r][c] < prevH) return;\n        vis[r][c] = true;\n        dfs(r + 1, c, vis, h[r][c], h);\n        dfs(r - 1, c, vis, h[r][c], h);\n        dfs(r, c + 1, vis, h[r][c], h);\n        dfs(r, c - 1, vis, h[r][c], h);\n    }\n    public List<List<Integer>> pacificAtlantic(int[][] heights) {\n        rows = heights.length; cols = heights[0].length;\n        boolean[][] pac = new boolean[rows][cols];\n        boolean[][] atl = new boolean[rows][cols];\n        for (int c = 0; c < cols; c++) {\n            dfs(0, c, pac, heights[0][c], heights);\n            dfs(rows - 1, c, atl, heights[rows - 1][c], heights);\n        }\n        for (int r = 0; r < rows; r++) {\n            dfs(r, 0, pac, heights[r][0], heights);\n            dfs(r, cols - 1, atl, heights[r][cols - 1], heights);\n        }\n        List<List<Integer>> res = new ArrayList<>();\n        for (int r = 0; r < rows; r++)\n            for (int c = 0; c < cols; c++)\n                if (pac[r][c] && atl[r][c]) res.add(Arrays.asList(r, c));\n        return res;\n    }\n}",
+      "typescript": "function pacificAtlantic(heights: number[][]): number[][] {\n  const rows = heights.length, cols = heights[0].length;\n  const pac = Array.from({ length: rows }, () => new Array(cols).fill(false));\n  const atl = Array.from({ length: rows }, () => new Array(cols).fill(false));\n  function dfs(r: number, c: number, vis: boolean[][], prevH: number) {\n    if (r < 0 || c < 0 || r >= rows || c >= cols || vis[r][c] || heights[r][c] < prevH) return;\n    vis[r][c] = true;\n    dfs(r + 1, c, vis, heights[r][c]);\n    dfs(r - 1, c, vis, heights[r][c]);\n    dfs(r, c + 1, vis, heights[r][c]);\n    dfs(r, c - 1, vis, heights[r][c]);\n  }\n  for (let c = 0; c < cols; c++) {\n    dfs(0, c, pac, heights[0][c]);\n    dfs(rows - 1, c, atl, heights[rows - 1][c]);\n  }\n  for (let r = 0; r < rows; r++) {\n    dfs(r, 0, pac, heights[r][0]);\n    dfs(r, cols - 1, atl, heights[r][cols - 1]);\n  }\n  const res: number[][] = [];\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (pac[r][c] && atl[r][c]) res.push([r, c]);\n    }\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-58",
+    "title": "Clone Graph",
+    "difficulty": "Medium",
+    "pattern_tag": "Graphs",
+    "leetcode_url": "https://leetcode.com/problems/clone-graph/",
+    "striver_url": "https://takeuforward.org/graph/clone-graph/",
+    "youtube_url": "https://www.youtube.com/watch?v=mQeF6bN8hMk",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Hash map old_to_new prevents cycles while recursively cloning nodes and neighbor pointers.",
+    "description": "Given a reference of a node in a connected undirected graph, return a deep copy (clone) of the graph. Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.",
+    "examples": [
+      {
+        "input": "adjList = [[2,4],[1,3],[2,4],[1,3]]",
+        "output": "[[2,4],[1,3],[2,4],[1,3]]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the graph is in the range [0, 100].",
+      "1 <= Node.val <= 100",
+      "Node.val is unique for each node."
+    ],
+    "approach": "Use a hash map mapping old node -> newly cloned node. In DFS, if node is already cloned, return the clone from map. Otherwise create a clone, register it in the map, and recursively clone each neighbor into clone.neighbors.",
+    "timeComplexity": "O(V + E) - Visits each vertex and edge once",
+    "spaceComplexity": "O(V) - Hash map and recursion stack",
+    "solutions": {
+      "python": "class Solution:\n    def cloneGraph(self, node: 'Optional[Node]') -> 'Optional[Node]':\n        if not node: return None\n        old_to_new = {}\n        def dfs(curr):\n            if curr in old_to_new: return old_to_new[curr]\n            copy = Node(curr.val)\n            old_to_new[curr] = copy\n            for nei in curr.neighbors:\n                copy.neighbors.append(dfs(nei))\n            return copy\n        return dfs(node)",
+      "cpp": "#include <unordered_map>\n#include <vector>\nusing namespace std;\n\nclass Solution {\n    unordered_map<Node*, Node*> oldToNew;\npublic:\n    Node* cloneGraph(Node* node) {\n        if (!node) return nullptr;\n        if (oldToNew.count(node)) return oldToNew[node];\n        Node* copy = new Node(node->val);\n        oldToNew[node] = copy;\n        for (Node* nei : node->neighbors) {\n            copy->neighbors.push_back(cloneGraph(nei));\n        }\n        return copy;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    private Map<Node, Node> oldToNew = new HashMap<>();\n    public Node cloneGraph(Node node) {\n        if (node == null) return null;\n        if (oldToNew.containsKey(node)) return oldToNew.get(node);\n        Node copy = new Node(node.val);\n        oldToNew.put(node, copy);\n        for (Node nei : node.neighbors) {\n            copy.neighbors.add(cloneGraph(nei));\n        }\n        return copy;\n    }\n}",
+      "typescript": "function cloneGraph(node: _Node | null): _Node | null {\n  if (!node) return null;\n  const oldToNew = new Map<_Node, _Node>();\n  function dfs(curr: _Node): _Node {\n    if (oldToNew.has(curr)) return oldToNew.get(curr)!;\n    const copy = new _Node(curr.val);\n    oldToNew.set(curr, copy);\n    for (const nei of curr.neighbors) {\n      copy.neighbors.push(dfs(nei));\n    }\n    return copy;\n  }\n  return dfs(node);\n}"
+    }
+  },
+  {
+    "id": "dsa-59",
+    "title": "Course Schedule II",
+    "difficulty": "Medium",
+    "pattern_tag": "Graphs",
+    "leetcode_url": "https://leetcode.com/problems/course-schedule-ii/",
+    "striver_url": "https://takeuforward.org/data-structure/course-schedule-i-and-ii-pre-requisite-tasks-topological-sort-bfs-g-24/",
+    "youtube_url": "https://www.youtube.com/watch?v=Akt3glAwyfY",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Kahn's BFS topological sort with in-degree array: returns valid ordering or empty list if cycle.",
+    "description": "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible, return an empty array.",
+    "examples": [
+      {
+        "input": "numCourses = 2, prerequisites = [[1,0]]",
+        "output": "[0,1]"
+      },
+      {
+        "input": "numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]",
+        "output": "[0,2,1,3]"
+      }
+    ],
+    "constraints": [
+      "1 <= numCourses <= 2000",
+      "0 <= prerequisites.length <= numCourses * (numCourses - 1)",
+      "prerequisites[i].length == 2"
+    ],
+    "approach": "Kahn's Algorithm (BFS): Calculate in-degrees of all courses. Push all courses with in-degree 0 into queue. Dequeue course, append to order, decrement neighbors' in-degree. When neighbor reaches 0, push to queue. If order size equals numCourses return order, else cycle exists so return [].",
+    "timeComplexity": "O(V + E) - BFS topological sort",
+    "spaceComplexity": "O(V + E) - Adjacency list and queue",
+    "solutions": {
+      "python": "class Solution:\n    def findOrder(self, numCourses: int, prerequisites: list[list[int]]) -> list[int]:\n        from collections import defaultdict, deque\n        adj = defaultdict(list)\n        in_degree = [0] * numCourses\n        for crs, pre in prerequisites:\n            adj[pre].append(crs)\n            in_degree[crs] += 1\n        q = deque([i for i in range(numCourses) if in_degree[i] == 0])\n        order = []\n        while q:\n            node = q.popleft()\n            order.append(node)\n            for nei in adj[node]:\n                in_degree[nei] -= 1\n                if in_degree[nei] == 0:\n                    q.append(nei)\n        return order if len(order) == numCourses else []",
+      "cpp": "#include <vector>\n#include <queue>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {\n        vector<vector<int>> adj(numCourses);\n        vector<int> inDegree(numCourses, 0);\n        for (auto& p : prerequisites) {\n            adj[p[1]].push_back(p[0]);\n            inDegree[p[0]]++;\n        }\n        queue<int> q;\n        for (int i = 0; i < numCourses; ++i) if (inDegree[i] == 0) q.push(i);\n        vector<int> order;\n        while (!q.empty()) {\n            int node = q.front(); q.pop();\n            order.push_back(node);\n            for (int nei : adj[node]) {\n                if (--inDegree[nei] == 0) q.push(nei);\n            }\n        }\n        return order.size() == numCourses ? order : vector<int>();\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public int[] findOrder(int numCourses, int[][] prerequisites) {\n        List<Integer>[] adj = new List[numCourses];\n        for (int i = 0; i < numCourses; i++) adj[i] = new ArrayList<>();\n        int[] inDegree = new int[numCourses];\n        for (int[] p : prerequisites) {\n            adj[p[1]].add(p[0]);\n            inDegree[p[0]]++;\n        }\n        Queue<Integer> q = new LinkedList<>();\n        for (int i = 0; i < numCourses; i++) if (inDegree[i] == 0) q.offer(i);\n        int[] order = new int[numCourses];\n        int idx = 0;\n        while (!q.isEmpty()) {\n            int node = q.poll();\n            order[idx++] = node;\n            for (int nei : adj[node]) {\n                if (--inDegree[nei] == 0) q.offer(nei);\n            }\n        }\n        return idx == numCourses ? order : new int[0];\n    }\n}",
+      "typescript": "function findOrder(numCourses: number, prerequisites: number[][]): number[] {\n  const adj: number[][] = Array.from({ length: numCourses }, () => []);\n  const inDegree = new Array(numCourses).fill(0);\n  for (const [crs, pre] of prerequisites) {\n    adj[pre].push(crs);\n    inDegree[crs]++;\n  }\n  const q: number[] = [];\n  for (let i = 0; i < numCourses; i++) if (inDegree[i] === 0) q.push(i);\n  const order: number[] = [];\n  while (q.length > 0) {\n    const node = q.shift()!;\n    order.push(node);\n    for (const nei of adj[node]) {\n      inDegree[nei]--;\n      if (inDegree[nei] === 0) q.push(nei);\n    }\n  }\n  return order.length === numCourses ? order : [];\n}"
+    }
+  },
+  {
+    "id": "dsa-60",
+    "title": "Graph Valid Tree",
+    "difficulty": "Medium",
+    "pattern_tag": "Advanced Graphs",
+    "leetcode_url": "https://leetcode.com/problems/graph-valid-tree/",
+    "striver_url": "https://takeuforward.org/graph/detect-cycle-in-an-undirected-graph-using-dfs/",
+    "youtube_url": "https://www.youtube.com/watch?v=bXsUuownnoQ",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "A tree with n nodes must have exactly n - 1 edges and be fully connected with 0 cycles.",
+    "description": "Given n nodes labeled from 0 to n - 1 and a list of undirected edges, write a function to check whether these edges make up a valid tree.",
+    "examples": [
+      {
+        "input": "n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]",
+        "output": "true"
+      },
+      {
+        "input": "n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "1 <= n <= 2000",
+      "0 <= edges.length <= 5000"
+    ],
+    "approach": "A valid tree must satisfy two conditions: 1) Number of edges must be exactly n - 1 (if edges.length != n - 1, return false immediately). 2) The graph must be fully connected without cycles. Perform DFS/BFS from node 0 and verify visited count equals n.",
+    "timeComplexity": "O(V + E) - Standard graph traversal",
+    "spaceComplexity": "O(V + E) - Adjacency list and visited set",
+    "solutions": {
+      "python": "class Solution:\n    def validTree(self, n: int, edges: list[list[int]]) -> bool:\n        if len(edges) != n - 1: return False\n        from collections import defaultdict\n        adj = defaultdict(list)\n        for u, v in edges:\n            adj[u].append(v)\n            adj[v].append(u)\n        visit = set()\n        def dfs(node, parent):\n            if node in visit: return False\n            visit.add(node)\n            for nei in adj[node]:\n                if nei == parent: continue\n                if not dfs(nei, node): return False\n            return True\n        return dfs(0, -1) and len(visit) == n",
+      "cpp": "#include <vector>\nusing namespace std;\n\nclass Solution {\n    bool dfs(int node, int parent, vector<bool>& vis, const vector<vector<int>>& adj) {\n        vis[node] = true;\n        for (int nei : adj[node]) {\n            if (nei == parent) continue;\n            if (vis[nei]) return false;\n            if (!dfs(nei, node, vis, adj)) return false;\n        }\n        return true;\n    }\npublic:\n    bool validTree(int n, vector<vector<int>>& edges) {\n        if (edges.size() != n - 1) return false;\n        vector<vector<int>> adj(n);\n        for (auto& e : edges) {\n            adj[e[0]].push_back(e[1]);\n            adj[e[1]].push_back(e[0]);\n        }\n        vector<bool> vis(n, false);\n        if (!dfs(0, -1, vis, adj)) return false;\n        for (bool v : vis) if (!v) return false;\n        return true;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    private boolean dfs(int node, int parent, boolean[] vis, List<Integer>[] adj) {\n        vis[node] = true;\n        for (int nei : adj[node]) {\n            if (nei == parent) continue;\n            if (vis[nei]) return false;\n            if (!dfs(nei, node, vis, adj)) return false;\n        }\n        return true;\n    }\n    public boolean validTree(int n, int[][] edges) {\n        if (edges.length != n - 1) return false;\n        List<Integer>[] adj = new List[n];\n        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();\n        for (int[] e : edges) {\n            adj[e[0]].add(e[1]);\n            adj[e[1]].add(e[0]);\n        }\n        boolean[] vis = new boolean[n];\n        if (!dfs(0, -1, vis, adj)) return false;\n        for (boolean v : vis) if (!v) return false;\n        return true;\n    }\n}",
+      "typescript": "function validTree(n: number, edges: number[][]): boolean {\n  if (edges.length !== n - 1) return false;\n  const adj: number[][] = Array.from({ length: n }, () => []);\n  for (const [u, v] of edges) {\n    adj[u].push(v);\n    adj[v].push(u);\n  }\n  const vis = new Array(n).fill(false);\n  function dfs(node: number, parent: number): boolean {\n    vis[node] = true;\n    for (const nei of adj[node]) {\n      if (nei === parent) continue;\n      if (vis[nei]) return false;\n      if (!dfs(nei, node)) return false;\n    }\n    return true;\n  }\n  if (!dfs(0, -1)) return false;\n  return vis.every(v => v === true);\n}"
+    }
+  },
+  {
+    "id": "dsa-61",
+    "title": "Design Add and Search Words Data Structure",
+    "difficulty": "Medium",
+    "pattern_tag": "Trie",
+    "leetcode_url": "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
+    "striver_url": "https://takeuforward.org/data-structure/implement-trie-ii/",
+    "youtube_url": "https://www.youtube.com/watch?v=BTf05gs_8iU",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Trie with wildcard '.' backtrack matching across all 26 possible children.",
+    "description": "Design a data structure that supports adding new words and finding if a string matches any previously added string. '.' can match any letter.",
+    "examples": [
+      {
+        "input": "addWord(\"bad\"); addWord(\"dad\"); addWord(\"mad\"); search(\"pad\") -> false; search(\"bad\") -> true; search(\".ad\") -> true",
+        "output": "[false, true, true]"
+      }
+    ],
+    "constraints": [
+      "1 <= word.length <= 25",
+      "word in addWord consists of lowercase English letters.",
+      "word in search consist of '.' or lowercase English letters."
+    ],
+    "approach": "Implement TrieNode with children dictionary and isWord flag. In search, if character is '.', branch DFS over all active children in current node. If specific character, step directly to child node.",
+    "timeComplexity": "O(m) for add, O(26^k * m) worst-case wildcard search",
+    "spaceComplexity": "O(N * m) - Trie node allocations",
+    "solutions": {
+      "python": "class WordDictionary:\n    def __init__(self):\n        self.root = {}\n    def addWord(self, word: str) -> None:\n        curr = self.root\n        for c in word:\n            curr = curr.setdefault(c, {})\n        curr['$'] = True\n    def search(self, word: str) -> bool:\n        def dfs(j, root):\n            curr = root\n            for i in range(j, len(word)):\n                c = word[i]\n                if c == '.':\n                    return any(dfs(i + 1, child) for k, child in curr.items() if k != '$')\n                if c not in curr: return False\n                curr = curr[c]\n            return '$' in curr\n        return dfs(0, self.root)",
+      "cpp": "class WordDictionary {\n    struct Node {\n        Node* children[26] = {nullptr};\n        bool isEnd = false;\n    };\n    Node* root;\n    bool dfs(const string& w, int idx, Node* curr) {\n        if (!curr) return false;\n        if (idx == w.size()) return curr->isEnd;\n        if (w[idx] == '.') {\n            for (int i = 0; i < 26; ++i) {\n                if (curr->children[i] && dfs(w, idx + 1, curr->children[i])) return true;\n            }\n            return false;\n        }\n        return dfs(w, idx + 1, curr->children[w[idx] - 'a']);\n    }\npublic:\n    WordDictionary() { root = new Node(); }\n    void addWord(string word) {\n        Node* curr = root;\n        for (char c : word) {\n            if (!curr->children[c - 'a']) curr->children[c - 'a'] = new Node();\n            curr = curr->children[c - 'a'];\n        }\n        curr->isEnd = true;\n    }\n    bool search(string word) { return dfs(word, 0, root); }\n};",
+      "java": "class WordDictionary {\n    private class Node {\n        Node[] children = new Node[26];\n        boolean isEnd = false;\n    }\n    private Node root = new Node();\n    public void addWord(String word) {\n        Node curr = root;\n        for (char c : word.toCharArray()) {\n            if (curr.children[c - 'a'] == null) curr.children[c - 'a'] = new Node();\n            curr = curr.children[c - 'a'];\n        }\n        curr.isEnd = true;\n    }\n    public boolean search(String word) { return dfs(word, 0, root); }\n    private boolean dfs(String w, int idx, Node curr) {\n        if (curr == null) return false;\n        if (idx == w.length()) return curr.isEnd;\n        char c = w.charAt(idx);\n        if (c == '.') {\n            for (int i = 0; i < 26; i++)\n                if (curr.children[i] != null && dfs(w, idx + 1, curr.children[i])) return true;\n            return false;\n        }\n        return dfs(w, idx + 1, curr.children[c - 'a']);\n    }\n}",
+      "typescript": "class TrieNode {\n  children = new Map<string, TrieNode>();\n  isEnd = false;\n}\nclass WordDictionary {\n  root = new TrieNode();\n  addWord(word: string): void {\n    let curr = this.root;\n    for (const c of word) {\n      if (!curr.children.has(c)) curr.children.set(c, new TrieNode());\n      curr = curr.children.get(c)!;\n    }\n    curr.isEnd = true;\n  }\n  search(word: string): boolean {\n    function dfs(idx: number, curr: TrieNode): boolean {\n      if (idx === word.length) return curr.isEnd;\n      const c = word[idx];\n      if (c === '.') {\n        for (const child of curr.children.values()) {\n          if (dfs(idx + 1, child)) return true;\n        }\n        return false;\n      }\n      if (!curr.children.has(c)) return false;\n      return dfs(idx + 1, curr.children.get(c)!);\n    }\n    return dfs(0, this.root);\n  }\n}"
+    }
+  },
+  {
+    "id": "dsa-62",
+    "title": "Word Search II",
+    "difficulty": "Hard",
+    "pattern_tag": "Trie",
+    "leetcode_url": "https://leetcode.com/problems/word-search-ii/",
+    "striver_url": "https://takeuforward.org/data-structure/word-search-ii/",
+    "youtube_url": "https://www.youtube.com/watch?v=asbcE9mZz_U",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Prefix Trie + Grid Backtracking prunes dead search paths efficiently in O(m * n * 4^L).",
+    "description": "Given an m x n board of characters and a list of strings words, return all words on the board. Each word must be constructed from letters of sequentially adjacent cells.",
+    "examples": [
+      {
+        "input": "board = [[\"o\",\"a\",\"a\",\"n\"],[\"e\",\"t\",\"a\",\"e\"],[\"i\",\"h\",\"k\",\"r\"],[\"i\",\"f\",\"l\",\"v\"]], words = [\"oath\",\"pea\",\"eat\",\"rain\"]",
+        "output": "[\"eat\",\"oath\"]"
+      }
+    ],
+    "constraints": [
+      "m == board.length, n == board[i].length",
+      "1 <= m, n <= 12",
+      "1 <= words.length <= 3 * 10^4",
+      "1 <= words[i].length <= 10"
+    ],
+    "approach": "Load all words into a prefix Trie. Traverse the 2D grid: whenever board[r][c] matches a Trie child, launch DFS. When reaching a node marking a complete word, append word to results and clear flag to avoid duplicates. Restore board cell upon backtrack.",
+    "timeComplexity": "O(m * n * 4^L) - Where L is max word length",
+    "spaceComplexity": "O(total characters in words) - Trie space",
+    "solutions": {
+      "python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.word = None\n\nclass Solution:\n    def findWords(self, board: list[list[str]], words: list[str]) -> list[str]:\n        root = TrieNode()\n        for w in words:\n            curr = root\n            for c in w:\n                curr = curr.children.setdefault(c, TrieNode())\n            curr.word = w\n        rows, cols = len(board), len(board[0])\n        res = []\n        def dfs(r, c, node):\n            if r < 0 or c < 0 or r >= rows or c >= cols or board[r][c] not in node.children:\n                return\n            ch = board[r][c]\n            next_node = node.children[ch]\n            if next_node.word:\n                res.append(next_node.word)\n                next_node.word = None\n            board[r][c] = '#'\n            for dr, dc in [(1,0), (-1,0), (0,1), (0,-1)]:\n                dfs(r + dr, c + dc, next_node)\n            board[r][c] = ch\n        for r in range(rows):\n            for c in range(cols):\n                dfs(r, c, root)\n        return res",
+      "cpp": "#include <vector>\n#include <string>\nusing namespace std;\n\nclass Solution {\n    struct Node {\n        Node* children[26] = {nullptr};\n        string word = \"\";\n    };\n    Node* root = new Node();\n    void insert(const string& w) {\n        Node* curr = root;\n        for (char c : w) {\n            if (!curr->children[c - 'a']) curr->children[c - 'a'] = new Node();\n            curr = curr->children[c - 'a'];\n        }\n        curr->word = w;\n    }\n    void dfs(vector<vector<char>>& board, int r, int c, Node* curr, vector<string>& res) {\n        if (r < 0 || c < 0 || r >= board.size() || c >= board[0].size() || board[r][c] == '#') return;\n        char ch = board[r][c];\n        if (!curr->children[ch - 'a']) return;\n        curr = curr->children[ch - 'a'];\n        if (!curr->word.empty()) {\n            res.push_back(curr->word);\n            curr->word = \"\";\n        }\n        board[r][c] = '#';\n        dfs(board, r + 1, c, curr, res);\n        dfs(board, r - 1, c, curr, res);\n        dfs(board, r, c + 1, curr, res);\n        dfs(board, r, c - 1, curr, res);\n        board[r][c] = ch;\n    }\npublic:\n    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {\n        for (const string& w : words) insert(w);\n        vector<string> res;\n        for (int r = 0; r < board.size(); ++r)\n            for (int c = 0; c < board[0].size(); ++c)\n                dfs(board, r, c, root, res);\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    private class Node {\n        Node[] children = new Node[26];\n        String word = null;\n    }\n    private Node root = new Node();\n    private void insert(String w) {\n        Node curr = root;\n        for (char c : w.toCharArray()) {\n            if (curr.children[c - 'a'] == null) curr.children[c - 'a'] = new Node();\n            curr = curr.children[c - 'a'];\n        }\n        curr.word = w;\n    }\n    public List<String> findWords(char[][] board, String[] words) {\n        for (String w : words) insert(w);\n        List<String> res = new ArrayList<>();\n        for (int r = 0; r < board.length; r++)\n            for (int c = 0; c < board[0].length; c++)\n                dfs(board, r, c, root, res);\n        return res;\n    }\n    private void dfs(char[][] b, int r, int c, Node curr, List<String> res) {\n        if (r < 0 || c < 0 || r >= b.length || c >= b[0].length || b[r][c] == '#') return;\n        char ch = b[r][c];\n        if (curr.children[ch - 'a'] == null) return;\n        curr = curr.children[ch - 'a'];\n        if (curr.word != null) {\n            res.add(curr.word);\n            curr.word = null;\n        }\n        b[r][c] = '#';\n        dfs(b, r + 1, c, curr, res);\n        dfs(b, r - 1, c, curr, res);\n        dfs(b, r, c + 1, curr, res);\n        dfs(b, r, c - 1, curr, res);\n        b[r][c] = ch;\n    }\n}",
+      "typescript": "function findWords(board: string[][], words: string[]): string[] {\n  class Node {\n    children = new Map<string, Node>();\n    word: string | null = null;\n  }\n  const root = new Node();\n  for (const w of words) {\n    let curr = root;\n    for (const c of w) {\n      if (!curr.children.has(c)) curr.children.set(c, new Node());\n      curr = curr.children.get(c)!;\n    }\n    curr.word = w;\n  }\n  const res: string[] = [];\n  const rows = board.length, cols = board[0].length;\n  function dfs(r: number, c: number, curr: Node) {\n    if (r < 0 || c < 0 || r >= rows || c >= cols || !curr.children.has(board[r][c])) return;\n    const ch = board[r][c];\n    const nextNode = curr.children.get(ch)!;\n    if (nextNode.word) {\n      res.push(nextNode.word);\n      nextNode.word = null;\n    }\n    board[r][c] = '#';\n    dfs(r + 1, c, nextNode);\n    dfs(r - 1, c, nextNode);\n    dfs(r, c + 1, nextNode);\n    dfs(r, c - 1, nextNode);\n    board[r][c] = ch;\n  }\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) dfs(r, c, root);\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-63",
+    "title": "Find Median from Data Stream",
+    "difficulty": "Hard",
+    "pattern_tag": "Heap / Priority Queue",
+    "leetcode_url": "https://leetcode.com/problems/find-median-from-data-stream/",
+    "striver_url": "https://takeuforward.org/data-structure/find-median-from-data-stream/",
+    "youtube_url": "https://www.youtube.com/watch?v=itmhHWaHupI",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Two heaps pattern: max-heap (lower half) and min-heap (upper half) maintain O(log n) insertion and O(1) median.",
+    "description": "The median is the middle value in an ordered integer list. If the size of the list is even, the median is the mean of the two middle values. Implement the MedianFinder class.",
+    "examples": [
+      {
+        "input": "addNum(1); addNum(2); findMedian() -> 1.5; addNum(3); findMedian() -> 2.0",
+        "output": "[1.5, 2.0]"
+      }
+    ],
+    "constraints": [
+      "-10^5 <= num <= 10^5",
+      "There will be at least one element before calling findMedian.",
+      "At most 5 * 10^4 calls will be made to addNum and findMedian."
+    ],
+    "approach": "Maintain two heaps: small (max-heap for smaller half) and large (min-heap for larger half). Ensure max(small) <= min(large) and sizes differ by at most 1. Median is the root of the larger heap or average of roots.",
+    "timeComplexity": "O(log n) for addNum, O(1) for findMedian",
+    "spaceComplexity": "O(n) - Store all elements across two heaps",
+    "solutions": {
+      "python": "import heapq\n\nclass MedianFinder:\n    def __init__(self):\n        self.small = []  # max-heap (invert signs)\n        self.large = []  # min-heap\n    def addNum(self, num: int) -> None:\n        heapq.heappush(self.small, -num)\n        if self.small and self.large and (-self.small[0] > self.large[0]):\n            heapq.heappush(self.large, -heapq.heappop(self.small))\n        if len(self.small) > len(self.large) + 1:\n            heapq.heappush(self.large, -heapq.heappop(self.small))\n        if len(self.large) > len(self.small) + 1:\n            heapq.heappush(self.small, -heapq.heappop(self.large))\n    def findMedian(self) -> float:\n        if len(self.small) > len(self.large): return float(-self.small[0])\n        if len(self.large) > len(self.small): return float(self.large[0])\n        return (-self.small[0] + self.large[0]) / 2.0",
+      "cpp": "#include <queue>\nusing namespace std;\n\nclass MedianFinder {\n    priority_queue<int> small; // max-heap\n    priority_queue<int, vector<int>, greater<int>> large; // min-heap\npublic:\n    MedianFinder() {}\n    void addNum(int num) {\n        small.push(num);\n        if (!small.empty() && !large.empty() && small.top() > large.top()) {\n            large.push(small.top()); small.pop();\n        }\n        if (small.size() > large.size() + 1) {\n            large.push(small.top()); small.pop();\n        }\n        if (large.size() > small.size() + 1) {\n            small.push(large.top()); large.pop();\n        }\n    }\n    double findMedian() {\n        if (small.size() > large.size()) return small.top();\n        if (large.size() > small.size()) return large.top();\n        return (small.top() + large.top()) / 2.0;\n    }\n};",
+      "java": "import java.util.*;\n\nclass MedianFinder {\n    private PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder());\n    private PriorityQueue<Integer> large = new PriorityQueue<>();\n    public void addNum(int num) {\n        small.offer(num);\n        if (!small.isEmpty() && !large.isEmpty() && small.peek() > large.peek()) {\n            large.offer(small.poll());\n        }\n        if (small.size() > large.size() + 1) {\n            large.offer(small.poll());\n        }\n        if (large.size() > small.size() + 1) {\n            small.offer(large.poll());\n        }\n    }\n    public double findMedian() {\n        if (small.size() > large.size()) return small.peek();\n        if (large.size() > small.size()) return large.peek();\n        return (small.peek() + large.peek()) / 2.0;\n    }\n}",
+      "typescript": "class MedianFinder {\n  private arr: number[] = [];\n  addNum(num: number): void {\n    let l = 0, r = this.arr.length;\n    while (l < r) {\n      const m = (l + r) >> 1;\n      if (this.arr[m] < num) l = m + 1;\n      else r = m;\n    }\n    this.arr.splice(l, 0, num);\n  }\n  findMedian(): number {\n    const n = this.arr.length;\n    const m = Math.floor(n / 2);\n    return n % 2 === 1 ? this.arr[m] : (this.arr[m - 1] + this.arr[m]) / 2;\n  }\n}"
+    }
+  },
+  {
+    "id": "dsa-64",
+    "title": "Merge k Sorted Lists",
+    "difficulty": "Hard",
+    "pattern_tag": "Heap / Priority Queue",
+    "leetcode_url": "https://leetcode.com/problems/merge-k-sorted-lists/",
+    "striver_url": "https://takeuforward.org/data-structure/merge-k-sorted-linked-lists/",
+    "youtube_url": "https://www.youtube.com/watch?v=q5a5OiGbT6Q",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Divide and conquer pairwise merging in O(N log k) time or min-heap of size k.",
+    "description": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.",
+    "examples": [
+      {
+        "input": "lists = [[1,4,5],[1,3,4],[2,6]]",
+        "output": "[1,1,2,3,4,4,5,6]"
+      },
+      {
+        "input": "lists = []",
+        "output": "[]"
+      }
+    ],
+    "constraints": [
+      "k == lists.length",
+      "0 <= k <= 10^4",
+      "0 <= lists[i].length <= 500",
+      "-10^4 <= lists[i][j] <= 10^4"
+    ],
+    "approach": "Pairwise merge lists using divide-and-conquer like merge sort. Take pairs of lists and merge them with mergeTwoLists, reducing list count by half each step until 1 list remains.",
+    "timeComplexity": "O(N log k) - Where N is total nodes and k is number of lists",
+    "spaceComplexity": "O(1) - In-place pointer modifications",
+    "solutions": {
+      "python": "class Solution:\n    def mergeKLists(self, lists: list[Optional[ListNode]]) -> Optional[ListNode]:\n        if not lists: return None\n        while len(lists) > 1:\n            merged = []\n            for i in range(0, len(lists), 2):\n                l1 = lists[i]\n                l2 = lists[i + 1] if i + 1 < len(lists) else None\n                merged.append(self.mergeTwo(l1, l2))\n            lists = merged\n        return lists[0]\n    def mergeTwo(self, l1, l2):\n        dummy = ListNode(0)\n        curr = dummy\n        while l1 and l2:\n            if l1.val < l2.val:\n                curr.next = l1\n                l1 = l1.next\n            else:\n                curr.next = l2\n                l2 = l2.next\n            curr = curr.next\n        curr.next = l1 or l2\n        return dummy.next",
+      "cpp": "class Solution {\n    ListNode* mergeTwo(ListNode* l1, ListNode* l2) {\n        ListNode dummy(0);\n        ListNode* curr = &dummy;\n        while (l1 && l2) {\n            if (l1->val < l2->val) { curr->next = l1; l1 = l1->next; }\n            else { curr->next = l2; l2 = l2->next; }\n            curr = curr->next;\n        }\n        curr->next = l1 ? l1 : l2;\n        return dummy.next;\n    }\npublic:\n    ListNode* mergeKLists(vector<ListNode*>& lists) {\n        if (lists.empty()) return nullptr;\n        int amount = lists.size();\n        int interval = 1;\n        while (interval < amount) {\n            for (int i = 0; i < amount - interval; i += interval * 2) {\n                lists[i] = mergeTwo(lists[i], lists[i + interval]);\n            }\n            interval *= 2;\n        }\n        return lists[0];\n    }\n};",
+      "java": "class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        return divide(lists, 0, lists.length - 1);\n    }\n    private ListNode divide(ListNode[] lists, int l, int r) {\n        if (l == r) return lists[l];\n        int m = l + (r - l) / 2;\n        ListNode l1 = divide(lists, l, m);\n        ListNode l2 = divide(lists, m + 1, r);\n        return mergeTwo(l1, l2);\n    }\n    private ListNode mergeTwo(ListNode l1, ListNode l2) {\n        ListNode dummy = new ListNode(0);\n        ListNode curr = dummy;\n        while (l1 != null && l2 != null) {\n            if (l1.val < l2.val) { curr.next = l1; l1 = l1.next; }\n            else { curr.next = l2; l2 = l2.next; }\n            curr = curr.next;\n        }\n        curr.next = (l1 != null) ? l1 : l2;\n        return dummy.next;\n    }\n}",
+      "typescript": "function mergeKLists(lists: Array<ListNode | null>): ListNode | null {\n  if (lists.length === 0) return null;\n  function mergeTwo(l1: ListNode | null, l2: ListNode | null): ListNode | null {\n    const dummy = new ListNode(0);\n    let curr = dummy;\n    while (l1 && l2) {\n      if (l1.val < l2.val) { curr.next = l1; l1 = l1.next; }\n      else { curr.next = l2; l2 = l2.next; }\n      curr = curr.next;\n    }\n    curr.next = l1 || l2;\n    return dummy.next;\n  }\n  while (lists.length > 1) {\n    const merged: Array<ListNode | null> = [];\n    for (let i = 0; i < lists.length; i += 2) {\n      const l1 = lists[i];\n      const l2 = i + 1 < lists.length ? lists[i + 1] : null;\n      merged.push(mergeTwo(l1, l2));\n    }\n    lists = merged;\n  }\n  return lists[0];\n}"
+    }
+  },
+  {
+    "id": "dsa-65",
+    "title": "Reorder List",
+    "difficulty": "Medium",
+    "pattern_tag": "Linked List",
+    "leetcode_url": "https://leetcode.com/problems/reorder-list/",
+    "striver_url": "https://takeuforward.org/data-structure/reorder-list/",
+    "youtube_url": "https://www.youtube.com/watch?v=S5bfdUTrKLM",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Find middle with slow/fast, reverse second half, and interleave two halves in O(n) and O(1) space.",
+    "description": "You are given the head of a singly linked-list. Reorder the list to be on the following form: L0 -> Ln -> L1 -> Ln-1 -> L2 -> Ln-2 -> ... You may not modify the values in the list's nodes. Only nodes themselves may be changed.",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4]",
+        "output": "[1,4,2,3]"
+      },
+      {
+        "input": "head = [1,2,3,4,5]",
+        "output": "[1,5,2,4,3]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the list is in the range [1, 5 * 10^4].",
+      "1 <= Node.val <= 1000"
+    ],
+    "approach": "Three steps: 1) Find middle node using slow and fast pointers. 2) Reverse second half of the list starting after slow. 3) Interleave nodes from first half and reversed second half alternatingly.",
+    "timeComplexity": "O(n) - Three linear passes",
+    "spaceComplexity": "O(1) - Constant auxiliary pointers",
+    "solutions": {
+      "python": "class Solution:\n    def reorderList(self, head: Optional[ListNode]) -> None:\n        # 1. Find middle\n        slow, fast = head, head.next\n        while fast and fast.next:\n            slow = slow.next\n            fast = fast.next.next\n        # 2. Reverse second half\n        second = slow.next\n        slow.next = None\n        prev = None\n        while second:\n            nxt = second.next\n            second.next = prev\n            prev = second\n            second = nxt\n        # 3. Merge two halves\n        first, second = head, prev\n        while second:\n            t1, t2 = first.next, second.next\n            first.next = second\n            second.next = t1\n            first, second = t1, t2",
+      "cpp": "class Solution {\npublic:\n    void reorderList(ListNode* head) {\n        if (!head || !head->next) return;\n        ListNode *slow = head, *fast = head->next;\n        while (fast && fast->next) {\n            slow = slow->next;\n            fast = fast->next->next;\n        }\n        ListNode *second = slow->next, *prev = nullptr;\n        slow->next = nullptr;\n        while (second) {\n            ListNode* nxt = second->next;\n            second->next = prev;\n            prev = second;\n            second = nxt;\n        }\n        ListNode *first = head;\n        second = prev;\n        while (second) {\n            ListNode *t1 = first->next, *t2 = second->next;\n            first->next = second;\n            second->next = t1;\n            first = t1; second = t2;\n        }\n    }\n};",
+      "java": "class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head.next;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode second = slow.next, prev = null;\n        slow.next = null;\n        while (second != null) {\n            ListNode nxt = second.next;\n            second.next = prev;\n            prev = second;\n            second = nxt;\n        }\n        ListNode first = head;\n        second = prev;\n        while (second != null) {\n            ListNode t1 = first.next, t2 = second.next;\n            first.next = second;\n            second.next = t1;\n            first = t1; second = t2;\n        }\n    }\n}",
+      "typescript": "function reorderList(head: ListNode | null): void {\n  if (!head || !head.next) return;\n  let slow: ListNode | null = head, fast: ListNode | null = head.next;\n  while (fast && fast.next) {\n    slow = slow!.next;\n    fast = fast.next.next;\n  }\n  let second = slow!.next, prev: ListNode | null = null;\n  slow!.next = null;\n  while (second) {\n    const nxt = second.next;\n    second.next = prev;\n    prev = second;\n    second = nxt;\n  }\n  let first: ListNode | null = head;\n  second = prev;\n  while (second) {\n    const t1 = first!.next, t2 = second.next;\n    first!.next = second;\n    second.next = t1;\n    first = t1;\n    second = t2;\n  }\n}"
+    }
+  },
+  {
+    "id": "dsa-66",
+    "title": "Remove Nth Node From End of List",
+    "difficulty": "Medium",
+    "pattern_tag": "Linked List",
+    "leetcode_url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+    "striver_url": "https://takeuforward.org/data-structure/remove-n-th-node-from-the-end-of-a-linked-list/",
+    "youtube_url": "https://www.youtube.com/watch?v=XVuQxV42SX8",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Two pointers with n gap: when right reaches end, left is precisely at the node before target.",
+    "description": "Given the head of a linked list, remove the nth node from the end of the list and return its head.",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4,5], n = 2",
+        "output": "[1,2,3,5]"
+      },
+      {
+        "input": "head = [1], n = 1",
+        "output": "[]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the list is sz.",
+      "1 <= sz <= 30",
+      "0 <= Node.val <= 100",
+      "1 <= n <= sz"
+    ],
+    "approach": "Create a dummy node pointing to head. Advance right pointer n + 1 steps ahead of left pointer. Move both left and right simultaneously until right reaches nullptr. left.next now points to target node; unlink it with left.next = left.next.next.",
+    "timeComplexity": "O(L) - One pass through linked list",
+    "spaceComplexity": "O(1) - Constant auxiliary pointers",
+    "solutions": {
+      "python": "class Solution:\n    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:\n        dummy = ListNode(0, head)\n        left = dummy\n        right = head\n        for _ in range(n):\n            right = right.next\n        while right:\n            left = left.next\n            right = right.next\n        left.next = left.next.next\n        return dummy.next",
+      "cpp": "class Solution {\npublic:\n    ListNode* removeNthFromEnd(ListNode* head, int n) {\n        ListNode dummy(0, head);\n        ListNode *left = &dummy, *right = head;\n        for (int i = 0; i < n; ++i) right = right->next;\n        while (right) {\n            left = left->next;\n            right = right->next;\n        }\n        left->next = left->next->next;\n        return dummy.next;\n    }\n};",
+      "java": "class Solution {\n    public ListNode removeNthFromEnd(ListNode head, int n) {\n        ListNode dummy = new ListNode(0, head);\n        ListNode left = dummy, right = head;\n        for (int i = 0; i < n; i++) right = right.next;\n        while (right != null) {\n            left = left.next;\n            right = right.next;\n        }\n        left.next = left.next.next;\n        return dummy.next;\n    }\n}",
+      "typescript": "function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {\n  const dummy = new ListNode(0, head);\n  let left: ListNode | null = dummy, right = head;\n  for (let i = 0; i < n; i++) right = right!.next;\n  while (right) {\n    left = left!.next;\n    right = right.next;\n  }\n  left!.next = left!.next!.next;\n  return dummy.next;\n}"
+    }
+  },
+  {
+    "id": "dsa-67",
+    "title": "Linked List Cycle",
+    "difficulty": "Easy",
+    "pattern_tag": "Linked List",
+    "leetcode_url": "https://leetcode.com/problems/linked-list-cycle/",
+    "striver_url": "https://takeuforward.org/data-structure/detect-a-cycle-in-a-linked-list/",
+    "youtube_url": "https://www.youtube.com/watch?v=gBTe7lFR3vc",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Floyd's cycle-finding (Tortoise and Hare): slow moves 1 step, fast moves 2 steps in O(n) and O(1) space.",
+    "description": "Given head, the head of a linked list, determine if the linked list has a cycle in it. Return true if there is a cycle, false otherwise.",
+    "examples": [
+      {
+        "input": "head = [3,2,0,-4], pos = 1",
+        "output": "true",
+        "explanation": "There is a cycle in the linked list, where tail connects to the 1st node (0-indexed)."
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "The number of the nodes in the list is in the range [0, 10^4].",
+      "-10^5 <= Node.val <= 10^5"
+    ],
+    "approach": "Floyd's Tortoise and Hare algorithm. Initialize slow and fast at head. While fast and fast.next are non-null: slow = slow.next, fast = fast.next.next. If slow == fast, a cycle exists. If loop terminates, no cycle exists.",
+    "timeComplexity": "O(n) - Linear pass through list",
+    "spaceComplexity": "O(1) - Constant auxiliary pointers",
+    "solutions": {
+      "python": "class Solution:\n    def hasCycle(self, head: Optional[ListNode]) -> bool:\n        slow = fast = head\n        while fast and fast.next:\n            slow = slow.next\n            fast = fast.next.next\n            if slow == fast: return True\n        return False",
+      "cpp": "class Solution {\npublic:\n    bool hasCycle(ListNode *head) {\n        ListNode *slow = head, *fast = head;\n        while (fast && fast->next) {\n            slow = slow->next;\n            fast = fast->next->next;\n            if (slow == fast) return true;\n        }\n        return false;\n    }\n};",
+      "java": "public class Solution {\n    public boolean hasCycle(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) return true;\n        }\n        return false;\n    }\n}",
+      "typescript": "function hasCycle(head: ListNode | null): boolean {\n  let slow = head, fast = head;\n  while (fast && fast.next) {\n    slow = slow!.next;\n    fast = fast.next.next;\n    if (slow === fast) return true;\n  }\n  return false;\n}"
+    }
+  },
+  {
+    "id": "dsa-68",
+    "title": "Same Tree",
+    "difficulty": "Easy",
+    "pattern_tag": "Trees & BST",
+    "leetcode_url": "https://leetcode.com/problems/same-tree/",
+    "striver_url": "https://takeuforward.org/data-structure/check-if-two-trees-are-identical/",
+    "youtube_url": "https://www.youtube.com/watch?v=vRbbcKXCxOw",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Recursive structure check: both null -> true; one null or values differ -> false; recurse left and right.",
+    "description": "Given the roots of two binary trees p and q, write a function to check if they are the same or not. Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.",
+    "examples": [
+      {
+        "input": "p = [1,2,3], q = [1,2,3]",
+        "output": "true"
+      },
+      {
+        "input": "p = [1,2], q = [1,null,2]",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in both trees is in the range [0, 100].",
+      "-10^4 <= Node.val <= 10^4"
+    ],
+    "approach": "Base cases: if both p and q are null, return true. If exactly one is null or p.val != q.val, return false. Otherwise return isSameTree(p.left, q.left) and isSameTree(p.right, q.right).",
+    "timeComplexity": "O(n) - Visits every node once",
+    "spaceComplexity": "O(h) - Stack height bounded by tree height",
+    "solutions": {
+      "python": "class Solution:\n    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:\n        if not p and not q: return True\n        if not p or not q or p.val != q.val: return False\n        return self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)",
+      "cpp": "class Solution {\npublic:\n    bool isSameTree(TreeNode* p, TreeNode* q) {\n        if (!p && !q) return true;\n        if (!p || !q || p->val != q->val) return false;\n        return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);\n    }\n};",
+      "java": "class Solution {\n    public boolean isSameTree(TreeNode p, TreeNode q) {\n        if (p == null && q == null) return true;\n        if (p == null || q == null || p.val != q.val) return false;\n        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);\n    }\n}",
+      "typescript": "function isSameTree(p: TreeNode | null, q: TreeNode | null): boolean {\n  if (!p && !q) return true;\n  if (!p || !q || p.val !== q.val) return false;\n  return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);\n}"
+    }
+  },
+  {
+    "id": "dsa-69",
+    "title": "Invert Binary Tree",
+    "difficulty": "Easy",
+    "pattern_tag": "Trees & BST",
+    "leetcode_url": "https://leetcode.com/problems/invert-binary-tree/",
+    "striver_url": "https://takeuforward.org/data-structure/invert-a-binary-tree/",
+    "youtube_url": "https://www.youtube.com/watch?v=OnSn2XEQ4MY",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Recursively swap root.left and root.right subtrees across all nodes in O(n) time.",
+    "description": "Given the root of a binary tree, invert the tree, and return its root.",
+    "examples": [
+      {
+        "input": "root = [4,2,7,1,3,6,9]",
+        "output": "[4,7,2,9,6,3,1]"
+      },
+      {
+        "input": "root = [2,1,3]",
+        "output": "[2,3,1]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 100].",
+      "-100 <= Node.val <= 100"
+    ],
+    "approach": "If root is null, return null. Swap root.left with root.right. Recursively call invertTree on both left and right subtrees.",
+    "timeComplexity": "O(n) - Visits every node once",
+    "spaceComplexity": "O(h) - Maximum depth of tree stack",
+    "solutions": {
+      "python": "class Solution:\n    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:\n        if not root: return None\n        root.left, root.right = root.right, root.left\n        self.invertTree(root.left)\n        self.invertTree(root.right)\n        return root",
+      "cpp": "class Solution {\npublic:\n    TreeNode* invertTree(TreeNode* root) {\n        if (!root) return nullptr;\n        swap(root->left, root->right);\n        invertTree(root->left);\n        invertTree(root->right);\n        return root;\n    }\n};",
+      "java": "class Solution {\n    public TreeNode invertTree(TreeNode root) {\n        if (root == null) return null;\n        TreeNode temp = root.left;\n        root.left = root.right;\n        root.right = temp;\n        invertTree(root.left);\n        invertTree(root.right);\n        return root;\n    }\n}",
+      "typescript": "function invertTree(root: TreeNode | null): TreeNode | null {\n  if (!root) return null;\n  const temp = root.left;\n  root.left = root.right;\n  root.right = temp;\n  invertTree(root.left);\n  invertTree(root.right);\n  return root;\n}"
+    }
+  },
+  {
+    "id": "dsa-70",
+    "title": "Subtree of Another Tree",
+    "difficulty": "Easy",
+    "pattern_tag": "Trees & BST",
+    "leetcode_url": "https://leetcode.com/problems/subtree-of-another-tree/",
+    "striver_url": "https://takeuforward.org/data-structure/check-if-a-tree-is-a-subtree-of-another-tree/",
+    "youtube_url": "https://www.youtube.com/watch?v=E36O5SWp-LE",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Check if root matches subRoot using isSameTree; otherwise recurse down left or right subtrees.",
+    "description": "Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.",
+    "examples": [
+      {
+        "input": "root = [3,4,5,1,2], subRoot = [4,1,2]",
+        "output": "true"
+      },
+      {
+        "input": "root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the root tree is in the range [1, 2000].",
+      "The number of nodes in the subRoot tree is in the range [1, 1000]."
+    ],
+    "approach": "If subRoot is null, return true. If root is null, return false. If isSameTree(root, subRoot) is true, return true. Otherwise return isSubtree(root.left, subRoot) or isSubtree(root.right, subRoot).",
+    "timeComplexity": "O(m * n) - Where m and n are node counts",
+    "spaceComplexity": "O(h) - Stack depth bounded by tree height",
+    "solutions": {
+      "python": "class Solution:\n    def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:\n        if not subRoot: return True\n        if not root: return False\n        if self.sameTree(root, subRoot): return True\n        return self.isSubtree(root.left, subRoot) or self.isSubtree(root.right, subRoot)\n    def sameTree(self, s, t):\n        if not s and not t: return True\n        if not s or not t or s.val != t.val: return False\n        return self.sameTree(s.left, t.left) and self.sameTree(s.right, t.right)",
+      "cpp": "class Solution {\n    bool sameTree(TreeNode* s, TreeNode* t) {\n        if (!s && !t) return true;\n        if (!s || !t || s->val != t->val) return false;\n        return sameTree(s->left, t->left) && sameTree(s->right, t->right);\n    }\npublic:\n    bool isSubtree(TreeNode* root, TreeNode* subRoot) {\n        if (!subRoot) return true;\n        if (!root) return false;\n        if (sameTree(root, subRoot)) return true;\n        return isSubtree(root->left, subRoot) || isSubtree(root->right, subRoot);\n    }\n};",
+      "java": "class Solution {\n    public boolean isSubtree(TreeNode root, TreeNode subRoot) {\n        if (subRoot == null) return true;\n        if (root == null) return false;\n        if (sameTree(root, subRoot)) return true;\n        return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);\n    }\n    private boolean sameTree(TreeNode s, TreeNode t) {\n        if (s == null && t == null) return true;\n        if (s == null || t == null || s.val != t.val) return false;\n        return sameTree(s.left, t.left) && sameTree(s.right, t.right);\n    }\n}",
+      "typescript": "function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {\n  if (!subRoot) return true;\n  if (!root) return false;\n  function same(s: TreeNode | null, t: TreeNode | null): boolean {\n    if (!s && !t) return true;\n    if (!s || !t || s.val !== t.val) return false;\n    return same(s.left, t.left) && same(s.right, t.right);\n  }\n  if (same(root, subRoot)) return true;\n  return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);\n}"
+    }
+  },
+  {
+    "id": "dsa-71",
+    "title": "Binary Tree Level Order Traversal",
+    "difficulty": "Medium",
+    "pattern_tag": "Trees & BST",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
+    "striver_url": "https://takeuforward.org/data-structure/level-order-traversal-of-a-binary-tree/",
+    "youtube_url": "https://www.youtube.com/watch?v=6ZnyEApgFYg",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "BFS queue processing node count len(queue) level by level in O(n) time.",
+    "description": "Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).",
+    "examples": [
+      {
+        "input": "root = [3,9,20,null,null,15,7]",
+        "output": "[[3],[9,20],[15,7]]"
+      },
+      {
+        "input": "root = [1]",
+        "output": "[[1]]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 2000].",
+      "-1000 <= Node.val <= 1000"
+    ],
+    "approach": "Queue BFS: push root to queue. While queue has elements: capture level_size = len(queue). Pop exactly level_size nodes, add their values to current level array, and enqueue their non-null children.",
+    "timeComplexity": "O(n) - Visits every node once",
+    "spaceComplexity": "O(n) - Queue stores max level width (up to n/2 nodes)",
+    "solutions": {
+      "python": "class Solution:\n    def levelOrder(self, root: Optional[TreeNode]) -> list[list[int]]:\n        if not root: return []\n        from collections import deque\n        q = deque([root])\n        res = []\n        while q:\n            level = []\n            for _ in range(len(q)):\n                node = q.popleft()\n                level.append(node.val)\n                if node.left: q.append(node.left)\n                if node.right: q.append(node.right)\n            res.append(level)\n        return res",
+      "cpp": "#include <vector>\n#include <queue>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<vector<int>> levelOrder(TreeNode* root) {\n        if (!root) return {};\n        vector<vector<int>> res;\n        queue<TreeNode*> q;\n        q.push(root);\n        while (!q.empty()) {\n            int len = q.size();\n            vector<int> level;\n            for (int i = 0; i < len; ++i) {\n                TreeNode* node = q.front(); q.pop();\n                level.push_back(node->val);\n                if (node->left) q.push(node->left);\n                if (node->right) q.push(node->right);\n            }\n            res.push_back(level);\n        }\n        return res;\n    }\n};",
+      "java": "import java.util.*;\n\nclass Solution {\n    public List<List<Integer>> levelOrder(TreeNode root) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (root == null) return res;\n        Queue<TreeNode> q = new LinkedList<>();\n        q.offer(root);\n        while (!q.isEmpty()) {\n            int len = q.size();\n            List<Integer> level = new ArrayList<>();\n            for (int i = 0; i < len; i++) {\n                TreeNode node = q.poll();\n                level.add(node.val);\n                if (node.left != null) q.offer(node.left);\n                if (node.right != null) q.offer(node.right);\n            }\n            res.add(level);\n        }\n        return res;\n    }\n}",
+      "typescript": "function levelOrder(root: TreeNode | null): number[][] {\n  if (!root) return [];\n  const res: number[][] = [];\n  const q: TreeNode[] = [root];\n  while (q.length > 0) {\n    const len = q.length;\n    const level: number[] = [];\n    for (let i = 0; i < len; i++) {\n      const node = q.shift()!;\n      level.push(node.val);\n      if (node.left) q.push(node.left);\n      if (node.right) q.push(node.right);\n    }\n    res.push(level);\n  }\n  return res;\n}"
+    }
+  },
+  {
+    "id": "dsa-72",
+    "title": "Binary Tree Maximum Path Sum",
+    "difficulty": "Hard",
+    "pattern_tag": "Trees & BST",
+    "leetcode_url": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
+    "striver_url": "https://takeuforward.org/data-structure/maximum-sum-path-in-binary-tree/",
+    "youtube_url": "https://www.youtube.com/watch?v=Hr5cWUld4vU",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Post-order DFS: update max path through root with left + right + val, return val + max(left, right).",
+    "description": "A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. The path sum of a path is the sum of the node's values in the path. Given the root of a binary tree, return the maximum path sum of any non-empty path.",
+    "examples": [
+      {
+        "input": "root = [1,2,3]",
+        "output": "6",
+        "explanation": "The optimal path is 2 -> 1 -> 3 with a path sum of 2 + 1 + 3 = 6."
+      },
+      {
+        "input": "root = [-10,9,20,null,null,15,7]",
+        "output": "42",
+        "explanation": "The optimal path is 15 -> 20 -> 7 with a path sum of 15 + 20 + 7 = 42."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [1, 3 * 10^4].",
+      "-1000 <= Node.val <= 1000"
+    ],
+    "approach": "DFS post-order helper returns max contribution a subtree can send upwards: node.val + max(0, max(left, right)). Meanwhile, update global maximum with potential split path: node.val + max(0, left) + max(0, right).",
+    "timeComplexity": "O(n) - Single DFS traversal",
+    "spaceComplexity": "O(h) - Call stack bounded by height",
+    "solutions": {
+      "python": "class Solution:\n    def maxPathSum(self, root: Optional[TreeNode]) -> int:\n        res = [root.val]\n        def dfs(node):\n            if not node: return 0\n            left = max(0, dfs(node.left))\n            right = max(0, dfs(node.right))\n            res[0] = max(res[0], node.val + left + right)\n            return node.val + max(left, right)\n        dfs(root)\n        return res[0]",
+      "cpp": "#include <algorithm>\nusing namespace std;\n\nclass Solution {\n    int maxSum;\n    int dfs(TreeNode* node) {\n        if (!node) return 0;\n        int left = max(0, dfs(node->left));\n        int right = max(0, dfs(node->right));\n        maxSum = max(maxSum, node->val + left + right);\n        return node->val + max(left, right);\n    }\npublic:\n    int maxPathSum(TreeNode* root) {\n        maxSum = root->val;\n        dfs(root);\n        return maxSum;\n    }\n};",
+      "java": "class Solution {\n    private int maxSum = Integer.MIN_VALUE;\n    private int dfs(TreeNode node) {\n        if (node == null) return 0;\n        int left = Math.max(0, dfs(node.left));\n        int right = Math.max(0, dfs(node.right));\n        maxSum = Math.max(maxSum, node.val + left + right);\n        return node.val + Math.max(left, right);\n    }\n    public int maxPathSum(TreeNode root) {\n        dfs(root);\n        return maxSum;\n    }\n}",
+      "typescript": "function maxPathSum(root: TreeNode | null): number {\n  let maxSum = -Infinity;\n  function dfs(node: TreeNode | null): number {\n    if (!node) return 0;\n    const left = Math.max(0, dfs(node.left));\n    const right = Math.max(0, dfs(node.right));\n    maxSum = Math.max(maxSum, node.val + left + right);\n    return node.val + Math.max(left, right);\n  }\n  dfs(root);\n  return maxSum;\n}"
+    }
+  },
+  {
+    "id": "dsa-73",
+    "title": "Serialize and Deserialize Binary Tree",
+    "difficulty": "Hard",
+    "pattern_tag": "Trees & BST",
+    "leetcode_url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+    "striver_url": "https://takeuforward.org/data-structure/serialize-and-deserialize-a-binary-tree/",
+    "youtube_url": "https://www.youtube.com/watch?v=u4JAi2JJhIg",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Pre-order DFS traversal recording 'N' for nulls produces deterministic string serialization.",
+    "description": "Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link. Design an algorithm to serialize and deserialize a binary tree.",
+    "examples": [
+      {
+        "input": "root = [1,2,3,null,null,4,5]",
+        "output": "[1,2,3,null,null,4,5]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 10^4].",
+      "-1000 <= Node.val <= 1000"
+    ],
+    "approach": "Preorder traversal: serialize appends val or 'N' separated by commas. Deserialization iterates token by token: if token is 'N' return null; otherwise instantiate TreeNode with token value and recurse left then right.",
+    "timeComplexity": "O(n) - Single pass serialization and deserialization",
+    "spaceComplexity": "O(n) - String and recursion stack",
+    "solutions": {
+      "python": "class Codec:\n    def serialize(self, root):\n        res = []\n        def dfs(node):\n            if not node:\n                res.append(\"N\")\n                return\n            res.append(str(node.val))\n            dfs(node.left)\n            dfs(node.right)\n        dfs(root)\n        return \",\".join(res)\n    def deserialize(self, data):\n        vals = data.split(\",\")\n        self.i = 0\n        def dfs():\n            if vals[self.i] == \"N\":\n                self.i += 1\n                return None\n            node = TreeNode(int(vals[self.i]))\n            self.i += 1\n            node.left = dfs()\n            node.right = dfs()\n            return node\n        return dfs()",
+      "cpp": "#include <string>\n#include <sstream>\n#include <vector>\nusing namespace std;\n\nclass Codec {\n    void rserialize(TreeNode* root, string& str) {\n        if (!root) str += \"N,\";\n        else {\n            str += to_string(root->val) + \",\";\n            rserialize(root->left, str);\n            rserialize(root->right, str);\n        }\n    }\n    TreeNode* rdeserialize(stringstream& ss) {\n        string val;\n        getline(ss, val, ',');\n        if (val == \"N\") return nullptr;\n        TreeNode* root = new TreeNode(stoi(val));\n        root->left = rdeserialize(ss);\n        root->right = rdeserialize(ss);\n        return root;\n    }\npublic:\n    string serialize(TreeNode* root) {\n        string str = \"\";\n        rserialize(root, str);\n        return str;\n    }\n    TreeNode* deserialize(string data) {\n        stringstream ss(data);\n        return rdeserialize(ss);\n    }\n};",
+      "java": "import java.util.*;\n\npublic class Codec {\n    public String serialize(TreeNode root) {\n        StringBuilder sb = new StringBuilder();\n        buildString(root, sb);\n        return sb.toString();\n    }\n    private void buildString(TreeNode node, StringBuilder sb) {\n        if (node == null) sb.append(\"N,\");\n        else {\n            sb.append(node.val).append(\",\");\n            buildString(node.left, sb);\n            buildString(node.right, sb);\n        }\n    }\n    public TreeNode deserialize(String data) {\n        Deque<String> nodes = new LinkedList<>(Arrays.asList(data.split(\",\")));\n        return buildTree(nodes);\n    }\n    private TreeNode buildTree(Deque<String> nodes) {\n        String val = nodes.remove();\n        if (val.equals(\"N\")) return null;\n        TreeNode node = new TreeNode(Integer.parseInt(val));\n        node.left = buildTree(nodes);\n        node.right = buildTree(nodes);\n        return node;\n    }\n}",
+      "typescript": "function serialize(root: TreeNode | null): string {\n  const res: string[] = [];\n  function dfs(node: TreeNode | null) {\n    if (!node) { res.push('N'); return; }\n    res.push(String(node.val));\n    dfs(node.left);\n    dfs(node.right);\n  }\n  dfs(root);\n  return res.join(',');\n}\nfunction deserialize(data: string): TreeNode | null {\n  const vals = data.split(',');\n  let i = 0;\n  function dfs(): TreeNode | null {\n    if (vals[i] === 'N') { i++; return null; }\n    const node = new TreeNode(Number(vals[i++]));\n    node.left = dfs();\n    node.right = dfs();\n    return node;\n  }\n  return dfs();\n}"
+    }
+  },
+  {
+    "id": "dsa-74",
+    "title": "Min Stack",
+    "difficulty": "Medium",
+    "pattern_tag": "Stack & Queue",
+    "leetcode_url": "https://leetcode.com/problems/min-stack/",
+    "striver_url": "https://takeuforward.org/data-structure/implement-min-stack-o2n-and-on-space-complexity/",
+    "youtube_url": "https://www.youtube.com/watch?v=qkLl7nAwDPo",
+    "companies": [
+      "Amazon",
+      "Google",
+      "Meta",
+      "Microsoft"
+    ],
+    "summary": "Dual stack or value+currentMin pair in each stack node guarantees O(1) getMin.",
+    "description": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.",
+    "examples": [
+      {
+        "input": "minStack.push(-2); minStack.push(0); minStack.push(-3); minStack.getMin() -> -3; minStack.pop(); minStack.top() -> 0; minStack.getMin() -> -2",
+        "output": "[-3, 0, -2]"
+      }
+    ],
+    "constraints": [
+      "-2^31 <= val <= 2^31 - 1",
+      "Methods pop, top and getMin operations will always be called on non-empty stacks.",
+      "At most 3 * 10^4 calls will be made to push, pop, top, and getMin."
+    ],
+    "approach": "Maintain two stacks: main stack storing pushed values and minStack storing running minimums. On push(val): append min(val, minStack[-1]) to minStack. On pop: pop both stacks simultaneously.",
+    "timeComplexity": "O(1) for all operations",
+    "spaceComplexity": "O(n) - Two stacks proportional to element count",
+    "solutions": {
+      "python": "class MinStack:\n    def __init__(self):\n        self.stack = []\n        self.min_stack = []\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        cur_min = min(val, self.min_stack[-1] if self.min_stack else val)\n        self.min_stack.append(cur_min)\n    def pop(self) -> None:\n        self.stack.pop()\n        self.min_stack.pop()\n    def top(self) -> int:\n        return self.stack[-1]\n    def getMin(self) -> int:\n        return self.min_stack[-1]",
+      "cpp": "#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> s, minS;\npublic:\n    MinStack() {}\n    void push(int val) {\n        s.push(val);\n        if (minS.empty() || val <= minS.top()) minS.push(val);\n        else minS.push(minS.top());\n    }\n    void pop() {\n        s.pop();\n        minS.pop();\n    }\n    int top() { return s.top(); }\n    int getMin() { return minS.top(); }\n};",
+      "java": "import java.util.Stack;\n\nclass MinStack {\n    private Stack<Integer> s = new Stack<>();\n    private Stack<Integer> minS = new Stack<>();\n    public void push(int val) {\n        s.push(val);\n        int cur = minS.isEmpty() ? val : Math.min(val, minS.peek());\n        minS.push(cur);\n    }\n    public void pop() {\n        s.pop();\n        minS.pop();\n    }\n    public int top() { return s.peek(); }\n    public int getMin() { return minS.peek(); }\n}",
+      "typescript": "class MinStack {\n  private stack: number[] = [];\n  private minStack: number[] = [];\n  push(val: number): void {\n    this.stack.push(val);\n    const cur = this.minStack.length === 0 ? val : Math.min(val, this.minStack[this.minStack.length - 1]);\n    this.minStack.push(cur);\n  }\n  pop(): void {\n    this.stack.pop();\n    this.minStack.pop();\n  }\n  top(): number { return this.stack[this.stack.length - 1]; }\n  getMin(): number { return this.minStack[this.minStack.length - 1]; }\n}"
+    }
+  },
+  {
+    "id": "dsa-75",
+    "title": "Reverse Bits",
+    "difficulty": "Easy",
+    "pattern_tag": "Bit Manipulation",
+    "leetcode_url": "https://leetcode.com/problems/reverse-bits/",
+    "striver_url": "https://takeuforward.org/data-structure/reverse-bits/",
+    "youtube_url": "https://www.youtube.com/watch?v=UcoN6UjAI64",
+    "companies": [
+      "Amazon",
+      "Apple",
+      "Google",
+      "Microsoft"
+    ],
+    "summary": "Extract least significant bit and shift into result for 32 iterations in O(1) time.",
+    "description": "Reverse bits of a given 32 bits unsigned integer.",
+    "examples": [
+      {
+        "input": "n = 00000010100101000001111010011100",
+        "output": "964176192 (00111001011110000010100101000000)"
+      }
+    ],
+    "constraints": [
+      "The input must be a binary string of length 32."
+    ],
+    "approach": "Iterate 32 times. In each iteration, extract lowest bit (n & 1), shift result left by 1 and OR with extracted bit, then shift n right by 1.",
+    "timeComplexity": "O(1) - Exactly 32 operations",
+    "spaceComplexity": "O(1) - Constant variables",
+    "solutions": {
+      "python": "class Solution:\n    def reverseBits(self, n: int) -> int:\n        res = 0\n        for _ in range(32):\n            res = (res << 1) | (n & 1)\n            n >>= 1\n        return res",
+      "cpp": "class Solution {\npublic:\n    uint32_t reverseBits(uint32_t n) {\n        uint32_t res = 0;\n        for (int i = 0; i < 32; ++i) {\n            res = (res << 1) | (n & 1);\n            n >>= 1;\n        }\n        return res;\n    }\n};",
+      "java": "public class Solution {\n    public int reverseBits(int n) {\n        int res = 0;\n        for (int i = 0; i < 32; i++) {\n            res = (res << 1) | (n & 1);\n            n >>>= 1;\n        }\n        return res;\n    }\n}",
+      "typescript": "function reverseBits(n: number): number {\n  let res = 0;\n  for (let i = 0; i < 32; i++) {\n    res = (res * 2) + (n & 1);\n    n = Math.floor(n / 2);\n  }\n  return res;\n}"
     }
   }
 ];

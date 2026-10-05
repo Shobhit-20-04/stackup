@@ -198,15 +198,15 @@ export default function HomePage() {
         {/* Stats Strip */}
         <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">
-            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">30+</div>
-            <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">High-Frequency Patterns</div>
+            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">75+</div>
+            <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">High-Frequency Problems</div>
             <div className="text-[11px] text-zinc-500">Blind 75 &amp; Striver SDE sheet</div>
           </div>
 
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">
-            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">4 Pillars</div>
+            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">5 Pillars</div>
             <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Core CS Coverage</div>
-            <div className="text-[11px] text-zinc-500">OS, DBMS, Networks, OOPs</div>
+            <div className="text-[11px] text-zinc-500">OS, DBMS, CN, OOPs, System Design</div>
           </div>
 
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">

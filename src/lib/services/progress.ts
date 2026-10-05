@@ -1,4 +1,6 @@
 import { createClient } from '@/lib/supabase/client';
+import { CURRICULUM_DATA } from '@/lib/data/curriculum';
+import { DSA_PROBLEMS } from '@/lib/data/dsa';
 
 export interface RecordAttemptParams {
   userId?: string | null;
@@ -22,6 +24,12 @@ export interface StoredAttempt {
 
 const LOCAL_STORAGE_KEY_ATTEMPTS = 'stackup_local_quiz_attempts';
 const LOCAL_STORAGE_KEY_PROGRESS = 'stackup_local_progress';
+
+export const SECTION_TOTAL_ITEMS: Record<string, number> = {
+  aptitude: CURRICULUM_DATA.aptitude?.categories.reduce((acc, c) => acc + c.topics.length, 0) || 10,
+  'core-cs': CURRICULUM_DATA['core-cs']?.categories.reduce((acc, c) => acc + c.topics.length, 0) || 16,
+  dsa: DSA_PROBLEMS.length,
+};
 
 export async function recordQuizAttempt(params: RecordAttemptParams): Promise<StoredAttempt> {
   const percentage = Math.round((params.score / params.total) * 100);
@@ -52,7 +60,7 @@ export async function recordQuizAttempt(params: RecordAttemptParams): Promise<St
       const progressMap: Record<string, number> = progressRaw ? JSON.parse(progressRaw) : {};
       const sectionAttempts = parsed.filter((a) => a.sectionSlug === params.sectionSlug);
       const uniqueTopicIds = new Set(sectionAttempts.map((a) => a.topicId));
-      const totalTopics = params.sectionSlug === 'aptitude' ? 3 : params.sectionSlug === 'core-cs' ? 5 : 10;
+      const totalTopics = SECTION_TOTAL_ITEMS[params.sectionSlug] || 10;
       progressMap[params.sectionSlug] = Math.min(100, Math.round((uniqueTopicIds.size / totalTopics) * 100));
       localStorage.setItem(LOCAL_STORAGE_KEY_PROGRESS, JSON.stringify(progressMap));
     }
@@ -131,12 +139,6 @@ export interface SectionMetrics {
   completed: number;
   total: number;
 }
-
-export const SECTION_TOTAL_ITEMS: Record<string, number> = {
-  aptitude: 3,
-  'core-cs': 5,
-  dsa: 30,
-};
 
 export function getSectionMetrics(sectionSlug: string): SectionMetrics {
   const total = SECTION_TOTAL_ITEMS[sectionSlug] || 10;

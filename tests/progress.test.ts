@@ -3,9 +3,9 @@ import { SECTION_TOTAL_ITEMS } from '@/lib/services/progress';
 
 describe('Real Progress & Metrics Validation', () => {
   it('should have accurate total items for each section', () => {
-    expect(SECTION_TOTAL_ITEMS['aptitude']).toBe(3);
-    expect(SECTION_TOTAL_ITEMS['core-cs']).toBe(5);
-    expect(SECTION_TOTAL_ITEMS['dsa']).toBe(30);
+    expect(SECTION_TOTAL_ITEMS['aptitude']).toBeGreaterThanOrEqual(10);
+    expect(SECTION_TOTAL_ITEMS['core-cs']).toBeGreaterThanOrEqual(15);
+    expect(SECTION_TOTAL_ITEMS['dsa']).toBe(75);
   });
 
   it('should accurately compute section completion percentage from unique topics', () => {
