@@ -30,6 +30,20 @@ function LoginForm() {
   // Credentials modal state
   const [credentialsModalOpen, setCredentialsModalOpen] = useState(false);
   const [isSupabaseLive, setIsSupabaseLive] = useState(false);
+  const [isAdminMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const isParamAdmin = params.get('admin') === 'true';
+      if (isParamAdmin) {
+        localStorage.setItem('stackup_admin_mode', 'true');
+        return true;
+      }
+      return localStorage.getItem('stackup_admin_mode') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   // Phone OTP state
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -69,8 +83,7 @@ function LoginForm() {
       const isPlaceholder = !supabaseUrl || supabaseUrl.includes('placeholder');
 
       if (isPlaceholder && !isSupabaseLive) {
-        setErrorMsg('Google Sign-In requires connecting your live Supabase project where Google OAuth is configured.');
-        setOauthHelp('To enable Google login: Click "Connect Supabase" below and enter your project URL and Anon Key. In your Supabase Dashboard, toggle Google Auth under Authentication > Providers.');
+        setOauthHelp('To enable Google login, ensure Google Auth is enabled under Authentication > Providers in your Supabase project dashboard.');
         setLoading(false);
         return;
       }
@@ -602,15 +615,17 @@ function LoginForm() {
               <span>Explore as Guest Student (Clean 0% Baseline)</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setCredentialsModalOpen(true)}
-              className="w-full py-2.5 px-4 rounded-xl border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/50 dark:bg-indigo-950/20 text-xs font-semibold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors flex items-center justify-center space-x-1.5"
-            >
-              <Database className="w-3.5 h-3.5" />
-              <span>Configure Live Supabase &amp; API Keys</span>
-              <ExternalLink className="w-3 h-3 ml-1" />
-            </button>
+            {isAdminMode && (
+              <button
+                type="button"
+                onClick={() => setCredentialsModalOpen(true)}
+                className="w-full py-2.5 px-4 rounded-xl border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/50 dark:bg-indigo-950/20 text-xs font-semibold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors flex items-center justify-center space-x-1.5"
+              >
+                <Database className="w-3.5 h-3.5" />
+                <span>Configure Live Supabase &amp; API Keys</span>
+                <ExternalLink className="w-3 h-3 ml-1" />
+              </button>
+            )}
           </div>
 
           {/* Security footnote */}

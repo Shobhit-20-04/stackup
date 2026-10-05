@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/services/rate-limit';
 import { createClient } from '@/lib/supabase/server';
+import type { Json } from '@/lib/types/database';
 // Dynamically import or require parsers to avoid cold-start penalties
 import mammoth from 'mammoth';
 
@@ -219,6 +220,8 @@ export async function POST(req: NextRequest) {
 
     let resumeText = '';
     let filename = 'Uploaded_Resume.pdf';
+    let fileSize: number | null = null;
+    let mimeType: string | null = null;
 
     const contentType = req.headers.get('content-type') || '';
 
@@ -238,9 +241,11 @@ export async function POST(req: NextRequest) {
       }
 
       filename = file.name;
+      fileSize = file.size;
       const lowerName = filename.toLowerCase();
 
       if (lowerName.endsWith('.pdf')) {
+        mimeType = file.type || 'application/pdf';
         try {
           const buffer = Buffer.from(await file.arrayBuffer());
           // Use dynamic require for pdf-parse to avoid edge runtime issues
@@ -253,6 +258,7 @@ export async function POST(req: NextRequest) {
           resumeText = `Software Engineer Resume ${filename}`;
         }
       } else if (lowerName.endsWith('.docx')) {
+        mimeType = file.type || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         try {
           const buffer = Buffer.from(await file.arrayBuffer());
           const docxResult = await mammoth.extractRawText({ buffer });
@@ -261,6 +267,7 @@ export async function POST(req: NextRequest) {
           resumeText = `Software Engineer Resume ${filename}`;
         }
       } else if (lowerName.endsWith('.txt')) {
+        mimeType = file.type || 'text/plain';
         resumeText = await file.text();
       } else {
         return NextResponse.json(
@@ -273,6 +280,8 @@ export async function POST(req: NextRequest) {
       const body = await req.json();
       resumeText = body.text || '';
       filename = body.filename || 'Sample_Resume.pdf';
+      fileSize = Buffer.byteLength(resumeText, 'utf8');
+      mimeType = 'text/plain';
     }
 
     if (!resumeText || resumeText.trim().length === 0) {
@@ -334,27 +343,42 @@ ${resumeText.slice(0, 4000)}`,
       analysis = analyzeResumeLocally(resumeText, filename);
     }
 
-    // 3. Optional: Sync to Supabase resume_analyses table if user has session
+    // 3. Store uploaded resume and analysis permanently in Supabase Postgres
     try {
       const supabase = await createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await (supabase.from('resume_analyses') as unknown as {
-          insert: (data: {
-            user_id: string;
-            filename: string;
-            ats_score: number;
-            feedback: unknown;
-          }) => Promise<unknown>;
-        }).insert({
-          user_id: user.id,
-          filename: analysis.filename,
-          ats_score: analysis.ats_score,
-          feedback: analysis,
-        });
-      }
-    } catch {
-      // Supabase is optional in offline dev mode
+
+      // Extract candidate email if present in resume text or authenticated session
+      const emailMatch = resumeText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+      const detectedEmail = user?.email || (emailMatch ? emailMatch[0] : null);
+
+      // Store in uploaded_resumes table (persists for all users and visitors)
+      await (supabase.from('uploaded_resumes') as unknown as {
+        insert: (data: Record<string, unknown>) => Promise<unknown>;
+      }).insert({
+        filename: analysis.filename,
+        file_size: fileSize,
+        mime_type: mimeType,
+        resume_text: resumeText,
+        ats_score: analysis.ats_score,
+        analysis: analysis as unknown as Json,
+        user_id: user?.id || null,
+        user_email: detectedEmail,
+        ip_address: ip,
+      });
+
+      // Also record in resume_analyses table
+      await (supabase.from('resume_analyses') as unknown as {
+        insert: (data: Record<string, unknown>) => Promise<unknown>;
+      }).insert({
+        user_id: user?.id || null,
+        filename: analysis.filename,
+        ats_score: analysis.ats_score,
+        feedback: analysis as unknown as Json,
+        resume_text: resumeText,
+      });
+    } catch (dbErr) {
+      console.warn('Note: Storing resume in Supabase encountered an issue:', dbErr);
     }
 
     return NextResponse.json(analysis);

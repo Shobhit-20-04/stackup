@@ -1,18 +1,27 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Code2, 
   ExternalLink, 
   Video, 
   BookOpen, 
   Search, 
-  Sparkles,
-  RotateCcw,
-  Check,
-  Building2
+  Sparkles, 
+  RotateCcw, 
+  Check, 
+  Building2,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Clock,
+  HardDrive,
+  Lightbulb,
+  FileText,
+  Terminal,
+  Loader2
 } from 'lucide-react';
-import { DSA_PROBLEMS, DSA_CATEGORIES } from '@/lib/data/dsa';
+import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
 
 export default function DsaHubPage() {
@@ -20,7 +29,18 @@ export default function DsaHubPage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [showOnlyUnsolved, setShowOnlyUnsolved] = useState(false);
-  const [expandedSummary, setExpandedSummary] = useState<string | null>(null);
+  
+  // Expanded Complete Output panel state
+  const [expandedProblemId, setExpandedProblemId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'problem' | 'approach' | 'code'>('problem');
+  const [activeLang, setActiveLang] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Progressive scroll loading
+  const PAGE_SIZE = 10;
+  const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   // Solved problem IDs persisted in localStorage (lazy initializer for SSR & React 19)
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
@@ -88,6 +108,48 @@ export default function DsaHubPage() {
     });
   }, [selectedCategory, selectedDifficulty, showOnlyUnsolved, searchQuery, solvedIds]);
 
+  // Reset visibleCount whenever filters change (React render-phase pattern)
+  const filterKey = `${selectedCategory}-${selectedDifficulty}-${searchQuery}-${showOnlyUnsolved}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  // Progressive infinite scroll intersection observer
+  useEffect(() => {
+    const target = observerTarget.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < filteredProblems.length && !isLoadingMore) {
+          setIsLoadingMore(true);
+          setTimeout(() => {
+            setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredProblems.length));
+            setIsLoadingMore(false);
+          }, 200);
+        }
+      },
+      { threshold: 0.1, rootMargin: '250px' }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [visibleCount, filteredProblems.length, isLoadingMore]);
+
+  const displayedProblems = useMemo(() => {
+    return filteredProblems.slice(0, visibleCount);
+  }, [filteredProblems, visibleCount]);
+
+  const handleCopyCode = (code: string, id: string) => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(code);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
+
   // Statistics
   const totalCount = DSA_PROBLEMS.length;
   const solvedCount = solvedIds.length;
@@ -117,7 +179,7 @@ export default function DsaHubPage() {
                 DSA Practice Hub
               </h1>
               <p className="mt-2 text-zinc-600 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
-                A hand-picked roadmap of high-frequency interview patterns across LeetCode, Striver&apos;s SDE Sheet, and top tech companies. Master patterns, not just problems.
+                A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, Striver&apos;s SDE Sheet, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
               </p>
             </div>
 
@@ -236,8 +298,22 @@ export default function DsaHubPage() {
           </div>
         </div>
 
+        {/* Dynamic Problem Count Header */}
+        <div className="flex items-center justify-between px-2 mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+          <div>
+            Showing <span className="font-semibold text-zinc-800 dark:text-zinc-200">{displayedProblems.length}</span> of{' '}
+            <span className="font-semibold text-zinc-800 dark:text-zinc-200">{filteredProblems.length}</span> problems
+          </div>
+          {visibleCount < filteredProblems.length && (
+            <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Scroll down to reveal more</span>
+            </div>
+          )}
+        </div>
+
         {/* Problems List */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filteredProblems.length === 0 ? (
             <div className="bg-white dark:bg-zinc-900 p-12 text-center rounded-2xl border border-zinc-200 dark:border-zinc-800">
               <Code2 className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
@@ -256,14 +332,14 @@ export default function DsaHubPage() {
               </button>
             </div>
           ) : (
-            filteredProblems.map((problem) => {
+            displayedProblems.map((problem: DsaProblem) => {
               const isSolved = solvedIds.includes(problem.id);
-              const isSummaryOpen = expandedSummary === problem.id;
+              const isExpanded = expandedProblemId === problem.id;
 
               return (
                 <div 
                   key={problem.id}
-                  className={`bg-white dark:bg-zinc-900 rounded-xl border transition-all duration-200 ${
+                  className={`bg-white dark:bg-zinc-900 rounded-2xl border transition-all duration-200 shadow-sm ${
                     isSolved 
                       ? 'border-emerald-200 dark:border-emerald-950/60 bg-emerald-50/20 dark:bg-emerald-950/10' 
                       : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
@@ -326,25 +402,15 @@ export default function DsaHubPage() {
                       </div>
                     </div>
 
-                    {/* Right: Action links */}
+                    {/* Right: Direct Portal Links & Expand Complete Output Button */}
                     <div className="flex items-center space-x-2 sm:self-center self-end pt-2 sm:pt-0">
-                      {/* Hint / Strategy Dropdown toggle */}
-                      <button
-                        onClick={() => setExpandedSummary(isSummaryOpen ? null : problem.id)}
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center space-x-1"
-                        title="Key intuition / pattern breakdown"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Intuition</span>
-                      </button>
-
                       {/* LeetCode Link */}
                       <a
                         href={problem.leetcode_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 flex items-center space-x-1 transition-colors"
-                        title="Open on LeetCode"
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 flex items-center space-x-1.5 transition-colors border border-amber-200/50 dark:border-amber-900/40"
+                        title="Practice on LeetCode"
                       >
                         <span>LeetCode</span>
                         <ExternalLink className="w-3 h-3" />
@@ -355,8 +421,8 @@ export default function DsaHubPage() {
                         href={problem.striver_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center space-x-1 transition-colors"
-                        title="Open Striver's SDE Sheet solution"
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center space-x-1.5 transition-colors border border-indigo-200/50 dark:border-indigo-900/40"
+                        title="Open Striver's SDE Sheet guide"
                       >
                         <span>Striver</span>
                         <BookOpen className="w-3 h-3" />
@@ -367,28 +433,307 @@ export default function DsaHubPage() {
                         href={problem.youtube_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                        title="Watch video explanation"
+                        className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors border border-rose-200/40 dark:border-rose-900/40"
+                        title="Watch full video tutorial on YouTube"
                       >
                         <Video className="w-4 h-4" />
                       </a>
+
+                      {/* Complete Output Accordion Trigger */}
+                      <button
+                        onClick={() => {
+                          if (isExpanded) {
+                            setExpandedProblemId(null);
+                          } else {
+                            setExpandedProblemId(problem.id);
+                            setActiveTab('problem');
+                          }
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                          isExpanded
+                            ? 'bg-zinc-800 dark:bg-zinc-700 text-white shadow-sm'
+                            : 'bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-750 text-zinc-700 dark:text-zinc-200'
+                        }`}
+                        title="View complete problem output, approach, and code solutions"
+                      >
+                        <Terminal className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                        <span>{isExpanded ? 'Hide Output' : 'Complete Output'}</span>
+                        {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </button>
                     </div>
                   </div>
 
-                  {/* Expandable Intuition / Approach Note */}
-                  {isSummaryOpen && (
-                    <div className="px-5 pb-4 pt-1 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-50/50 dark:bg-zinc-900/50 rounded-b-xl flex items-start space-x-2">
-                      <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-semibold text-zinc-800 dark:text-zinc-200">Core Pattern Intuition: </span>
-                        {problem.summary}
+                  {/* Complete Output Expandable Body */}
+                  {isExpanded && (
+                    <div className="border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/90 rounded-b-2xl p-5 space-y-4">
+                      {/* Top Tabs */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+                        <div className="flex items-center space-x-1 bg-zinc-200/70 dark:bg-zinc-800 p-1 rounded-xl">
+                          <button
+                            onClick={() => setActiveTab('problem')}
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              activeTab === 'problem'
+                                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
+                                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                          >
+                            <FileText className="w-3.5 h-3.5 text-blue-500" />
+                            <span>Problem &amp; Examples</span>
+                          </button>
+
+                          <button
+                            onClick={() => setActiveTab('approach')}
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              activeTab === 'approach'
+                                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
+                                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                          >
+                            <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                            <span>Optimal Approach &amp; Complexity</span>
+                          </button>
+
+                          <button
+                            onClick={() => setActiveTab('code')}
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              activeTab === 'code'
+                                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
+                                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                          >
+                            <Code2 className="w-3.5 h-3.5 text-emerald-500" />
+                            <span>Code Solutions</span>
+                          </button>
+                        </div>
+
+                        {/* Direct portal badges */}
+                        <div className="flex items-center space-x-2 text-xs">
+                          <a
+                            href={problem.leetcode_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-1 text-amber-600 dark:text-amber-400 hover:underline"
+                          >
+                            <span>LeetCode #</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                          <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                          <a
+                            href={problem.striver_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                          >
+                            <span>Striver Guide</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                          <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                          <a
+                            href={problem.youtube_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-1 text-rose-600 dark:text-rose-400 hover:underline"
+                          >
+                            <span>Video Solution</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
                       </div>
+
+                      {/* Tab 1: Problem Statement & Examples */}
+                      {activeTab === 'problem' && (
+                        <div className="space-y-4">
+                          {/* Description */}
+                          <div>
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                              Problem Statement
+                            </h4>
+                            <p className="text-sm text-zinc-800 dark:text-zinc-200 leading-relaxed bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                              {problem.description}
+                            </p>
+                          </div>
+
+                          {/* Examples */}
+                          <div>
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                              Sample Test Cases &amp; Outputs
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {problem.examples.map((ex, idx) => (
+                                <div 
+                                  key={idx}
+                                  className="bg-white dark:bg-zinc-900 p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs space-y-2"
+                                >
+                                  <div className="flex items-center justify-between text-zinc-400 font-mono text-[11px] pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                    <span>Example {idx + 1}</span>
+                                  </div>
+                                  <div>
+                                    <span className="font-semibold text-zinc-500 dark:text-zinc-400 block mb-0.5">Input:</span>
+                                    <code className="text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded block font-mono">
+                                      {ex.input}
+                                    </code>
+                                  </div>
+                                  <div>
+                                    <span className="font-semibold text-zinc-500 dark:text-zinc-400 block mb-0.5">Output:</span>
+                                    <code className="text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 rounded block font-mono font-semibold">
+                                      {ex.output}
+                                    </code>
+                                  </div>
+                                  {ex.explanation && (
+                                    <div className="text-zinc-600 dark:text-zinc-400 pt-1 text-[11px] leading-relaxed">
+                                      <span className="font-medium text-zinc-700 dark:text-zinc-300">Explanation: </span>
+                                      {ex.explanation}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Constraints */}
+                          <div>
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                              Constraints
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {problem.constraints.map((c, idx) => (
+                                <span 
+                                  key={idx}
+                                  className="text-xs font-mono bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800"
+                                >
+                                  {c}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tab 2: Optimal Approach & Complexity */}
+                      {activeTab === 'approach' && (
+                        <div className="space-y-4">
+                          <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <div className="flex items-center space-x-2 mb-2 text-amber-600 dark:text-amber-400 font-semibold text-sm">
+                              <Sparkles className="w-4 h-4" />
+                              <span>Core Algorithmic Intuition</span>
+                            </div>
+                            <p className="text-sm text-zinc-800 dark:text-zinc-200 leading-relaxed">
+                              {problem.approach}
+                            </p>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Time Complexity */}
+                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 flex items-start space-x-3">
+                              <div className="p-2.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+                                <Clock className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 block">
+                                  Time Complexity
+                                </span>
+                                <span className="text-sm font-bold text-zinc-900 dark:text-white font-mono mt-0.5 block">
+                                  {problem.timeComplexity}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Space Complexity */}
+                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 flex items-start space-x-3">
+                              <div className="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400">
+                                <HardDrive className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 block">
+                                  Space Complexity
+                                </span>
+                                <span className="text-sm font-bold text-zinc-900 dark:text-white font-mono mt-0.5 block">
+                                  {problem.spaceComplexity}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tab 3: Complete Working Code Solutions */}
+                      {activeTab === 'code' && (
+                        <div className="space-y-3">
+                          {/* Language Switcher & Copy Button */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-1.5 bg-zinc-200/80 dark:bg-zinc-800 p-1 rounded-xl">
+                              {(['python', 'cpp', 'java', 'typescript'] as const).map((lang) => (
+                                <button
+                                  key={lang}
+                                  onClick={() => setActiveLang(lang)}
+                                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                                    activeLang === lang
+                                      ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white font-semibold shadow-sm'
+                                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                                  }`}
+                                >
+                                  {lang === 'python' ? 'Python 3' : lang === 'cpp' ? 'C++' : lang === 'java' ? 'Java' : 'TypeScript'}
+                                </button>
+                              ))}
+                            </div>
+
+                            <button
+                              onClick={() => handleCopyCode(problem.solutions[activeLang], problem.id)}
+                              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-750 transition-colors shadow-sm"
+                            >
+                              {copiedId === problem.id ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                                  <span>Copy Solution</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+
+                          {/* Code Display */}
+                          <div className="relative rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950 text-zinc-100 font-mono text-xs shadow-inner">
+                            <div className="flex items-center justify-between px-4 py-2 bg-zinc-900/80 border-b border-zinc-800/80 text-[11px] text-zinc-400">
+                              <span>Solution • {activeLang.toUpperCase()}</span>
+                              <span>Verified on LeetCode</span>
+                            </div>
+                            <pre className="p-4 overflow-x-auto leading-relaxed max-h-[400px]">
+                              <code>{problem.solutions[activeLang]}</code>
+                            </pre>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               );
             })
           )}
+        </div>
+
+        {/* Scroll Sentinel for Progressive Loading */}
+        <div ref={observerTarget} className="pt-8 pb-4 flex flex-col items-center justify-center">
+          {isLoadingMore ? (
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-600 dark:text-zinc-400 shadow-sm">
+              <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
+              <span>Loading more problems on scroll...</span>
+            </div>
+          ) : visibleCount < filteredProblems.length ? (
+            <button
+              onClick={() => setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredProblems.length))}
+              className="px-5 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 shadow-sm transition-all"
+            >
+              Load More ({filteredProblems.length - displayedProblems.length} remaining)
+            </button>
+          ) : filteredProblems.length > 0 ? (
+            <div className="text-center text-xs text-zinc-400 dark:text-zinc-500 py-2">
+              All {filteredProblems.length} problems loaded • Ready to crack your technical interviews
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
