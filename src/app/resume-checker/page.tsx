@@ -16,9 +16,10 @@ import {
   Loader2, 
   TrendingUp, 
   ChevronRight,
-  BookmarkPlus
+  BookmarkPlus,
+  Lock
 } from 'lucide-react';
-import { getCurrentUser } from '@/lib/auth/session';
+import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/client';
 
 interface AnalysisResult {
@@ -54,6 +55,11 @@ export default function ResumeCheckerPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+
+  React.useEffect(() => {
+    getCurrentUser().then((u) => setCurrentUser(u));
+  }, []);
 
   // File drag & drop state
   const [isDragging, setIsDragging] = useState(false);
@@ -439,6 +445,37 @@ export default function ResumeCheckerPage() {
               </div>
             </div>
 
+            {/* Restricted Content Lock for Visitors */}
+            {!currentUser ? (
+              <div className="rounded-3xl border border-indigo-200/80 dark:border-indigo-900/60 bg-gradient-to-b from-indigo-50/70 via-white to-white dark:from-indigo-950/30 dark:via-zinc-900 dark:to-zinc-900 p-8 text-center shadow-lg space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto mb-2 shadow-lg shadow-indigo-600/25">
+                  <Lock className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white">
+                  Detailed Keyword Gap Audit &amp; STAR Bullet Rewrites Locked
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+                  Sign in or create a free account to unlock your complete keyword gap analysis, custom section recommendations, line-by-line STAR bullet rewrites, and save your resume to your personal dashboard.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2"
+                  >
+                    <span>Sign In to Unlock Full Report</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-sm hover:bg-zinc-50 dark:hover:bg-zinc-750 transition-colors"
+                  >
+                    Create Free Account
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <>
             {/* Keyword Analysis Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Matched Keywords */}
@@ -622,8 +659,10 @@ export default function ResumeCheckerPage() {
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-          </div>
+          </>
         )}
+      </div>
+    )}
       </div>
     </div>
   );

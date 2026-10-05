@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -9,8 +10,11 @@ import {
   X, 
   Send, 
   Sparkles, 
-  Loader2 
+  Loader2,
+  Lock,
+  ArrowRight
 } from 'lucide-react';
+import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 
 interface Message {
   id: string;
@@ -23,6 +27,13 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [userPromptCount, setUserPromptCount] = useState(0);
+
+  useEffect(() => {
+    getCurrentUser().then((u) => setCurrentUser(u));
+  }, []);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -99,6 +110,7 @@ export default function ChatWidget() {
 
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+    setUserPromptCount((prev) => prev + 1);
     setLoading(true);
 
     try {
@@ -232,30 +244,49 @@ export default function ChatWidget() {
             ))}
           </div>
 
-          {/* Input Box */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSendMessage();
-            }}
-            className="p-3 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center space-x-2"
-          >
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={`Ask about ${sectionContext}...`}
-              className="flex-1 px-3.5 py-2 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-900 dark:text-white placeholder:text-zinc-400"
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || loading}
-              className="p-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white rounded-xl transition-all shadow-sm"
-              aria-label="Send message"
+          {/* Input Box or Guest Lock Card */}
+          {!currentUser && userPromptCount >= 1 ? (
+            <div className="p-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-indigo-50/70 dark:bg-indigo-950/40 text-center space-y-2">
+              <div className="flex items-center justify-center space-x-1.5 text-xs text-indigo-700 dark:text-indigo-300 font-semibold">
+                <Lock className="w-3.5 h-3.5" />
+                <span>Free preview prompt used</span>
+              </div>
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                Sign in to continue unlimited AI interview prep with StackUp Assistant.
+              </p>
+              <Link
+                href={`/login?redirect=${encodeURIComponent(pathname)}`}
+                className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-sm transition-all"
+              >
+                <span>Sign In to Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMessage();
+              }}
+              className="p-3 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center space-x-2"
             >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={`Ask about ${sectionContext}...`}
+                className="flex-1 px-3.5 py-2 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-900 dark:text-white placeholder:text-zinc-400"
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() || loading}
+                className="p-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white rounded-xl transition-all shadow-sm"
+                aria-label="Send message"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+          )}
         </div>
       )}
     </div>

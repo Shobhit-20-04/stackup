@@ -15,7 +15,8 @@ import {
   Layers, 
   Menu, 
   X,
-  Database
+  Database,
+  ShieldCheck
 } from 'lucide-react';
 import CredentialsModal from '@/components/CredentialsModal';
 
@@ -106,6 +107,7 @@ export default function Navbar() {
     { name: 'Core CS', href: '/core-cs', icon: Cpu },
     { name: 'DSA Hub', href: '/dsa', icon: Code2 },
     { name: 'ATS Resume', href: '/resume-checker', icon: FileCheck2 },
+    { name: 'Admin', href: '/admin', icon: ShieldCheck },
   ];
 
   return (

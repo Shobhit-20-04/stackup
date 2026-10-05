@@ -578,7 +578,7 @@ export default function DsaHubPage() {
                               Sample Test Cases &amp; Outputs
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {problem.examples.map((ex, idx) => (
+                              {(currentUser ? problem.examples : problem.examples.slice(0, 1)).map((ex, idx) => (
                                 <div 
                                   key={idx}
                                   className="bg-white dark:bg-zinc-900 p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs space-y-2"
@@ -609,22 +609,38 @@ export default function DsaHubPage() {
                             </div>
                           </div>
 
-                          {/* Constraints */}
-                          <div>
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
-                              Constraints
-                            </h4>
-                            <div className="flex flex-wrap gap-2">
-                              {problem.constraints.map((c, idx) => (
-                                <span 
-                                  key={idx}
-                                  className="text-xs font-mono bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800"
-                                >
-                                  {c}
-                                </span>
-                              ))}
+                          {/* Constraints & Member Teaser */}
+                          {currentUser ? (
+                            <div>
+                              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                                Constraints
+                              </h4>
+                              <div className="flex flex-wrap gap-2">
+                                {problem.constraints.map((c, idx) => (
+                                  <span 
+                                    key={idx}
+                                    className="text-xs font-mono bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800"
+                                  >
+                                    {c}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
-                          </div>
+                          ) : (
+                            <div className="p-4 rounded-xl border border-indigo-200/80 dark:border-indigo-900/60 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center space-x-2 text-indigo-700 dark:text-indigo-300 font-medium">
+                                <Lock className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                <span>Additional test cases, edge cases, and boundary constraints are locked for visitors.</span>
+                              </div>
+                              <Link
+                                href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
+                              >
+                                <span>Sign In to Unlock</span>
+                                <ArrowRight className="w-3 h-3" />
+                              </Link>
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -637,9 +653,25 @@ export default function DsaHubPage() {
                               <span>Core Algorithmic Intuition</span>
                             </div>
                             <p className="text-sm text-zinc-800 dark:text-zinc-200 leading-relaxed">
-                              {problem.approach}
+                              {currentUser ? problem.approach : `${problem.approach.slice(0, 130)}...`}
                             </p>
                           </div>
+
+                          {!currentUser && (
+                            <div className="p-4 rounded-xl border border-indigo-200/80 dark:border-indigo-900/60 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center space-x-2 text-indigo-700 dark:text-indigo-300 font-medium">
+                                <Lock className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                <span>Full algorithmic walk-through and Big-O proofs are locked for visitors.</span>
+                              </div>
+                              <Link
+                                href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
+                              >
+                                <span>Sign In to Unlock</span>
+                                <ArrowRight className="w-3 h-3" />
+                              </Link>
+                            </div>
+                          )}
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Time Complexity */}
@@ -652,7 +684,7 @@ export default function DsaHubPage() {
                                   Time Complexity
                                 </span>
                                 <span className="text-sm font-bold text-zinc-900 dark:text-white font-mono mt-0.5 block">
-                                  {problem.timeComplexity}
+                                  {currentUser ? problem.timeComplexity : 'Sign in to view'}
                                 </span>
                               </div>
                             </div>
@@ -667,7 +699,7 @@ export default function DsaHubPage() {
                                   Space Complexity
                                 </span>
                                 <span className="text-sm font-bold text-zinc-900 dark:text-white font-mono mt-0.5 block">
-                                  {problem.spaceComplexity}
+                                  {currentUser ? problem.spaceComplexity : 'Sign in to view'}
                                 </span>
                               </div>
                             </div>
