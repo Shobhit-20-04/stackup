@@ -40,12 +40,19 @@ export async function getCurrentUser(): Promise<UserSession | null> {
     console.debug('Supabase auth check bypassed:', err);
   }
 
-  // 2. Fall back to demo session from localStorage or cookie
+  // 2. Fall back to authenticated session from localStorage or cookie
   if (typeof window !== 'undefined') {
     try {
       const stored = localStorage.getItem(DEMO_STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed: UserSession = JSON.parse(stored);
+        // Automatically purge legacy guest/demo sessions so unauthorized visitors are restricted
+        if (parsed.isDemo || parsed.id === 'student-demo' || parsed.email === 'guest@stackup.xyz') {
+          localStorage.removeItem(DEMO_STORAGE_KEY);
+          document.cookie = `${COOKIE_KEY}=; path=/; max-age=0; SameSite=Lax`;
+          return null;
+        }
+        return parsed;
       }
     } catch {
       // ignore json parse error

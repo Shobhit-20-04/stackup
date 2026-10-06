@@ -19,7 +19,8 @@ import {
   Cpu,
   Code2,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  ShieldCheck
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -98,10 +99,14 @@ export default function ProfilePage() {
 
   // Real solved DSA problem count
   const [solvedDsaCount, setSolvedDsaCount] = useState(0);
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
 
   useEffect(() => {
     async function loadUserData() {
       try {
+        if (typeof window !== 'undefined' && sessionStorage.getItem('stackup_admin_key')) {
+          setHasAdminAccess(true);
+        }
         const activeUser = await getCurrentUser();
 
         if (!activeUser) {
@@ -419,6 +424,15 @@ export default function ProfilePage() {
 
         {/* Quick Actions */}
         <div className="flex items-center space-x-3 w-full md:w-auto">
+          {hasAdminAccess && (
+            <Link
+              href="/admin"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-indigo-200 dark:border-indigo-900 bg-indigo-50/70 dark:bg-indigo-950/40 text-sm font-medium text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors shadow-xs"
+            >
+              <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Admin Portal</span>
+            </Link>
+          )}
           <Link
             href="/dsa"
             className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors shadow-sm shadow-indigo-500/20"

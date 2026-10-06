@@ -16,17 +16,15 @@ interface TopicNotesProps {
 
 export default function TopicNotes({ topic, sectionSlug, onStartQuiz }: TopicNotesProps) {
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     getCurrentUser().then((u) => {
       setCurrentUser(u);
-      setAuthChecked(true);
     });
   }, []);
 
-  // For unauthenticated users, show the first section / overview (~450 characters)
-  const isLocked = authChecked && !currentUser;
+  // For unauthenticated users, strictly restrict to teaser overview (~500 chars)
+  const isLocked = !currentUser;
   const displayedMarkdown = React.useMemo(() => {
     if (!isLocked) return topic.notesMarkdown;
     // Extract preview slice

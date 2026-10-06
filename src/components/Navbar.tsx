@@ -63,6 +63,18 @@ export default function Navbar() {
     }
   }, []);
 
+  // Secret owner shortcut: Ctrl+Shift+A or Cmd+Shift+A opens /admin
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        router.push('/admin');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [router]);
+
   const handleSignOut = async () => {
     await signOutUser();
     setUser(null);

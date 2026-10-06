@@ -96,8 +96,16 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 dark:text-zinc-400">
-          <div>
-            &copy; {new Date().getFullYear()} StackUp. All rights reserved.
+          <div className="flex items-center space-x-2">
+            <span>&copy; {new Date().getFullYear()} StackUp. All rights reserved.</span>
+            <span className="text-zinc-300 dark:text-zinc-700">•</span>
+            <Link
+              href="/admin"
+              className="text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors"
+              title="Staff Authorization Gateway"
+            >
+              Staff
+            </Link>
           </div>
           <div className="flex items-center space-x-1">
             <span>Engineered for campus placements and top tech careers</span>
