@@ -48,7 +48,7 @@ export default function ChatWidget() {
   // Derive human-readable context from current URL
   const sectionContext = React.useMemo(() => {
     if (pathname.includes('/dsa')) return 'DSA Practice Hub';
-    if (pathname.includes('/core-cs')) return 'Core CS Subjects (OS, DBMS, CN)';
+    if (pathname.includes('/core-cs')) return 'Core CS Subjects (OS, DBMS, CN, System Design, Git, COA, TOC)';
     if (pathname.includes('/aptitude')) return 'Quantitative & Logical Aptitude';
     if (pathname.includes('/resume-checker')) return 'Resume ATS Checker';
     if (pathname.includes('/profile')) return 'Student Profile & Analytics';
@@ -67,8 +67,9 @@ export default function ChatWidget() {
     if (pathname.includes('/core-cs')) {
       return [
         'Difference between Process & Thread',
-        'Explain ACID properties',
-        'How does TCP 3-way handshake work?',
+        'Explain ACID & Two-Phase Locking',
+        'How does Consistent Hashing work?',
+        'Git Merge vs Git Rebase differences',
       ];
     }
     if (pathname.includes('/aptitude')) {

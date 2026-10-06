@@ -202,9 +202,9 @@ export default function HomePage() {
           </div>
 
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">
-            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">5 Pillars</div>
+            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">8 Pillars</div>
             <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Core CS Coverage</div>
-            <div className="text-[11px] text-zinc-500">OS, DBMS, CN, OOPs, System Design</div>
+            <div className="text-[11px] text-zinc-500">40 modules: OS, DBMS, CN, OOP, Design, Git, COA, TOC</div>
           </div>
 
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">

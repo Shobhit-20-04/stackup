@@ -37,13 +37,13 @@ export default function Footer() {
               <li>
                 <Link href="/dsa" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center space-x-1.5">
                   <Code2 className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>DSA Practice Hub (75+ Problems)</span>
+                  <span>DSA Practice Hub (150+ Problems)</span>
                 </Link>
               </li>
               <li>
                 <Link href="/core-cs" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center space-x-1.5">
                   <Cpu className="w-3.5 h-3.5 text-purple-500" />
-                  <span>Core CS (OS, DBMS, CN, OOPs)</span>
+                  <span>Core CS (8 Subjects • 40 Modules)</span>
                 </Link>
               </li>
               <li>

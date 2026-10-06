@@ -21,7 +21,7 @@ export interface SectionCategory {
   slug: string;
   title: string;
   description: string;
-  icon: 'BookOpen' | 'Cpu' | 'Database' | 'Network' | 'Code2';
+  icon: 'BookOpen' | 'Cpu' | 'Database' | 'Network' | 'Code2' | 'Server' | 'GitBranch' | 'Terminal' | 'Layers';
   topics: Topic[];
 }
 
@@ -1091,6 +1091,62 @@ export const CURRICULUM_DATA: Record<string, {
                 "explanation": "The Builder pattern provides a fluent API to configure optional attributes step-by-step, avoiding anti-pattern telescoping constructors."
               }
             ]
+          },
+          {
+            "id": "structural-patterns",
+            "slug": "structural-design-patterns",
+            "title": "Structural Design Patterns: Adapter, Decorator, Facade & Proxy",
+            "description": "Object composition, interface adaptation, dynamic responsibility decoration, and surrogate proxy controls.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# Structural Design Patterns\n\nStructural design patterns explain how to assemble objects and classes into larger structures while keeping these structures flexible and efficient.\n\n---\n\n## 1. Adapter Pattern (Wrapper)\nAllows incompatible interfaces to work together. Converts the interface of an existing class into another interface expected by clients.\n- **Real-World Analogy:** Power socket converter when traveling abroad.\n- **Use Case:** Wrapping legacy third-party payment gateways with your standard internal `PaymentProcessor` interface.\n\n## 2. Decorator Pattern\nAttaches new behaviors to objects dynamically by placing them inside special wrapper objects that contain the behaviors.\n- **Alternative to:** Class inheritance explosion (subclassing for every combination of features).\n- **Example:** Java I/O streams (`new BufferedReader(new FileReader(\"file.txt\"))`) or adding toppings to a Pizza order.\n\n## 3. Facade Pattern\nProvides a simplified, high-level interface to a complex subsystem with many moving parts.\n- **Use Case:** Placing an order via a single `OrderFacade.placeOrder()` that coordinates Inventory, Payment, Shipping, and Email notification subsystems internally.\n\n## 4. Proxy Pattern\nProvides a surrogate or placeholder for another object to control access to it.\n- **Virtual Proxy:** Lazy initialization of expensive heavy objects (e.g. high-resolution image loading on scroll).\n- **Protection Proxy:** Checks caller permissions before forwarding requests (access control).\n- **Remote Proxy:** Encapsulates network communication to remote services (RPC/RMI).\n",
+            "questions": [
+              {
+                "id": "struct-1",
+                "question": "Which structural design pattern dynamically attaches new responsibilities to an individual object without subclassing the entire class hierarchy?",
+                "options": [
+                  "Facade Pattern",
+                  "Decorator Pattern",
+                  "Adapter Pattern",
+                  "Flyweight Pattern"
+                ],
+                "correct_option": 1,
+                "explanation": "The Decorator pattern wraps an object and forwards calls while injecting additional behaviors dynamically, avoiding combinatorial explosion of subclasses."
+              },
+              {
+                "id": "struct-2",
+                "question": "What is the primary difference between the Adapter and Facade patterns?",
+                "options": [
+                  "Adapter makes existing incompatible interfaces match; Facade defines a new simplified interface over an entire complex subsystem",
+                  "Adapter is behavioral; Facade is creational",
+                  "Facade requires inheritance; Adapter strictly uses composition",
+                  "Adapter can only be used with network sockets"
+                ],
+                "correct_option": 0,
+                "explanation": "Adapter bridges two incompatible existing interfaces so they can communicate; Facade creates a higher-level simplified interface to hide subsystem complexity."
+              }
+            ]
+          },
+          {
+            "id": "behavioral-patterns",
+            "slug": "behavioral-design-patterns",
+            "title": "Behavioral Design Patterns: Strategy, Observer, Command & State",
+            "description": "Algorithms as interchangeable strategies, pub/sub event distribution, command encapsulation, and finite state machines.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# Behavioral Design Patterns\n\nBehavioral design patterns identify common communication patterns between objects and distribute responsibility cleanly.\n\n---\n\n## 1. Strategy Pattern\nDefines a family of algorithms, encapsulates each one in a separate class, and makes their objects interchangeable at runtime.\n- **Example:** A navigation app switching routes dynamically between `CarRouteStrategy`, `WalkingRouteStrategy`, and `PublicTransitStrategy`.\n- **Replaces:** Messy nested `switch` or `if-else` branches.\n\n## 2. Command Pattern\nEncapsulates a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.\n- **Components:** `Command` interface, `ConcreteCommand`, `Invoker` (UI button), `Receiver` (business service).\n- **Key Superpower:** Transactional history, batch execution, and reversible `undo()` / `redo()`.\n\n## 3. State Pattern\nAllows an object to alter its behavior when its internal state changes. The object will appear to change its class.\n- **Example:** TCP connection state (`Closed`, `Listen`, `Established`) or Media Player state (`Playing`, `Paused`, `Stopped`).\n- **Contrast with Strategy:** In State pattern, the states themselves know about transitions to other states; in Strategy, strategies are generally unaware of each other.\n",
+            "questions": [
+              {
+                "id": "behav-1",
+                "question": "Which behavioral design pattern is specifically engineered to support undo/redo stacks and transactional command queues?",
+                "options": [
+                  "Command Pattern",
+                  "Strategy Pattern",
+                  "State Pattern",
+                  "Template Method Pattern"
+                ],
+                "correct_option": 0,
+                "explanation": "The Command pattern encapsulates all information needed to perform or reverse an action inside a standalone object, making it trivial to store in history stacks for undo/redo."
+              }
+            ]
           }
         ]
       },
@@ -1142,6 +1198,403 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "Write-Behind acknowledges writes immediately after writing to volatile cache memory, delaying asynchronous persistence to the database."
+              }
+            ]
+          },
+          {
+            "id": "db-sharding-replication",
+            "slug": "database-sharding-and-replication",
+            "title": "Database Sharding, Partitioning & Replication",
+            "description": "Horizontal sharding, shard keys, master-replica replication lag, read/write splitting, and rebalancing strategies.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# Database Sharding, Partitioning & Replication\n\nWhen a single database node reaches CPU, memory, or disk storage limits, distributed data strategies allow horizontal scaling.\n\n---\n\n## 1. Sharding vs. Partitioning\n- **Vertical Partitioning:** Splitting a table by columns (e.g. separating frequently queried user profile info from heavy biographical blobs).\n- **Horizontal Partitioning (Sharding):** Splitting rows of a table across multiple distinct physical database servers.\n\n## 2. Sharding Strategies\n- **Hash-Based Sharding:** `shard = hash(shard_key) % num_shards`. Provides uniform data distribution, but resharding when adding nodes requires expensive rehash (solved by Consistent Hashing).\n- **Range-Based Sharding:** Data partitioned by value ranges (e.g. IDs 1-10,000 on Node 1; 10,001-20,000 on Node 2). Prone to **hotspots** if newer data receives all traffic.\n- **Directory-Based Sharding:** Lookup service maintains mapping of shard keys to database nodes. Flexible, but adds a network hop and potential single point of failure.\n\n## 3. Master-Replica Replication\n- **Primary (Master):** Handles all write queries (`INSERT`, `UPDATE`, `DELETE`). Logs mutations to WAL.\n- **Secondary (Replica):** Asynchronously copies WAL from primary and services read queries (`SELECT`).\n- **Replication Lag:** Delay between write committing on primary and updating on replicas. Reading immediately after writing can return stale data (read-your-own-writes inconsistency).\n",
+            "questions": [
+              {
+                "id": "shard-1",
+                "question": "Which sharding strategy is most susceptible to severe hot-spotting when data features sequential autoincrementing IDs or timestamps?",
+                "options": [
+                  "Hash-based sharding",
+                  "Range-based sharding",
+                  "Consistent hashing with virtual nodes",
+                  "Geographic proximity sharding"
+                ],
+                "correct_option": 1,
+                "explanation": "Range-based sharding places consecutive values on the same physical node, directing all latest writes and reads to the newest active shard while older shards sit idle."
+              },
+              {
+                "id": "shard-2",
+                "question": "What is the primary operational trade-off of asynchronous master-replica replication?",
+                "options": [
+                  "Lower write latency on primary at the risk of replication lag and stale reads on replicas",
+                  "Replicas cannot service read traffic",
+                  "Primary node locks on every read query",
+                  "Transactions cannot use primary keys"
+                ],
+                "correct_option": 0,
+                "explanation": "Asynchronous replication allows the primary to confirm writes immediately without waiting for replicas to confirm, reducing latency but exposing replicas to replication lag."
+              }
+            ]
+          },
+          {
+            "id": "message-queues-kafka",
+            "slug": "message-queues-and-kafka",
+            "title": "Message Queues & Event-Driven Architecture (Kafka vs. RabbitMQ)",
+            "description": "Decoupled asynchronous processing, publish-subscribe, consumer groups, Kafka partition offsets, and Dead-Letter Queues (DLQ).",
+            "estimatedMinutes": 22,
+            "notesMarkdown": "# Message Queues & Event-Driven Architecture\n\nSynchronous HTTP requests couple services and create cascading timeouts. Asynchronous message brokers decouple producers from consumers, absorb traffic spikes (buffering), and guarantee eventual consistency.\n\n---\n\n## 1. RabbitMQ vs. Apache Kafka\n| Feature | RabbitMQ (Message Broker) | Apache Kafka (Distributed Event Log) |\n| :--- | :--- | :--- |\n| **Model** | Smart broker, dumb consumer (AMQP exchanges & queues) | Dumb broker, smart consumer (Distributed commit log) |\n| **Persistence** | Messages deleted once acknowledged | Messages retained on disk by retention policy (days/weeks) |\n| **Replayability** | No (messages disappear after consumption) | Yes (consumers can reset offset to replay historic events) |\n| **Throughput** | ~10k-50k msgs/sec | >1,000,000 msgs/sec (zero-copy OS transfer) |\n\n## 2. Kafka Partitions & Ordering Guarantees\n- A Kafka **Topic** is divided into multiple **Partitions** for horizontal scalability.\n- Messages with the **same partition key** are guaranteed to land on the same partition and be consumed in **strict FIFO order**.\n- Within a **Consumer Group**, each partition is consumed by exactly one consumer thread at any given time.\n\n## 3. Delivery Semantics & Dead-Letter Queues (DLQ)\n- **At-most-once:** Message acknowledged before processing. No duplicates, but risk of lost data.\n- **At-least-once:** Message acknowledged only after successful processing. No lost data, but requires **idempotent consumers** to handle retries.\n- **Dead-Letter Queue (DLQ):** Unprocessable \"poison pill\" messages that exhaust retry attempts are shunted to a DLQ for isolated debugging without blocking the main event pipeline.\n",
+            "questions": [
+              {
+                "id": "mq-1",
+                "question": "How does Apache Kafka guarantee strict chronological ordering of events for an individual user?",
+                "options": [
+                  "By using a global lock across all partitions",
+                  "By hashing the user ID as the partition key, routing all user events to the same partition",
+                  "By running Kafka on a single CPU core",
+                  "By setting consumer group size to zero"
+                ],
+                "correct_option": 1,
+                "explanation": "Kafka guarantees FIFO message ordering strictly within individual partitions. Assigning the user ID as the key routes all that user's events to the exact same partition."
+              },
+              {
+                "id": "mq-2",
+                "question": "What is the primary role of a Dead-Letter Queue (DLQ) in an asynchronous distributed pipeline?",
+                "options": [
+                  "To accelerate message compression algorithms",
+                  "To store unprocessable or poisoned messages that fail repeatedly, preventing queue congestion",
+                  "To encrypt consumer authentication passwords",
+                  "To replicate the primary database WAL"
+                ],
+                "correct_option": 1,
+                "explanation": "A DLQ isolates malformed or failing messages after a threshold of retries, allowing the main processing pipeline to continue without getting stuck on a single message."
+              }
+            ]
+          },
+          {
+            "id": "rate-limiting",
+            "slug": "rate-limiting-algorithms",
+            "title": "Rate Limiting & Throttling Algorithms",
+            "description": "Protecting microservices from DDoS and abuse using Token Bucket, Leaky Bucket, Sliding Window Log, and distributed Redis counters.",
+            "estimatedMinutes": 18,
+            "notesMarkdown": "# Rate Limiting & Throttling Algorithms\n\nRate limiting protects backend APIs against denial-of-service (DDoS) attacks, brute-force credential stuffing, noisy neighbors, and runaway cascading failures.\n\n---\n\n## 1. Common Rate Limiting Algorithms\n\n### A. Token Bucket\n- Tokens added to bucket at constant refill rate $r$ up to capacity $b$.\n- Each request consumes 1 token. If bucket is empty, request dropped (HTTP 429 Too Many Requests).\n- **Pros:** Allows sudden **bursts** of traffic up to capacity $b$, simple and memory efficient.\n\n### B. Leaky Bucket\n- Requests enter a FIFO queue. Requests leak out of the queue at a **constant, smooth rate**.\n- If queue is full, incoming requests overflow and are dropped.\n- **Pros:** Guarantees completely smooth, non-bursty downstream traffic flow.\n\n### C. Fixed Window Counter\n- Divides timeline into fixed intervals (e.g. 1 minute). Counts requests in window.\n- **Weakness (Boundary Burst):** A client can send $N$ requests at second 59 and $N$ requests at second 01 of the next minute, resulting in $2N$ requests in a 2-second span.\n\n### D. Sliding Window Log / Counter\n- Tracks timestamped requests in a sorted set (Redis ZSET) or blends weighted counts from current and previous window.\n- Prevents boundary burst spikes while keeping memory usage bounded.\n\n## 2. Distributed Rate Limiting with Redis\nIn multi-instance microservices, rate limits are enforced centrally via Redis using atomic **Lua scripts** or `INCR` + `EXPIRE` transactions to eliminate race conditions between servers.\n",
+            "questions": [
+              {
+                "id": "rl-1",
+                "question": "Which rate limiting algorithm allows bursts of requests up to maximum bucket capacity while enforcing a constant average token generation rate?",
+                "options": [
+                  "Leaky Bucket",
+                  "Token Bucket",
+                  "Fixed Window Counter",
+                  "Round Robin Throttling"
+                ],
+                "correct_option": 1,
+                "explanation": "Token Bucket permits requests as long as tokens remain in the bucket, allowing temporary bursts up to capacity while refilling at a steady rate."
+              },
+              {
+                "id": "rl-2",
+                "question": "Why is the Fixed Window Counter algorithm often insufficient for security-critical API rate limiting?",
+                "options": [
+                  "It consumes too much memory on Redis",
+                  "A burst of requests right at the boundary between two adjacent windows can allow double the intended rate limit",
+                  "It cannot run in distributed environments",
+                  "It only supports IPv6 addresses"
+                ],
+                "correct_option": 1,
+                "explanation": "Clients can concentrate maximum requests right before a window closes and right after the next window opens, generating twice the allowed requests in a short time frame."
+              }
+            ]
+          },
+          {
+            "id": "api-paradigms",
+            "slug": "api-architectures-and-protocols",
+            "title": "API Architectures: REST vs. GraphQL vs. gRPC vs. WebSockets",
+            "description": "Network communication protocols, over-fetching vs under-fetching, Protocol Buffers binary serialization, HTTP/2 multiplexing, and bi-directional real-time duplex.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# API Architectures: REST, GraphQL, gRPC & WebSockets\n\nSelecting the appropriate communication protocol is foundational to latency, client bandwidth, and system evolution.\n\n---\n\n## 1. Architectural Comparison\n\n| Attribute | REST | GraphQL | gRPC | WebSockets |\n| :--- | :--- | :--- | :--- | :--- |\n| **Protocol** | HTTP/1.1 or HTTP/2 | HTTP/1.1 or HTTP/2 | HTTP/2 (Multiplexed) | TCP (Full-duplex) |\n| **Payload** | JSON / XML (Text) | JSON (Text) | Protocol Buffers (Binary) | Raw Text / Binary |\n| **Flexibility** | Fixed endpoints (`GET /users`) | Client queries exact fields | Strict contract (`.proto` schema) | Bi-directional streams |\n| **Best For** | Public web APIs, CRUD | Mobile apps, diverse UI clients | Inter-microservice RPC | Live chat, stocks, gaming |\n\n## 2. Over-Fetching & Under-Fetching in REST\n- **Over-Fetching:** Client needs only a username, but `GET /users/42` returns 40 fields including address, billing, and settings.\n- **Under-Fetching:** Client needs user and recent orders; must make separate calls to `GET /users/42` and `GET /users/42/orders` (the $N+1$ API problem). Solved by GraphQL in a single query.\n\n## 3. Why gRPC for Internal Microservices?\n1. **Protocol Buffers:** Compact binary format, 5-10x smaller and 7x faster serialization than JSON.\n2. **HTTP/2 Transport:** Multiplexes dozens of concurrent requests over a single TCP connection, eliminating connection handshake overhead.\n3. **Code Generation:** Native client/server stubs generated automatically in Go, Java, Python, and TypeScript from a single `.proto` definition.\n",
+            "questions": [
+              {
+                "id": "api-1",
+                "question": "What primary performance advantage makes gRPC faster and more bandwidth-efficient than REST APIs for microservices?",
+                "options": [
+                  "gRPC runs without TCP connections",
+                  "Protocol Buffers binary serialization and multiplexed streaming over HTTP/2",
+                  "gRPC eliminates database indexing",
+                  "gRPC avoids using CPU caches"
+                ],
+                "correct_option": 1,
+                "explanation": "gRPC encodes data into compact binary Protocol Buffers and uses HTTP/2 multiplexing over a single persistent TCP connection, drastically cutting payload size and latency."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "swe-git",
+        "slug": "software-engineering-and-git",
+        "title": "Software Engineering, Git & Version Control",
+        "description": "Git internal object graph, branching workflows, merge vs rebase, Agile Scrum ceremonies, test pyramids, and CI/CD pipelines.",
+        "icon": "GitBranch",
+        "topics": [
+          {
+            "id": "git-internals-workflows",
+            "slug": "git-internals-and-branching",
+            "title": "Git Internals, Object Graph & Branching Workflows",
+            "description": "Blob, Tree, Commit, Tag objects, HEAD pointer, Fast-Forward Merge vs Rebase, Cherry-Pick, and resolving conflicts.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# Git Internals & Branching Strategies\n\nGit is a distributed content-addressable storage system that models repository history as a **Directed Acyclic Graph (DAG)** of immutable snapshot objects.\n\n---\n\n## 1. The 4 Git Internal Objects\nEvery object in `.git/objects/` is identified by a 40-character SHA-1 hash:\n1. **Blob (Binary Large Object):** Stores raw file contents (does not store file name or permissions).\n2. **Tree:** Represents a directory. Stores file names, permissions, and hashes pointing to Blobs or child Trees.\n3. **Commit:** Stores pointer to the root Tree, parent commit hashes, author/committer info, timestamp, and commit message.\n4. **Annotated Tag:** Permanent reference pointing directly to a specific commit object with tagger notes.\n\n## 2. Git Merge vs. Git Rebase\n- **`git merge`:**\n  - Preserves exact historical chronology.\n  - Creates a **3-way merge commit** with two parents when branches diverge.\n  - Non-destructive: never alters existing commits.\n- **`git rebase`:**\n  - Replays feature branch commits one-by-one on top of the target base branch.\n  - Produces a clean, strictly **linear history** without extra merge commits.\n  - **Golden Rule:** Never rebase commits that have already been pushed to a shared public branch.\n\n## 3. Essential Troubleshooting Commands\n- `git cherry-pick <commit>`: Applies the diff of a specific commit onto the current branch.\n- `git reset --soft HEAD~1`: Undoes the last commit but keeps staged changes.\n- `git reset --hard HEAD~1`: Discards the last commit and all working tree changes.\n- `git reflog`: Shows all reference movements, allowing recovery of \"lost\" deleted commits.\n",
+            "questions": [
+              {
+                "id": "git-1",
+                "question": "Which internal Git object represents directory structures, mapping file names to blob SHA hashes?",
+                "options": [
+                  "Blob Object",
+                  "Tree Object",
+                  "Commit Object",
+                  "Index Cache"
+                ],
+                "correct_option": 1,
+                "explanation": "A Tree object represents a directory listing, containing mode, type, SHA hash, and filename for all child files and subdirectories."
+              },
+              {
+                "id": "git-2",
+                "question": "What is the primary architectural difference between git merge and git rebase?",
+                "options": [
+                  "Merge deletes the branch; rebase keeps it",
+                  "Merge creates a 3-way merge commit preserving history; rebase rewrites commits to create a linear graph",
+                  "Rebase works without a working tree",
+                  "Merge can only be used on remote repositories"
+                ],
+                "correct_option": 1,
+                "explanation": "git merge combines histories with a merge commit having two parents; git rebase replays your commits atop the target branch, rewriting commit hashes for a linear history."
+              }
+            ]
+          },
+          {
+            "id": "agile-scrum-sdlc",
+            "slug": "agile-scrum-and-sdlc",
+            "title": "Agile, Scrum & Software Development Life Cycles (SDLC)",
+            "description": "Waterfall vs Agile, Scrum roles (Product Owner, Scrum Master), Sprint ceremonies, Story points, and Kanban flow.",
+            "estimatedMinutes": 16,
+            "notesMarkdown": "# Agile, Scrum & SDLC Methodologies\n\nSoftware engineering teams use structured methodologies to deliver software reliably while adapting to shifting product requirements.\n\n---\n\n## 1. Waterfall vs. Agile\n- **Waterfall:** Sequential phases (Requirements -> Design -> Implementation -> Verification -> Maintenance). Rigorous documentation, but rigid and slow to adapt.\n- **Agile:** Iterative, incremental cycles producing working software every 1-4 weeks. Emphasizes customer collaboration over rigid plans.\n\n## 2. Scrum Framework\n- **The 3 Roles:**\n  1. **Product Owner:** Defines product vision, prioritizes the Product Backlog, represents stakeholder value.\n  2. **Scrum Master:** Facilitates process, removes team blockers, protects the team from external distractions.\n  3. **Development Team:** Cross-functional engineers responsible for delivering sprint increments.\n- **The 4 Core Ceremonies:**\n  1. **Sprint Planning:** Commit to backlog user stories for the upcoming sprint.\n  2. **Daily Standup:** 15-minute sync (What did I do yesterday? What will I do today? Any blockers?).\n  3. **Sprint Review / Demo:** Showcase working software increment to stakeholders.\n  4. **Sprint Retrospective:** Inspect team process and agree on improvements for next cycle.\n\n## 3. Kanban vs Scrum\n- **Scrum:** Fixed time-boxed sprints, commit to batch scope.\n- **Kanban:** Continuous flow, visual board (To Do, In Progress, Done), strictly enforces **WIP (Work In Progress) Limits** to prevent team overload.\n",
+            "questions": [
+              {
+                "id": "scrum-1",
+                "question": "In the Scrum framework, who has sole authority and responsibility for managing and prioritizing the Product Backlog?",
+                "options": [
+                  "Scrum Master",
+                  "Product Owner",
+                  "Lead Software Architect",
+                  "Engineering Manager"
+                ],
+                "correct_option": 1,
+                "explanation": "The Product Owner is responsible for maximizing product value and prioritizing backlog user stories based on customer and business needs."
+              }
+            ]
+          },
+          {
+            "id": "testing-code-quality",
+            "slug": "software-testing-methodologies",
+            "title": "Software Testing Methodologies, TDD & Code Coverage",
+            "description": "Test Pyramid (Unit, Integration, E2E), Test-Driven Development (Red-Green-Refactor), Mocks vs Stubs, and code coverage metrics.",
+            "estimatedMinutes": 18,
+            "notesMarkdown": "# Software Testing Methodologies & Code Quality\n\nAutomated testing ensures software works as expected and prevents regressions during refactoring.\n\n---\n\n## 1. The Martin Fowler Test Pyramid\n- **Unit Tests (Base - ~70%):** Test single functions/classes in isolation. Fast execution (milliseconds), highly deterministic.\n- **Integration Tests (Middle - ~20%):** Verify interaction between modules (e.g. Service + Database queries, HTTP handlers).\n- **End-to-End (E2E) Tests (Peak - ~10%):** Simulate real user journeys across the entire deployed system. High confidence, but slow and prone to flaky failures.\n\n## 2. Test-Driven Development (TDD)\nTDD follows the **Red-Green-Refactor** cycle:\n1. **Red:** Write a failing automated unit test before writing production code.\n2. **Green:** Write minimal code necessary to make the test pass.\n3. **Refactor:** Clean up code, remove duplication, and optimize architecture while keeping tests green.\n\n## 3. Test Doubles: Mocks vs. Stubs\n- **Stub:** Provides predetermined, canned answers to calls made during the test (state verification).\n- **Mock:** Registers expectations on which methods will be called and with what parameters. Verifies behavioral interactions (behavior verification).\n- **Fake:** Working implementation with a shortcut (e.g. in-memory SQLite database instead of PostgreSQL).\n",
+            "questions": [
+              {
+                "id": "test-1",
+                "question": "What is the primary difference between a Mock and a Stub in unit testing?",
+                "options": [
+                  "Stubs provide canned data; Mocks verify specific method calls and parameter interactions",
+                  "Mocks can only be used with network sockets",
+                  "Stubs require end-to-end browser automation",
+                  "There is no difference"
+                ],
+                "correct_option": 0,
+                "explanation": "A stub returns fixed responses to queries, while a mock verifies the behavior and method invocations made on the dependency."
+              }
+            ]
+          },
+          {
+            "id": "cicd-devops-basics",
+            "slug": "cicd-and-containerization-basics",
+            "title": "CI/CD Pipelines, DevOps & Containerization Basics",
+            "description": "Continuous Integration vs Continuous Delivery/Deployment, GitHub Actions, Docker containers vs Virtual Machines, Blue-Green deployments.",
+            "estimatedMinutes": 18,
+            "notesMarkdown": "# CI/CD Pipelines & Containerization Basics\n\nDevOps bridges software development and IT operations to deliver frequent, high-reliability releases.\n\n---\n\n## 1. CI vs. CD\n- **Continuous Integration (CI):** Developers frequently merge code into a shared repository. Every push triggers automated builds, linters, and unit/integration tests.\n- **Continuous Delivery (CD):** Validated code is automatically packaged and staged in a deployable state for production; release requires one manual approval click.\n- **Continuous Deployment:** Every code change passing all test gates is deployed directly to production automatically without human intervention.\n\n## 2. Docker Containers vs. Virtual Machines\n- **Virtual Machines (VMs):** Emulate full hardware. Run a complete guest OS on top of a hypervisor. Heavyweight (gigabytes), slower startup.\n- **Containers (Docker):** Package application and its dependencies, sharing the **host OS kernel**. Isolated via Linux **namespaces** (PID, NET) and **cgroups** (CPU/RAM limits). Lightweight (megabytes), sub-second boot.\n\n## 3. Zero-Downtime Deployment Strategies\n- **Blue-Green Deployment:** Two identical production environments. Blue is live; Green receives the new release. Once tested, router/load balancer instantly flips traffic to Green. Rollback is instant.\n- **Canary Deployment:** Rolls out the update to a small subset of servers (e.g. 5% of users), monitors error rates and latency, and gradually scales to 100%.\n",
+            "questions": [
+              {
+                "id": "cicd-1",
+                "question": "Why do Docker containers start in seconds and require far less RAM than traditional Virtual Machines?",
+                "options": [
+                  "Containers do not use memory",
+                  "Containers share the host operating system kernel instead of running a full guest OS through a hypervisor",
+                  "Containers run only in user space without processes",
+                  "Containers require hardware GPU support"
+                ],
+                "correct_option": 1,
+                "explanation": "Containers virtualize at the OS level, sharing the underlying host kernel via cgroups and namespaces rather than virtualizing physical hardware and booting full guest operating systems."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "coa",
+        "slug": "computer-organization-and-architecture",
+        "title": "Computer Organization & Architecture (COA)",
+        "description": "Instruction pipelining, pipeline hazards, memory hierarchy, cache mapping, and cache coherence protocols.",
+        "icon": "Server",
+        "topics": [
+          {
+            "id": "cpu-pipelining-hazards",
+            "slug": "cpu-instruction-pipelining",
+            "title": "CPU Instruction Pipelining & Pipeline Hazards",
+            "description": "5-stage RISC pipeline (IF, ID, EX, MEM, WB), Structural, Data (RAW, WAR, WAW) hazards, Branch hazards, and Forwarding.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# CPU Instruction Pipelining & Hazards\n\nInstruction pipelining overlaps the execution of multiple instructions to increase CPU throughput.\n\n---\n\n## 1. Classical 5-Stage RISC Pipeline\n1. **IF (Instruction Fetch):** Fetch instruction from cache/memory into IR; increment Program Counter (PC).\n2. **ID (Instruction Decode / Register Read):** Decode opcode and read source registers.\n3. **EX (Execute / ALU Operation):** Perform arithmetic/logic computation or calculate memory address.\n4. **MEM (Memory Access):** Read or write data operand in data cache (for `LOAD` / `STORE`).\n5. **WB (Write Back):** Write execution result back into the register file.\n\n$$\\text{Theoretical Speedup} = \\frac{n \\times k}{k + n - 1} \\approx k \\quad (\\text{for large } n)$$\nwhere $k$ is number of stages and $n$ is number of instructions.\n\n## 2. Pipeline Hazards\nA hazard prevents the next instruction from executing in its designated clock cycle:\n\n1. **Structural Hazard:** Hardware resource conflict (e.g. single memory bus accessed for both instruction fetch and data read simultaneously). Solved by separate L1 Instruction and Data caches (Harvard Architecture).\n2. **Data Hazard:** Dependent instructions need operands not yet written:\n   - **RAW (Read After Write - True Dependency):** Instruction $J$ tries to read before instruction $I$ writes back. Solved by **Operand Forwarding / Bypassing** or inserting stall bubbles.\n   - **WAR (Write After Read - Anti-dependency):** Out-of-order execution hazard. Solved by register renaming.\n   - **WAW (Write After Write - Output dependency):** Out-of-order execution hazard.\n3. **Control (Branch) Hazard:** Pipeline does not know which instruction to fetch until branch condition is evaluated in EX stage. Mitigated by **Branch Prediction** and branch delay slots.\n",
+            "questions": [
+              {
+                "id": "coa-1",
+                "question": "Which data hazard occurs when an instruction attempts to read a register operand before an earlier instruction has finished writing its updated value?",
+                "options": [
+                  "Write After Read (WAR)",
+                  "Read After Write (RAW)",
+                  "Write After Write (WAW)",
+                  "Structural Hazard"
+                ],
+                "correct_option": 1,
+                "explanation": "A RAW (Read After Write) hazard represents a true data dependency where an instruction depends on the result of an antecedent instruction."
+              },
+              {
+                "id": "coa-2",
+                "question": "What hardware technique resolves Read After Write (RAW) data hazards without inserting pipeline stall bubbles?",
+                "options": [
+                  "Branch Prediction",
+                  "Operand Forwarding (Bypassing)",
+                  "Memory Paging",
+                  "Virtual Memory Swapping"
+                ],
+                "correct_option": 1,
+                "explanation": "Operand Forwarding routes the computed ALU result directly from the output of the EX stage to the input of the dependent instruction's EX stage, avoiding stalls."
+              }
+            ]
+          },
+          {
+            "id": "cache-memory-coherence",
+            "slug": "memory-hierarchy-and-cache",
+            "title": "Memory Hierarchy, Cache Mapping & Cache Coherence",
+            "description": "L1/L2/L3 caches, Direct Mapped vs Set Associative, spatial/temporal locality, Write-Through vs Write-Back, and MESI protocol.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# Memory Hierarchy & Cache Coherence\n\nDue to the significant speed gap between CPU clock cycles (~0.3 ns) and main DRAM (~50-100 ns), modern architectures employ hierarchical caching.\n\n---\n\n## 1. Principles of Locality\n- **Temporal Locality:** If a memory location was accessed, it is likely to be accessed again soon (e.g. loop counters, local variables).\n- **Spatial Locality:** If a memory location was accessed, adjacent addresses are likely to be accessed soon (e.g. traversing an array).\n\n## 2. Cache Mapping Techniques\n- **Direct Mapped:** Each memory block maps to exactly one cache line: `line = block_address % num_lines`. Fast, cheap hardware, but suffers from conflict misses.\n- **Fully Associative:** A memory block can be placed in any cache line. Eliminates conflict misses, but requires expensive parallel comparator hardware.\n- **Set Associative ($N$-way):** Cache divided into sets of $N$ lines. Balance between speed and conflict reduction.\n\n## 3. Write Policies\n- **Write-Through:** Every write updates both the cache and main memory simultaneously. Consistent, but higher write bus traffic.\n- **Write-Back:** Writes update only the cache line (marked with a **Dirty bit**); written to main memory only when evicted.\n\n## 4. Multi-Core Cache Coherence: The MESI Protocol\nIn multi-core processors with private L1/L2 caches, the **MESI** snooping protocol maintains coherence across 4 states:\n1. **Modified (M):** Cache line is present only in current core, dirty (modified relative to RAM).\n2. **Exclusive (E):** Cache line present only in current core, clean (matches RAM).\n3. **Shared (S):** Cache line present in multiple cores' caches, clean.\n4. **Invalid (I):** Cache line is stale or unused.\n",
+            "questions": [
+              {
+                "id": "coa-3",
+                "question": "In the MESI cache coherence protocol, what state does a cache line enter when it is present only in one core and matches main memory?",
+                "options": [
+                  "Modified (M)",
+                  "Exclusive (E)",
+                  "Shared (S)",
+                  "Invalid (I)"
+                ],
+                "correct_option": 1,
+                "explanation": "The Exclusive (E) state denotes that the block is cached exclusively by this one core and has not yet been modified (it is clean with respect to main RAM)."
+              }
+            ]
+          },
+          {
+            "id": "risc-cisc-registers",
+            "slug": "risc-vs-cisc-architectures",
+            "title": "RISC vs. CISC Architectures & CPU Registers",
+            "description": "Instruction set philosophy, Load/Store architecture, Program Counter, Stack Pointer, and Little-Endian vs Big-Endian byte order.",
+            "estimatedMinutes": 16,
+            "notesMarkdown": "# RISC vs. CISC Architectures & CPU Registers\n\nInstruction Set Architectures (ISA) define the programming contract between hardware and software.\n\n---\n\n## 1. RISC vs. CISC\n| Attribute | RISC (ARM, RISC-V, MIPS) | CISC (x86, x86-64) |\n| :--- | :--- | :--- |\n| **Philosophy** | Simple, fixed-length instructions | Complex, variable-length instructions |\n| **Execution** | Most instructions execute in 1 clock cycle | Instructions may take multiple clock cycles |\n| **Memory Access** | **Load/Store only** (ALU only operates on registers) | ALU instructions can operate directly on memory |\n| **Registers** | Large general-purpose register file (32+) | Fewer architectural registers (8-16) |\n| **Code Size** | Larger binary code size | Compact binary code size |\n\n## 2. Fundamental CPU Registers\n- **Program Counter (PC):** Holds the memory address of the next instruction to fetch.\n- **Instruction Register (IR):** Holds the current instruction being decoded.\n- **Stack Pointer (SP):** Points to the top of the current call stack.\n- **Status / Flags Register:** Stores condition flags (Zero flag `Z`, Carry flag `C`, Overflow `O`, Sign `S`).\n\n## 3. Endianness (Byte Ordering)\nFor multi-byte value `0x12345678` at base address `0x00`:\n- **Big-Endian:** Most significant byte stored first (`0x00: 12`, `0x01: 34`, `0x02: 56`, `0x03: 78`). Natural network byte order.\n- **Little-Endian:** Least significant byte stored first (`0x00: 78`, `0x01: 56`, `0x02: 34`, `0x03: 12`). Standard on modern x86 and ARM processors.\n",
+            "questions": [
+              {
+                "id": "coa-4",
+                "question": "Which architectural constraint is a core requirement of RISC (Reduced Instruction Set Computer) designs?",
+                "options": [
+                  "Variable length instructions",
+                  "Load/Store architecture where ALU operations strictly use registers",
+                  "Support for memory-to-memory arithmetic instructions",
+                  "Only one general purpose register"
+                ],
+                "correct_option": 1,
+                "explanation": "RISC architectures use a strict Load/Store model: memory is only accessed via LOAD and STORE instructions, while arithmetic operations strictly operate on registers."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "compiler-toc",
+        "slug": "theory-of-computation-and-compilers",
+        "title": "Theory of Computation & Compiler Design",
+        "description": "Chomsky hierarchy, DFA vs NFA, lexical analysis, context-free grammars, LL vs LR parsing, and Abstract Syntax Trees.",
+        "icon": "Terminal",
+        "topics": [
+          {
+            "id": "finite-automata-dfa-nfa",
+            "slug": "finite-automata-and-regular-languages",
+            "title": "Finite Automata: DFA, NFA & Regular Languages",
+            "description": "Deterministic vs Non-Deterministic Finite Automata, epsilon transitions, subset construction, state minimization, and pumping lemma.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# Finite Automata & Regular Languages\n\nFinite Automata are mathematical models of computation used in lexical analyzers, pattern matching engines, and protocol verification.\n\n---\n\n## 1. DFA vs. NFA\n- **DFA (Deterministic Finite Automaton):**\n  - For each state and input symbol, there is **exactly one** valid transition: $\\delta: Q \\times \\Sigma \\rightarrow Q$.\n  - No $\\epsilon$ (empty/epsilon) transitions.\n  - Highly efficient in software ($O(N)$ execution time).\n- **NFA (Non-Deterministic Finite Automaton):**\n  - Can transition to zero, one, or multiple states on an input symbol: $\\delta: Q \\times \\Sigma \\rightarrow 2^Q$.\n  - Can transition without consuming input ($\\\\epsilon$-moves).\n- **Equivalence:** For every NFA, there exists an equivalent DFA accepting the exact same language (constructed via **Subset Construction / Powerset algorithm**).\n\n## 2. Chomsky Hierarchy of Grammars\n1. **Type 3 (Regular):** Recognized by **Finite Automata** (Regex, Lexical tokens).\n2. **Type 2 (Context-Free):** Recognized by **Pushdown Automata (PDA)** (Programming language syntax, balanced brackets).\n3. **Type 1 (Context-Sensitive):** Recognized by **Linear Bounded Automata (LBA)**.\n4. **Type 0 (Unrestricted):** Recognized by **Turing Machines** (General computation).\n",
+            "questions": [
+              {
+                "id": "toc-1",
+                "question": "Can every Non-Deterministic Finite Automaton (NFA) be converted into an equivalent Deterministic Finite Automaton (DFA)?",
+                "options": [
+                  "Yes, via the Subset Construction algorithm",
+                  "No, NFAs are fundamentally more expressive than DFAs",
+                  "Only if the NFA has no loops",
+                  "Only for alphabets of size 2"
+                ],
+                "correct_option": 0,
+                "explanation": "DFAs and NFAs recognize the exact same class of regular languages; the Subset Construction algorithm can transform any NFA with n states into an equivalent DFA with up to 2^n states."
+              },
+              {
+                "id": "toc-2",
+                "question": "According to the Chomsky Hierarchy, what computational model recognizes Context-Free Languages used to describe programming language syntax?",
+                "options": [
+                  "Deterministic Finite Automaton (DFA)",
+                  "Pushdown Automaton (PDA)",
+                  "Linear Bounded Automaton (LBA)",
+                  "Turing Machine only"
+                ],
+                "correct_option": 1,
+                "explanation": "Pushdown Automata (PDA), which augment a finite automaton with a stack memory, recognize Context-Free Languages (Type 2)."
+              }
+            ]
+          },
+          {
+            "id": "compiler-phases-parsing",
+            "slug": "compiler-phases-and-parsing",
+            "title": "Phases of a Compiler: Lexical, Syntax & Semantic Analysis",
+            "description": "Tokens, Lexer, Context-Free Grammars, Ambiguity, Top-Down LL(1) vs Bottom-Up LR(0)/LALR, AST, and intermediate code generation.",
+            "estimatedMinutes": 20,
+            "notesMarkdown": "# Compiler Phases & Parsing Techniques\n\nA compiler translates high-level source code into efficient target machine code across sequential analysis and synthesis phases.\n\n---\n\n## 1. The 6 Compiler Phases\n1. **Lexical Analysis (Scanner):** Converts stream of characters into tokens (`KEYWORD`, `IDENTIFIER`, `NUMBER`), discarding whitespace and comments.\n2. **Syntax Analysis (Parser):** Verifies tokens against language Context-Free Grammar (CFG), generating a parse tree or Abstract Syntax Tree (AST).\n3. **Semantic Analysis:** Type checking, variable scope resolution, array bounds checking.\n4. **Intermediate Code Generation (ICG):** Produces machine-independent representation (e.g. Three-Address Code, LLVM IR).\n5. **Code Optimization:** Dead code elimination, constant folding, loop unrolling.\n6. **Target Code Generation:** Produces assembly/machine code with register allocation.\n\n## 2. Top-Down vs. Bottom-Up Parsing\n- **Top-Down Parsing (LL):** Builds parse tree from root to leaves.\n  - **LL(1):** Left-to-right scan, Leftmost derivation, 1 token lookahead. Cannot handle **left-recursive** grammars.\n- **Bottom-Up Parsing (LR):** Builds parse tree from leaves to root using **Shift-Reduce** actions.\n  - Handles a wider range of grammars than LL; used by Yacc/Bison parser generators.\n",
+            "questions": [
+              {
+                "id": "comp-1",
+                "question": "Which phase of a compiler performs type checking and verifies that variables are declared before being referenced in expressions?",
+                "options": [
+                  "Lexical Analysis",
+                  "Syntax Analysis",
+                  "Semantic Analysis",
+                  "Code Optimization"
+                ],
+                "correct_option": 2,
+                "explanation": "Semantic analysis ensures program meaning adheres to language rules, checking type compatibility, declaration scoping, and function argument signatures."
+              },
+              {
+                "id": "comp-2",
+                "question": "Why can an LL(1) parser not parse a grammar containing direct left recursion (e.g. A -> A alpha | beta)?",
+                "options": [
+                  "It causes the parser to loop infinitely without consuming tokens",
+                  "LL(1) parsers do not support terminal symbols",
+                  "Left recursion requires a Turing machine",
+                  "Grammars cannot contain recursion"
+                ],
+                "correct_option": 0,
+                "explanation": "Direct left recursion causes a top-down predictive LL parser to recursively expand the left non-terminal without advancing the input pointer, triggering an infinite recursive loop."
               }
             ]
           }

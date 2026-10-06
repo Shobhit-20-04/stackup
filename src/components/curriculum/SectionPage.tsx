@@ -8,6 +8,10 @@ import {
   Database, 
   Network, 
   Code2, 
+  Server,
+  GitBranch,
+  Terminal,
+  Layers,
   Search, 
   Clock, 
   HelpCircle, 
@@ -103,6 +107,10 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       case 'Database': return <Database className="w-5 h-5 text-emerald-500" />;
       case 'Network': return <Network className="w-5 h-5 text-blue-500" />;
       case 'Code2': return <Code2 className="w-5 h-5 text-amber-500" />;
+      case 'Server': return <Server className="w-5 h-5 text-cyan-500" />;
+      case 'GitBranch': return <GitBranch className="w-5 h-5 text-rose-500" />;
+      case 'Terminal': return <Terminal className="w-5 h-5 text-indigo-500" />;
+      case 'Layers': return <Layers className="w-5 h-5 text-teal-500" />;
       default: return <BookOpen className="w-5 h-5 text-indigo-500" />;
     }
   };
@@ -189,7 +197,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 {filteredTopics.map((topic) => (
                   <div
                     key={topic.id}
-                    className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 shadow-sm transition-all flex flex-col justify-between"
+                    onClick={() => {
+                      setSelectedTopic(topic);
+                      setActiveView('notes');
+                    }}
+                    className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 shadow-sm transition-all flex flex-col justify-between cursor-pointer group hover:shadow-md"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -202,7 +214,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                         </div>
                       </div>
 
-                      <h3 className="text-base font-bold text-zinc-900 dark:text-white leading-snug">
+                      <h3 className="text-base font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
                         {topic.title}
                       </h3>
                       <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1.5 leading-relaxed">
@@ -218,18 +230,22 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setSelectedTopic(topic);
                             setActiveView('notes');
                           }}
-                          className="px-3.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          className="px-3.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                         >
                           Notes
                         </button>
                         {topic.questions.length > 0 && (
                           <button
-                            onClick={() => handleStartQuiz(topic)}
-                            className="inline-flex items-center space-x-1 px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStartQuiz(topic);
+                            }}
+                            className="inline-flex items-center space-x-1 px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
                           >
                             <Play className="w-3 h-3 fill-white" />
                             <span>Quiz</span>
