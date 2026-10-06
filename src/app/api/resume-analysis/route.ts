@@ -374,27 +374,43 @@ export async function POST(req: NextRequest) {
         try {
           const arrayBuffer = await file.arrayBuffer();
           const uint8 = new Uint8Array(arrayBuffer);
-          // Use modern PDFParse constructor for pdf-parse 2.x
+          // Use modern PDFParse constructor for pdf-parse 2.x with options object
           // eslint-disable-next-line @typescript-eslint/no-require-imports
           const { PDFParse } = require('pdf-parse');
-          const parser = new PDFParse(uint8);
+          const parser = new PDFParse({ data: uint8 });
           const pdfData = await parser.getText();
           resumeText = pdfData?.text ? pdfData.text.trim() : '';
+          try {
+            await parser.destroy();
+          } catch {
+            // ignore
+          }
         } catch (pdfErr) {
           console.warn('PDFParse primary extraction notice:', pdfErr);
         }
 
-        // Secondary fallback: Extract text streams if PDFParse was empty or encountered non-standard fonts
+        // Secondary fallback: Clean string parsing if primary extractor was unavailable
         if (!resumeText || resumeText.length < 50) {
           try {
             const rawBuffer = Buffer.from(await file.arrayBuffer());
             const textStream = rawBuffer.toString('latin1');
-            const matches = textStream.match(/[a-zA-Z0-9.,;:/\-+@()]{3,}(\s+[a-zA-Z0-9.,;:/\-+@()]{2,})+/g);
-            if (matches && matches.length > 5) {
-              resumeText = matches.join(' ');
+            const parenthesized = textStream.match(/\(([^)]+)\)/g);
+            if (parenthesized && parenthesized.length >= 3) {
+              resumeText = parenthesized
+                .map((m) => m.slice(1, -1).trim())
+                .filter((s) => s.length > 2 && !s.startsWith('/') && !s.startsWith('Length'))
+                .join(' ');
             }
           } catch {
             // Keep existing
+          }
+        }
+
+        // Sanitize any residual PDF operator bytecode tokens
+        if (resumeText && (resumeText.includes('/Length') || resumeText.includes('stream\nBT') || resumeText.includes('endstream'))) {
+          const textMatches = resumeText.match(/\(([^)]+)\)/g);
+          if (textMatches && textMatches.length >= 2) {
+            resumeText = textMatches.map((m) => m.slice(1, -1).trim()).join('\n\n');
           }
         }
       } else if (lowerName.endsWith('.docx')) {

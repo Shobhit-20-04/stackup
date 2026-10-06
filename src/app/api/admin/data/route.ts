@@ -92,7 +92,30 @@ export async function GET(req: NextRequest) {
       } | null;
     }
 
-    const resumeList = (resumes as unknown as UploadedResumeRow[]) || [];
+    const rawResumeList = (resumes as unknown as UploadedResumeRow[]) || [];
+    // Strictly filter out dummy/mock test seeds (@example.com, Alex Smith, John Doe) so admin only sees real user uploads
+    const resumeList = rawResumeList
+      .filter((r) => {
+        const email = (r.user_email || '').toLowerCase();
+        const fn = (r.filename || '').toLowerCase();
+        if (email.includes('@example.com')) return false;
+        if (fn.includes('alex_smith') || fn.includes('john_doe') || fn.includes('direct_test')) return false;
+        return true;
+      })
+      .map((r) => {
+        // Sanitize any residual raw PDF bytecode stream tokens into clean text
+        let cleanText = r.resume_text || '';
+        if (cleanText.includes('/Length') && (cleanText.includes('stream') || cleanText.includes('BT') || cleanText.includes('endstream'))) {
+          const matches = cleanText.match(/\(([^)]+)\)/g);
+          if (matches && matches.length >= 2) {
+            cleanText = matches.map((m) => m.slice(1, -1).trim()).join('\n\n');
+          }
+        }
+        return {
+          ...r,
+          resume_text: cleanText,
+        };
+      });
     const profileList = profiles || [];
     const quizList = quizzes || [];
 
@@ -162,6 +185,29 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ success: true, message: 'Resume deleted successfully.' });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Failed to delete resume';
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    if (!isAuthorized(req)) {
+      return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
+
+    const { action } = await req.json();
+    if (action === 'purge_test_records') {
+      const supabase = await createClient();
+      await supabase.from('uploaded_resumes').delete().ilike('user_email', '%@example.com%');
+      await supabase.from('uploaded_resumes').delete().ilike('filename', '%direct_test%');
+      await supabase.from('uploaded_resumes').delete().ilike('filename', '%alex_smith%');
+      await supabase.from('uploaded_resumes').delete().ilike('filename', '%john_doe%');
+      return NextResponse.json({ success: true, message: 'All test and seed dummy records purged successfully.' });
+    }
+
+    return NextResponse.json({ error: 'Unknown action requested.' }, { status: 400 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Failed to process admin action';
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
