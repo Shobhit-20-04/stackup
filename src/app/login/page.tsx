@@ -4,7 +4,6 @@ import React, { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { setDemoUserSession } from '@/lib/auth/session';
-import CredentialsModal from '@/components/CredentialsModal';
 import { 
   Layers, 
   Phone, 
@@ -15,8 +14,6 @@ import {
   Loader2, 
   ShieldCheck,
   User,
-  Database,
-  ExternalLink,
   Lock,
   ChevronDown,
   ChevronUp
@@ -32,23 +29,7 @@ function LoginForm() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPhoneOtp, setShowPhoneOtp] = useState(false);
   
-  // Credentials modal state
-  const [credentialsModalOpen, setCredentialsModalOpen] = useState(false);
   const [isSupabaseLive, setIsSupabaseLive] = useState(false);
-  const [isAdminMode] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const isParamAdmin = params.get('admin') === 'true';
-      if (isParamAdmin) {
-        localStorage.setItem('stackup_admin_mode', 'true');
-        return true;
-      }
-      return localStorage.getItem('stackup_admin_mode') === 'true';
-    } catch {
-      return false;
-    }
-  });
 
   // Phone OTP state
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -341,15 +322,6 @@ function LoginForm() {
                     {oauthHelp}
                   </p>
                 )}
-                {isAdminMode && oauthHelp && (
-                  <button
-                    onClick={() => setCredentialsModalOpen(true)}
-                    className="inline-flex items-center space-x-1 text-xs font-bold text-red-800 dark:text-red-200 underline mt-2 hover:opacity-80"
-                  >
-                    <Database className="w-3.5 h-3.5" />
-                    <span>Open Supabase Credentials Manager</span>
-                  </button>
-                )}
               </div>
             </div>
           )}
@@ -557,21 +529,6 @@ function LoginForm() {
             )}
           </div>
 
-          {/* Admin Tools (Only visible with ?admin=true) */}
-          {isAdminMode && (
-            <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-              <button
-                type="button"
-                onClick={() => setCredentialsModalOpen(true)}
-                className="w-full py-2 px-3 rounded-xl border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/50 dark:bg-indigo-950/20 text-xs font-medium text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors flex items-center justify-center space-x-1.5"
-              >
-                <Database className="w-3.5 h-3.5" />
-                <span>Configure Live Supabase &amp; API Keys</span>
-                <ExternalLink className="w-3 h-3 ml-1" />
-              </button>
-            </div>
-          )}
-
           {/* Security footnote */}
           <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-center space-x-1.5 text-xs text-zinc-500">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
@@ -579,11 +536,6 @@ function LoginForm() {
           </div>
         </div>
       </div>
-
-      <CredentialsModal
-        isOpen={credentialsModalOpen}
-        onClose={() => setCredentialsModalOpen(false)}
-      />
     </div>
   );
 }
