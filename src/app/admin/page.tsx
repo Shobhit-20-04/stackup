@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useId } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useId } from 'react';
 import Link from 'next/link';
 import {
   ShieldCheck,
@@ -10,7 +10,6 @@ import {
   Award,
   Search,
   RefreshCw,
-  ExternalLink,
   Trash2,
   Copy,
   Check,
@@ -19,9 +18,6 @@ import {
   ArrowRight,
   AlertCircle,
   Eye,
-  CheckCircle2,
-  HelpCircle,
-  Clock,
   Sparkles
 } from 'lucide-react';
 
@@ -98,16 +94,7 @@ export default function AdminDashboardPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const searchInputId = useId();
 
-  // Check stored admin key on mount
-  useEffect(() => {
-    const stored = sessionStorage.getItem('stackup_admin_key');
-    if (stored) {
-      setPasscode(stored);
-      fetchAdminData(stored);
-    }
-  }, []);
-
-  const fetchAdminData = async (key: string) => {
+  const fetchAdminData = useCallback(async (key: string) => {
     try {
       setLoading(true);
       setErrorMsg('');
@@ -135,7 +122,18 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Check stored admin key on mount
+  useEffect(() => {
+    const stored = typeof window !== 'undefined' ? sessionStorage.getItem('stackup_admin_key') : null;
+    if (stored) {
+      const timer = setTimeout(() => {
+        void fetchAdminData(stored);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [fetchAdminData]);
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,9 +189,10 @@ export default function AdminDashboardPage() {
   };
 
   // Filter resumes
+  const resumes = data?.resumes;
   const filteredResumes = useMemo(() => {
-    if (!data?.resumes) return [];
-    return data.resumes.filter((r) => {
+    if (!resumes) return [];
+    return resumes.filter((r) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         r.filename.toLowerCase().includes(q) ||
@@ -206,7 +205,7 @@ export default function AdminDashboardPage() {
 
       return matchesSearch && matchesGrade;
     });
-  }, [data?.resumes, searchQuery, gradeFilter]);
+  }, [resumes, searchQuery, gradeFilter]);
 
   // If not authenticated, render admin login gate
   if (!isAuthenticated) {

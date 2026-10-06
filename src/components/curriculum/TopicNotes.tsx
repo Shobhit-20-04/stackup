@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Clock, Play, BookOpen, Lock, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Clock, Play, BookOpen, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import type { Topic } from '@/lib/data/curriculum';
 import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 
