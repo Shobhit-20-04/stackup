@@ -16,9 +16,10 @@ import {
   Loader2, 
   TrendingUp, 
   ChevronRight,
-  BookmarkPlus
+  BookmarkPlus,
+  Lock
 } from 'lucide-react';
-import { getCurrentUser } from '@/lib/auth/session';
+import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/client';
 
 interface AnalysisResult {
@@ -48,56 +49,17 @@ interface AnalysisResult {
   }[];
 }
 
-const SAMPLE_STRONG_RESUME = `
-SHOBHIT AGRAWAL
-Email: shobhit.student@gmail.com | Phone: +91 98765 43210
-LinkedIn: linkedin.com/in/shobhit-agrawal | GitHub: github.com/shobhit-dev | Portfolio: shobhit.tech
-
-EDUCATION
-Bachelor of Technology in Computer Science & Engineering | 2022 - 2026 | CGPA: 9.1/10
-
-TECHNICAL SKILLS
-Languages: TypeScript, JavaScript, Python, Java, C++, SQL
-Frameworks & Libraries: React, Next.js, Node.js, Express, Tailwind CSS, Redux
-Databases & Cloud: PostgreSQL, MongoDB, Redis, Docker, AWS (S3, EC2), Git, CI/CD
-Core Concepts: Data Structures & Algorithms, System Design, REST APIs, Microservices, Unit Testing
-
-WORK EXPERIENCE
-Software Engineering Intern | CloudScale Solutions | May 2025 - July 2025
-- Architected and deployed scalable RESTful microservices in Node.js and TypeScript, handling over 250,000 daily requests.
-- Optimized PostgreSQL database queries and implemented Redis caching, reducing p95 API response latency by 44%.
-- Integrated automated CI/CD pipeline using GitHub Actions and Docker, reducing team deployment cycle time from 40 mins to 8 mins.
-- Authored comprehensive unit and integration test suites using Vitest, boosting code test coverage from 62% to 91%.
-
-PROJECTS
-StackUp - All-in-One Tech Interview Preparation Platform | Next.js, Supabase, Tailwind CSS, TypeScript
-- Engineered full-stack platform serving interactive quizzes, algorithmic roadmap, and ATS diagnostics.
-- Implemented Supabase Row Level Security (RLS) and JWT auth, ensuring strict zero-trust data segregation.
-- Achieved 98+ Google Lighthouse performance score by leveraging Vercel Edge caching and dynamic code splitting.
-`;
-
-const SAMPLE_WEAK_RESUME = `
-Alex Smith
-Phone: 555-0199
-
-Objective: Looking for a good software job to learn programming.
-
-Experience:
-Web Helper at Local Tech
-- Helped make websites for clients.
-- Fixed some bugs in the code.
-- Worked with team members on daily tasks.
-
-Education:
-College student studying computer subjects.
-`;
-
 export default function ResumeCheckerPage() {
   const [file, setFile] = useState<File | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+
+  React.useEffect(() => {
+    getCurrentUser().then((u) => setCurrentUser(u));
+  }, []);
 
   // File drag & drop state
   const [isDragging, setIsDragging] = useState(false);
@@ -162,35 +124,6 @@ export default function ResumeCheckerPage() {
       setResult(data);
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Analysis failed. Please try again.');
-    } finally {
-      setAnalyzing(false);
-    }
-  };
-
-  const handleTestWithSample = async (type: 'strong' | 'weak') => {
-    setAnalyzing(true);
-    setErrorMsg('');
-    setSavedSuccess(false);
-
-    const sampleText = type === 'strong' ? SAMPLE_STRONG_RESUME : SAMPLE_WEAK_RESUME;
-    const filename = type === 'strong' ? 'Shobhit_SDE_Resume.pdf' : 'Draft_Resume_Incomplete.docx';
-
-    try {
-      const res = await fetch('/api/resume-analysis', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: sampleText, filename }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || 'Failed to run sample analysis.');
-      }
-
-      const data: AnalysisResult = await res.json();
-      setResult(data);
-    } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Sample analysis failed.');
     } finally {
       setAnalyzing(false);
     }
@@ -263,23 +196,10 @@ export default function ResumeCheckerPage() {
               </p>
             </div>
 
-            {/* Quick action buttons for demo testing */}
-            <div className="flex flex-col sm:flex-row items-center gap-2">
-              <button
-                onClick={() => handleTestWithSample('strong')}
-                disabled={analyzing}
-                className="w-full sm:w-auto px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all shadow-sm"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Try Sample SDE Resume</span>
-              </button>
-              <button
-                onClick={() => handleTestWithSample('weak')}
-                disabled={analyzing}
-                className="w-full sm:w-auto px-4 py-2.5 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all"
-              >
-                <span>Try Incomplete CV</span>
-              </button>
+            {/* Mandatory Upload Info Tag */}
+            <div className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-750 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+              <UploadCloud className="w-4 h-4 text-indigo-500" />
+              <span>Resume Upload Mandatory • PDF, DOCX, TXT</span>
             </div>
           </div>
         </div>
@@ -525,6 +445,37 @@ export default function ResumeCheckerPage() {
               </div>
             </div>
 
+            {/* Restricted Content Lock for Visitors */}
+            {!currentUser ? (
+              <div className="rounded-3xl border border-indigo-200/80 dark:border-indigo-900/60 bg-gradient-to-b from-indigo-50/70 via-white to-white dark:from-indigo-950/30 dark:via-zinc-900 dark:to-zinc-900 p-8 text-center shadow-lg space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto mb-2 shadow-lg shadow-indigo-600/25">
+                  <Lock className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white">
+                  Detailed Keyword Gap Audit &amp; STAR Bullet Rewrites Locked
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+                  Sign in or create a free account to unlock your complete keyword gap analysis, custom section recommendations, line-by-line STAR bullet rewrites, and save your resume to your personal dashboard.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2"
+                  >
+                    <span>Sign In to Unlock Full Report</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-sm hover:bg-zinc-50 dark:hover:bg-zinc-750 transition-colors"
+                  >
+                    Create Free Account
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <>
             {/* Keyword Analysis Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Matched Keywords */}
@@ -708,8 +659,10 @@ export default function ResumeCheckerPage() {
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-          </div>
+          </>
         )}
+      </div>
+    )}
       </div>
     </div>
   );

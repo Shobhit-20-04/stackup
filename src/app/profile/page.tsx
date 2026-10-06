@@ -15,13 +15,12 @@ import {
   Calendar, 
   Award, 
   Loader2,
-  Database,
   BookOpen,
   Cpu,
+  Code2,
   ArrowRight,
   Sparkles
 } from 'lucide-react';
-import CredentialsModal from '@/components/CredentialsModal';
 import { 
   ResponsiveContainer, 
   XAxis, 
@@ -87,7 +86,6 @@ export default function ProfilePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [credentialsModalOpen, setCredentialsModalOpen] = useState(false);
   
   // Real progress across core sections (initialized dynamically from real data)
   const [progressList, setProgressList] = useState<ProgressItem[]>([]);
@@ -421,13 +419,13 @@ export default function ProfilePage() {
 
         {/* Quick Actions */}
         <div className="flex items-center space-x-3 w-full md:w-auto">
-          <button
-            onClick={() => setCredentialsModalOpen(true)}
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          <Link
+            href="/dsa"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors shadow-sm shadow-indigo-500/20"
           >
-            <Database className="w-4 h-4 text-indigo-500" />
-            <span>Connect Supabase / Keys</span>
-          </button>
+            <Code2 className="w-4 h-4" />
+            <span>Practice DSA</span>
+          </Link>
           <button
             onClick={handleSignOut}
             className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
@@ -786,10 +784,6 @@ export default function ProfilePage() {
         )}
       </div>
 
-      <CredentialsModal
-        isOpen={credentialsModalOpen}
-        onClose={() => setCredentialsModalOpen(false)}
-      />
     </div>
   );
 }

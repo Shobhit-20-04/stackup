@@ -1,26 +1,59 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { 
   Code2, 
   ExternalLink, 
   Video, 
   BookOpen, 
   Search, 
-  Sparkles,
-  RotateCcw,
-  Check,
-  Building2
+  Sparkles, 
+  RotateCcw, 
+  Check, 
+  Building2,
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  Clock,
+  HardDrive,
+  Lightbulb,
+  FileText,
+  Terminal,
+  Loader2,
+  Lock,
+  ArrowRight
 } from 'lucide-react';
-import { DSA_PROBLEMS, DSA_CATEGORIES } from '@/lib/data/dsa';
+import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
+import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 
 export default function DsaHubPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [showOnlyUnsolved, setShowOnlyUnsolved] = useState(false);
-  const [expandedSummary, setExpandedSummary] = useState<string | null>(null);
+  
+  // Expanded Complete Output panel state
+  const [expandedProblemId, setExpandedProblemId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'problem' | 'approach' | 'code'>('problem');
+  const [activeLang, setActiveLang] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Progressive scroll loading
+  const PAGE_SIZE = 10;
+  const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const observerTarget = useRef<HTMLDivElement>(null);
+
+  // Authentication state for feature gating
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
+  const [authPromptReason, setAuthPromptReason] = useState('');
+
+  useEffect(() => {
+    getCurrentUser().then((u) => setCurrentUser(u));
+  }, []);
 
   // Solved problem IDs persisted in localStorage (lazy initializer for SSR & React 19)
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
@@ -35,6 +68,12 @@ export default function DsaHubPage() {
 
   // Save to localStorage and update section progress for profile
   const toggleSolved = (id: string) => {
+    if (!currentUser) {
+      setAuthPromptReason('Sign in to track your solved problems and sync your interview preparation progress to your profile.');
+      setAuthPromptOpen(true);
+      return;
+    }
+
     const nextSolved = solvedIds.includes(id)
       ? solvedIds.filter((item) => item !== id)
       : [...solvedIds, id];
@@ -88,6 +127,48 @@ export default function DsaHubPage() {
     });
   }, [selectedCategory, selectedDifficulty, showOnlyUnsolved, searchQuery, solvedIds]);
 
+  // Reset visibleCount whenever filters change (React render-phase pattern)
+  const filterKey = `${selectedCategory}-${selectedDifficulty}-${searchQuery}-${showOnlyUnsolved}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  // Progressive infinite scroll intersection observer
+  useEffect(() => {
+    const target = observerTarget.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < filteredProblems.length && !isLoadingMore) {
+          setIsLoadingMore(true);
+          setTimeout(() => {
+            setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredProblems.length));
+            setIsLoadingMore(false);
+          }, 200);
+        }
+      },
+      { threshold: 0.1, rootMargin: '250px' }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [visibleCount, filteredProblems.length, isLoadingMore]);
+
+  const displayedProblems = useMemo(() => {
+    return filteredProblems.slice(0, visibleCount);
+  }, [filteredProblems, visibleCount]);
+
+  const handleCopyCode = (code: string, id: string) => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(code);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
+
   // Statistics
   const totalCount = DSA_PROBLEMS.length;
   const solvedCount = solvedIds.length;
@@ -117,7 +198,7 @@ export default function DsaHubPage() {
                 DSA Practice Hub
               </h1>
               <p className="mt-2 text-zinc-600 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
-                A hand-picked roadmap of high-frequency interview patterns across LeetCode, Striver&apos;s SDE Sheet, and top tech companies. Master patterns, not just problems.
+                A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, Striver&apos;s SDE Sheet, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
               </p>
             </div>
 
@@ -216,15 +297,15 @@ export default function DsaHubPage() {
           </div>
 
           {/* Pattern / Category Pills */}
-          <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-zinc-100 dark:border-zinc-800">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider whitespace-nowrap pl-1">
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider pl-1 mr-1">
               Pattern:
             </span>
             {DSA_CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                   selectedCategory === cat
                     ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-500/20'
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
@@ -236,8 +317,22 @@ export default function DsaHubPage() {
           </div>
         </div>
 
+        {/* Dynamic Problem Count Header */}
+        <div className="flex items-center justify-between px-2 mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+          <div>
+            Showing <span className="font-semibold text-zinc-800 dark:text-zinc-200">{displayedProblems.length}</span> of{' '}
+            <span className="font-semibold text-zinc-800 dark:text-zinc-200">{filteredProblems.length}</span> problems
+          </div>
+          {visibleCount < filteredProblems.length && (
+            <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Scroll down to reveal more</span>
+            </div>
+          )}
+        </div>
+
         {/* Problems List */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filteredProblems.length === 0 ? (
             <div className="bg-white dark:bg-zinc-900 p-12 text-center rounded-2xl border border-zinc-200 dark:border-zinc-800">
               <Code2 className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
@@ -256,14 +351,14 @@ export default function DsaHubPage() {
               </button>
             </div>
           ) : (
-            filteredProblems.map((problem) => {
+            displayedProblems.map((problem: DsaProblem) => {
               const isSolved = solvedIds.includes(problem.id);
-              const isSummaryOpen = expandedSummary === problem.id;
+              const isExpanded = expandedProblemId === problem.id;
 
               return (
                 <div 
                   key={problem.id}
-                  className={`bg-white dark:bg-zinc-900 rounded-xl border transition-all duration-200 ${
+                  className={`bg-white dark:bg-zinc-900 rounded-2xl border transition-all duration-200 shadow-sm ${
                     isSolved 
                       ? 'border-emerald-200 dark:border-emerald-950/60 bg-emerald-50/20 dark:bg-emerald-950/10' 
                       : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
@@ -326,25 +421,15 @@ export default function DsaHubPage() {
                       </div>
                     </div>
 
-                    {/* Right: Action links */}
+                    {/* Right: Direct Portal Links & Expand Complete Output Button */}
                     <div className="flex items-center space-x-2 sm:self-center self-end pt-2 sm:pt-0">
-                      {/* Hint / Strategy Dropdown toggle */}
-                      <button
-                        onClick={() => setExpandedSummary(isSummaryOpen ? null : problem.id)}
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center space-x-1"
-                        title="Key intuition / pattern breakdown"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Intuition</span>
-                      </button>
-
                       {/* LeetCode Link */}
                       <a
                         href={problem.leetcode_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 flex items-center space-x-1 transition-colors"
-                        title="Open on LeetCode"
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 flex items-center space-x-1.5 transition-colors border border-amber-200/50 dark:border-amber-900/40"
+                        title="Practice on LeetCode"
                       >
                         <span>LeetCode</span>
                         <ExternalLink className="w-3 h-3" />
@@ -355,8 +440,8 @@ export default function DsaHubPage() {
                         href={problem.striver_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center space-x-1 transition-colors"
-                        title="Open Striver's SDE Sheet solution"
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center space-x-1.5 transition-colors border border-indigo-200/50 dark:border-indigo-900/40"
+                        title="Open Striver's SDE Sheet guide"
                       >
                         <span>Striver</span>
                         <BookOpen className="w-3 h-3" />
@@ -367,28 +452,417 @@ export default function DsaHubPage() {
                         href={problem.youtube_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                        title="Watch video explanation"
+                        className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors border border-rose-200/40 dark:border-rose-900/40"
+                        title="Watch full video tutorial on YouTube"
                       >
                         <Video className="w-4 h-4" />
                       </a>
+
+                      {/* Complete Output Accordion Trigger */}
+                      <button
+                        onClick={() => {
+                          if (isExpanded) {
+                            setExpandedProblemId(null);
+                          } else {
+                            setExpandedProblemId(problem.id);
+                            setActiveTab('problem');
+                          }
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                          isExpanded
+                            ? 'bg-zinc-800 dark:bg-zinc-700 text-white shadow-sm'
+                            : 'bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-750 text-zinc-700 dark:text-zinc-200'
+                        }`}
+                        title="View complete problem output, approach, and code solutions"
+                      >
+                        <Terminal className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                        <span>{isExpanded ? 'Hide Output' : 'Complete Output'}</span>
+                        {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </button>
                     </div>
                   </div>
 
-                  {/* Expandable Intuition / Approach Note */}
-                  {isSummaryOpen && (
-                    <div className="px-5 pb-4 pt-1 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-50/50 dark:bg-zinc-900/50 rounded-b-xl flex items-start space-x-2">
-                      <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-semibold text-zinc-800 dark:text-zinc-200">Core Pattern Intuition: </span>
-                        {problem.summary}
+                  {/* Complete Output Expandable Body */}
+                  {isExpanded && (
+                    <div className="border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/90 rounded-b-2xl p-5 space-y-4">
+                      {/* Top Tabs */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+                        <div className="flex items-center space-x-1 bg-zinc-200/70 dark:bg-zinc-800 p-1 rounded-xl">
+                          <button
+                            onClick={() => setActiveTab('problem')}
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              activeTab === 'problem'
+                                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
+                                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                          >
+                            <FileText className="w-3.5 h-3.5 text-blue-500" />
+                            <span>Problem &amp; Examples</span>
+                          </button>
+
+                          <button
+                            onClick={() => setActiveTab('approach')}
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              activeTab === 'approach'
+                                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
+                                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                          >
+                            <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                            <span>Optimal Approach &amp; Complexity</span>
+                          </button>
+
+                          <button
+                            onClick={() => setActiveTab('code')}
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                              activeTab === 'code'
+                                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
+                                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                          >
+                            <Code2 className="w-3.5 h-3.5 text-emerald-500" />
+                            <span>Code Solutions</span>
+                          </button>
+                        </div>
+
+                        {/* Direct portal badges */}
+                        <div className="flex items-center space-x-2 text-xs">
+                          <a
+                            href={problem.leetcode_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-1 text-amber-600 dark:text-amber-400 hover:underline"
+                          >
+                            <span>LeetCode #</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                          <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                          <a
+                            href={problem.striver_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                          >
+                            <span>Striver Guide</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                          <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                          <a
+                            href={problem.youtube_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-1 text-rose-600 dark:text-rose-400 hover:underline"
+                          >
+                            <span>Video Solution</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
                       </div>
+
+                      {/* Tab 1: Problem Statement & Examples */}
+                      {activeTab === 'problem' && (
+                        <div className="space-y-4">
+                          {/* Description */}
+                          <div>
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                              Problem Statement
+                            </h4>
+                            <p className="text-sm text-zinc-800 dark:text-zinc-200 leading-relaxed bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                              {problem.description}
+                            </p>
+                          </div>
+
+                          {/* Examples */}
+                          <div>
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                              Sample Test Cases &amp; Outputs
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {(currentUser ? problem.examples : problem.examples.slice(0, 1)).map((ex, idx) => (
+                                <div 
+                                  key={idx}
+                                  className="bg-white dark:bg-zinc-900 p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs space-y-2"
+                                >
+                                  <div className="flex items-center justify-between text-zinc-400 font-mono text-[11px] pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                    <span>Example {idx + 1}</span>
+                                  </div>
+                                  <div>
+                                    <span className="font-semibold text-zinc-500 dark:text-zinc-400 block mb-0.5">Input:</span>
+                                    <code className="text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded block font-mono">
+                                      {ex.input}
+                                    </code>
+                                  </div>
+                                  <div>
+                                    <span className="font-semibold text-zinc-500 dark:text-zinc-400 block mb-0.5">Output:</span>
+                                    <code className="text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 rounded block font-mono font-semibold">
+                                      {ex.output}
+                                    </code>
+                                  </div>
+                                  {ex.explanation && (
+                                    <div className="text-zinc-600 dark:text-zinc-400 pt-1 text-[11px] leading-relaxed">
+                                      <span className="font-medium text-zinc-700 dark:text-zinc-300">Explanation: </span>
+                                      {ex.explanation}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Constraints & Member Teaser */}
+                          {currentUser ? (
+                            <div>
+                              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                                Constraints
+                              </h4>
+                              <div className="flex flex-wrap gap-2">
+                                {problem.constraints.map((c, idx) => (
+                                  <span 
+                                    key={idx}
+                                    className="text-xs font-mono bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800"
+                                  >
+                                    {c}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-4 rounded-xl border border-indigo-200/80 dark:border-indigo-900/60 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center space-x-2 text-indigo-700 dark:text-indigo-300 font-medium">
+                                <Lock className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                <span>Additional test cases, edge cases, and boundary constraints are locked for visitors.</span>
+                              </div>
+                              <Link
+                                href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
+                              >
+                                <span>Sign In to Unlock</span>
+                                <ArrowRight className="w-3 h-3" />
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Tab 2: Optimal Approach & Complexity */}
+                      {activeTab === 'approach' && (
+                        <div className="space-y-4">
+                          <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <div className="flex items-center space-x-2 mb-2 text-amber-600 dark:text-amber-400 font-semibold text-sm">
+                              <Sparkles className="w-4 h-4" />
+                              <span>Core Algorithmic Intuition</span>
+                            </div>
+                            <p className="text-sm text-zinc-800 dark:text-zinc-200 leading-relaxed">
+                              {currentUser ? problem.approach : `${problem.approach.slice(0, 130)}...`}
+                            </p>
+                          </div>
+
+                          {!currentUser && (
+                            <div className="p-4 rounded-xl border border-indigo-200/80 dark:border-indigo-900/60 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center space-x-2 text-indigo-700 dark:text-indigo-300 font-medium">
+                                <Lock className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                <span>Full algorithmic walk-through and Big-O proofs are locked for visitors.</span>
+                              </div>
+                              <Link
+                                href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
+                              >
+                                <span>Sign In to Unlock</span>
+                                <ArrowRight className="w-3 h-3" />
+                              </Link>
+                            </div>
+                          )}
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Time Complexity */}
+                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 flex items-start space-x-3">
+                              <div className="p-2.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+                                <Clock className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 block">
+                                  Time Complexity
+                                </span>
+                                <span className="text-sm font-bold text-zinc-900 dark:text-white font-mono mt-0.5 block">
+                                  {currentUser ? problem.timeComplexity : 'Sign in to view'}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Space Complexity */}
+                            <div className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 flex items-start space-x-3">
+                              <div className="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400">
+                                <HardDrive className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 block">
+                                  Space Complexity
+                                </span>
+                                <span className="text-sm font-bold text-zinc-900 dark:text-white font-mono mt-0.5 block">
+                                  {currentUser ? problem.spaceComplexity : 'Sign in to view'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tab 3: Complete Working Code Solutions */}
+                      {activeTab === 'code' && (
+                        <div className="space-y-3">
+                          {/* Language Switcher & Copy Button */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-1.5 bg-zinc-200/80 dark:bg-zinc-800 p-1 rounded-xl">
+                              {(['python', 'cpp', 'java', 'typescript'] as const).map((lang) => (
+                                <button
+                                  key={lang}
+                                  onClick={() => setActiveLang(lang)}
+                                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                                    activeLang === lang
+                                      ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white font-semibold shadow-sm'
+                                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                                  }`}
+                                >
+                                  {lang === 'python' ? 'Python 3' : lang === 'cpp' ? 'C++' : lang === 'java' ? 'Java' : 'TypeScript'}
+                                </button>
+                              ))}
+                            </div>
+
+                            {currentUser ? (
+                              <button
+                                onClick={() => handleCopyCode(problem.solutions[activeLang], problem.id)}
+                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-750 transition-colors shadow-sm"
+                              >
+                                {copiedId === problem.id ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                                    <span>Copy Solution</span>
+                                  </>
+                                )}
+                              </button>
+                            ) : (
+                              <Link
+                                href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm"
+                              >
+                                <Lock className="w-3 h-3 text-indigo-500" />
+                                <span>Sign In to Copy</span>
+                              </Link>
+                            )}
+                          </div>
+
+                          {/* Code Display */}
+                          <div className="relative rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950 text-zinc-100 font-mono text-xs shadow-inner">
+                            <div className="flex items-center justify-between px-4 py-2 bg-zinc-900/80 border-b border-zinc-800/80 text-[11px] text-zinc-400">
+                              <span>Solution • {activeLang.toUpperCase()}</span>
+                              <span>Verified on LeetCode</span>
+                            </div>
+                            
+                            {currentUser ? (
+                              <pre className="p-4 overflow-x-auto leading-relaxed max-h-[400px]">
+                                <code>{problem.solutions[activeLang]}</code>
+                              </pre>
+                            ) : (
+                              <div className="relative min-h-[220px]">
+                                {/* Preview snippet (First 3 lines) */}
+                                <pre className="p-4 overflow-hidden leading-relaxed opacity-40 select-none">
+                                  <code>
+                                    {problem.solutions[activeLang].split('\n').slice(0, 3).join('\n')}
+                                    {'\n    # ... [Sign in to view full verified code implementation] ...'}
+                                    {'\n    # ... Supports Python 3, C++, Java, and TypeScript ...'}
+                                  </code>
+                                </pre>
+
+                                {/* Locked overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/90 to-zinc-950 flex flex-col items-center justify-center p-6 text-center">
+                                  <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-2.5 border border-indigo-500/30">
+                                    <Lock className="w-5 h-5 text-indigo-400" />
+                                  </div>
+                                  <h4 className="text-sm font-bold text-white mb-1">
+                                    Sign in to view full multi-language code
+                                  </h4>
+                                  <p className="text-xs text-zinc-400 max-w-xs mb-3">
+                                    Unlock full implementations, optimal time/space solutions, and one-click copy.
+                                  </p>
+                                  <Link
+                                    href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all flex items-center space-x-1.5"
+                                  >
+                                    <span>Sign In to Unlock</span>
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                  </Link>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               );
             })
           )}
+        </div>
+
+        {/* Auth Prompt Modal */}
+        {authPromptOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-1">
+                <Lock className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                  Sign In Required
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                  {authPromptReason || 'Sign in to access this feature and sync your data with your personal profile dashboard.'}
+                </p>
+              </div>
+              <div className="flex items-center space-x-3 pt-2">
+                <Link
+                  href={`/login?redirect=${encodeURIComponent('/dsa')}`}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs text-center shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <span>Sign In to Continue</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <button
+                  onClick={() => setAuthPromptOpen(false)}
+                  className="py-2.5 px-4 rounded-xl border border-zinc-200 dark:border-zinc-750 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Scroll Sentinel for Progressive Loading */}
+        <div ref={observerTarget} className="pt-8 pb-4 flex flex-col items-center justify-center">
+          {isLoadingMore ? (
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-600 dark:text-zinc-400 shadow-sm">
+              <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
+              <span>Loading more problems on scroll...</span>
+            </div>
+          ) : visibleCount < filteredProblems.length ? (
+            <button
+              onClick={() => setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredProblems.length))}
+              className="px-5 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 shadow-sm transition-all"
+            >
+              Load More ({filteredProblems.length - displayedProblems.length} remaining)
+            </button>
+          ) : filteredProblems.length > 0 ? (
+            <div className="text-center text-xs text-zinc-400 dark:text-zinc-500 py-2">
+              All {filteredProblems.length} problems loaded • Ready to crack your technical interviews
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

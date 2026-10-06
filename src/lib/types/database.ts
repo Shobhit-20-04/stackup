@@ -200,26 +200,70 @@ export interface Database {
       resume_analyses: {
         Row: {
           id: string;
-          user_id: string;
+          user_id: string | null;
           filename: string;
           ats_score: number;
           feedback: Json;
+          resume_text?: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
-          user_id: string;
+          user_id?: string | null;
           filename: string;
           ats_score: number;
           feedback: Json;
+          resume_text?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          user_id?: string;
+          user_id?: string | null;
           filename?: string;
           ats_score?: number;
           feedback?: Json;
+          resume_text?: string | null;
+          created_at?: string;
+        };
+      };
+      uploaded_resumes: {
+        Row: {
+          id: string;
+          filename: string;
+          file_size: number | null;
+          mime_type: string | null;
+          resume_text: string;
+          ats_score: number | null;
+          analysis: Json | null;
+          user_id: string | null;
+          user_email: string | null;
+          ip_address: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          filename: string;
+          file_size?: number | null;
+          mime_type?: string | null;
+          resume_text: string;
+          ats_score?: number | null;
+          analysis?: Json | null;
+          user_id?: string | null;
+          user_email?: string | null;
+          ip_address?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          filename?: string;
+          file_size?: number | null;
+          mime_type?: string | null;
+          resume_text?: string;
+          ats_score?: number | null;
+          analysis?: Json | null;
+          user_id?: string | null;
+          user_email?: string | null;
+          ip_address?: string | null;
           created_at?: string;
         };
       };

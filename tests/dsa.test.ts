@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { DSA_PROBLEMS, DSA_CATEGORIES } from '../src/lib/data/dsa';
 
 describe('DSA Hub Dataset', () => {
-  it('contains at least 25 high-frequency problems', () => {
-    expect(DSA_PROBLEMS.length).toBeGreaterThanOrEqual(25);
+  it('contains at least 150 high-frequency problems (NeetCode 150 standard)', () => {
+    expect(DSA_PROBLEMS.length).toBeGreaterThanOrEqual(150);
   });
 
   it('validates each problem has valid difficulty, links, and pattern tag', () => {

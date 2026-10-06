@@ -23,10 +23,8 @@ export default function HomePage() {
 
   return (
     <div className="relative overflow-hidden min-h-screen">
-      {/* Background Decorative Gradients & Grid */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-indigo-500/10 via-violet-500/5 to-transparent blur-3xl -z-10 pointer-events-none" />
-      <div className="absolute top-24 right-[10%] w-72 h-72 bg-amber-500/10 rounded-full blur-3xl -z-10 pointer-events-none" />
-      <div className="absolute top-48 left-[5%] w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl -z-10 pointer-events-none" />
+      {/* Background Decorative Ambient Spotlight */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[520px] bg-gradient-to-b from-indigo-500/10 via-indigo-500/5 to-transparent blur-3xl -z-10 pointer-events-none" />
 
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-16 text-center">
@@ -198,15 +196,15 @@ export default function HomePage() {
         {/* Stats Strip */}
         <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">
-            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">30+</div>
-            <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">High-Frequency Patterns</div>
+            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">150+</div>
+            <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">High-Frequency Problems</div>
             <div className="text-[11px] text-zinc-500">Blind 75 &amp; Striver SDE sheet</div>
           </div>
 
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">
-            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">4 Pillars</div>
+            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">5 Pillars</div>
             <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Core CS Coverage</div>
-            <div className="text-[11px] text-zinc-500">OS, DBMS, Networks, OOPs</div>
+            <div className="text-[11px] text-zinc-500">OS, DBMS, CN, OOPs, System Design</div>
           </div>
 
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">
@@ -408,23 +406,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-950/50 py-8 text-center text-xs text-zinc-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold text-zinc-900 dark:text-white">StackUp</span>
-            <span>— The All-In-One Interview Prep Platform</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link href="/aptitude" className="hover:text-indigo-600 transition-colors">Aptitude</Link>
-            <Link href="/core-cs" className="hover:text-indigo-600 transition-colors">Core CS</Link>
-            <Link href="/dsa" className="hover:text-indigo-600 transition-colors">DSA Hub</Link>
-            <Link href="/resume-checker" className="hover:text-indigo-600 transition-colors">ATS Resume</Link>
-            <a href="https://github.com/Shobhit-20-04/stackup" target="_blank" rel="noreferrer" className="hover:text-indigo-600 transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -8,12 +8,7 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const isAuthPage = pathname.startsWith('/login');
-  const isProtectedPath =
-    pathname.startsWith('/profile') ||
-    pathname.startsWith('/aptitude') ||
-    pathname.startsWith('/core-cs') ||
-    pathname.startsWith('/dsa') ||
-    pathname.startsWith('/resume-checker');
+  const isProtectedPath = pathname.startsWith('/profile');
 
   const demoCookie = request.cookies.get('sb-demo-user');
   let hasUser = !!demoCookie;
@@ -52,16 +47,11 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // If in placeholder dev mode and no demo session yet, don't hard block public browsing of content
-  const isPlaceholderMode = !supabaseUrl || supabaseUrl.includes('placeholder');
-
   if (!hasUser && isProtectedPath) {
-    if (pathname.startsWith('/profile') || !isPlaceholderMode) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/login';
-      url.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(url);
-    }
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    url.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(url);
   }
 
   if (hasUser && isAuthPage) {
