@@ -256,12 +256,12 @@ export default function DsaHubPage() {
             </div>
 
             {/* Difficulty Toggle Buttons */}
-            <div className="flex items-center space-x-1.5 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl">
+            <div className="flex flex-wrap items-center gap-1 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl">
               {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
                 <button
                   key={diff}
                   onClick={() => setSelectedDifficulty(diff)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     selectedDifficulty === diff
                       ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
                       : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -422,7 +422,7 @@ export default function DsaHubPage() {
                     </div>
 
                     {/* Right: Direct Portal Links & Expand Complete Output Button */}
-                    <div className="flex items-center space-x-2 sm:self-center self-end pt-2 sm:pt-0">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:self-center self-start pt-2 sm:pt-0">
                       {/* LeetCode Link */}
                       <a
                         href={problem.leetcode_url}

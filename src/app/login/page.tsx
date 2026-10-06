@@ -31,8 +31,10 @@ function LoginForm() {
   
   const [isSupabaseLive, setIsSupabaseLive] = useState(false);
 
-  // Phone OTP state
+  // OTP state (Phone SMS or Email OTP)
+  const [otpChannel, setOtpChannel] = useState<'phone' | 'email'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [otpEmail, setOtpEmail] = useState('');
   const [otpToken, setOtpToken] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   
@@ -192,42 +194,78 @@ function LoginForm() {
     }
   };
 
-  // 3. Phone OTP: Send OTP
+  // 3. Multi-Channel OTP: Send OTP (Phone SMS or Email Code)
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phoneNumber.trim()) {
-      setErrorMsg('Please enter a valid phone number with country code (e.g. +91 98765 43210)');
-      return;
-    }
+    setLoading(true);
+    setErrorMsg('');
+    setOauthHelp(null);
+
     try {
-      setLoading(true);
-      setErrorMsg('');
-      setOauthHelp(null);
-
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber.trim() : `+91${phoneNumber.trim()}`;
 
-      if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
+      if (otpChannel === 'phone') {
+        if (!phoneNumber.trim()) {
+          setErrorMsg('Please enter a valid phone number with country code (e.g. +91 98765 43210)');
+          setLoading(false);
+          return;
+        }
+
+        const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber.trim() : `+91${phoneNumber.trim()}`;
+
+        if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
+          setOtpSent(true);
+          setOtpToken('123456');
+          setSuccessMsg(`Verification code 123456 generated for ${formattedPhone}. Enter it below.`);
+          setLoading(false);
+          return;
+        }
+
+        const supabase = createClient();
+        const { error } = await supabase.auth.signInWithOtp({
+          phone: formattedPhone,
+        });
+
+        if (error) {
+          setErrorMsg('SMS verification service is currently unavailable.');
+          setOauthHelp('Please use Email OTP or Password sign in.');
+          return;
+        }
+
         setOtpSent(true);
-        setOtpToken('123456');
-        setSuccessMsg(`Verification code 123456 generated for ${formattedPhone}. Enter it below.`);
-        setLoading(false);
-        return;
+        setSuccessMsg(`A 6-digit verification code was sent to ${formattedPhone}`);
+      } else {
+        // Email OTP
+        if (!otpEmail.trim() || !otpEmail.includes('@')) {
+          setErrorMsg('Please enter a valid email address to receive the verification code.');
+          setLoading(false);
+          return;
+        }
+
+        if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
+          setOtpSent(true);
+          setOtpToken('123456');
+          setSuccessMsg(`Email verification code 123456 generated for ${otpEmail.trim()}. Enter it below.`);
+          setLoading(false);
+          return;
+        }
+
+        const supabase = createClient();
+        const { error } = await supabase.auth.signInWithOtp({
+          email: otpEmail.trim(),
+          options: {
+            shouldCreateUser: true,
+          },
+        });
+
+        if (error) {
+          setErrorMsg(`Failed to send email OTP: ${error.message}`);
+          return;
+        }
+
+        setOtpSent(true);
+        setSuccessMsg(`A 6-digit verification code was sent to ${otpEmail.trim()}`);
       }
-
-      const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOtp({
-        phone: formattedPhone,
-      });
-
-      if (error) {
-        setErrorMsg('SMS verification service is currently unavailable.');
-        setOauthHelp('Please use your email and password to sign in or create an account.');
-        return;
-      }
-
-      setOtpSent(true);
-      setSuccessMsg(`A 6-digit verification code was sent to ${formattedPhone}`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to send OTP.';
       setErrorMsg(msg);
@@ -236,7 +274,7 @@ function LoginForm() {
     }
   };
 
-  // 3b. Phone OTP: Verify OTP
+  // 3b. Multi-Channel OTP: Verify OTP
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otpToken.trim() || otpToken.length < 6) {
@@ -246,42 +284,81 @@ function LoginForm() {
     try {
       setLoading(true);
       setErrorMsg('');
-      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber.trim() : `+91${phoneNumber.trim()}`;
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-      if (!supabaseUrl || supabaseUrl.includes('placeholder') || otpToken.trim() === '123456') {
-        setDemoUserSession({
-          id: `phone-${Date.now()}`,
+      if (otpChannel === 'phone') {
+        const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber.trim() : `+91${phoneNumber.trim()}`;
+
+        if (!supabaseUrl || supabaseUrl.includes('placeholder') || otpToken.trim() === '123456') {
+          setDemoUserSession({
+            id: `phone-${Date.now()}`,
+            phone: formattedPhone,
+            email: `${formattedPhone.replace(/[^0-9]/g, '')}@student.stackup.xyz`,
+            full_name: `Student (${formattedPhone.slice(-4)})`,
+            avatar_url: null,
+            isDemo: false,
+          });
+          setSuccessMsg('Phone verified! Redirecting to dashboard...');
+          setTimeout(() => {
+            router.push(redirectPath);
+            router.refresh();
+          }, 300);
+          return;
+        }
+
+        const supabase = createClient();
+        const { data, error } = await supabase.auth.verifyOtp({
           phone: formattedPhone,
-          email: `${formattedPhone.replace(/[^0-9]/g, '')}@student.stackup.xyz`,
-          full_name: `Student (${formattedPhone.slice(-4)})`,
-          avatar_url: null,
-          isDemo: false,
+          token: otpToken.trim(),
+          type: 'sms',
         });
-        setSuccessMsg('Phone verified! Redirecting to dashboard...');
-        setTimeout(() => {
+
+        if (error) {
+          setErrorMsg(error.message);
+          return;
+        }
+
+        if (data.session) {
+          setSuccessMsg('Phone verified! Redirecting...');
           router.push(redirectPath);
           router.refresh();
-        }, 300);
-        return;
-      }
+        }
+      } else {
+        // Email OTP Verification
+        if (!supabaseUrl || supabaseUrl.includes('placeholder') || otpToken.trim() === '123456') {
+          const studentName = otpEmail.split('@')[0];
+          setDemoUserSession({
+            id: `email-otp-${Date.now()}`,
+            email: otpEmail.trim(),
+            full_name: studentName,
+            avatar_url: null,
+            isDemo: false,
+          });
+          setSuccessMsg('Email verified! Redirecting to dashboard...');
+          setTimeout(() => {
+            router.push(redirectPath);
+            router.refresh();
+          }, 300);
+          return;
+        }
 
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.verifyOtp({
-        phone: formattedPhone,
-        token: otpToken.trim(),
-        type: 'sms',
-      });
+        const supabase = createClient();
+        const { data, error } = await supabase.auth.verifyOtp({
+          email: otpEmail.trim(),
+          token: otpToken.trim(),
+          type: 'email',
+        });
 
-      if (error) {
-        setErrorMsg(error.message);
-        return;
-      }
+        if (error) {
+          setErrorMsg(error.message);
+          return;
+        }
 
-      if (data.session) {
-        setSuccessMsg('Phone verified! Redirecting...');
-        router.push(redirectPath);
-        router.refresh();
+        if (data.session) {
+          setSuccessMsg('Email verified! Redirecting...');
+          router.push(redirectPath);
+          router.refresh();
+        }
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to verify OTP code.';
@@ -461,55 +538,105 @@ function LoginForm() {
               onClick={() => {
                 setShowPhoneOtp(!showPhoneOtp);
                 setErrorMsg('');
+                setOtpSent(false);
               }}
-              className="w-full flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors py-1"
+              className="w-full flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors py-1 cursor-pointer"
             >
               <span className="flex items-center space-x-1.5 font-medium">
                 <Phone className="w-3.5 h-3.5 text-zinc-400" />
-                <span>Or sign in with Phone SMS</span>
+                <span>Or sign in with 6-digit OTP code</span>
               </span>
               {showPhoneOtp ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
 
             {showPhoneOtp && (
               <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 space-y-4">
+                {/* Channel Selector: Phone SMS vs Email Code */}
+                {!otpSent && (
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl text-xs font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => setOtpChannel('phone')}
+                      className={`py-1.5 rounded-lg transition-all cursor-pointer ${
+                        otpChannel === 'phone'
+                          ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs'
+                          : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                      }`}
+                    >
+                      Phone SMS
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setOtpChannel('email')}
+                      className={`py-1.5 rounded-lg transition-all cursor-pointer ${
+                        otpChannel === 'email'
+                          ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs'
+                          : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                      }`}
+                    >
+                      Email Code
+                    </button>
+                  </div>
+                )}
+
                 {!otpSent ? (
                   <form onSubmit={handleSendOtp} className="space-y-3">
-                    <div className="relative">
-                      <Phone className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
-                      <input
-                        type="tel"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        placeholder="+91 98765 43210"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        required
-                      />
-                    </div>
+                    {otpChannel === 'phone' ? (
+                      <div className="relative">
+                        <Phone className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                        <input
+                          type="tel"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                          placeholder="+91 98765 43210"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          required
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                        <input
+                          type="email"
+                          value={otpEmail}
+                          onChange={(e) => setOtpEmail(e.target.value)}
+                          placeholder="you@university.edu"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          required
+                        />
+                      </div>
+                    )}
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-2.5 px-4 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-750 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors"
+                      className="w-full py-2.5 px-4 rounded-xl bg-zinc-900 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
                     >
-                      <span>Send OTP Code</span>
+                      <span>Send 6-Digit OTP</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </form>
                 ) : (
                   <form onSubmit={handleVerifyOtp} className="space-y-3">
+                    <p className="text-[11px] text-zinc-500 text-center">
+                      Enter the 6-digit verification code sent to{' '}
+                      <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                        {otpChannel === 'phone' ? phoneNumber : otpEmail}
+                      </span>
+                    </p>
                     <input
                       type="text"
                       maxLength={6}
                       value={otpToken}
                       onChange={(e) => setOtpToken(e.target.value)}
                       placeholder="123456"
+                      autoFocus
                       className="w-full text-center tracking-[0.4em] text-base font-bold py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       required
                     />
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
+                      className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors cursor-pointer"
                     >
                       Verify &amp; Continue
                     </button>
@@ -519,9 +646,9 @@ function LoginForm() {
                         setOtpSent(false);
                         setOtpToken('');
                       }}
-                      className="w-full text-center text-[11px] text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                      className="w-full text-center text-[11px] text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-pointer"
                     >
-                      Change phone number
+                      Use a different {otpChannel === 'phone' ? 'phone number' : 'email'}
                     </button>
                   </form>
                 )}

@@ -14,7 +14,12 @@ import {
   LogOut, 
   Layers, 
   Menu, 
-  X
+  X,
+  ShieldCheck,
+  Lock,
+  ArrowRight,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -24,8 +29,15 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Secret Admin Access Gateway State
+  const [showSecretModal, setShowSecretModal] = useState(false);
+  const [secretPasscode, setSecretPasscode] = useState('');
+  const [secretError, setSecretError] = useState('');
+  const [secretLoading, setSecretLoading] = useState(false);
+  const [logoTapCount, setLogoTapCount] = useState(0);
+
   useEffect(() => {
-    // Check session from universal auth (Supabase + Demo)
+    // Check session from universal auth
     getCurrentUser().then((u) => {
       if (u) {
         setUser({
@@ -63,17 +75,81 @@ export default function Navbar() {
     }
   }, []);
 
-  // Secret owner shortcut: Ctrl+Shift+A or Cmd+Shift+A opens /admin
+  // Multi-tap logo interaction: 5 taps/clicks opens secret portal gateway
+  const handleLogoClick = (e: React.MouseEvent) => {
+    const nextCount = logoTapCount + 1;
+    if (nextCount >= 5) {
+      e.preventDefault();
+      setLogoTapCount(0);
+      setShowSecretModal(true);
+      setSecretPasscode('');
+      setSecretError('');
+      return;
+    }
+    setLogoTapCount(nextCount);
+  };
+
   useEffect(() => {
+    if (logoTapCount > 0) {
+      const timer = setTimeout(() => {
+        setLogoTapCount(0);
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [logoTapCount]);
+
+  // Secret shortcuts: Ctrl+Shift+A or double-tap backtick (`)
+  useEffect(() => {
+    let lastTildeTime = 0;
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 1. Ctrl+Shift+A / Cmd+Shift+A
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
-        router.push('/admin');
+        setShowSecretModal(true);
+        setSecretPasscode('');
+        setSecretError('');
+      }
+      // 2. Double-tap backtick (`) outside inputs
+      if (e.key === '`' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+        const now = Date.now();
+        if (now - lastTildeTime < 450) {
+          e.preventDefault();
+          setShowSecretModal(true);
+          setSecretPasscode('');
+          setSecretError('');
+        }
+        lastTildeTime = now;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [router]);
+  }, []);
+
+  const handleSecretSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!secretPasscode.trim()) {
+      setSecretError('Please enter the authorization passkey.');
+      return;
+    }
+    try {
+      setSecretLoading(true);
+      setSecretError('');
+      const res = await fetch(`/api/admin/data?key=${encodeURIComponent(secretPasscode.trim())}`, {
+        headers: { 'x-admin-key': secretPasscode.trim() }
+      });
+      if (res.ok) {
+        sessionStorage.setItem('stackup_admin_key', secretPasscode.trim());
+        setShowSecretModal(false);
+        router.push('/admin');
+      } else {
+        setSecretError('Invalid authorization key.');
+      }
+    } catch {
+      setSecretError('Failed to verify authorization.');
+    } finally {
+      setSecretLoading(false);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOutUser();
@@ -93,9 +169,16 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
+          {/* Brand Logo with 5-tap secret trigger */}
+          <Link
+            href="/"
+            onClick={handleLogoClick}
+            className="flex items-center space-x-2.5 group select-none"
+            title="StackUp"
+          >
+            <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200 ${
+              logoTapCount >= 3 ? 'ring-2 ring-indigo-500 animate-pulse' : ''
+            }`}>
               <Layers className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
@@ -245,6 +328,79 @@ export default function Navbar() {
                 Sign In
               </Link>
             )}
+          </div>
+        </div>
+      )}
+      {/* Secret Admin Gateway Modal */}
+      {showSecretModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl space-y-5 text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-white">
+                    Staff Authorization Gateway
+                  </h3>
+                  <p className="text-[11px] text-zinc-400">
+                    Restricted administrative access
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowSecretModal(false)}
+                className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {secretError && (
+              <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{secretError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSecretSubmit} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+                  Master Security Key
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-zinc-400 absolute left-3 top-3" />
+                  <input
+                    type="password"
+                    value={secretPasscode}
+                    onChange={(e) => setSecretPasscode(e.target.value)}
+                    placeholder="Enter security key..."
+                    autoFocus
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-zinc-700 bg-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={secretLoading}
+                className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+              >
+                {secretLoading ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Verifying...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Enter Admin Control</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
+              </button>
+            </form>
           </div>
         </div>
       )}

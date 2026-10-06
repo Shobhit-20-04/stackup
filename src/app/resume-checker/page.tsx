@@ -56,9 +56,17 @@ export default function ResumeCheckerPage() {
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   React.useEffect(() => {
-    getCurrentUser().then((u) => setCurrentUser(u));
+    getCurrentUser()
+      .then((u) => {
+        setCurrentUser(u);
+        setAuthLoading(false);
+      })
+      .catch(() => {
+        setAuthLoading(false);
+      });
   }, []);
 
   // File drag & drop state
@@ -69,6 +77,11 @@ export default function ResumeCheckerPage() {
     setIsDragging(false);
     setErrorMsg('');
 
+    if (!currentUser) {
+      setErrorMsg('Please sign in or create an account to upload and analyze your resume.');
+      return;
+    }
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       validateAndSetFile(e.dataTransfer.files[0]);
     }
@@ -76,12 +89,21 @@ export default function ResumeCheckerPage() {
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrorMsg('');
+    if (!currentUser) {
+      setErrorMsg('Please sign in or create an account to upload and analyze your resume.');
+      return;
+    }
     if (e.target.files && e.target.files.length > 0) {
       validateAndSetFile(e.target.files[0]);
     }
   };
 
   const validateAndSetFile = (selectedFile: File) => {
+    if (!currentUser) {
+      setErrorMsg('Please sign in or create an account to upload and analyze your resume.');
+      return;
+    }
+
     const ext = selectedFile.name.toLowerCase();
     if (!ext.endsWith('.pdf') && !ext.endsWith('.docx') && !ext.endsWith('.txt')) {
       setErrorMsg('Unsupported format. Please upload a PDF (.pdf) or Word document (.docx).');
@@ -97,6 +119,11 @@ export default function ResumeCheckerPage() {
   };
 
   const handleAnalyzeUpload = async () => {
+    if (!currentUser) {
+      setErrorMsg('Please sign in to upload and analyze your resume.');
+      return;
+    }
+
     if (!file) {
       setErrorMsg('Please select a resume file first.');
       return;
@@ -217,8 +244,46 @@ export default function ResumeCheckerPage() {
           </div>
         )}
 
-        {!result ? (
-          /* Upload State */
+        {authLoading ? (
+          <div className="p-12 border border-zinc-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-zinc-900 shadow-sm flex flex-col items-center justify-center space-y-3">
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            <p className="text-xs text-zinc-500">Checking student session...</p>
+          </div>
+        ) : !currentUser ? (
+          /* Locked State for Unauthenticated Visitors */
+          <div className="p-8 sm:p-12 border border-zinc-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-zinc-900 shadow-sm space-y-6">
+            <div className="max-w-md mx-auto flex flex-col items-center">
+              <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 shadow-sm border border-indigo-100 dark:border-indigo-900/50">
+                <Lock className="w-8 h-8" />
+              </div>
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900 mb-3">
+                <span>Account Required</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-zinc-900 dark:text-white">
+                Sign in to upload &amp; evaluate your resume
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-2 mb-6 leading-relaxed">
+                Resume scanning, keyword matching, and AI bullet rewrites require an active student account. Sign in to analyze your resume and securely store your progress.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+                <Link
+                  href="/login?next=/resume-checker"
+                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                >
+                  <span>Sign In to Upload Resume</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/login?next=/resume-checker"
+                  className="w-full sm:w-auto px-6 py-3 border border-zinc-200 dark:border-zinc-750 bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                >
+                  <span>Create Free Account</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : !result ? (
+          /* Upload State (Only for Signed-In Students) */
           <div className="space-y-6">
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -266,7 +331,7 @@ export default function ResumeCheckerPage() {
                       onChange={handleFileSelect} 
                       className="hidden" 
                     />
-                    <span className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center space-x-2 transition-all">
+                    <span className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center space-x-2 transition-all cursor-pointer">
                       <FileText className="w-4 h-4" />
                       <span>Browse Files</span>
                     </span>
@@ -277,7 +342,7 @@ export default function ResumeCheckerPage() {
                   <button
                     onClick={handleAnalyzeUpload}
                     disabled={analyzing}
-                    className="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 transition-all"
+                    className="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 transition-all cursor-pointer"
                   >
                     {analyzing ? (
                       <>

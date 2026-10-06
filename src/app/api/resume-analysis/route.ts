@@ -311,6 +311,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 2. Authentication Check: User must be logged in to analyze and store resumes
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const sessionCookie = req.cookies.get('stackup_session')?.value;
+    let localUserId: string | null = null;
+    let localUserEmail: string | null = null;
+    if (sessionCookie) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(sessionCookie));
+        if (parsed?.id) {
+          localUserId = parsed.id;
+          localUserEmail = parsed.email || null;
+        }
+      } catch {
+        // session parse ignored
+      }
+    }
+
+    const effectiveUserId = user?.id || localUserId;
+    const effectiveEmail = user?.email || localUserEmail;
+
+    if (!effectiveUserId) {
+      return NextResponse.json(
+        { error: 'Authentication required. Please sign in or register an account before analyzing your resume.' },
+        { status: 401 }
+      );
+    }
+
     let resumeText = '';
     let filename = 'Uploaded_Resume.pdf';
     let fileSize: number | null = null;
@@ -403,14 +432,11 @@ export async function POST(req: NextRequest) {
     // 2. Perform High-Precision ATS Analysis
     const analysis: AnalysisOutput = analyzeResumeLocally(resumeText, filename);
 
-    // 3. Store uploaded resume and analysis permanently in Supabase Postgres
+    // 3. Store uploaded resume and analysis permanently in database
     try {
-      const supabase = await createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-
       // Extract candidate email if present in resume text or authenticated session
       const emailMatch = resumeText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-      const detectedEmail = user?.email || (emailMatch ? emailMatch[0] : null);
+      const detectedEmail = effectiveEmail || (emailMatch ? emailMatch[0] : null);
 
       // Store in uploaded_resumes table (accessible to admin dashboard)
       await (supabase.from('uploaded_resumes') as unknown as {
@@ -422,17 +448,17 @@ export async function POST(req: NextRequest) {
         resume_text: resumeText,
         ats_score: analysis.ats_score,
         analysis: analysis as unknown as Json,
-        user_id: user?.id || null,
+        user_id: effectiveUserId,
         user_email: detectedEmail,
         ip_address: ip,
       });
 
       // Also record in resume_analyses table for user profile history
-      if (user) {
+      if (effectiveUserId) {
         await (supabase.from('resume_analyses') as unknown as {
           insert: (data: Record<string, unknown>) => Promise<unknown>;
         }).insert({
-          user_id: user.id,
+          user_id: effectiveUserId,
           filename: analysis.filename,
           ats_score: analysis.ats_score,
           feedback: analysis as unknown as Json,
@@ -440,7 +466,7 @@ export async function POST(req: NextRequest) {
         });
       }
     } catch (dbErr) {
-      console.warn('Note: Storing resume in Supabase encountered an issue:', dbErr);
+      console.warn('Note: Storing resume in database encountered an issue:', dbErr);
     }
 
     return NextResponse.json(analysis);

@@ -69,7 +69,7 @@ export default function HomePage() {
         {/* Live Interactive Hero Showcase */}
         <div className="mt-14 max-w-4xl mx-auto bg-white/70 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl backdrop-blur-xl p-4 sm:p-6 overflow-hidden">
           {/* Tabs Selector */}
-          <div className="flex items-center justify-center space-x-2 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+          <div className="flex flex-wrap items-center justify-center gap-2 pb-4 border-b border-zinc-100 dark:border-zinc-800">
             <button
               onClick={() => setActiveTab('dsa')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-2 ${
@@ -182,7 +182,7 @@ export default function HomePage() {
                 <p className="text-xs text-zinc-700 dark:text-zinc-300 mt-3 font-medium">
                   Which memory segment is privately held by each individual thread within a shared process?
                 </p>
-                <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 text-xs">
                   <div className="p-2 rounded-lg bg-zinc-200/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400">A. Heap Segment</div>
                   <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-bold">B. Stack &amp; Registers ✓</div>
                   <div className="p-2 rounded-lg bg-zinc-200/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400">C. Code Segment</div>
