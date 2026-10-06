@@ -24,7 +24,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center space-x-2 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Production Edge Runtime Active</span>
+              <span>Verified Placement Curriculum</span>
             </div>
           </div>
 

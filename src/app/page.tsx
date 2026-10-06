@@ -215,8 +215,8 @@ export default function HomePage() {
 
           <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm">
             <div className="text-2xl font-black text-violet-600 dark:text-violet-400">100%</div>
-            <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Zero-Latency Edge</div>
-            <div className="text-[11px] text-zinc-500">Stateless Supabase + Vercel</div>
+            <div className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Real-Time Cloud Sync</div>
+            <div className="text-[11px] text-zinc-500">Instant cross-device progress backup</div>
           </div>
         </div>
       </section>
@@ -372,7 +372,7 @@ export default function HomePage() {
                 Analytics &amp; Daily Streaks
               </h3>
               <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Track your study streak, visualize your score trajectory over time with Recharts analytics, and monitor section-by-section completion to stay accountable.
+                Track your study streak, visualize your score trajectory over time with interactive performance analytics, and monitor section-by-section completion to stay accountable.
               </p>
             </div>
             <Link href="/profile" className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center space-x-1">
@@ -383,25 +383,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Scalability & Architecture Callout */}
+      {/* Placement Preparation Standards Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-zinc-900 via-indigo-950 to-zinc-900 text-white border border-indigo-900/50 relative overflow-hidden shadow-2xl">
           <div className="relative z-10 max-w-2xl">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30 mb-4">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Production Scale Architecture</span>
+              <span>Placement Ready Standards</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Built to withstand real traffic from day one
+              Curated for Top Product &amp; Tech Companies
             </h2>
             <p className="mt-3 text-sm text-zinc-300 leading-relaxed">
-              Designed with stateless Vercel Serverless functions, Supabase PgBouncer connection pooling, edge caching, and strict Row Level Security (RLS) on Postgres tables.
+              Structured problem sets, system design patterns, and ATS resume benchmarks aligned directly with hiring standards at Google, Amazon, Microsoft, and high-growth engineering teams.
             </p>
-            <div className="mt-6 flex flex-wrap gap-4 text-xs font-mono text-indigo-200">
-              <span className="bg-white/10 px-3 py-1.5 rounded-lg">⚡ Next.js 16 + React 19</span>
-              <span className="bg-white/10 px-3 py-1.5 rounded-lg">🛡️ Supabase RLS</span>
-              <span className="bg-white/10 px-3 py-1.5 rounded-lg">🚀 PgBouncer Pooling</span>
-              <span className="bg-white/10 px-3 py-1.5 rounded-lg">🤖 Claude API</span>
+            <div className="mt-6 flex flex-wrap gap-3 text-xs font-medium text-indigo-200">
+              <span className="bg-white/10 px-3 py-1.5 rounded-lg">💼 Tier-1 Product Companies</span>
+              <span className="bg-white/10 px-3 py-1.5 rounded-lg">🎯 FAANG-Ready Problem Sets</span>
+              <span className="bg-white/10 px-3 py-1.5 rounded-lg">📑 Real Recruiter ATS Benchmarks</span>
+              <span className="bg-white/10 px-3 py-1.5 rounded-lg">⚡ Timed Technical Mock Drills</span>
             </div>
           </div>
         </div>

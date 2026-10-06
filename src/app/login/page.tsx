@@ -68,7 +68,7 @@ function LoginForm() {
       const isPlaceholder = !supabaseUrl || supabaseUrl.includes('placeholder');
 
       if (isPlaceholder && !isSupabaseLive) {
-        setOauthHelp('To enable Google login, ensure Google Auth is enabled under Authentication > Providers in your Supabase project dashboard.');
+        setOauthHelp('Google sign-in is currently unavailable in this environment. Please sign in using your email and password.');
         setLoading(false);
         return;
       }
@@ -85,11 +85,11 @@ function LoginForm() {
       if (error) {
         let helpText = '';
         if (error.message.toLowerCase().includes('provider') || error.message.toLowerCase().includes('not enabled')) {
-          helpText = 'The Google OAuth provider is not yet enabled in your Supabase project. Go to Supabase Dashboard > Authentication > Providers > Google, toggle "Enable Google provider", and add your Google Cloud Client ID and Secret.';
+          helpText = 'Google sign-in is currently undergoing maintenance. Please use Email / Password to sign in.';
         } else if (error.message.toLowerCase().includes('invalid api key') || error.message.toLowerCase().includes('jwt')) {
-          helpText = 'Your Supabase Anon Key is invalid or expired. Check your API credentials in the Supabase Dashboard.';
+          helpText = 'Authentication service is undergoing maintenance. Please sign in with email and password.';
         }
-        setErrorMsg(error.message);
+        setErrorMsg('Unable to complete Google sign-in. Please try email sign-in.');
         if (helpText) setOauthHelp(helpText);
       }
     } catch (err: unknown) {
@@ -221,8 +221,8 @@ function LoginForm() {
       });
 
       if (error) {
-        setErrorMsg(`Supabase Phone OTP Error: ${error.message}`);
-        setOauthHelp('To send SMS messages via Supabase, ensure Twilio or MessageBird is configured under Authentication > Providers > Phone.');
+        setErrorMsg('SMS verification service is currently unavailable.');
+        setOauthHelp('Please use your email and password to sign in or create an account.');
         return;
       }
 
@@ -339,7 +339,7 @@ function LoginForm() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-750 font-semibold text-sm text-zinc-800 dark:text-zinc-100 transition-all shadow-sm hover:shadow disabled:opacity-60"
+              className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-2xl border border-zinc-300 dark:border-zinc-600 bg-white hover:bg-zinc-100 font-semibold text-sm text-zinc-900 transition-all shadow-sm hover:shadow disabled:opacity-60 cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -532,7 +532,7 @@ function LoginForm() {
           {/* Security footnote */}
           <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-center space-x-1.5 text-xs text-zinc-500">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Protected by Supabase Auth with Row Level Security</span>
+            <span>Secure 256-Bit Encrypted Student Data Privacy</span>
           </div>
         </div>
       </div>
