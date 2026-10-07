@@ -91,6 +91,8 @@ export async function GET(req: NextRequest) {
       user_email: string | null;
       ip_address: string | null;
       created_at: string;
+      file_data?: string | null;
+      has_file_data?: boolean;
       analysis: {
         grade?: string;
         summary?: string;
@@ -114,8 +116,10 @@ export async function GET(req: NextRequest) {
     interface ProfileRow {
       id: string;
       full_name: string | null;
+      email?: string | null;
       avatar_url: string | null;
       phone: string | null;
+      last_sign_in_at?: string | null;
       created_at: string;
       updated_at: string;
     }
@@ -130,7 +134,7 @@ export async function GET(req: NextRequest) {
     }
 
     const rawResumeList = (resumes as unknown as UploadedResumeRow[]) || [];
-    // Strictly filter out internal system audit records and test seeds (@example.com, Alex Smith, John Doe)
+    // Strictly filter out internal system audit records, test seeds, and fake entries
     const resumeList = rawResumeList
       .filter((r) => {
         if (r.mime_type === 'application/x-audit-log' || (r.filename && r.filename.startsWith('__system_'))) {
@@ -138,7 +142,7 @@ export async function GET(req: NextRequest) {
         }
         const email = (r.user_email || '').toLowerCase();
         const fn = (r.filename || '').toLowerCase();
-        if (email.includes('@example.com')) return false;
+        if (email.includes('@example.com') || email === 'shobhit@gmail.com') return false;
         if (fn.includes('alex_smith') || fn.includes('john_doe') || fn.includes('direct_test')) return false;
         return true;
       })
@@ -154,6 +158,8 @@ export async function GET(req: NextRequest) {
         return {
           ...r,
           resume_text: cleanText,
+          has_file_data: Boolean(r.file_data),
+          file_data: undefined, // Keep dashboard listing lightweight
         };
       });
 
@@ -166,6 +172,7 @@ export async function GET(req: NextRequest) {
       phone: string | null;
       created_at: string;
       updated_at: string;
+      last_sign_in_at: string | null;
       resumes_count: number;
       latest_score: number | null;
     }
@@ -175,18 +182,19 @@ export async function GET(req: NextRequest) {
     // A. Direct database profiles
     const rawProfiles = (profiles as unknown as ProfileRow[]) || [];
     for (const p of rawProfiles) {
-      const email = ((p as unknown as { email?: string }).email || '').toLowerCase().trim();
+      const email = (p.email || (p as unknown as { user_email?: string }).user_email || '').toLowerCase().trim();
       const name = (p.full_name || '').trim();
       if (email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit') || name.toLowerCase().includes('test student')) continue;
       const key = email || p.id;
       profileMap.set(key, {
         id: p.id,
-        full_name: name || 'Student Account',
+        full_name: name || (email ? email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) : 'Student Account'),
         email: email || '—',
         avatar_url: p.avatar_url,
         phone: p.phone,
         created_at: p.created_at,
         updated_at: p.updated_at,
+        last_sign_in_at: p.last_sign_in_at || null,
         resumes_count: 0,
         latest_score: null,
       });
@@ -223,6 +231,7 @@ export async function GET(req: NextRequest) {
           phone: null,
           created_at: r.created_at,
           updated_at: r.created_at,
+          last_sign_in_at: null,
           resumes_count: 1,
           latest_score: r.ats_score,
         });
@@ -239,6 +248,11 @@ export async function GET(req: NextRequest) {
         if (log.full_name && (existing.full_name === 'Student Account' || existing.full_name === email.split('@')[0])) {
           existing.full_name = log.full_name;
         }
+        if (log.created_at) {
+          if (!existing.last_sign_in_at || new Date(log.created_at).getTime() > new Date(existing.last_sign_in_at).getTime()) {
+            existing.last_sign_in_at = log.created_at;
+          }
+        }
         if (new Date(log.created_at).getTime() < new Date(existing.created_at).getTime()) {
           existing.created_at = log.created_at;
         }
@@ -251,6 +265,7 @@ export async function GET(req: NextRequest) {
           phone: null,
           created_at: log.created_at,
           updated_at: log.created_at,
+          last_sign_in_at: log.created_at,
           resumes_count: 0,
           latest_score: null,
         });
@@ -288,6 +303,9 @@ export async function GET(req: NextRequest) {
               if (existing.full_name === 'Student Account') {
                 existing.full_name = candidateName;
               }
+              if (u.last_sign_in_at) {
+                existing.last_sign_in_at = u.last_sign_in_at;
+              }
             } else {
               profileMap.set(email, {
                 id: u.id,
@@ -297,6 +315,7 @@ export async function GET(req: NextRequest) {
                 phone: u.phone || null,
                 created_at: u.created_at,
                 updated_at: u.updated_at || u.created_at,
+                last_sign_in_at: u.last_sign_in_at || null,
                 resumes_count: 0,
                 latest_score: null,
               });
@@ -322,6 +341,27 @@ export async function GET(req: NextRequest) {
         console.warn('Notice: fetching auth.admin.listUsers failed:', err);
       }
     }
+
+    // Ensure all registered profiles with verified last_sign_in_at are present in loginLogs
+    for (const p of profileMap.values()) {
+      if (p.last_sign_in_at && p.email && p.email !== '—') {
+        const alreadyLogged = loginLogs.some((l) => l.email?.toLowerCase() === p.email.toLowerCase());
+        if (!alreadyLogged) {
+          loginLogs.push({
+            id: `prof-${p.id.substring(0, 8)}`,
+            user_id: p.id,
+            email: p.email,
+            full_name: p.full_name,
+            auth_method: 'Google OAuth',
+            ip_address: 'Verified Supabase Session',
+            user_agent: 'Cloud Authentication Gateway',
+            created_at: p.last_sign_in_at,
+          });
+        }
+      }
+    }
+
+    loginLogs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
     const profileList = Array.from(profileMap.values()).sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()

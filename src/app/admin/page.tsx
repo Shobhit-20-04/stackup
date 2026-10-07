@@ -44,6 +44,7 @@ interface ResumeRecord {
   user_email: string | null;
   ip_address: string | null;
   created_at: string;
+  has_file_data?: boolean;
   analysis: {
     grade?: string;
     summary?: string;
@@ -72,8 +73,54 @@ interface UserProfile {
   phone: string | null;
   created_at: string;
   updated_at: string;
+  last_sign_in_at?: string | null;
   resumes_count?: number;
   latest_score?: number | null;
+}
+
+function formatExactDateTime(isoString?: string | null): { date: string; time: string; full: string } {
+  if (!isoString) return { date: '—', time: '—', full: '—' };
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return { date: isoString, time: '', full: isoString };
+
+  const date = d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  const time = d.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  return {
+    date,
+    time,
+    full: `${date} • ${time}`,
+  };
+}
+
+function getRelativeTime(isoString?: string | null): string {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return '';
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  if (diffMs < 0) return 'Just now';
+  const diffSec = Math.floor(diffMs / 1000);
+  if (diffSec < 60) return 'Just now';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDays = Math.floor(diffHr / 24);
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+  return `${Math.floor(diffDays / 30)}mo ago`;
 }
 
 interface LoginAuditRecord {
@@ -330,6 +377,17 @@ export default function AdminDashboardPage() {
       setCopiedKey(keyVal);
       setTimeout(() => setCopiedKey(null), 2000);
     }
+  };
+
+  const handleDownloadOriginalFile = (resume: ResumeRecord) => {
+    const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
+    const downloadUrl = `/api/admin/resume-download?id=${encodeURIComponent(resume.id)}&key=${encodeURIComponent(activeKey)}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = resume.filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleDownloadText = (resume: ResumeRecord) => {
@@ -942,40 +1000,60 @@ export default function AdminDashboardPage() {
                       </div>
 
                       {/* Tool Buttons */}
-                      <div className="flex items-center space-x-2">
-                        {currentResume.resume_text && (
-                          <>
-                            <button
-                              onClick={() => handleCopyText(currentResume.resume_text || '')}
-                              className="px-3 py-1.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-semibold text-zinc-200 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
-                            >
-                              {copiedText ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                  <span className="text-emerald-400">Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3.5 h-3.5 text-zinc-400" />
-                                  <span>Copy Text</span>
-                                </>
-                              )}
-                            </button>
+                      <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+                        {/* Primary Button: Download Authentic PDF / DOCX */}
+                        <button
+                          onClick={() => handleDownloadOriginalFile(currentResume)}
+                          className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white inline-flex items-center space-x-1.5 shadow-sm shadow-indigo-900/30 transition-all cursor-pointer"
+                          title={`Download uploaded document (${currentResume.filename})`}
+                        >
+                          <Download className="w-3.5 h-3.5 text-white" />
+                          <span>
+                            {currentResume.filename.toLowerCase().endsWith('.pdf')
+                              ? 'Download PDF'
+                              : currentResume.filename.toLowerCase().endsWith('.docx')
+                              ? 'Download Word (.docx)'
+                              : 'Download Original File'}
+                          </span>
+                        </button>
 
-                            <button
-                              onClick={() => handleDownloadText(currentResume)}
-                              className="px-3 py-1.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-semibold text-zinc-200 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
-                            >
-                              <Download className="w-3.5 h-3.5 text-zinc-400" />
-                              <span>Download .txt</span>
-                            </button>
-                          </>
+                        {/* Secondary Button: Download plain text */}
+                        {currentResume.resume_text && (
+                          <button
+                            onClick={() => handleDownloadText(currentResume)}
+                            className="px-2.5 py-1.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-semibold text-zinc-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
+                            title="Download plain text (.txt)"
+                          >
+                            <FileText className="w-3.5 h-3.5 text-zinc-400" />
+                            <span>Text (.txt)</span>
+                          </button>
                         )}
 
+                        {/* Copy text */}
+                        {currentResume.resume_text && (
+                          <button
+                            onClick={() => handleCopyText(currentResume.resume_text || '')}
+                            className="px-2.5 py-1.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-semibold text-zinc-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
+                          >
+                            {copiedText ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <span className="text-emerald-400">Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                                <span>Copy</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+
+                        {/* Delete */}
                         <button
                           onClick={() => handleDeleteResume(currentResume.id)}
                           disabled={deletingId === currentResume.id}
-                          className="px-3 py-1.5 rounded-xl border border-rose-900/60 bg-rose-950/30 text-rose-400 hover:bg-rose-900/40 hover:text-rose-300 text-xs font-semibold inline-flex items-center space-x-1 transition-colors cursor-pointer"
+                          className="px-2.5 py-1.5 rounded-xl border border-rose-900/60 bg-rose-950/30 text-rose-400 hover:bg-rose-900/40 hover:text-rose-300 text-xs font-semibold inline-flex items-center space-x-1 transition-colors cursor-pointer"
                           title="Delete record permanently"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1349,15 +1427,16 @@ export default function AdminDashboardPage() {
                   <tr>
                     <th className="py-3 px-4">Candidate Profile</th>
                     <th className="py-3 px-4">User ID</th>
+                    <th className="py-3 px-4">Last Login Time</th>
                     <th className="py-3 px-4">Uploaded Resumes</th>
                     <th className="py-3 px-4">Top ATS Score</th>
-                    <th className="py-3 px-4">Registered Date</th>
+                    <th className="py-3 px-4">Account Created</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800/60 font-medium">
                   {data?.profiles.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-zinc-400">
+                      <td colSpan={6} className="py-8 text-center text-zinc-400">
                         No registered profiles found in database yet.
                       </td>
                     </tr>
@@ -1377,6 +1456,22 @@ export default function AdminDashboardPage() {
                         <td className="py-3.5 px-4 font-mono text-[11px] text-zinc-400">
                           {profile.id}
                         </td>
+                        <td className="py-3.5 px-4 whitespace-nowrap">
+                          {profile.last_sign_in_at ? (
+                            <div className="space-y-0.5">
+                              <div className="flex items-center space-x-1.5 font-bold text-white text-xs">
+                                <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                                <span>{formatExactDateTime(profile.last_sign_in_at).full}</span>
+                              </div>
+                              <div className="flex items-center space-x-1.5 text-[11px] text-zinc-400 pl-5">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span>{getRelativeTime(profile.last_sign_in_at)}</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-zinc-500 text-xs italic">Never logged in</span>
+                          )}
+                        </td>
                         <td className="py-3.5 px-4 text-zinc-300">
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-zinc-800 border border-zinc-700 text-zinc-200">
                             {profile.resumes_count ?? 0} {profile.resumes_count === 1 ? 'dossier' : 'dossiers'}
@@ -1395,12 +1490,13 @@ export default function AdminDashboardPage() {
                             <span className="text-zinc-500 text-xs">—</span>
                           )}
                         </td>
-                        <td className="py-3.5 px-4 text-zinc-400 text-xs">
-                          {new Date(profile.created_at).toLocaleDateString(undefined, {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
+                        <td className="py-3.5 px-4 text-zinc-300 text-xs whitespace-nowrap">
+                          <div className="font-semibold text-zinc-200">
+                            {formatExactDateTime(profile.created_at).full}
+                          </div>
+                          <div className="text-[11px] text-zinc-500">
+                            {getRelativeTime(profile.created_at)}
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -1607,9 +1703,15 @@ export default function AdminDashboardPage() {
 
                           {/* When they logged in */}
                           <td className="py-3 px-4 text-zinc-300 whitespace-nowrap">
-                            <div className="flex items-center space-x-1.5">
-                              <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                              <span className="font-semibold text-zinc-200">{exactFormatted}</span>
+                            <div className="space-y-0.5">
+                              <div className="flex items-center space-x-1.5">
+                                <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                                <span className="font-semibold text-zinc-100">{exactFormatted}</span>
+                              </div>
+                              <div className="text-[11px] text-zinc-400 pl-5 flex items-center space-x-1.5">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                <span>{getRelativeTime(log.created_at)}</span>
+                              </div>
                             </div>
                           </td>
                         </tr>

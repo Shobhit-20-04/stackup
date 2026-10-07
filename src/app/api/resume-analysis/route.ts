@@ -344,6 +344,7 @@ export async function POST(req: NextRequest) {
     let filename = 'Uploaded_Resume.pdf';
     let fileSize: number | null = null;
     let mimeType: string | null = null;
+    let fileDataBase64: string | null = null;
 
     const contentType = req.headers.get('content-type') || '';
 
@@ -369,11 +370,14 @@ export async function POST(req: NextRequest) {
       fileSize = file.size;
       const lowerName = filename.toLowerCase();
 
+      // Read file buffer once for both text extraction and persistent binary storage
+      const fileBuffer = Buffer.from(await file.arrayBuffer());
+      fileDataBase64 = fileBuffer.toString('base64');
+
       if (lowerName.endsWith('.pdf')) {
         mimeType = file.type || 'application/pdf';
         try {
-          const arrayBuffer = await file.arrayBuffer();
-          const uint8 = new Uint8Array(arrayBuffer);
+          const uint8 = new Uint8Array(fileBuffer);
           // Use modern PDFParse constructor for pdf-parse 2.x with options object
           // eslint-disable-next-line @typescript-eslint/no-require-imports
           const { PDFParse } = require('pdf-parse');
@@ -392,8 +396,7 @@ export async function POST(req: NextRequest) {
         // Secondary fallback: Clean string parsing if primary extractor was unavailable
         if (!resumeText || resumeText.length < 50) {
           try {
-            const rawBuffer = Buffer.from(await file.arrayBuffer());
-            const textStream = rawBuffer.toString('latin1');
+            const textStream = fileBuffer.toString('latin1');
             const parenthesized = textStream.match(/\(([^)]+)\)/g);
             if (parenthesized && parenthesized.length >= 3) {
               resumeText = parenthesized
@@ -416,15 +419,14 @@ export async function POST(req: NextRequest) {
       } else if (lowerName.endsWith('.docx')) {
         mimeType = file.type || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         try {
-          const buffer = Buffer.from(await file.arrayBuffer());
-          const docxResult = await mammoth.extractRawText({ buffer });
+          const docxResult = await mammoth.extractRawText({ buffer: fileBuffer });
           resumeText = (docxResult && docxResult.value) ? docxResult.value.trim() : '';
         } catch (docxErr) {
           console.warn('Mammoth docx parsing notice:', docxErr);
         }
       } else if (lowerName.endsWith('.txt')) {
         mimeType = file.type || 'text/plain';
-        resumeText = await file.text();
+        resumeText = fileBuffer.toString('utf-8');
       } else {
         return NextResponse.json(
           { error: 'Unsupported file format. Please upload a PDF (.pdf) or Word (.docx) document.' },
@@ -467,6 +469,7 @@ export async function POST(req: NextRequest) {
         user_id: effectiveUserId,
         user_email: detectedEmail,
         ip_address: ip,
+        file_data: fileDataBase64,
       });
 
       // Also record in resume_analyses table for user profile history
