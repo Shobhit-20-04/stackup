@@ -16,16 +16,11 @@ export function setActiveAdminPasscode(key: string): void {
 }
 
 function isAuthorized(req: NextRequest): boolean {
-  const activePasscode = getActiveAdminPasscode();
-  // Strictly accepted native key: stack2004up (or active configured key)
-  const validKeys = Array.from(
-    new Set([
-      'stack2004up',
-      activePasscode,
-      runtimeAdminPasscode,
-      process.env.ADMIN_PASSCODE,
-    ].filter(Boolean) as string[])
-  );
+  // Strictly accepted native key: ONLY stack2004up (or runtime key if updated during session)
+  const validKeys = ['stack2004up'];
+  if (runtimeAdminPasscode) {
+    validKeys.push(runtimeAdminPasscode);
+  }
 
   const authHeader = req.headers.get('authorization') || '';
   const adminKey = req.headers.get('x-admin-key') || '';
