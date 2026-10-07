@@ -372,8 +372,20 @@ export default function AdminDashboardPage() {
   // If not authenticated, render the secured admin access portal
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col justify-center items-center px-4 py-12">
-        <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6">
+      <div className="min-h-screen bg-zinc-950 flex flex-col justify-center items-center px-4 py-8 sm:py-12">
+        {/* Prominent Back Link for Mobile & Desktop */}
+        <div className="w-full max-w-md mb-3 flex items-center justify-between">
+          <Link
+            href="/"
+            className="inline-flex items-center space-x-1.5 text-xs font-bold text-zinc-300 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+          >
+            <ChevronLeft className="w-4 h-4 text-zinc-400" />
+            <span>&larr; Back to StackUp Website</span>
+          </Link>
+          <span className="text-[11px] text-zinc-500 font-medium">Admin Authorization</span>
+        </div>
+
+        <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
           <div className="flex items-center space-x-3.5">
             <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-6 h-6" />
@@ -414,31 +426,41 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-2xl flex items-center justify-center space-x-2 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
-            >
-              {loading ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                  <span>Verifying credentials...</span>
-                </>
-              ) : (
-                <>
-                  <span>Enter Control Portal</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+            <div className="flex items-center space-x-2.5 pt-1">
+              <Link
+                href="/"
+                className="flex-1 py-3 px-3 rounded-2xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-zinc-200 text-xs font-bold text-center transition-colors flex items-center justify-center space-x-1 cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Go Back</span>
+              </Link>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 py-3 px-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-2xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Verifying...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Enter Portal</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
+              </button>
+            </div>
           </form>
 
-          <div className="pt-2 text-center">
+          <div className="pt-2 text-center border-t border-zinc-800/80">
             <Link
               href="/"
-              className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors inline-flex items-center space-x-1"
+              className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center space-x-1 font-semibold"
             >
-              <span>&larr; Return to main portal</span>
+              <span>&larr; Return to main student portal</span>
             </Link>
           </div>
         </div>
@@ -448,37 +470,57 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
-      {/* Top Admin Header Bar */}
+      {/* Top Admin Header Bar - Fully Responsive for Mobile & Tablet */}
       <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/20 shrink-0">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="flex items-center space-x-2">
-                  <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
-                    Candidate Management &amp; Ingestion Hub
-                  </h1>
-                  <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                    Live Telemetry
-                  </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/20 shrink-0">
+                  <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  Real-time uploaded resumes, candidate dossiers, and student accounts
-                </p>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h1 className="text-base sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+                      Admin Ingestion Hub
+                    </h1>
+                    <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                      Live
+                    </span>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 truncate max-w-[260px] sm:max-w-md">
+                    Real-time uploaded candidate dossiers and login telemetry
+                  </p>
+                </div>
               </div>
+
+              {/* Mobile Main Site Link */}
+              <Link
+                href="/"
+                className="sm:hidden p-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white"
+                title="Return to Main Portal"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Link>
             </div>
 
-            <div className="flex items-center space-x-2.5">
+            {/* Header Action Buttons */}
+            <div className="flex items-center flex-wrap gap-2">
+              <Link
+                href="/"
+                className="hidden sm:inline-flex px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Main Site</span>
+              </Link>
+
               <button
                 onClick={() => fetchAdminData(passcode || (sessionStorage.getItem('stackup_admin_key') || ''))}
                 disabled={loading}
-                className="px-3.5 py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-200 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-200 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
-                <span>Refresh</span>
+                <span className="hidden xs:inline">Refresh</span>
               </button>
 
               <button
@@ -487,7 +529,7 @@ export default function AdminDashboardPage() {
                   setChangeKeyMsg('');
                   setChangeKeyModalOpen(true);
                 }}
-                className="px-3.5 py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
                 title="Change master admin security key"
               >
                 <KeyRound className="w-3.5 h-3.5 text-amber-400" />
@@ -496,18 +538,18 @@ export default function AdminDashboardPage() {
 
               <button
                 onClick={handlePurgeTestRecords}
-                className="px-3.5 py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
                 title="Purge dummy seeds (@example.com, etc.)"
               >
                 <Trash2 className="w-3.5 h-3.5 text-zinc-400" />
-                <span>Purge Test Seeds</span>
+                <span className="hidden sm:inline">Purge Seeds</span>
               </button>
 
               <button
                 onClick={handleSignOut}
-                className="px-3.5 py-2 rounded-xl border border-rose-900/60 bg-rose-950/20 text-xs font-semibold text-rose-400 hover:bg-rose-900/40 transition-colors cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-rose-900/60 bg-rose-950/20 text-xs font-semibold text-rose-400 hover:bg-rose-900/40 transition-colors cursor-pointer"
               >
-                Lock Portal
+                Lock
               </button>
             </div>
           </div>
@@ -515,7 +557,7 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex-1 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 w-full flex-1 space-y-6">
         {errorMsg && (
           <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-400 text-sm flex items-center space-x-3">
             <AlertCircle className="w-5 h-5 shrink-0" />
@@ -523,77 +565,77 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* Real Metrics Summary Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-          <div className="bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
-            <div className="flex items-center justify-between text-zinc-400 mb-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Candidate Resumes</span>
-              <FileText className="w-4 h-4 text-indigo-400" />
+        {/* Real Metrics Summary Grid - Fluid responsive for phones & tablets */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
+          <div className="bg-zinc-900 p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+            <div className="flex items-center justify-between text-zinc-400 mb-1">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Candidate Resumes</span>
+              <FileText className="w-3.5 h-3.5 text-indigo-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-white">
+            <div className="text-xl sm:text-3xl font-black text-white">
               {data?.metrics.totalResumes ?? 0}
             </div>
-            <div className="text-[11px] text-zinc-400 mt-1">
-              Active documents stored
+            <div className="text-[10px] sm:text-[11px] text-zinc-400 mt-0.5">
+              Active documents
             </div>
           </div>
 
-          <div className="bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
-            <div className="flex items-center justify-between text-zinc-400 mb-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Average ATS Score</span>
-              <TrendingUp className="w-4 h-4 text-emerald-400" />
+          <div className="bg-zinc-900 p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+            <div className="flex items-center justify-between text-zinc-400 mb-1">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Avg ATS Score</span>
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-white">
+            <div className="text-xl sm:text-3xl font-black text-white">
               {data?.metrics.avgScore ?? 0}
-              <span className="text-xs sm:text-sm font-semibold text-zinc-400"> / 100</span>
+              <span className="text-xs font-semibold text-zinc-400">/100</span>
             </div>
-            <div className="text-[11px] text-emerald-400 mt-1 font-semibold">
-              {data?.metrics.highPerformers ?? 0} Grade A/A+ (&ge;75)
+            <div className="text-[10px] sm:text-[11px] text-emerald-400 mt-0.5 font-semibold">
+              {data?.metrics.highPerformers ?? 0} Grade A (&ge;75)
             </div>
           </div>
 
-          <div className="bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
-            <div className="flex items-center justify-between text-zinc-400 mb-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Student Profiles</span>
-              <Users className="w-4 h-4 text-blue-400" />
+          <div className="bg-zinc-900 p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+            <div className="flex items-center justify-between text-zinc-400 mb-1">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Student Profiles</span>
+              <Users className="w-3.5 h-3.5 text-blue-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-white">
+            <div className="text-xl sm:text-3xl font-black text-white">
               {data?.metrics.totalUsers ?? 0}
             </div>
-            <div className="text-[11px] text-zinc-400 mt-1">
-              Registered candidate accounts
+            <div className="text-[10px] sm:text-[11px] text-zinc-400 mt-0.5">
+              Candidate accounts
             </div>
           </div>
 
-          <div className="bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
-            <div className="flex items-center justify-between text-zinc-400 mb-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Quiz Completions</span>
-              <Award className="w-4 h-4 text-amber-400" />
+          <div className="bg-zinc-900 p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+            <div className="flex items-center justify-between text-zinc-400 mb-1">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Quiz Attempts</span>
+              <Award className="w-3.5 h-3.5 text-amber-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-white">
+            <div className="text-xl sm:text-3xl font-black text-white">
               {data?.metrics.totalQuizzes ?? 0}
             </div>
-            <div className="text-[11px] text-zinc-400 mt-1">
-              Interactive test attempts
+            <div className="text-[10px] sm:text-[11px] text-zinc-400 mt-0.5">
+              Completed tests
             </div>
           </div>
 
-          <div className="bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs col-span-2 sm:col-span-1">
-            <div className="flex items-center justify-between text-zinc-400 mb-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Audited Logins</span>
-              <LogIn className="w-4 h-4 text-purple-400" />
+          <div className="bg-zinc-900 p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs col-span-2 sm:col-span-1">
+            <div className="flex items-center justify-between text-zinc-400 mb-1">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Audited Logins</span>
+              <LogIn className="w-3.5 h-3.5 text-purple-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-white">
+            <div className="text-xl sm:text-3xl font-black text-white">
               {data?.loginLogs?.length ?? data?.metrics.totalLogins ?? 0}
             </div>
-            <div className="text-[11px] text-purple-400 mt-1 font-semibold">
-              Tracked authentication events
+            <div className="text-[10px] sm:text-[11px] text-purple-400 mt-0.5 font-semibold">
+              Tracked sessions
             </div>
           </div>
         </div>
 
-        {/* Primary Tab Navigation */}
-        <div className="flex items-center space-x-2 border-b border-zinc-800 pb-2 overflow-x-auto">
+        {/* Primary Tab Navigation - Horizontal Swipeable Container on Mobile */}
+        <div className="flex items-center space-x-2 border-b border-zinc-800 pb-2 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <button
             onClick={() => { setActiveTab('workspace'); setMobileDetailOpen(false); }}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${

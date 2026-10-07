@@ -397,38 +397,38 @@ export default function ResumeCheckerPage() {
           /* Scorecard Result View */
           <div className="space-y-6">
             {/* Top Score Summary Banner */}
-            <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 shadow-sm">
+            <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-5 sm:p-8 shadow-sm">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-zinc-100 dark:border-zinc-800">
-                <div className="flex items-center space-x-5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:space-x-5">
                   {/* Big Circular Score */}
-                  <div className={`w-24 h-24 rounded-2xl flex flex-col items-center justify-center text-white shadow-md ${
+                  <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex flex-col items-center justify-center text-white shadow-md shrink-0 ${
                     result.ats_score >= 80 
                       ? 'bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-emerald-500/20' 
                       : result.ats_score >= 65
                       ? 'bg-gradient-to-tr from-amber-500 to-orange-500 shadow-amber-500/20'
                       : 'bg-gradient-to-tr from-rose-600 to-pink-500 shadow-rose-500/20'
                   }`}>
-                    <span className="text-3xl font-black">{result.ats_score}</span>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider opacity-90">/ 100 ATS</span>
+                    <span className="text-2xl sm:text-3xl font-black">{result.ats_score}</span>
+                    <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider opacity-90">/ 100 ATS</span>
                   </div>
 
                   <div>
-                    <div className="flex items-center space-x-2">
-                      <h2 className="text-2xl font-extrabold text-zinc-900 dark:text-white">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-900 dark:text-white">
                         {result.ats_score >= 80 ? 'Strong Match' : result.ats_score >= 65 ? 'Competitive Profile' : 'Needs Optimization'}
                       </h2>
                       <span className="px-2 py-0.5 rounded text-xs font-black bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200">
                         Grade {result.grade}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 break-all">
                       File: <span className="font-mono font-medium text-zinc-700 dark:text-zinc-300">{result.filename}</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:space-x-3">
                   <button
                     onClick={handleSaveToProfile}
                     disabled={savedSuccess}

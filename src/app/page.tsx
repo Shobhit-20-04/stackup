@@ -36,7 +36,7 @@ export default function HomePage() {
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-zinc-900 dark:text-white max-w-5xl mx-auto leading-[1.1]">
+        <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black tracking-tight text-zinc-900 dark:text-white max-w-5xl mx-auto leading-[1.15] sm:leading-[1.1]">
           Master tech interviews with{' '}
           <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-amber-500 bg-clip-text text-transparent">
             structure, speed &amp; AI
@@ -44,22 +44,22 @@ export default function HomePage() {
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-6 text-base sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-5 sm:mt-6 text-sm sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed px-2">
           Stop juggling fragmented resources. Practice curated DSA patterns, revise Core CS fundamentals, take timed aptitude quizzes, and optimize your resume with an ATS scanner.
         </p>
 
         {/* CTA Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+        <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto w-full px-2">
           <Link
             href="/login"
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-500 shadow-xl shadow-indigo-500/25 transition-all flex items-center justify-center space-x-2 group"
+            className="w-full sm:w-auto px-7 py-3.5 sm:px-8 sm:py-4 rounded-2xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-500 shadow-xl shadow-indigo-500/25 transition-all flex items-center justify-center space-x-2 group cursor-pointer"
           >
             <span>Start Preparing Free</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
             href="/dsa"
-            className="w-full sm:w-auto px-7 py-4 rounded-2xl font-semibold text-sm text-zinc-800 dark:text-zinc-200 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto px-6 py-3.5 sm:px-7 sm:py-4 rounded-2xl font-semibold text-sm text-zinc-800 dark:text-zinc-200 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all flex items-center justify-center space-x-2 cursor-pointer"
           >
             <Code2 className="w-4 h-4 text-emerald-500" />
             <span>Explore DSA Roadmap</span>
@@ -67,75 +67,78 @@ export default function HomePage() {
         </div>
 
         {/* Live Interactive Hero Showcase */}
-        <div className="mt-14 max-w-4xl mx-auto bg-white/70 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl backdrop-blur-xl p-4 sm:p-6 overflow-hidden">
+        <div className="mt-12 sm:mt-14 max-w-4xl mx-auto bg-white/70 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl backdrop-blur-xl p-4 sm:p-6 overflow-hidden">
           {/* Tabs Selector */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+          <div className="flex items-center justify-center gap-1.5 sm:gap-2 pb-3.5 sm:pb-4 border-b border-zinc-100 dark:border-zinc-800 overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab('dsa')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-2 ${
+              className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 sm:space-x-2 shrink-0 cursor-pointer ${
                 activeTab === 'dsa'
                   ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
                   : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
               }`}
             >
               <Code2 className="w-4 h-4" />
-              <span>DSA Problem Engine</span>
+              <span>DSA</span>
+              <span className="hidden sm:inline">&nbsp;Engine</span>
             </button>
             <button
               onClick={() => setActiveTab('resume')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-2 ${
+              className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 sm:space-x-2 shrink-0 cursor-pointer ${
                 activeTab === 'resume'
                   ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30'
                   : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
               }`}
             >
               <FileCheck2 className="w-4 h-4" />
-              <span>ATS Resume Scanner</span>
+              <span>ATS Resume</span>
+              <span className="hidden sm:inline">&nbsp;Scanner</span>
             </button>
             <button
               onClick={() => setActiveTab('quiz')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-2 ${
+              className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 sm:space-x-2 shrink-0 cursor-pointer ${
                 activeTab === 'quiz'
                   ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30'
                   : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
               }`}
             >
               <Cpu className="w-4 h-4" />
-              <span>Timed Core CS Quizzes</span>
+              <span>Core CS</span>
+              <span className="hidden sm:inline">&nbsp;Quizzes</span>
             </button>
           </div>
 
           {/* Interactive Tab Content */}
-          <div className="pt-6">
+          <div className="pt-5 sm:pt-6">
             {activeTab === 'dsa' && (
-              <div className="bg-zinc-50 dark:bg-zinc-950/60 p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 text-left">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200/60 dark:border-zinc-800">
+              <div className="bg-zinc-50 dark:bg-zinc-950/60 p-4 sm:p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 text-left">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-zinc-200/60 dark:border-zinc-800">
                   <div className="flex items-center space-x-3">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shrink-0">
                       ✓
                     </div>
                     <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-base font-bold text-zinc-900 dark:text-white">Two Sum</span>
+                      <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                        <span className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">Two Sum</span>
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">Easy</span>
-                        <span className="px-2 py-0.5 rounded text-[10px] bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">Arrays &amp; Hashing</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">Arrays</span>
                       </div>
-                      <p className="text-xs text-zinc-500 mt-0.5">Tested at Google, Amazon, Meta, Microsoft, Apple</p>
+                      <p className="text-[11px] sm:text-xs text-zinc-500 mt-0.5">Tested at Google, Amazon, Meta, Microsoft</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                  <div className="flex items-center space-x-2 self-start sm:self-center">
+                    <span className="text-[11px] sm:text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
                       O(n) Time / O(n) Space
                     </span>
-                    <Link href="/dsa" className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-500 flex items-center space-x-1">
-                      <span>Practice in Hub</span>
+                    <Link href="/dsa" className="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-500 flex items-center space-x-1 cursor-pointer">
+                      <span>Practice</span>
                       <ExternalLink className="w-3 h-3" />
                     </Link>
                   </div>
                 </div>
-                <div className="mt-3 text-xs text-zinc-600 dark:text-zinc-400 flex items-center justify-between">
-                  <span>Intuition: Use HashMap to store indices and check \`target - current\` on a single pass.</span>
-                  <div className="flex items-center space-x-2 text-rose-500 text-xs">
+                <div className="mt-3 text-xs text-zinc-600 dark:text-zinc-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <span>Intuition: Use HashMap to store indices and check `target - current` on a single pass.</span>
+                  <div className="flex items-center space-x-1.5 text-rose-500 text-xs shrink-0">
                     <Video className="w-3.5 h-3.5" />
                     <span>Curated Video Included</span>
                   </div>

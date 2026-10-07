@@ -115,10 +115,14 @@ export default function Navbar() {
         if (now - lastTildeTime < 450) {
           e.preventDefault();
           setShowSecretModal(true);
-          setSecretPasscode('');
-          setSecretError('');
+          lastTildeTime = now;
         }
-        lastTildeTime = now;
+      }
+      // 3. Escape key closes modal
+      if (e.key === 'Escape') {
+        setShowSecretModal(false);
+        setSecretPasscode('');
+        setSecretError('');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -333,11 +337,20 @@ export default function Navbar() {
       )}
       {/* Secret Admin Gateway Modal */}
       {showSecretModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+        <div 
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowSecretModal(false);
+              setSecretPasscode('');
+              setSecretError('');
+            }
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in"
+        >
           <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl space-y-5 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
@@ -351,10 +364,16 @@ export default function Navbar() {
               </div>
 
               <button
-                onClick={() => setShowSecretModal(false)}
-                className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                type="button"
+                onClick={() => {
+                  setShowSecretModal(false);
+                  setSecretPasscode('');
+                  setSecretError('');
+                }}
+                aria-label="Close dialog"
+                className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -365,7 +384,7 @@ export default function Navbar() {
               </div>
             )}
 
-            <form onSubmit={handleSecretSubmit} className="space-y-3.5">
+            <form onSubmit={handleSecretSubmit} className="space-y-4">
               <div>
                 <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
                   Master Security Key
@@ -383,23 +402,37 @@ export default function Navbar() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={secretLoading}
-                className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
-              >
-                {secretLoading ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Verifying...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Enter Admin Control</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </>
-                )}
-              </button>
+              <div className="flex items-center space-x-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSecretModal(false);
+                    setSecretPasscode('');
+                    setSecretError('');
+                  }}
+                  className="flex-1 py-2.5 px-3 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
+                >
+                  Cancel &amp; Return
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={secretLoading}
+                  className="flex-1 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+                >
+                  {secretLoading ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Verifying...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Enter Admin</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+              </div>
             </form>
           </div>
         </div>

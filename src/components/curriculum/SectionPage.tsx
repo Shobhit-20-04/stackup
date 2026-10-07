@@ -178,17 +178,17 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             <div key={cat.id} className="space-y-4">
               <div className="flex items-center justify-between pb-1 border-b border-zinc-100 dark:border-zinc-800/60">
                 <div className="flex items-center space-x-2.5">
-                  <div className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800">
+                  <div className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 shrink-0">
                     {getCategoryIcon(cat.icon)}
                   </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-zinc-900 dark:text-white flex items-center space-x-2">
-                      <span>{cat.title}</span>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                  <div className="min-w-0">
+                    <h2 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white flex flex-wrap items-center gap-2">
+                      <span className="truncate">{cat.title}</span>
+                      <span className="text-[11px] sm:text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 shrink-0">
                         {filteredTopics.length} {filteredTopics.length === 1 ? 'topic' : 'topics'}
                       </span>
                     </h2>
-                    <p className="text-xs text-zinc-500 mt-0.5">{cat.description}</p>
+                    <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2">{cat.description}</p>
                   </div>
                 </div>
               </div>

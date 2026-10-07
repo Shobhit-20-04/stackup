@@ -296,16 +296,16 @@ export default function DsaHubPage() {
             )}
           </div>
 
-          {/* Pattern / Category Pills */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider pl-1 mr-1">
+          {/* Pattern / Category Pills - Scrollable Horizontally on Mobile */}
+          <div className="flex items-center gap-1.5 pt-2 border-t border-zinc-100 dark:border-zinc-800 overflow-x-auto pb-1.5 scrollbar-none">
+            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider pl-1 mr-1 shrink-0">
               Pattern:
             </span>
             {DSA_CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-500/20'
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
@@ -487,41 +487,44 @@ export default function DsaHubPage() {
                     <div className="border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/90 rounded-b-2xl p-5 space-y-4">
                       {/* Top Tabs */}
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
-                        <div className="flex items-center space-x-1 bg-zinc-200/70 dark:bg-zinc-800 p-1 rounded-xl">
+                        <div className="flex items-center space-x-1 bg-zinc-200/70 dark:bg-zinc-800 p-1 rounded-xl overflow-x-auto max-w-full scrollbar-none">
                           <button
                             onClick={() => setActiveTab('problem')}
-                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
                               activeTab === 'problem'
                                 ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
                                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
                             }`}
                           >
                             <FileText className="w-3.5 h-3.5 text-blue-500" />
-                            <span>Problem &amp; Examples</span>
+                            <span>Problem</span>
+                            <span className="hidden sm:inline">&nbsp;&amp; Examples</span>
                           </button>
 
                           <button
                             onClick={() => setActiveTab('approach')}
-                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
                               activeTab === 'approach'
                                 ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
                                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
                             }`}
                           >
                             <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-                            <span>Optimal Approach &amp; Complexity</span>
+                            <span>Approach</span>
+                            <span className="hidden sm:inline">&nbsp;&amp; Complexity</span>
                           </button>
 
                           <button
                             onClick={() => setActiveTab('code')}
-                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
                               activeTab === 'code'
                                 ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm font-semibold'
                                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
                             }`}
                           >
                             <Code2 className="w-3.5 h-3.5 text-emerald-500" />
-                            <span>Code Solutions</span>
+                            <span>Code</span>
+                            <span className="hidden sm:inline">&nbsp;Solutions</span>
                           </button>
                         </div>
 
