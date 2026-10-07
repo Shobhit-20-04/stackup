@@ -140,6 +140,36 @@ export interface SectionMetrics {
   total: number;
 }
 
+export function getReadTopicIds(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem('stackup_read_topics');
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function toggleTopicReadStatus(topicId: string): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const current = getReadTopicIds();
+    let updated: string[];
+    let isNowRead: boolean;
+    if (current.includes(topicId)) {
+      updated = current.filter((id) => id !== topicId);
+      isNowRead = false;
+    } else {
+      updated = [...current, topicId];
+      isNowRead = true;
+    }
+    localStorage.setItem('stackup_read_topics', JSON.stringify(updated));
+    return isNowRead;
+  } catch {
+    return false;
+  }
+}
+
 export function getSectionMetrics(sectionSlug: string): SectionMetrics {
   const total = SECTION_TOTAL_ITEMS[sectionSlug] || 10;
   if (typeof window === 'undefined') {
@@ -161,7 +191,13 @@ export function getSectionMetrics(sectionSlug: string): SectionMetrics {
   try {
     const attempts = getLocalQuizAttempts();
     const sectionAttempts = attempts.filter((a) => a.sectionSlug === sectionSlug);
-    const uniqueTopics = new Set(sectionAttempts.map((a) => a.topicId));
+    const readTopicIds = getReadTopicIds();
+    
+    // Total unique completed topics (either attempted quiz or marked as read)
+    const uniqueTopics = new Set([
+      ...sectionAttempts.map((a) => a.topicId),
+      ...readTopicIds
+    ]);
     const completed = uniqueTopics.size;
     const percent = Math.min(100, Math.round((completed / total) * 100));
     return { percent, completed, total };

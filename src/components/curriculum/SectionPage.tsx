@@ -19,13 +19,16 @@ import {
   ArrowLeft,
   Lock,
   ArrowRight,
-  Filter,
-  CheckCircle2,
+  CheckCircle2, 
   ChevronRight,
-  X
+  ChevronLeft,
+  X,
+  Sparkles,
+  Zap,
+  Check
 } from 'lucide-react';
-import { CURRICULUM_DATA, type Topic } from '@/lib/data/curriculum';
-import { getSectionMetrics } from '@/lib/services/progress';
+import { CURRICULUM_DATA, type Topic, type SectionCategory } from '@/lib/data/curriculum';
+import { getSectionMetrics, getReadTopicIds, getLocalQuizAttempts } from '@/lib/services/progress';
 import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 import TopicNotes from './TopicNotes';
 import QuizEngine from './QuizEngine';
@@ -40,7 +43,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [activeView, setActiveView] = useState<'list' | 'notes' | 'quiz'>('list');
-  const metrics = useMemo(() => getSectionMetrics(sectionKey), [sectionKey]);
+  const [completedTopicIds, setCompletedTopicIds] = useState<Set<string>>(new Set());
+
+  // Metrics
+  const [metricsRefresh, setMetricsRefresh] = useState(0);
+  const metrics = useMemo(() => getSectionMetrics(sectionKey), [sectionKey, metricsRefresh]);
 
   // Authentication state for gating interactive quizzes
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
@@ -48,7 +55,14 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
   useEffect(() => {
     getCurrentUser().then((u) => setCurrentUser(u));
-  }, []);
+    // Load completed topics (quizzes attempted or read)
+    const readIds = getReadTopicIds();
+    const attempts = getLocalQuizAttempts();
+    const sectionAttempts = attempts
+      .filter((a) => a.sectionSlug === sectionKey)
+      .map((a) => a.topicId);
+    setCompletedTopicIds(new Set([...readIds, ...sectionAttempts]));
+  }, [sectionKey, metricsRefresh, activeView]);
 
   const handleStartQuiz = (topic: Topic) => {
     if (!currentUser) {
@@ -60,46 +74,115 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     setActiveView('quiz');
   };
 
-  const getCategoryIcon = (iconName: string) => {
+  const getCategoryTheme = (iconName: string) => {
     switch (iconName) {
-      case 'Cpu': return <Cpu className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
-      case 'Database': return <Database className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />;
-      case 'Network': return <Network className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-      case 'Code2': return <Code2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />;
-      case 'Server': return <Server className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />;
-      case 'GitBranch': return <GitBranch className="w-4 h-4 text-rose-600 dark:text-rose-400" />;
-      case 'Terminal': return <Terminal className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
-      case 'Layers': return <Layers className="w-4 h-4 text-teal-600 dark:text-teal-400" />;
-      default: return <BookOpen className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
+      case 'Cpu':
+        return {
+          icon: <Cpu className="w-5 h-5 text-purple-600 dark:text-purple-400" />,
+          accent: 'purple',
+          border: 'border-purple-500/30 hover:border-purple-500',
+          bg: 'bg-purple-50/50 dark:bg-purple-950/20',
+          badge: 'bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300',
+        };
+      case 'Database':
+        return {
+          icon: <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />,
+          accent: 'emerald',
+          border: 'border-emerald-500/30 hover:border-emerald-500',
+          bg: 'bg-emerald-50/50 dark:bg-emerald-950/20',
+          badge: 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300',
+        };
+      case 'Network':
+        return {
+          icon: <Network className="w-5 h-5 text-blue-600 dark:text-blue-400" />,
+          accent: 'blue',
+          border: 'border-blue-500/30 hover:border-blue-500',
+          bg: 'bg-blue-50/50 dark:bg-blue-950/20',
+          badge: 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300',
+        };
+      case 'Code2':
+        return {
+          icon: <Code2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />,
+          accent: 'amber',
+          border: 'border-amber-500/30 hover:border-amber-500',
+          bg: 'bg-amber-50/50 dark:bg-amber-950/20',
+          badge: 'bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300',
+        };
+      case 'Server':
+        return {
+          icon: <Server className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />,
+          accent: 'cyan',
+          border: 'border-cyan-500/30 hover:border-cyan-500',
+          bg: 'bg-cyan-50/50 dark:bg-cyan-950/20',
+          badge: 'bg-cyan-100 dark:bg-cyan-900/60 text-cyan-800 dark:text-cyan-300',
+        };
+      case 'GitBranch':
+        return {
+          icon: <GitBranch className="w-5 h-5 text-rose-600 dark:text-rose-400" />,
+          accent: 'rose',
+          border: 'border-rose-500/30 hover:border-rose-500',
+          bg: 'bg-rose-50/50 dark:bg-rose-950/20',
+          badge: 'bg-rose-100 dark:bg-rose-900/60 text-rose-800 dark:text-rose-300',
+        };
+      case 'Terminal':
+        return {
+          icon: <Terminal className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
+          accent: 'indigo',
+          border: 'border-indigo-500/30 hover:border-indigo-500',
+          bg: 'bg-indigo-50/50 dark:bg-indigo-950/20',
+          badge: 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300',
+        };
+      case 'Layers':
+        return {
+          icon: <Layers className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
+          accent: 'teal',
+          border: 'border-teal-500/30 hover:border-teal-500',
+          bg: 'bg-teal-50/50 dark:bg-teal-950/20',
+          badge: 'bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-300',
+        };
+      default:
+        return {
+          icon: <BookOpen className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
+          accent: 'indigo',
+          border: 'border-indigo-500/30 hover:border-indigo-500',
+          bg: 'bg-indigo-50/50 dark:bg-indigo-950/20',
+          badge: 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300',
+        };
     }
   };
 
-  // Filter categories and topics based on category pill & search query
-  const filteredCategories = useMemo(() => {
-    if (!section) return [];
-    
-    // First filter by selected subject/category
-    const baseCategories = selectedCategory === 'all'
-      ? section.categories
-      : section.categories.filter((c) => c.id === selectedCategory);
+  // Find the active single category object if one is selected
+  const activeCategoryObj = useMemo(() => {
+    if (!section || selectedCategory === 'all') return null;
+    return section.categories.find((c) => c.id === selectedCategory) || null;
+  }, [section, selectedCategory]);
 
-    // Then filter by search query if present
-    if (!searchQuery.trim()) return baseCategories;
+  // Find next/prev category for fast sequential switching
+  const { prevCategory, nextCategory } = useMemo(() => {
+    if (!section || !activeCategoryObj) return { prevCategory: null, nextCategory: null };
+    const idx = section.categories.findIndex((c) => c.id === activeCategoryObj.id);
+    return {
+      prevCategory: idx > 0 ? section.categories[idx - 1] : null,
+      nextCategory: idx < section.categories.length - 1 ? section.categories[idx + 1] : null,
+    };
+  }, [section, activeCategoryObj]);
 
+  // Search Results Mode
+  const searchResults = useMemo(() => {
+    if (!section || !searchQuery.trim()) return null;
     const q = searchQuery.toLowerCase().trim();
-    return baseCategories
-      .map((cat) => ({
-        ...cat,
-        topics: cat.topics.filter(
-          (t) =>
-            t.title.toLowerCase().includes(q) ||
-            t.description.toLowerCase().includes(q)
-        ),
-      }))
-      .filter((cat) => cat.topics.length > 0);
-  }, [section, selectedCategory, searchQuery]);
+    const results: { topic: Topic; category: SectionCategory }[] = [];
+    section.categories.forEach((cat) => {
+      cat.topics.forEach((t) => {
+        if (t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q)) {
+          results.push({ topic: t, category: cat });
+        }
+      });
+    });
+    return results;
+  }, [section, searchQuery]);
 
-  // Total topics count across all categories
+  // Total topics count
   const totalTopicsCount = useMemo(() => {
     if (!section) return 0;
     return section.categories.reduce((acc, cat) => acc + cat.topics.length, 0);
@@ -121,7 +204,10 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         <QuizEngine
           topic={selectedTopic}
           sectionSlug={sectionKey}
-          onExitQuiz={() => setActiveView('notes')}
+          onExitQuiz={() => {
+            setMetricsRefresh((p) => p + 1);
+            setActiveView('notes');
+          }}
         />
       </div>
     );
@@ -129,22 +215,26 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
   // Active Topic Notes View
   if (activeView === 'notes' && selectedTopic) {
+    // Find category topics to allow next/previous module hopping
+    const currentCat = section.categories.find((c) => c.topics.some((t) => t.id === selectedTopic.id));
+    const catTopics = currentCat ? currentCat.topics : [];
+    const topicIdx = catTopics.findIndex((t) => t.id === selectedTopic.id);
+    const prevTopic = topicIdx > 0 ? catTopics[topicIdx - 1] : null;
+    const nextTopic = topicIdx < catTopics.length - 1 ? catTopics[topicIdx + 1] : null;
+
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-        <button
-          onClick={() => {
-            setActiveView('list');
-            setSelectedTopic(null);
-          }}
-          className="inline-flex items-center space-x-1.5 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:text-indigo-600 dark:hover:text-indigo-400 bg-zinc-100 dark:bg-zinc-850 px-3.5 py-2 rounded-xl transition-colors cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to {section.name} Overview</span>
-        </button>
-
         <TopicNotes
           topic={selectedTopic}
           sectionSlug={sectionKey}
+          categoryTitle={currentCat?.title}
+          onBack={() => {
+            setMetricsRefresh((p) => p + 1);
+            setActiveView('list');
+          }}
+          prevTopic={prevTopic}
+          nextTopic={nextTopic}
+          onSelectTopic={(t) => setSelectedTopic(t)}
           onStartQuiz={() => handleStartQuiz(selectedTopic)}
         />
       </div>
@@ -153,16 +243,17 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-      {/* Header Banner - High Contrast & Compact */}
+      {/* Header Banner */}
       <div className="p-5 sm:p-7 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="space-y-1.5 max-w-2xl">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-            <span>Interview Curriculum</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Interview Curriculum • Structured Pathway</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 dark:text-white tracking-tight">
             {section.name}
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+          <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
             {section.description}
           </p>
         </div>
@@ -170,7 +261,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         {/* Progress Metric */}
         <div className="p-4 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850/70 w-full md:w-60 space-y-2.5 shrink-0">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-zinc-700 dark:text-zinc-300 uppercase tracking-wider text-[11px]">Completion</span>
+            <span className="text-zinc-700 dark:text-zinc-300 uppercase tracking-wider text-[11px]">Syllabus Progress</span>
             <span className="text-indigo-600 dark:text-indigo-400 font-extrabold">{metrics.percent}%</span>
           </div>
           <div className="w-full h-2 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
@@ -185,74 +276,59 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         </div>
       </div>
 
-      {/* Quick Search & Mobile Jump Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Search ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP, Indexes)...`}
-            className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xs"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-
-        {/* Quick Reset Button if filter active */}
-        {selectedCategory !== 'all' && (
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={`Search all ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP 3-Way, Normalization, CAP Theorem)...`}
+          className="w-full pl-10 pr-10 py-3 rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xs"
+        />
+        {searchQuery && (
           <button
-            onClick={() => setSelectedCategory('all')}
-            className="px-3.5 py-2.5 rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center justify-center space-x-1.5 shrink-0 transition-colors cursor-pointer"
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
           >
-            <span>Show All Subjects</span>
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      {/* Sticky / Swipeable Category Navigator - ZERO SCROLLING FATIGUE */}
-      <div className="sticky top-16 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-zinc-50/90 dark:bg-zinc-950/90 backdrop-blur-md border-y sm:border-y-0 sm:rounded-2xl border-zinc-200/80 dark:border-zinc-800">
+      {/* Sticky Fast Subject Chip Switcher */}
+      <div className="sticky top-16 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-zinc-50/95 dark:bg-zinc-950/95 backdrop-blur-md border-y sm:border-y-0 sm:rounded-2xl border-zinc-200/80 dark:border-zinc-800">
         <div className="flex items-center space-x-2 overflow-x-auto scrollbar-none pb-1 pt-0.5">
-          {/* "All" Chip */}
           <button
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
-              selectedCategory === 'all'
+              selectedCategory === 'all' && !searchQuery
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                 : 'bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>All Subjects ({totalTopicsCount})</span>
+            <span>Subject Dashboard ({section.categories.length})</span>
           </button>
 
-          {/* Individual Category Chips */}
           {section.categories.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
+            const isSelected = selectedCategory === cat.id && !searchQuery;
+            const theme = getCategoryTheme(cat.icon);
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
+                onClick={() => { setSelectedCategory(cat.id); setSearchQuery(''); }}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
                   isSelected
                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                     : 'bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                 }`}
               >
-                {getCategoryIcon(cat.icon)}
                 <span>{cat.title}</span>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
                   isSelected 
                     ? 'bg-white/20 text-white' 
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
                 }`}>
                   {cat.topics.length}
                 </span>
@@ -262,123 +338,279 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         </div>
       </div>
 
-      {/* Categories & Topics Grid - Filtered for Instant Access */}
-      <div className="space-y-8">
-        {filteredCategories.length === 0 ? (
-          <div className="p-12 text-center bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 space-y-3">
-            <Search className="w-8 h-8 text-zinc-400 mx-auto" />
-            <h3 className="text-base font-bold text-zinc-900 dark:text-white">
-              No matching topics found
-            </h3>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto">
-              We couldn&apos;t find any topics matching &quot;{searchQuery}&quot;. Try adjusting your search term or subject filter.
-            </p>
+      {/* VIEW 1: SEARCH RESULTS MODE */}
+      {searchResults !== null && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-black text-zinc-950 dark:text-white uppercase tracking-wider flex items-center space-x-2">
+              <Search className="w-4 h-4 text-indigo-500" />
+              <span>Search Results for &quot;{searchQuery}&quot; ({searchResults.length})</span>
+            </h2>
             <button
-              onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
-              className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl hover:bg-indigo-500 transition-colors cursor-pointer"
+              onClick={() => setSearchQuery('')}
+              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
             >
-              Clear Filters
+              Clear Search
             </button>
           </div>
-        ) : (
-          filteredCategories.map((cat) => (
-            <div key={cat.id} className="space-y-3.5">
-              {/* Category Header */}
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
-                <div className="flex items-center space-x-2.5">
-                  <div className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 shrink-0">
-                    {getCategoryIcon(cat.icon)}
-                  </div>
-                  <div className="min-w-0">
-                    <h2 className="text-base sm:text-lg font-black text-zinc-950 dark:text-white flex flex-wrap items-center gap-2">
-                      <span>{cat.title}</span>
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 shrink-0">
-                        {cat.topics.length} {cat.topics.length === 1 ? 'topic' : 'topics'}
-                      </span>
-                    </h2>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5 line-clamp-1">{cat.description}</p>
-                  </div>
-                </div>
 
-                {selectedCategory === 'all' && (
-                  <button
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline shrink-0 hidden sm:inline-flex items-center space-x-1"
-                  >
-                    <span>Focus on {cat.title}</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Topics Grid - High Contrast & High Readability */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
-                {cat.topics.map((topic) => (
+          {searchResults.length === 0 ? (
+            <div className="p-12 text-center bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 space-y-2">
+              <p className="text-sm font-bold text-zinc-900 dark:text-white">No topics matching &quot;{searchQuery}&quot;</p>
+              <p className="text-xs text-zinc-500">Try searching for keywords like &quot;Deadlock&quot;, &quot;TCP&quot;, &quot;Normal Form&quot;, or &quot;Probability&quot;.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {searchResults.map(({ topic, category }) => {
+                const isCompleted = completedTopicIds.has(topic.id);
+                return (
                   <div
                     key={topic.id}
-                    onClick={() => {
-                      setSelectedTopic(topic);
-                      setActiveView('notes');
-                    }}
-                    className="p-4 sm:p-5 rounded-2xl border border-zinc-250 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-indigo-500 dark:hover:border-indigo-500 shadow-xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group"
+                    onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
+                    className="p-4 sm:p-5 rounded-2xl border border-zinc-250 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-indigo-500 shadow-xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-extrabold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-900">
-                          Module
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                          {category.title}
                         </span>
-                        <div className="flex items-center space-x-1 text-xs text-zinc-600 dark:text-zinc-400 font-semibold">
-                          <Clock className="w-3.5 h-3.5 text-zinc-400" />
-                          <span>{topic.estimatedMinutes} min read</span>
-                        </div>
+                        {isCompleted && (
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Done</span>
+                          </span>
+                        )}
                       </div>
-
-                      <h3 className="text-sm sm:text-base font-extrabold text-zinc-950 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
+                      <h3 className="text-sm sm:text-base font-extrabold text-zinc-950 dark:text-white group-hover:text-indigo-600 transition-colors">
                         {topic.title}
                       </h3>
-                      <p className="text-xs text-zinc-700 dark:text-zinc-300 mt-1.5 leading-relaxed font-normal">
+                      <p className="text-xs text-zinc-700 dark:text-zinc-300 mt-1 leading-relaxed">
                         {topic.description}
                       </p>
                     </div>
+                    <div className="mt-4 pt-3 border-t border-zinc-150 dark:border-zinc-800 flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                      <span>Study Module Notes</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
-                    <div className="mt-4 pt-3 border-t border-zinc-150 dark:border-zinc-800 flex items-center justify-between">
-                      <div className="flex items-center space-x-1.5 text-xs text-zinc-600 dark:text-zinc-400 font-medium">
-                        <HelpCircle className="w-3.5 h-3.5 text-zinc-400" />
-                        <span>{topic.questions.length > 0 ? `${topic.questions.length} MCQs` : 'Notes'}</span>
+      {/* VIEW 2: SUBJECT DASHBOARD (THE CLEAN OVERVIEW OF ALL SUBJECTS) */}
+      {searchResults === null && selectedCategory === 'all' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-xs font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center space-x-1.5">
+              <Zap className="w-3.5 h-3.5 text-indigo-500" />
+              <span>Choose a Subject to Study ({section.categories.length} Modules Available)</span>
+            </h2>
+            <span className="text-[11px] font-bold text-zinc-500">Tap any subject to open syllabus</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+            {section.categories.map((cat) => {
+              const theme = getCategoryTheme(cat.icon);
+              const completedCount = cat.topics.filter((t) => completedTopicIds.has(t.id)).length;
+              const catPercent = Math.round((completedCount / cat.topics.length) * 100);
+
+              return (
+                <div
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`p-5 sm:p-6 rounded-3xl border-2 ${theme.border} ${theme.bg} transition-all flex flex-col justify-between shadow-xs hover:shadow-lg cursor-pointer group`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center shadow-xs shrink-0">
+                        {theme.icon}
                       </div>
+                      <span className={`text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-xl ${theme.badge}`}>
+                        {cat.topics.length} Topics • {cat.topics.reduce((acc, t) => acc + t.questions.length, 0)} MCQs
+                      </span>
+                    </div>
 
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedTopic(topic);
-                            setActiveView('notes');
-                          }}
-                          className="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 text-xs font-bold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-                        >
-                          Notes
-                        </button>
-                        {topic.questions.length > 0 && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleStartQuiz(topic);
-                            }}
-                            className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
-                          >
-                            <Play className="w-3 h-3 fill-white" />
-                            <span>Quiz</span>
-                          </button>
-                        )}
+                    <h3 className="text-lg font-black text-zinc-950 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      {cat.title}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
+                      {cat.description}
+                    </p>
+
+                    {/* Progress indicator */}
+                    <div className="mt-4 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80">
+                      <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
+                        <span className="text-zinc-600 dark:text-zinc-400">Subject Progress</span>
+                        <span className="text-zinc-900 dark:text-zinc-100 font-extrabold">
+                          {completedCount} / {cat.topics.length} ({catPercent}%)
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
+                        <div
+                          className="h-full bg-indigo-600 rounded-full transition-all"
+                          style={{ width: `${catPercent}%` }}
+                        />
                       </div>
                     </div>
                   </div>
-                ))}
+
+                  <div className="mt-5 flex items-center justify-between text-xs font-bold text-indigo-700 dark:text-indigo-300">
+                    <span>Study Syllabus ({cat.topics.length} Modules)</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 3: DEDICATED SUBJECT SYLLABUS WORKSPACE (1 SUBJECT AT A TIME - ZERO SCROLLING) */}
+      {searchResults === null && activeCategoryObj !== null && (
+        <div className="space-y-6 animate-in fade-in">
+          {/* Breadcrumb & Quick Subject Nav */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className="inline-flex items-center space-x-1.5 text-xs font-bold text-zinc-800 dark:text-zinc-200 hover:text-indigo-600 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 px-3 py-2 rounded-xl transition-all shadow-xs cursor-pointer self-start"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>← All Subjects Dashboard</span>
+            </button>
+
+            {/* Quick Next/Prev Subject Stepper */}
+            <div className="flex items-center space-x-2 self-start sm:self-center">
+              {prevCategory && (
+                <button
+                  onClick={() => setSelectedCategory(prevCategory.id)}
+                  className="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-850 text-[11px] font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 transition-colors cursor-pointer"
+                >
+                  ← {prevCategory.title}
+                </button>
+              )}
+              {nextCategory && (
+                <button
+                  onClick={() => setSelectedCategory(nextCategory.id)}
+                  className="px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 text-[11px] font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 transition-colors cursor-pointer flex items-center space-x-1"
+                >
+                  <span>Next: {nextCategory.title}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Active Subject Banner */}
+          <div className="p-5 sm:p-6 rounded-3xl bg-zinc-900 text-white border border-zinc-800 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-indigo-400">
+                Active Subject Study Track
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-white">
+                {activeCategoryObj.title}
+              </h2>
+              <p className="text-xs text-zinc-400 max-w-xl leading-relaxed">
+                {activeCategoryObj.description}
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-zinc-800/80 border border-zinc-700 shrink-0 text-center w-full md:w-auto">
+              <div className="text-xs font-bold text-zinc-300">Subject Coverage</div>
+              <div className="text-lg font-black text-white">
+                {activeCategoryObj.topics.filter((t) => completedTopicIds.has(t.id)).length} of {activeCategoryObj.topics.length}
+                <span className="text-xs text-zinc-400 font-semibold"> Modules Done</span>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          </div>
+
+          {/* Topic Modules List - Sequential Step Order */}
+          <div className="space-y-3.5">
+            {activeCategoryObj.topics.map((topic, index) => {
+              const isCompleted = completedTopicIds.has(topic.id);
+
+              return (
+                <div
+                  key={topic.id}
+                  onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
+                  className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer group shadow-xs hover:shadow-md ${
+                    isCompleted
+                      ? 'border-emerald-500/30 bg-emerald-50/20 dark:bg-emerald-950/10'
+                      : 'border-zinc-250 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-indigo-500'
+                  }`}
+                >
+                  <div className="flex items-start space-x-3.5 min-w-0">
+                    {/* Step Number or Checkmark */}
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs ${
+                      isCompleted
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700'
+                    }`}>
+                      {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-sm sm:text-base font-extrabold text-zinc-950 dark:text-white group-hover:text-indigo-600 transition-colors">
+                          {topic.title}
+                        </span>
+                        {isCompleted ? (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300">
+                            ✓ Completed
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                            Ready to Study
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed font-normal">
+                        {topic.description}
+                      </p>
+                      <div className="flex items-center space-x-3 mt-2 text-[11px] font-semibold text-zinc-500">
+                        <span className="flex items-center space-x-1">
+                          <Clock className="w-3 h-3 text-indigo-500" />
+                          <span>{topic.estimatedMinutes} min read</span>
+                        </span>
+                        <span>•</span>
+                        <span>{topic.questions.length} MCQ Questions</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center space-x-2 self-stretch md:self-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-zinc-150 dark:border-zinc-800 shrink-0">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTopic(topic);
+                        setActiveView('notes');
+                      }}
+                      className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 text-xs font-bold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-center"
+                    >
+                      Read Notes
+                    </button>
+                    {topic.questions.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStartQuiz(topic);
+                        }}
+                        className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                      >
+                        <Play className="w-3 h-3 fill-white" />
+                        <span>Start Quiz</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Auth Prompt Modal */}
       {authPromptOpen && (
