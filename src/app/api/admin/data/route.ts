@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { fetchLoginAudits } from '@/lib/services/login-audit';
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { fetchLoginAudits, type LoginAuditEntry } from '@/lib/services/login-audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -256,6 +257,72 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // D. Direct Supabase auth.users synchronization (when SUPABASE_SERVICE_ROLE_KEY is configured)
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    let authUsersCount = 0;
+    let hasServiceRole = false;
+
+    if (supabaseUrl && serviceRoleKey && !serviceRoleKey.includes('placeholder')) {
+      try {
+        const adminClient = createSupabaseAdmin(supabaseUrl, serviceRoleKey, {
+          auth: { autoRefreshToken: false, persistSession: false },
+        });
+        const { data: authData, error: authErr } = await adminClient.auth.admin.listUsers();
+        if (!authErr && authData?.users) {
+          hasServiceRole = true;
+          authUsersCount = authData.users.length;
+          for (const u of authData.users) {
+            const email = (u.email || '').trim().toLowerCase();
+            if (!email || email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit')) continue;
+
+            const metadata = (u.user_metadata || {}) as Record<string, string>;
+            const candidateName =
+              metadata.full_name ||
+              metadata.name ||
+              email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+
+            const existing = profileMap.get(email);
+            if (existing) {
+              existing.id = u.id;
+              if (existing.full_name === 'Student Account') {
+                existing.full_name = candidateName;
+              }
+            } else {
+              profileMap.set(email, {
+                id: u.id,
+                full_name: candidateName,
+                email,
+                avatar_url: metadata.avatar_url || null,
+                phone: u.phone || null,
+                created_at: u.created_at,
+                updated_at: u.updated_at || u.created_at,
+                resumes_count: 0,
+                latest_score: null,
+              });
+            }
+
+            // Also record login audit from last_sign_in_at if available
+            if (u.last_sign_in_at) {
+              const provider = (u.app_metadata?.provider === 'google' ? 'Google OAuth' : 'Email & Password') as LoginAuditEntry['auth_method'];
+              loginLogs.push({
+                id: `auth-${u.id.substring(0, 8)}`,
+                user_id: u.id,
+                email,
+                full_name: candidateName,
+                auth_method: provider,
+                ip_address: 'Verified Supabase Session',
+                user_agent: 'Cloud Authentication Gateway',
+                created_at: u.last_sign_in_at,
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Notice: fetching auth.admin.listUsers failed:', err);
+      }
+    }
+
     const profileList = Array.from(profileMap.values()).sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
@@ -297,6 +364,8 @@ export async function GET(req: NextRequest) {
         avgScore,
         highPerformers,
         needsOptimization,
+        hasServiceRole,
+        authUsersCount,
       },
       topSkills,
       resumes: resumeList,

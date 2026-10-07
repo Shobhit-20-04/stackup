@@ -96,6 +96,8 @@ interface AdminData {
     highPerformers: number;
     needsOptimization: number;
     totalLogins?: number;
+    hasServiceRole?: boolean;
+    authUsersCount?: number;
   };
   topSkills: { skill: string; count: number }[];
   resumes: ResumeRecord[];
@@ -1328,6 +1330,18 @@ export default function AdminDashboardPage() {
                 Candidate user accounts currently registered on StackUp
               </p>
             </div>
+
+            {!data?.metrics?.hasServiceRole && (
+              <div className="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-800/80 text-xs text-indigo-200 flex items-start space-x-3">
+                <Sparkles className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <span className="font-bold text-white block">Direct Supabase Auth Sync Available</span>
+                  <p className="text-zinc-300 leading-relaxed text-[11px]">
+                    Currently displaying candidates active in dossiers and platform sessions. To directly mirror all registered accounts from Supabase <code className="text-indigo-300 font-mono">auth.users</code> (including those who have not yet uploaded a resume), add <code className="text-indigo-300 font-mono">SUPABASE_SERVICE_ROLE_KEY</code> to your Vercel Project Settings.
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-left text-xs">
