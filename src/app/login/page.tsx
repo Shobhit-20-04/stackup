@@ -86,12 +86,15 @@ function LoginForm() {
 
       if (error) {
         let helpText = '';
-        if (error.message.toLowerCase().includes('provider') || error.message.toLowerCase().includes('not enabled')) {
-          helpText = 'Google sign-in is currently undergoing maintenance. Please use Email / Password to sign in.';
-        } else if (error.message.toLowerCase().includes('invalid api key') || error.message.toLowerCase().includes('jwt')) {
-          helpText = 'Authentication service is undergoing maintenance. Please sign in with email and password.';
+        const msg = error.message.toLowerCase();
+        if (msg.includes('provider') || msg.includes('not enabled') || msg.includes('unsupported provider')) {
+          helpText = 'Google Sign-In is not enabled yet in your Supabase project. To enable it: Go to Supabase Dashboard > Authentication > Providers > Google, toggle Enable, and enter your Google Cloud OAuth Client ID & Secret.';
+        } else if (msg.includes('redirect') || msg.includes('uri')) {
+          helpText = 'Redirect URI mismatch. Please add https://stackup-zeta.vercel.app/auth/callback to Supabase Dashboard > Authentication > URL Configuration > Redirect URLs.';
+        } else if (msg.includes('invalid api key') || msg.includes('jwt')) {
+          helpText = 'Authentication service credential mismatch. Please sign in with email and password.';
         }
-        setErrorMsg('Unable to complete Google sign-in. Please try email sign-in.');
+        setErrorMsg(error.message || 'Unable to complete Google sign-in. Please try email sign-in.');
         if (helpText) setOauthHelp(helpText);
       }
     } catch (err: unknown) {
