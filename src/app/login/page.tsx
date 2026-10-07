@@ -150,6 +150,7 @@ function LoginForm() {
         fetch('/api/auth/record-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          keepalive: true,
           body: JSON.stringify({
             email: email.trim(),
             fullName: studentName,
@@ -189,6 +190,7 @@ function LoginForm() {
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
             body: JSON.stringify({
               email: email.trim(),
               fullName: fullName.trim() || email.split('@')[0],
@@ -221,6 +223,7 @@ function LoginForm() {
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
             body: JSON.stringify({
               email: email.trim(),
               fullName: data.user.user_metadata?.full_name || email.split('@')[0],
@@ -352,6 +355,7 @@ function LoginForm() {
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
             body: JSON.stringify({
               email: `${formattedPhone.replace(/[^0-9]/g, '')}@student.stackup.xyz`,
               fullName: `Student (${formattedPhone.slice(-4)})`,
@@ -384,6 +388,7 @@ function LoginForm() {
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
             body: JSON.stringify({
               email: data.user.email || `${formattedPhone}@student.stackup.xyz`,
               fullName: data.user.user_metadata?.full_name || `Student (${formattedPhone.slice(-4)})`,
@@ -411,6 +416,7 @@ function LoginForm() {
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
             body: JSON.stringify({
               email: otpEmail.trim(),
               fullName: studentName,
@@ -443,6 +449,7 @@ function LoginForm() {
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
             body: JSON.stringify({
               email: data.user.email || otpEmail.trim(),
               fullName: data.user.user_metadata?.full_name || otpEmail.split('@')[0],

@@ -67,10 +67,13 @@ interface ResumeRecord {
 interface UserProfile {
   id: string;
   full_name: string | null;
+  email?: string | null;
   avatar_url: string | null;
   phone: string | null;
   created_at: string;
   updated_at: string;
+  resumes_count?: number;
+  latest_score?: number | null;
 }
 
 interface LoginAuditRecord {
@@ -438,10 +441,10 @@ export default function AdminDashboardPage() {
                 </label>
                 <button
                   type="button"
-                  onClick={() => setPasscode('stackup2026')}
+                  onClick={() => setPasscode('stack2004up')}
                   className="text-[11px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
                 >
-                  ⚡ Fill Memorable PIN
+                  ⚡ Fill Master PIN
                 </button>
               </div>
               <div className="relative">
@@ -451,13 +454,13 @@ export default function AdminDashboardPage() {
                   type="password"
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter key or PIN (e.g. stackup2026)..."
+                  placeholder="Enter master PIN (stack2004up)..."
                   autoFocus
                   className="w-full pl-10 pr-4 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-text"
                 />
               </div>
               <p className="mt-1.5 text-[11px] text-zinc-400 leading-normal">
-                Supported keys: memorable master PIN <code className="text-indigo-300 font-mono font-bold">stackup2026</code> or default server key.
+                Supported key: native master PIN <code className="text-indigo-300 font-mono font-bold">stack2004up</code>.
               </p>
             </div>
 
@@ -1330,33 +1333,60 @@ export default function AdminDashboardPage() {
               <table className="w-full text-left text-xs">
                 <thead className="bg-zinc-950 border-b border-zinc-800 text-zinc-400 uppercase tracking-wider font-bold">
                   <tr>
-                    <th className="py-3 px-4">Candidate</th>
+                    <th className="py-3 px-4">Candidate Profile</th>
                     <th className="py-3 px-4">User ID</th>
-                    <th className="py-3 px-4">Phone</th>
+                    <th className="py-3 px-4">Uploaded Resumes</th>
+                    <th className="py-3 px-4">Top ATS Score</th>
                     <th className="py-3 px-4">Registered Date</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800/60 font-medium">
                   {data?.profiles.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="py-8 text-center text-zinc-400">
+                      <td colSpan={5} className="py-8 text-center text-zinc-400">
                         No registered profiles found in database yet.
                       </td>
                     </tr>
                   ) : (
                     data?.profiles.map((profile) => (
-                      <tr key={profile.id} className="hover:bg-zinc-800/40">
-                        <td className="py-3 px-4 font-bold text-white">
-                          {profile.full_name || 'Student Account'}
+                      <tr key={profile.id} className="hover:bg-zinc-800/40 transition-colors">
+                        <td className="py-3.5 px-4">
+                          <div className="font-bold text-white text-xs sm:text-sm">
+                            {profile.full_name || 'Student Account'}
+                          </div>
+                          {profile.email && profile.email !== '—' && (
+                            <div className="text-[11px] text-indigo-400 font-mono mt-0.5">
+                              {profile.email}
+                            </div>
+                          )}
                         </td>
-                        <td className="py-3 px-4 font-mono text-[11px] text-zinc-400">
+                        <td className="py-3.5 px-4 font-mono text-[11px] text-zinc-400">
                           {profile.id}
                         </td>
-                        <td className="py-3 px-4 text-zinc-300">
-                          {profile.phone || '—'}
+                        <td className="py-3.5 px-4 text-zinc-300">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-zinc-800 border border-zinc-700 text-zinc-200">
+                            {profile.resumes_count ?? 0} {profile.resumes_count === 1 ? 'dossier' : 'dossiers'}
+                          </span>
                         </td>
-                        <td className="py-3 px-4 text-zinc-400">
-                          {new Date(profile.created_at).toLocaleDateString()}
+                        <td className="py-3.5 px-4">
+                          {profile.latest_score !== null && profile.latest_score !== undefined ? (
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                              profile.latest_score >= 75
+                                ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
+                                : 'bg-amber-950/60 text-amber-400 border border-amber-800'
+                            }`}>
+                              {profile.latest_score}/100
+                            </span>
+                          ) : (
+                            <span className="text-zinc-500 text-xs">—</span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 text-zinc-400 text-xs">
+                          {new Date(profile.created_at).toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                          })}
                         </td>
                       </tr>
                     ))
@@ -1622,52 +1652,28 @@ export default function AdminDashboardPage() {
             <div className="space-y-2.5 p-3.5 rounded-2xl bg-zinc-950/90 border border-zinc-800">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-zinc-300 uppercase tracking-wider">
-                  Active Master Credentials
+                  Active Master Key
                 </span>
                 <span className="text-[10px] text-emerald-400 font-medium px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800/80">
                   Ready to Use
                 </span>
               </div>
               <p className="text-[11px] text-zinc-400 leading-normal">
-                You can use either credential below. Your browser also remembers your session in local storage so you do not have to retype it:
+                Your portal natively accepts the PIN below. Your browser also remembers your session in local storage:
               </p>
               
               <div className="space-y-2 pt-1">
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs">
                   <div>
-                    <span className="text-[10px] text-indigo-400 font-bold block uppercase tracking-wide">Memorable Master PIN</span>
-                    <code className="text-white font-mono font-bold text-xs">stackup2026</code>
+                    <span className="text-[10px] text-indigo-400 font-bold block uppercase tracking-wide">Native Master PIN</span>
+                    <code className="text-white font-mono font-bold text-xs">stack2004up</code>
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleCopyKey('stackup2026')}
+                    onClick={() => handleCopyKey('stack2004up')}
                     className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-zinc-200 flex items-center space-x-1.5 cursor-pointer transition-colors"
                   >
-                    {copiedKey === 'stackup2026' ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-emerald-400">Copied</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5 text-zinc-400" />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs">
-                  <div>
-                    <span className="text-[10px] text-zinc-400 font-bold block uppercase tracking-wide">Default Server Key</span>
-                    <code className="text-zinc-300 font-mono text-xs">AFCy57z0l6r2hrtn</code>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleCopyKey('AFCy57z0l6r2hrtn')}
-                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-zinc-200 flex items-center space-x-1.5 cursor-pointer transition-colors"
-                  >
-                    {copiedKey === 'AFCy57z0l6r2hrtn' ? (
+                    {copiedKey === 'stack2004up' ? (
                       <>
                         <Check className="w-3.5 h-3.5 text-emerald-400" />
                         <span className="text-emerald-400">Copied</span>

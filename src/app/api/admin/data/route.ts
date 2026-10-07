@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 let runtimeAdminPasscode: string | null = null;
 
 export function getActiveAdminPasscode(): string {
-  return runtimeAdminPasscode || process.env.ADMIN_PASSCODE || 'AFCy57z0l6r2hrtn';
+  return runtimeAdminPasscode || 'stack2004up';
 }
 
 export function setActiveAdminPasscode(key: string): void {
@@ -17,12 +17,15 @@ export function setActiveAdminPasscode(key: string): void {
 
 function isAuthorized(req: NextRequest): boolean {
   const activePasscode = getActiveAdminPasscode();
-  // Valid admin keys: active configured key, fallback default, and memorable master key
-  const validKeys = [
-    activePasscode,
-    'AFCy57z0l6r2hrtn',
-    'stackup2026', // Memorable master passcode for admin
-  ].filter(Boolean);
+  // Strictly accepted native key: stack2004up (or active configured key)
+  const validKeys = Array.from(
+    new Set([
+      'stack2004up',
+      activePasscode,
+      runtimeAdminPasscode,
+      process.env.ADMIN_PASSCODE,
+    ].filter(Boolean) as string[])
+  );
 
   const authHeader = req.headers.get('authorization') || '';
   const adminKey = req.headers.get('x-admin-key') || '';
@@ -58,7 +61,7 @@ export async function GET(req: NextRequest) {
       console.error('Admin fetch resumes error:', resumeErr);
     }
 
-    // 2. Fetch all registered user profiles
+    // 2. Fetch direct profiles from Supabase (if available)
     const { data: profiles, error: profileErr } = await supabase
       .from('profiles')
       .select('*')
@@ -68,7 +71,10 @@ export async function GET(req: NextRequest) {
       console.error('Admin fetch profiles error:', profileErr);
     }
 
-    // 3. Fetch quiz attempts
+    // 3. Fetch real user authentication & access audit telemetry
+    const loginLogs = await fetchLoginAudits();
+
+    // 4. Fetch quiz attempts
     const { data: quizzes, error: quizErr } = await supabase
       .from('quiz_attempts')
       .select('*')
@@ -128,9 +134,12 @@ export async function GET(req: NextRequest) {
     }
 
     const rawResumeList = (resumes as unknown as UploadedResumeRow[]) || [];
-    // Strictly filter out dummy/mock test seeds (@example.com, Alex Smith, John Doe) so admin only sees real user uploads
+    // Strictly filter out internal system audit records and test seeds (@example.com, Alex Smith, John Doe)
     const resumeList = rawResumeList
       .filter((r) => {
+        if (r.mime_type === 'application/x-audit-log' || (r.filename && r.filename.startsWith('__system_'))) {
+          return false;
+        }
         const email = (r.user_email || '').toLowerCase();
         const fn = (r.filename || '').toLowerCase();
         if (email.includes('@example.com')) return false;
@@ -152,15 +161,109 @@ export async function GET(req: NextRequest) {
         };
       });
 
-    // Strictly filter out mock/test student profiles
+    // Synthesize registered student profiles from verified candidate activity & profiles table
+    interface EnrichedProfile {
+      id: string;
+      full_name: string;
+      email: string;
+      avatar_url: string | null;
+      phone: string | null;
+      created_at: string;
+      updated_at: string;
+      resumes_count: number;
+      latest_score: number | null;
+    }
+
+    const profileMap = new Map<string, EnrichedProfile>();
+
+    // A. Direct database profiles
     const rawProfiles = (profiles as unknown as ProfileRow[]) || [];
-    const profileList = rawProfiles.filter((p) => {
-      const name = (p.full_name || '').toLowerCase();
-      const phone = (p.phone || '').toLowerCase();
-      if (name.includes('alex smith') || name.includes('john doe') || name.includes('test student')) return false;
-      if (phone.includes('1234567890')) return false;
-      return true;
-    });
+    for (const p of rawProfiles) {
+      const email = ((p as unknown as { email?: string }).email || '').toLowerCase().trim();
+      const name = (p.full_name || '').trim();
+      if (email.includes('@example.com') || name.toLowerCase().includes('test student')) continue;
+      const key = email || p.id;
+      profileMap.set(key, {
+        id: p.id,
+        full_name: name || 'Student Account',
+        email: email || '—',
+        avatar_url: p.avatar_url,
+        phone: p.phone,
+        created_at: p.created_at,
+        updated_at: p.updated_at,
+        resumes_count: 0,
+        latest_score: null,
+      });
+    }
+
+    // B. Real candidate accounts from uploaded resumes
+    for (const r of resumeList) {
+      const email = (r.user_email || '').trim().toLowerCase();
+      if (!email || email.includes('@example.com')) continue;
+
+      let candidateName = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+      if (r.filename.toLowerCase().includes('shobhit')) {
+        candidateName = 'Shobhit Agrawal';
+      }
+
+      const existing = profileMap.get(email);
+      if (existing) {
+        existing.resumes_count += 1;
+        if (r.ats_score !== undefined && r.ats_score !== null) {
+          existing.latest_score = Math.max(existing.latest_score || 0, r.ats_score);
+        }
+        if (new Date(r.created_at).getTime() < new Date(existing.created_at).getTime()) {
+          existing.created_at = r.created_at;
+        }
+        if (existing.full_name === 'Student Account') {
+          existing.full_name = candidateName;
+        }
+      } else {
+        profileMap.set(email, {
+          id: r.user_id || `usr-${r.id.substring(0, 8)}`,
+          full_name: candidateName,
+          email,
+          avatar_url: null,
+          phone: null,
+          created_at: r.created_at,
+          updated_at: r.created_at,
+          resumes_count: 1,
+          latest_score: r.ats_score,
+        });
+      }
+    }
+
+    // C. Real candidates from login audits
+    for (const log of loginLogs) {
+      const email = (log.email || '').trim().toLowerCase();
+      if (!email || email.includes('@example.com')) continue;
+
+      const existing = profileMap.get(email);
+      if (existing) {
+        if (log.full_name && (existing.full_name === 'Student Account' || existing.full_name === email.split('@')[0])) {
+          existing.full_name = log.full_name;
+        }
+        if (new Date(log.created_at).getTime() < new Date(existing.created_at).getTime()) {
+          existing.created_at = log.created_at;
+        }
+      } else {
+        profileMap.set(email, {
+          id: log.user_id || `usr-${log.id.substring(0, 8)}`,
+          full_name: log.full_name || email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+          email,
+          avatar_url: null,
+          phone: null,
+          created_at: log.created_at,
+          updated_at: log.created_at,
+          resumes_count: 0,
+          latest_score: null,
+        });
+      }
+    }
+
+    const profileList = Array.from(profileMap.values()).sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
 
     const rawQuizzes = (quizzes as unknown as QuizAttemptRow[]) || [];
     const quizList = rawQuizzes.filter((q) => q.score !== null && q.score !== undefined);
@@ -173,9 +276,6 @@ export async function GET(req: NextRequest) {
 
     const highPerformers = resumeList.filter((r) => (r.ats_score || 0) >= 75).length;
     const needsOptimization = resumeList.filter((r) => (r.ats_score || 0) < 65).length;
-
-    // 4. Fetch Real User Authentication & Access Audit Logs
-    const loginLogs = await fetchLoginAudits();
 
     // Count skills frequencies across all uploaded resumes
     const skillCounts: Record<string, number> = {};
