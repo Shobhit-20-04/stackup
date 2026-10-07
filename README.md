@@ -1,4 +1,4 @@
-# StackUp (`stackup.xyz`)
+# StackUp
 
 > **An all-in-one interview preparation platform for students** — structured notes and timed quizzes across Aptitude, Core CS Subjects, and DSA, plus an ATS resume checker and an AI assistant chatbot — engineered for high traffic and serverless scale from day one.
 
