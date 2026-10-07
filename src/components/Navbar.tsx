@@ -142,7 +142,10 @@ export default function Navbar() {
         headers: { 'x-admin-key': secretPasscode.trim() }
       });
       if (res.ok) {
-        sessionStorage.setItem('stackup_admin_key', secretPasscode.trim());
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('stackup_admin_key', secretPasscode.trim());
+          sessionStorage.setItem('stackup_admin_key', secretPasscode.trim());
+        }
         setShowSecretModal(false);
         router.push('/admin');
       } else {

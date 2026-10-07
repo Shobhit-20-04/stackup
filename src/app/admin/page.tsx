@@ -132,6 +132,7 @@ export default function AdminDashboardPage() {
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
   const [readerViewMode, setReaderViewMode] = useState<'formatted' | 'raw' | 'diagnostics'>('formatted');
   const [copiedText, setCopiedText] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
@@ -148,7 +149,10 @@ export default function AdminDashboardPage() {
       if (!res.ok) {
         if (res.status === 401) {
           setIsAuthenticated(false);
-          sessionStorage.removeItem('stackup_admin_key');
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('stackup_admin_key');
+            localStorage.removeItem('stackup_admin_key');
+          }
           setAuthError('Invalid administrator security key. Access denied.');
           return;
         }
@@ -158,7 +162,10 @@ export default function AdminDashboardPage() {
       const json = await res.json();
       setData(json);
       setIsAuthenticated(true);
-      sessionStorage.setItem('stackup_admin_key', key);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('stackup_admin_key', key);
+        sessionStorage.setItem('stackup_admin_key', key);
+      }
 
       // Auto-select first resume if none selected
       if (json.resumes && json.resumes.length > 0 && !selectedResumeId) {
@@ -172,10 +179,12 @@ export default function AdminDashboardPage() {
     }
   }, [selectedResumeId]);
 
-  // Check stored admin key on mount
+  // Check stored admin key on mount (localStorage for trusted persistent device access)
   useEffect(() => {
-    const stored = typeof window !== 'undefined' ? sessionStorage.getItem('stackup_admin_key') : null;
+    if (typeof window === 'undefined') return;
+    const stored = localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key');
     if (stored) {
+      setPasscode(stored);
       const timer = setTimeout(() => {
         void fetchAdminData(stored);
       }, 0);
@@ -194,7 +203,10 @@ export default function AdminDashboardPage() {
   };
 
   const handleSignOut = () => {
-    sessionStorage.removeItem('stackup_admin_key');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('stackup_admin_key');
+      sessionStorage.removeItem('stackup_admin_key');
+    }
     setIsAuthenticated(false);
     setPasscode('');
     setData(null);
@@ -206,7 +218,7 @@ export default function AdminDashboardPage() {
     }
     try {
       setDeletingId(id);
-      const activeKey = passcode || (typeof window !== 'undefined' ? sessionStorage.getItem('stackup_admin_key') || '' : '');
+      const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
       const res = await fetch('/api/admin/data', {
         method: 'DELETE',
         headers: {
@@ -235,7 +247,7 @@ export default function AdminDashboardPage() {
   const handlePurgeTestRecords = async () => {
     if (!confirm('Purge all mock and test seed resumes (@example.com, etc.) permanently?')) return;
     try {
-      const activeKey = passcode || (sessionStorage.getItem('stackup_admin_key') || '');
+      const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
       const res = await fetch('/api/admin/data', {
         method: 'POST',
         headers: {
@@ -268,7 +280,7 @@ export default function AdminDashboardPage() {
     }
     try {
       setChangeKeyLoading(true);
-      const activeKey = passcode || (typeof window !== 'undefined' ? sessionStorage.getItem('stackup_admin_key') || '' : '');
+      const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
       const res = await fetch('/api/admin/data', {
         method: 'POST',
         headers: {
@@ -284,7 +296,10 @@ export default function AdminDashboardPage() {
       }
       setChangeKeyMsg('Master key updated successfully! Please save your new passcode.');
       setPasscode(newPasscode.trim());
-      sessionStorage.setItem('stackup_admin_key', newPasscode.trim());
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('stackup_admin_key', newPasscode.trim());
+        sessionStorage.setItem('stackup_admin_key', newPasscode.trim());
+      }
       setNewPasscode('');
       setConfirmNewPasscode('');
       setTimeout(() => {
@@ -302,6 +317,14 @@ export default function AdminDashboardPage() {
     navigator.clipboard.writeText(text);
     setCopiedText(true);
     setTimeout(() => setCopiedText(false), 2000);
+  };
+
+  const handleCopyKey = (keyVal: string) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(keyVal);
+      setCopiedKey(keyVal);
+      setTimeout(() => setCopiedKey(null), 2000);
+    }
   };
 
   const handleDownloadText = (resume: ResumeRecord) => {
@@ -409,9 +432,18 @@ export default function AdminDashboardPage() {
 
           <form onSubmit={handleUnlock} className="space-y-4">
             <div>
-              <label htmlFor="admin-passcode" className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
-                Master Security Key
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label htmlFor="admin-passcode" className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                  Master Security Key
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setPasscode('stackup2026')}
+                  className="text-[11px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
+                >
+                  ⚡ Fill Memorable PIN
+                </button>
+              </div>
               <div className="relative">
                 <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
                 <input
@@ -419,11 +451,14 @@ export default function AdminDashboardPage() {
                   type="password"
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter access passcode..."
+                  placeholder="Enter key or PIN (e.g. stackup2026)..."
                   autoFocus
                   className="w-full pl-10 pr-4 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-text"
                 />
               </div>
+              <p className="mt-1.5 text-[11px] text-zinc-400 leading-normal">
+                Supported keys: memorable master PIN <code className="text-indigo-300 font-mono font-bold">stackup2026</code> or default server key.
+              </p>
             </div>
 
             <div className="flex items-center space-x-2.5 pt-1">
@@ -515,7 +550,7 @@ export default function AdminDashboardPage() {
               </Link>
 
               <button
-                onClick={() => fetchAdminData(passcode || (sessionStorage.getItem('stackup_admin_key') || ''))}
+                onClick={() => fetchAdminData(passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : ''))}
                 disabled={loading}
                 className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-200 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
               >
@@ -1583,8 +1618,73 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed">
-              Updating this key applies immediately to your active session and backend. To persist across server restarts, also set <code className="text-indigo-400 bg-zinc-900 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in your Vercel Project Settings.
+            {/* Quick Access Active Keys */}
+            <div className="space-y-2.5 p-3.5 rounded-2xl bg-zinc-950/90 border border-zinc-800">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-zinc-300 uppercase tracking-wider">
+                  Active Master Credentials
+                </span>
+                <span className="text-[10px] text-emerald-400 font-medium px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800/80">
+                  Ready to Use
+                </span>
+              </div>
+              <p className="text-[11px] text-zinc-400 leading-normal">
+                You can use either credential below. Your browser also remembers your session in local storage so you do not have to retype it:
+              </p>
+              
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs">
+                  <div>
+                    <span className="text-[10px] text-indigo-400 font-bold block uppercase tracking-wide">Memorable Master PIN</span>
+                    <code className="text-white font-mono font-bold text-xs">stackup2026</code>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyKey('stackup2026')}
+                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-zinc-200 flex items-center space-x-1.5 cursor-pointer transition-colors"
+                  >
+                    {copiedKey === 'stackup2026' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-400">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs">
+                  <div>
+                    <span className="text-[10px] text-zinc-400 font-bold block uppercase tracking-wide">Default Server Key</span>
+                    <code className="text-zinc-300 font-mono text-xs">AFCy57z0l6r2hrtn</code>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyKey('AFCy57z0l6r2hrtn')}
+                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-zinc-200 flex items-center space-x-1.5 cursor-pointer transition-colors"
+                  >
+                    {copiedKey === 'AFCy57z0l6r2hrtn' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-400">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/60 text-[11px] text-zinc-400 leading-relaxed">
+              Want to set a custom key? Enter it below. To persist custom keys across server redeployments, you can also set <code className="text-indigo-400 bg-zinc-900 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in Vercel.
             </div>
 
             {changeKeyErr && (

