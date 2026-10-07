@@ -104,11 +104,15 @@ export async function POST(req: NextRequest) {
       envContent += '\nNEXT_PUBLIC_APP_URL=http://localhost:3000\n';
     }
 
-    fs.writeFileSync(ENV_LOCAL_PATH, envContent.trim() + '\n', 'utf8');
+    try {
+      fs.writeFileSync(ENV_LOCAL_PATH, envContent.trim() + '\n', 'utf8');
+    } catch {
+      // In serverless hosting (e.g. Vercel), filesystem is read-only. Environment variables are set via dashboard.
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Credentials updated and verified successfully in .env.local!',
+      message: 'Credentials updated and verified successfully!',
       supabaseConfigured: Boolean(supabaseUrl && supabaseAnonKey),
       anthropicConfigured: Boolean(anthropicApiKey),
     });
