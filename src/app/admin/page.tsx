@@ -13,7 +13,6 @@ import {
   Trash2,
   Copy,
   Check,
-  X,
   Lock,
   ArrowRight,
   AlertCircle,
@@ -22,12 +21,8 @@ import {
   Download,
   Mail,
   Calendar,
-  Hash,
   ChevronLeft,
-  FileCode,
   SlidersHorizontal,
-  ChevronRight,
-  CheckCircle2
 } from 'lucide-react';
 
 interface ResumeRecord {

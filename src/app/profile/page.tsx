@@ -19,8 +19,7 @@ import {
   Cpu,
   Code2,
   ArrowRight,
-  Sparkles,
-  ShieldCheck
+  Sparkles
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -99,14 +98,10 @@ export default function ProfilePage() {
 
   // Real solved DSA problem count
   const [solvedDsaCount, setSolvedDsaCount] = useState(0);
-  const [hasAdminAccess, setHasAdminAccess] = useState(false);
 
   useEffect(() => {
     async function loadUserData() {
       try {
-        if (typeof window !== 'undefined' && sessionStorage.getItem('stackup_admin_key')) {
-          setHasAdminAccess(true);
-        }
         const activeUser = await getCurrentUser();
 
         if (!activeUser) {
