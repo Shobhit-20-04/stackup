@@ -1,21 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { fetchLoginAudits } from '@/lib/services/login-audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE || 'AFCy57z0l6r2hrtn';
+let runtimeAdminPasscode: string | null = null;
+
+export function getActiveAdminPasscode(): string {
+  return runtimeAdminPasscode || process.env.ADMIN_PASSCODE || 'AFCy57z0l6r2hrtn';
+}
+
+export function setActiveAdminPasscode(key: string): void {
+  runtimeAdminPasscode = key;
+}
 
 function isAuthorized(req: NextRequest): boolean {
+  const activePasscode = getActiveAdminPasscode();
   const authHeader = req.headers.get('authorization') || '';
   const adminKey = req.headers.get('x-admin-key') || '';
   const queryKey = req.nextUrl.searchParams.get('key') || '';
 
-  if (adminKey === ADMIN_PASSCODE || queryKey === ADMIN_PASSCODE) {
+  if (adminKey === activePasscode || queryKey === activePasscode) {
     return true;
   }
 
-  if (authHeader.startsWith('Bearer ') && authHeader.slice(7) === ADMIN_PASSCODE) {
+  if (authHeader.startsWith('Bearer ') && authHeader.slice(7) === activePasscode) {
     return true;
   }
 
@@ -92,6 +102,24 @@ export async function GET(req: NextRequest) {
       } | null;
     }
 
+    interface ProfileRow {
+      id: string;
+      full_name: string | null;
+      avatar_url: string | null;
+      phone: string | null;
+      created_at: string;
+      updated_at: string;
+    }
+
+    interface QuizAttemptRow {
+      id: string;
+      user_id: string;
+      topic_id: string;
+      score: number;
+      total_questions: number;
+      attempted_at: string;
+    }
+
     const rawResumeList = (resumes as unknown as UploadedResumeRow[]) || [];
     // Strictly filter out dummy/mock test seeds (@example.com, Alex Smith, John Doe) so admin only sees real user uploads
     const resumeList = rawResumeList
@@ -116,8 +144,19 @@ export async function GET(req: NextRequest) {
           resume_text: cleanText,
         };
       });
-    const profileList = profiles || [];
-    const quizList = quizzes || [];
+
+    // Strictly filter out mock/test student profiles
+    const rawProfiles = (profiles as unknown as ProfileRow[]) || [];
+    const profileList = rawProfiles.filter((p) => {
+      const name = (p.full_name || '').toLowerCase();
+      const phone = (p.phone || '').toLowerCase();
+      if (name.includes('alex smith') || name.includes('john doe') || name.includes('test student')) return false;
+      if (phone.includes('1234567890')) return false;
+      return true;
+    });
+
+    const rawQuizzes = (quizzes as unknown as QuizAttemptRow[]) || [];
+    const quizList = rawQuizzes.filter((q) => q.score !== null && q.score !== undefined);
 
     // Calculate aggregated metrics
     const totalResumes = resumeList.length;
@@ -127,6 +166,9 @@ export async function GET(req: NextRequest) {
 
     const highPerformers = resumeList.filter((r) => (r.ats_score || 0) >= 75).length;
     const needsOptimization = resumeList.filter((r) => (r.ats_score || 0) < 65).length;
+
+    // 4. Fetch Real User Authentication & Access Audit Logs
+    const loginLogs = await fetchLoginAudits();
 
     // Count skills frequencies across all uploaded resumes
     const skillCounts: Record<string, number> = {};
@@ -148,6 +190,7 @@ export async function GET(req: NextRequest) {
       metrics: {
         totalResumes,
         totalUsers: profileList.length,
+        totalLogins: loginLogs.length,
         totalQuizzes: quizList.length,
         avgScore,
         highPerformers,
@@ -156,6 +199,7 @@ export async function GET(req: NextRequest) {
       topSkills,
       resumes: resumeList,
       profiles: profileList,
+      loginLogs,
       quizzes: quizList,
     });
   } catch (err: unknown) {
@@ -195,7 +239,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
     }
 
-    const { action } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { action, newPasscode } = body;
+
+    // Action 1: Change Admin Authentication Passcode Key
+    if (action === 'change_passcode') {
+      if (!newPasscode || typeof newPasscode !== 'string' || newPasscode.trim().length < 6) {
+        return NextResponse.json(
+          { error: 'The new admin passcode must be at least 6 characters long.' },
+          { status: 400 }
+        );
+      }
+
+      const cleanPasscode = newPasscode.trim();
+      setActiveAdminPasscode(cleanPasscode);
+
+      return NextResponse.json({
+        success: true,
+        message: 'Admin authentication key updated successfully! Use your new key to unlock the portal.',
+        activeKey: cleanPasscode,
+      });
+    }
+
+    // Action 2: Purge Legacy Testing & Seed Records
     if (action === 'purge_test_records') {
       const supabase = await createClient();
       await supabase.from('uploaded_resumes').delete().ilike('user_email', '%@example.com%');

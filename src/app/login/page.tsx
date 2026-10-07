@@ -110,6 +110,11 @@ function LoginForm() {
       return;
     }
 
+    if (password.trim().length < 6) {
+      setErrorMsg('Password must be at least 6 characters long.');
+      return;
+    }
+
     if (isSignUp && !fullName.trim()) {
       setErrorMsg('Please enter your full name to set up your student profile.');
       return;
@@ -138,6 +143,18 @@ function LoginForm() {
           isDemo: false,
         });
 
+        // Record login audit event
+        fetch('/api/auth/record-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email.trim(),
+            fullName: studentName,
+            userId: `usr-${Date.now()}`,
+            authMethod: isSignUp ? 'Email & Password (New Registration)' : 'Email & Password',
+          }),
+        }).catch(() => {});
+
         setSuccessMsg(`Signed in as ${studentName}! Redirecting...`);
         setTimeout(() => {
           router.push(redirectPath);
@@ -164,6 +181,20 @@ function LoginForm() {
           return;
         }
 
+        // Record real user registration & login audit
+        if (data.user) {
+          fetch('/api/auth/record-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: email.trim(),
+              fullName: fullName.trim() || email.split('@')[0],
+              userId: data.user.id,
+              authMethod: 'Email & Password (New Registration)',
+            }),
+          }).catch(() => {});
+        }
+
         if (data.user && !data.session) {
           setSuccessMsg('Account created successfully! Please check your email inbox to verify your account.');
         } else {
@@ -172,7 +203,7 @@ function LoginForm() {
           router.refresh();
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password: password.trim(),
         });
@@ -180,6 +211,20 @@ function LoginForm() {
         if (error) {
           setErrorMsg(error.message);
           return;
+        }
+
+        // Record real user login audit
+        if (data.user) {
+          fetch('/api/auth/record-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: email.trim(),
+              fullName: data.user.user_metadata?.full_name || email.split('@')[0],
+              userId: data.user.id,
+              authMethod: 'Email & Password',
+            }),
+          }).catch(() => {});
         }
 
         setSuccessMsg('Signed in! Redirecting...');
@@ -190,6 +235,8 @@ function LoginForm() {
       const msg = err instanceof Error ? err.message : 'Authentication failed. Please verify your credentials.';
       setErrorMsg(msg);
     } finally {
+      // Clear password immediately from memory after authentication attempt
+      setPassword('');
       setLoading(false);
     }
   };
@@ -289,7 +336,7 @@ function LoginForm() {
       if (otpChannel === 'phone') {
         const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber.trim() : `+91${phoneNumber.trim()}`;
 
-        if (!supabaseUrl || supabaseUrl.includes('placeholder') || otpToken.trim() === '123456') {
+        if (!isSupabaseLive && (!supabaseUrl || supabaseUrl.includes('placeholder'))) {
           setDemoUserSession({
             id: `phone-${Date.now()}`,
             phone: formattedPhone,
@@ -298,6 +345,18 @@ function LoginForm() {
             avatar_url: null,
             isDemo: false,
           });
+
+          fetch('/api/auth/record-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: `${formattedPhone.replace(/[^0-9]/g, '')}@student.stackup.xyz`,
+              fullName: `Student (${formattedPhone.slice(-4)})`,
+              userId: `phone-${Date.now()}`,
+              authMethod: 'Phone SMS OTP',
+            }),
+          }).catch(() => {});
+
           setSuccessMsg('Phone verified! Redirecting to dashboard...');
           setTimeout(() => {
             router.push(redirectPath);
@@ -318,14 +377,25 @@ function LoginForm() {
           return;
         }
 
-        if (data.session) {
+        if (data.session && data.user) {
+          fetch('/api/auth/record-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: data.user.email || `${formattedPhone}@student.stackup.xyz`,
+              fullName: data.user.user_metadata?.full_name || `Student (${formattedPhone.slice(-4)})`,
+              userId: data.user.id,
+              authMethod: 'Phone SMS OTP',
+            }),
+          }).catch(() => {});
+
           setSuccessMsg('Phone verified! Redirecting...');
           router.push(redirectPath);
           router.refresh();
         }
       } else {
         // Email OTP Verification
-        if (!supabaseUrl || supabaseUrl.includes('placeholder') || otpToken.trim() === '123456') {
+        if (!isSupabaseLive && (!supabaseUrl || supabaseUrl.includes('placeholder'))) {
           const studentName = otpEmail.split('@')[0];
           setDemoUserSession({
             id: `email-otp-${Date.now()}`,
@@ -334,6 +404,18 @@ function LoginForm() {
             avatar_url: null,
             isDemo: false,
           });
+
+          fetch('/api/auth/record-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: otpEmail.trim(),
+              fullName: studentName,
+              userId: `email-otp-${Date.now()}`,
+              authMethod: 'Email OTP',
+            }),
+          }).catch(() => {});
+
           setSuccessMsg('Email verified! Redirecting to dashboard...');
           setTimeout(() => {
             router.push(redirectPath);
@@ -354,7 +436,18 @@ function LoginForm() {
           return;
         }
 
-        if (data.session) {
+        if (data.session && data.user) {
+          fetch('/api/auth/record-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: data.user.email || otpEmail.trim(),
+              fullName: data.user.user_metadata?.full_name || otpEmail.split('@')[0],
+              userId: data.user.id,
+              authMethod: 'Email OTP',
+            }),
+          }).catch(() => {});
+
           setSuccessMsg('Email verified! Redirecting...');
           router.push(redirectPath);
           router.refresh();
@@ -480,6 +573,9 @@ function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@university.edu"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 />
@@ -487,8 +583,9 @@ function LoginForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
-                Password
+              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>Password</span>
+                <span className="text-[10px] text-zinc-400 lowercase font-normal">min. 6 characters</span>
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
@@ -497,6 +594,11 @@ function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete={isSignUp ? "new-password" : "current-password"}
+                  minLength={6}
+                  spellCheck={false}
+                  autoCapitalize="off"
+                  autoCorrect="off"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 />

@@ -23,6 +23,14 @@ import {
   Calendar,
   ChevronLeft,
   SlidersHorizontal,
+  KeyRound,
+  LogIn,
+  Smartphone,
+  Globe,
+  Clock,
+  Laptop,
+  X,
+  Key,
 } from 'lucide-react';
 
 interface ResumeRecord {
@@ -65,6 +73,17 @@ interface UserProfile {
   updated_at: string;
 }
 
+interface LoginAuditRecord {
+  id: string;
+  user_id: string | null;
+  email: string | null;
+  full_name: string | null;
+  auth_method: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
 interface AdminData {
   metrics: {
     totalResumes: number;
@@ -73,10 +92,12 @@ interface AdminData {
     avgScore: number;
     highPerformers: number;
     needsOptimization: number;
+    totalLogins?: number;
   };
   topSkills: { skill: string; count: number }[];
   resumes: ResumeRecord[];
   profiles: UserProfile[];
+  loginLogs?: LoginAuditRecord[];
 }
 
 export default function AdminDashboardPage() {
@@ -87,13 +108,25 @@ export default function AdminDashboardPage() {
   const [data, setData] = useState<AdminData | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Primary tab view: 'workspace' (Dedicated space to read resumes), 'table' (All records), 'users' (Accounts), 'skills' (Skill trends)
-  const [activeTab, setActiveTab] = useState<'workspace' | 'table' | 'users' | 'skills'>('workspace');
+  // Primary tab view: 'workspace', 'table', 'users', 'skills', 'logins'
+  const [activeTab, setActiveTab] = useState<'workspace' | 'table' | 'users' | 'skills' | 'logins'>('workspace');
 
-  // Search & Filter state
+  // Search & Filter state for resumes
   const [searchQuery, setSearchQuery] = useState('');
   const [gradeFilter, setGradeFilter] = useState('ALL');
   const [sortBy, setSortBy] = useState<'date' | 'score'>('date');
+
+  // Search & Filter state for login audit logs
+  const [loginSearchQuery, setLoginSearchQuery] = useState('');
+  const [authMethodFilter, setAuthMethodFilter] = useState('ALL');
+
+  // Change Admin Passcode Modal state
+  const [changeKeyModalOpen, setChangeKeyModalOpen] = useState(false);
+  const [newPasscode, setNewPasscode] = useState('');
+  const [confirmNewPasscode, setConfirmNewPasscode] = useState('');
+  const [changeKeyLoading, setChangeKeyLoading] = useState(false);
+  const [changeKeyMsg, setChangeKeyMsg] = useState('');
+  const [changeKeyErr, setChangeKeyErr] = useState('');
 
   // Selected Resume for reading in workspace
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
@@ -221,6 +254,50 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleChangePasscode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setChangeKeyErr('');
+    setChangeKeyMsg('');
+    if (!newPasscode.trim() || newPasscode.length < 6) {
+      setChangeKeyErr('New security key must be at least 6 characters long.');
+      return;
+    }
+    if (newPasscode !== confirmNewPasscode) {
+      setChangeKeyErr('Passcode confirmation does not match.');
+      return;
+    }
+    try {
+      setChangeKeyLoading(true);
+      const activeKey = passcode || (typeof window !== 'undefined' ? sessionStorage.getItem('stackup_admin_key') || '' : '');
+      const res = await fetch('/api/admin/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-key': activeKey,
+        },
+        body: JSON.stringify({ action: 'change_passcode', newPasscode: newPasscode.trim() }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setChangeKeyErr(json.error || 'Failed to update admin key.');
+        return;
+      }
+      setChangeKeyMsg('Master key updated successfully! Please save your new passcode.');
+      setPasscode(newPasscode.trim());
+      sessionStorage.setItem('stackup_admin_key', newPasscode.trim());
+      setNewPasscode('');
+      setConfirmNewPasscode('');
+      setTimeout(() => {
+        setChangeKeyModalOpen(false);
+        setChangeKeyMsg('');
+      }, 2000);
+    } catch {
+      setChangeKeyErr('Network error updating security key.');
+    } finally {
+      setChangeKeyLoading(false);
+    }
+  };
+
   const handleCopyText = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedText(true);
@@ -263,6 +340,28 @@ export default function AdminDashboardPage() {
     }
     return [...list].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   }, [resumes, searchQuery, gradeFilter, sortBy]);
+
+  // Filtered login audit logs
+  const loginLogs = data?.loginLogs;
+  const filteredLoginLogs = useMemo(() => {
+    if (!loginLogs) return [];
+    return loginLogs.filter((log) => {
+      const q = loginSearchQuery.toLowerCase();
+      const matchesSearch =
+        !q ||
+        (log.email && log.email.toLowerCase().includes(q)) ||
+        (log.full_name && log.full_name.toLowerCase().includes(q)) ||
+        (log.user_id && log.user_id.toLowerCase().includes(q)) ||
+        (log.ip_address && log.ip_address.toLowerCase().includes(q)) ||
+        log.auth_method.toLowerCase().includes(q);
+
+      const matchesMethod =
+        authMethodFilter === 'ALL' ||
+        log.auth_method.toLowerCase() === authMethodFilter.toLowerCase();
+
+      return matchesSearch && matchesMethod;
+    });
+  }, [loginLogs, loginSearchQuery, authMethodFilter]);
 
   // The active resume currently being read in the workspace
   const currentResume = useMemo(() => {
@@ -383,6 +482,19 @@ export default function AdminDashboardPage() {
               </button>
 
               <button
+                onClick={() => {
+                  setChangeKeyErr('');
+                  setChangeKeyMsg('');
+                  setChangeKeyModalOpen(true);
+                }}
+                className="px-3.5 py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                title="Change master admin security key"
+              >
+                <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                <span>Change Key</span>
+              </button>
+
+              <button
                 onClick={handlePurgeTestRecords}
                 className="px-3.5 py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-zinc-300 hover:bg-zinc-750 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
                 title="Purge dummy seeds (@example.com, etc.)"
@@ -412,7 +524,7 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Real Metrics Summary Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           <div className="bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-zinc-400 mb-1.5">
               <span className="text-[11px] font-bold uppercase tracking-wider">Candidate Resumes</span>
@@ -465,6 +577,19 @@ export default function AdminDashboardPage() {
               Interactive test attempts
             </div>
           </div>
+
+          <div className="bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs col-span-2 sm:col-span-1">
+            <div className="flex items-center justify-between text-zinc-400 mb-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider">Audited Logins</span>
+              <LogIn className="w-4 h-4 text-purple-400" />
+            </div>
+            <div className="text-2xl sm:text-3xl font-black text-white">
+              {data?.loginLogs?.length ?? data?.metrics.totalLogins ?? 0}
+            </div>
+            <div className="text-[11px] text-purple-400 mt-1 font-semibold">
+              Tracked authentication events
+            </div>
+          </div>
         </div>
 
         {/* Primary Tab Navigation */}
@@ -515,6 +640,18 @@ export default function AdminDashboardPage() {
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Skill Analytics</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('logins')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
+              activeTab === 'logins'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+            }`}
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Login &amp; Access Audit ({data?.loginLogs?.length ?? 0})</span>
           </button>
         </div>
 
@@ -1181,7 +1318,318 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         )}
+
+        {/* ========================================================================= */}
+        {/* TAB 5: LOGIN & ACCESS AUDIT (REAL DATA ONLY)                             */}
+        {/* ========================================================================= */}
+        {activeTab === 'logins' && (
+          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-base font-bold text-white">
+                    User Login &amp; Access Audit
+                  </h2>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-950/60 text-purple-400 border border-purple-800">
+                    Live Security Telemetry
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Chronological audit of authenticated student sessions (who logged in, authentication method, device, and exact timestamp)
+                </p>
+              </div>
+
+              {/* Filters */}
+              <div className="flex items-center space-x-2.5 flex-wrap">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    value={loginSearchQuery}
+                    onChange={(e) => setLoginSearchQuery(e.target.value)}
+                    placeholder="Search by email, name, or IP..."
+                    className="pl-8 pr-3 py-1.5 rounded-xl border border-zinc-700 bg-zinc-950 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-56"
+                  />
+                </div>
+
+                <select
+                  value={authMethodFilter}
+                  onChange={(e) => setAuthMethodFilter(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl border border-zinc-700 bg-zinc-950 text-xs text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+                >
+                  <option value="ALL">All Auth Methods</option>
+                  <option value="google">Google OAuth</option>
+                  <option value="password">Email &amp; Password</option>
+                  <option value="phone_otp">Phone SMS OTP</option>
+                  <option value="email_otp">Email OTP</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Audit Table */}
+            <div className="overflow-x-auto rounded-xl border border-zinc-800">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-zinc-950 border-b border-zinc-800 text-zinc-400 uppercase tracking-wider font-bold">
+                  <tr>
+                    <th className="py-3 px-4">User / Account</th>
+                    <th className="py-3 px-4">How They Logged In</th>
+                    <th className="py-3 px-4">Network &amp; Device</th>
+                    <th className="py-3 px-4">When They Logged In</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800/60 font-medium">
+                  {filteredLoginLogs.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="py-10 text-center text-zinc-400">
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                          <LogIn className="w-8 h-8 text-zinc-600" />
+                          <p className="font-semibold text-zinc-300">No login events matching filter</p>
+                          <p className="text-[11px] text-zinc-500 max-w-sm">
+                            Authentication sessions via Google OAuth, Email/Password, and OTP are recorded automatically in real time.
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredLoginLogs.map((log) => {
+                      const methodKey = log.auth_method.toLowerCase();
+                      const isGoogle = methodKey.includes('google');
+                      const isPassword = methodKey.includes('password');
+                      const isPhoneOtp = methodKey.includes('phone') || methodKey.includes('sms');
+                      const isEmailOtp = methodKey.includes('otp') && !isPhoneOtp;
+
+                      let badgeClass = 'bg-zinc-800 text-zinc-300 border-zinc-700';
+                      let methodLabel = log.auth_method;
+                      let MethodIcon = Lock;
+
+                      if (isGoogle) {
+                        badgeClass = 'bg-blue-950/60 text-blue-400 border-blue-800';
+                        methodLabel = 'Google OAuth';
+                        MethodIcon = Globe;
+                      } else if (isPassword) {
+                        badgeClass = 'bg-emerald-950/60 text-emerald-400 border-emerald-800';
+                        methodLabel = 'Email & Password';
+                        MethodIcon = Lock;
+                      } else if (isPhoneOtp) {
+                        badgeClass = 'bg-amber-950/60 text-amber-400 border-amber-800';
+                        methodLabel = 'Phone SMS OTP';
+                        MethodIcon = Smartphone;
+                      } else if (isEmailOtp) {
+                        badgeClass = 'bg-cyan-950/60 text-cyan-400 border-cyan-800';
+                        methodLabel = 'Email OTP';
+                        MethodIcon = Mail;
+                      }
+
+                      // Parse simple device string from user agent
+                      let deviceSummary = 'Desktop / Browser';
+                      if (log.user_agent) {
+                        const ua = log.user_agent.toLowerCase();
+                        if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
+                          deviceSummary = 'Mobile Device';
+                        } else if (ua.includes('macintosh') || ua.includes('mac os')) {
+                          deviceSummary = 'macOS Browser';
+                        } else if (ua.includes('windows')) {
+                          deviceSummary = 'Windows Browser';
+                        } else if (ua.includes('linux')) {
+                          deviceSummary = 'Linux Browser';
+                        }
+                      }
+
+                      const dateObj = new Date(log.created_at);
+                      const exactFormatted = isNaN(dateObj.getTime())
+                        ? log.created_at
+                        : dateObj.toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                          });
+
+                      return (
+                        <tr key={log.id} className="hover:bg-zinc-800/40 transition-colors">
+                          {/* User info */}
+                          <td className="py-3 px-4">
+                            <div className="font-bold text-white">
+                              {log.full_name || 'Student Account'}
+                            </div>
+                            <div className="text-[11px] text-zinc-300 font-mono mt-0.5">
+                              {log.email || 'No email provided'}
+                            </div>
+                            {log.user_id && (
+                              <div className="text-[10px] text-zinc-500 font-mono mt-0.5">
+                                UID: {log.user_id.slice(0, 10)}...
+                              </div>
+                            )}
+                          </td>
+
+                          {/* How they logged in */}
+                          <td className="py-3 px-4">
+                            <span className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${badgeClass}`}>
+                              <MethodIcon className="w-3 h-3" />
+                              <span>{methodLabel}</span>
+                            </span>
+                          </td>
+
+                          {/* Network & Device */}
+                          <td className="py-3 px-4">
+                            <div className="flex items-center space-x-1.5 text-zinc-300 font-mono text-[11px]">
+                              <Globe className="w-3 h-3 text-zinc-500 shrink-0" />
+                              <span>{log.ip_address || '127.0.0.1'}</span>
+                            </div>
+                            <div className="flex items-center space-x-1.5 text-zinc-500 text-[11px] mt-0.5" title={log.user_agent || ''}>
+                              <Laptop className="w-3 h-3 text-zinc-500 shrink-0" />
+                              <span className="truncate max-w-[200px]">{deviceSummary}</span>
+                            </div>
+                          </td>
+
+                          {/* When they logged in */}
+                          <td className="py-3 px-4 text-zinc-300 whitespace-nowrap">
+                            <div className="flex items-center space-x-1.5">
+                              <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                              <span className="font-semibold text-zinc-200">{exactFormatted}</span>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Privacy & Credentials Notice */}
+            <div className="p-3.5 rounded-xl bg-zinc-950/70 border border-zinc-800/80 text-[11px] text-zinc-400 flex items-center space-x-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>
+                <strong>End-User Privacy Guarantee:</strong> Passwords are encrypted cryptographically with salt and never stored or visible in plaintext. Only authentication methods and access telemetry are audited.
+              </span>
+            </div>
+          </div>
+        )}
       </main>
+
+      {/* ========================================================================= */}
+      {/* MODAL: CHANGE MASTER ADMIN KEY                                           */}
+      {/* ========================================================================= */}
+      {changeKeyModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
+            <button
+              onClick={() => {
+                setChangeKeyModalOpen(false);
+                setChangeKeyErr('');
+                setChangeKeyMsg('');
+              }}
+              className="absolute top-4 right-4 p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+                <KeyRound className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-white">
+                  Update Master Security Key
+                </h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Change the administrator password for this portal
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed">
+              Updating this key applies immediately to your active session and backend. To persist across server restarts, also set <code className="text-indigo-400 bg-zinc-900 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in your Vercel Project Settings.
+            </div>
+
+            {changeKeyErr && (
+              <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{changeKeyErr}</span>
+              </div>
+            )}
+
+            {changeKeyMsg && (
+              <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-900 text-emerald-300 text-xs flex items-center space-x-2">
+                <Check className="w-4 h-4 shrink-0" />
+                <span>{changeKeyMsg}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleChangePasscode} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                  New Security Key
+                </label>
+                <div className="relative">
+                  <Key className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3" />
+                  <input
+                    type="password"
+                    value={newPasscode}
+                    onChange={(e) => setNewPasscode(e.target.value)}
+                    placeholder="Enter at least 6 characters..."
+                    required
+                    minLength={6}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-zinc-950 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                  Confirm Security Key
+                </label>
+                <div className="relative">
+                  <Key className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3" />
+                  <input
+                    type="password"
+                    value={confirmNewPasscode}
+                    onChange={(e) => setConfirmNewPasscode(e.target.value)}
+                    placeholder="Re-enter new security key..."
+                    required
+                    minLength={6}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-zinc-950 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChangeKeyModalOpen(false);
+                    setChangeKeyErr('');
+                    setChangeKeyMsg('');
+                  }}
+                  className="flex-1 py-2.5 px-3 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-300 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={changeKeyLoading}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-md shadow-indigo-600/30 flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  {changeKeyLoading ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Updating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Save Key</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
