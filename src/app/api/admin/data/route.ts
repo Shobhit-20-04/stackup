@@ -181,7 +181,7 @@ export async function GET(req: NextRequest) {
     for (const p of rawProfiles) {
       const email = ((p as unknown as { email?: string }).email || '').toLowerCase().trim();
       const name = (p.full_name || '').trim();
-      if (email.includes('@example.com') || name.toLowerCase().includes('test student')) continue;
+      if (email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit') || name.toLowerCase().includes('test student')) continue;
       const key = email || p.id;
       profileMap.set(key, {
         id: p.id,
@@ -199,7 +199,7 @@ export async function GET(req: NextRequest) {
     // B. Real candidate accounts from uploaded resumes
     for (const r of resumeList) {
       const email = (r.user_email || '').trim().toLowerCase();
-      if (!email || email.includes('@example.com')) continue;
+      if (!email || email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit')) continue;
 
       let candidateName = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
       if (r.filename.toLowerCase().includes('shobhit')) {
@@ -236,7 +236,7 @@ export async function GET(req: NextRequest) {
     // C. Real candidates from login audits
     for (const log of loginLogs) {
       const email = (log.email || '').trim().toLowerCase();
-      if (!email || email.includes('@example.com')) continue;
+      if (!email || email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit')) continue;
 
       const existing = profileMap.get(email);
       if (existing) {

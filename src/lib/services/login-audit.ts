@@ -213,7 +213,7 @@ export async function fetchLoginAudits(): Promise<LoginAuditEntry[]> {
   // 5. Strictly filter out any test seeds (@example.com, test, dummy)
   const results = Array.from(mergedMap.values()).filter((log) => {
     const email = (log.email || '').toLowerCase();
-    if (email.includes('@example.com')) return false;
+    if (email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit')) return false;
     if (email.includes('alex_smith') || email.includes('john_doe')) return false;
     return true;
   });
