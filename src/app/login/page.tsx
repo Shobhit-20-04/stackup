@@ -476,13 +476,13 @@ function LoginForm() {
       <div className="w-full max-w-md">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-amber-500 items-center justify-center text-white shadow-lg shadow-indigo-500/25 mb-3">
+          <div className="inline-flex w-12 h-12 rounded-2xl bg-blue-600 items-center justify-center text-white shadow-lg shadow-blue-600/25 mb-3">
             <Layers className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {isSignUp ? 'Create your StackUp account' : 'Welcome back to StackUp'}
           </h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
             {isSignUp 
               ? 'Join thousands of engineers preparing for top tech interviews' 
               : 'Sign in to sync your solved DSA problems, quiz scores, and ATS diagnostics'}
@@ -490,7 +490,7 @@ function LoginForm() {
         </div>
 
         {/* Card */}
-        <div className="p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-zinc-200/50 dark:shadow-none">
+        <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-xl shadow-slate-200/50 dark:shadow-none">
           {/* Notifications */}
           {errorMsg && (
             <div className="mb-5 p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-sm text-red-700 dark:text-red-300 flex items-start space-x-2.5">
@@ -519,7 +519,7 @@ function LoginForm() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-2xl border border-zinc-300 dark:border-zinc-600 bg-white hover:bg-zinc-100 font-semibold text-sm text-zinc-900 transition-all shadow-sm hover:shadow disabled:opacity-60 cursor-pointer"
+              className="w-full flex items-center justify-center space-x-3 px-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-[#1e293b] dark:hover:bg-slate-800 font-semibold text-sm text-slate-900 dark:text-slate-100 transition-all shadow-sm hover:shadow disabled:opacity-60 cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -545,8 +545,8 @@ function LoginForm() {
 
           {/* Divider */}
           <div className="relative flex items-center justify-center mb-6">
-            <div className="border-t border-zinc-200 dark:border-zinc-800 w-full" />
-            <span className="bg-white dark:bg-zinc-900 px-3 text-xs uppercase tracking-wider text-zinc-400 font-semibold absolute">
+            <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
+            <span className="bg-white dark:bg-[#131c31] px-3 text-xs uppercase tracking-wider text-slate-400 font-semibold absolute">
               or continue with email
             </span>
           </div>
@@ -555,17 +555,17 @@ function LoginForm() {
           <form onSubmit={handleEmailAuth} className="space-y-4">
             {isSignUp && (
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Alex Johnson"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required={isSignUp}
                   />
                 </div>
@@ -573,11 +573,11 @@ function LoginForm() {
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                 <input
                   type="email"
                   value={email}
@@ -586,19 +586,19 @@ function LoginForm() {
                   autoComplete="email"
                   autoCapitalize="none"
                   spellCheck={false}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                 <span>Password</span>
-                <span className="text-[10px] text-zinc-400 lowercase font-normal">min. 6 characters</span>
+                <span className="text-[10px] text-slate-400 lowercase font-normal">min. 6 characters</span>
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                 <input
                   type="password"
                   value={password}
@@ -609,7 +609,7 @@ function LoginForm() {
                   spellCheck={false}
                   autoCapitalize="off"
                   autoCorrect="off"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -618,7 +618,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all shadow-md shadow-indigo-500/20 disabled:opacity-60"
+              className="w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-md shadow-blue-600/20 disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -636,7 +636,7 @@ function LoginForm() {
                   setErrorMsg('');
                   setSuccessMsg('');
                 }}
-                className="text-xs text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="text-xs text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
               >
                 {isSignUp ? 'Already have an account? Sign In' : 'New to StackUp? Create an account'}
               </button>
@@ -644,7 +644,7 @@ function LoginForm() {
           </form>
 
           {/* Optional Phone OTP Section Toggle */}
-          <div className="mt-6 pt-5 border-t border-zinc-100 dark:border-zinc-800/80">
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/80">
             <button
               type="button"
               onClick={() => {
@@ -652,27 +652,27 @@ function LoginForm() {
                 setErrorMsg('');
                 setOtpSent(false);
               }}
-              className="w-full flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors py-1 cursor-pointer"
+              className="w-full flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-1 cursor-pointer"
             >
               <span className="flex items-center space-x-1.5 font-medium">
-                <Phone className="w-3.5 h-3.5 text-zinc-400" />
+                <Phone className="w-3.5 h-3.5 text-slate-400" />
                 <span>Or sign in with 6-digit OTP code</span>
               </span>
               {showPhoneOtp ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
 
             {showPhoneOtp && (
-              <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 space-y-4">
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-4">
                 {/* Channel Selector: Phone SMS vs Email Code */}
                 {!otpSent && (
-                  <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl text-xs font-semibold">
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-[#1e293b] rounded-xl text-xs font-semibold">
                     <button
                       type="button"
                       onClick={() => setOtpChannel('phone')}
                       className={`py-1.5 rounded-lg transition-all cursor-pointer ${
                         otpChannel === 'phone'
-                          ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs'
-                          : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                          ? 'bg-white dark:bg-[#131c31] text-slate-900 dark:text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                       }`}
                     >
                       Phone SMS
@@ -682,8 +682,8 @@ function LoginForm() {
                       onClick={() => setOtpChannel('email')}
                       className={`py-1.5 rounded-lg transition-all cursor-pointer ${
                         otpChannel === 'email'
-                          ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs'
-                          : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                          ? 'bg-white dark:bg-[#131c31] text-slate-900 dark:text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                       }`}
                     >
                       Email Code
@@ -695,25 +695,25 @@ function LoginForm() {
                   <form onSubmit={handleSendOtp} className="space-y-3">
                     {otpChannel === 'phone' ? (
                       <div className="relative">
-                        <Phone className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                        <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                         <input
                           type="tel"
                           value={phoneNumber}
                           onChange={(e) => setPhoneNumber(e.target.value)}
                           placeholder="+91 98765 43210"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                           required
                         />
                       </div>
                     ) : (
                       <div className="relative">
-                        <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                        <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                         <input
                           type="email"
                           value={otpEmail}
                           onChange={(e) => setOtpEmail(e.target.value)}
                           placeholder="you@university.edu"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                           required
                         />
                       </div>
@@ -721,7 +721,7 @@ function LoginForm() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-2.5 px-4 rounded-xl bg-zinc-900 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
                     >
                       <span>Send 6-Digit OTP</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -729,9 +729,9 @@ function LoginForm() {
                   </form>
                 ) : (
                   <form onSubmit={handleVerifyOtp} className="space-y-3">
-                    <p className="text-[11px] text-zinc-500 text-center">
+                    <p className="text-[11px] text-slate-500 text-center">
                       Enter the 6-digit verification code sent to{' '}
-                      <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">
                         {otpChannel === 'phone' ? phoneNumber : otpEmail}
                       </span>
                     </p>
@@ -742,13 +742,13 @@ function LoginForm() {
                       onChange={(e) => setOtpToken(e.target.value)}
                       placeholder="123456"
                       autoFocus
-                      className="w-full text-center tracking-[0.4em] text-base font-bold py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full text-center tracking-[0.4em] text-base font-bold py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors cursor-pointer shadow-md shadow-blue-600/20"
                     >
                       Verify &amp; Continue
                     </button>
@@ -758,7 +758,7 @@ function LoginForm() {
                         setOtpSent(false);
                         setOtpToken('');
                       }}
-                      className="w-full text-center text-[11px] text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-pointer"
+                      className="w-full text-center text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
                     >
                       Use a different {otpChannel === 'phone' ? 'phone number' : 'email'}
                     </button>
@@ -769,7 +769,7 @@ function LoginForm() {
           </div>
 
           {/* Security footnote */}
-          <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-center space-x-1.5 text-xs text-zinc-500">
+          <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-center space-x-1.5 text-xs text-slate-500">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
             <span>Secure 256-Bit Encrypted Student Data Privacy</span>
           </div>
@@ -784,7 +784,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+          <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
         </div>
       }
     >

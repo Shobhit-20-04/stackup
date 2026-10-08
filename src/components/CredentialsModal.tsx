@@ -130,27 +130,27 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800/80 rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-950/40">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#0b1120]/40">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-sm">
               <Database className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-zinc-900 dark:text-white flex items-center space-x-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                 <span>Supabase &amp; API Connections</span>
-                {loading && <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-400" />}
+                {loading && <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />}
               </h3>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-slate-500">
                 Connect your cloud database and Anthropic Claude keys for real traffic.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -170,7 +170,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   <Server className="w-3.5 h-3.5" />
                   <span>Supabase Postgres</span>
                 </span>
-                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-black bg-white/70 dark:bg-zinc-900/70">
+                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-black bg-white/70 dark:bg-[#1e293b]/70">
                   {status?.supabaseConfigured ? 'Connected' : 'Demo Mode'}
                 </span>
               </div>
@@ -184,14 +184,14 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
             <div className={`p-4 rounded-2xl border text-xs ${
               status?.anthropicConfigured
                 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300'
-                : 'bg-violet-50 dark:bg-violet-950/30 border-violet-200 dark:border-violet-800/60 text-violet-800 dark:text-violet-300'
+                : 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800/60 text-blue-800 dark:text-blue-300'
             }`}>
               <div className="flex items-center justify-between mb-1.5 font-bold">
                 <span className="flex items-center space-x-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Claude AI API</span>
                 </span>
-                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-black bg-white/70 dark:bg-zinc-900/70">
+                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-black bg-white/70 dark:bg-[#1e293b]/70">
                   {status?.anthropicConfigured ? 'Live Key' : 'Built-in Engine'}
                 </span>
               </div>
@@ -222,7 +222,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
           {/* Credentials Input Form */}
           <form onSubmit={handleSave} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Supabase Project URL
               </label>
               <div className="relative">
@@ -231,16 +231,16 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   placeholder="https://xyzproject.supabase.co"
                   value={supabaseUrl}
                   onChange={(e) => setSupabaseUrl(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white font-mono"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white font-mono"
                 />
               </div>
-              <p className="text-[11px] text-zinc-400 mt-1">
+              <p className="text-[11px] text-slate-400 mt-1">
                 Found under Project Settings &gt; API in your Supabase dashboard.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Supabase Anon / Public Key (JWT)
               </label>
               <div className="relative">
@@ -249,16 +249,16 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   value={supabaseAnonKey}
                   onChange={(e) => setSupabaseAnonKey(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white font-mono"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white font-mono"
                 />
               </div>
-              <p className="text-[11px] text-zinc-400 mt-1">
+              <p className="text-[11px] text-slate-400 mt-1">
                 Found under Project Settings &gt; API &gt; Project API keys (`anon` / `public`).
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Anthropic Claude API Key (Optional)
               </label>
               <div className="relative">
@@ -267,25 +267,25 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   placeholder="sk-ant-api03-..."
                   value={anthropicApiKey}
                   onChange={(e) => setAnthropicApiKey(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white font-mono"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white font-mono"
                 />
               </div>
-              <p className="text-[11px] text-zinc-400 mt-1">
+              <p className="text-[11px] text-slate-400 mt-1">
                 Used strictly server-side for Claude 3.5 Sonnet scoring and chatbot reasoning.
               </p>
             </div>
 
             {/* Quick Step Guide */}
-            <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 text-xs space-y-2.5">
-              <span className="font-bold text-zinc-900 dark:text-white block">
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#1e293b]/40 border border-slate-200 dark:border-slate-700/60 text-xs space-y-2.5">
+              <span className="font-bold text-slate-900 dark:text-white block">
                 Database &amp; Google Sign-In Setup:
               </span>
-              <ol className="list-decimal list-inside space-y-1.5 text-zinc-600 dark:text-zinc-400">
-                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 underline font-medium">supabase.com</a>.</li>
+              <ol className="list-decimal list-inside space-y-1.5 text-slate-600 dark:text-slate-400">
+                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 underline font-medium">supabase.com</a>.</li>
                 <li>Click <strong>Copy Full Migration SQL</strong> below, open your Supabase <strong>SQL Editor</strong>, paste and run it.</li>
                 <li>Enter your <strong>Project URL</strong> and <strong>Anon Key</strong> above and click Save.</li>
                 <li>
-                  <strong className="text-zinc-900 dark:text-white">To enable Google OAuth:</strong> In Supabase, go to <em>Authentication &gt; Providers &gt; Google</em>, toggle Enable, and enter your Google Cloud Client ID &amp; Secret. Add redirect URI: <code className="bg-zinc-200 dark:bg-zinc-750 px-1 py-0.5 rounded text-[10px]">{supabaseUrl ? `${supabaseUrl}/auth/v1/callback` : 'https://<project-ref>.supabase.co/auth/v1/callback'}</code>.
+                  <strong className="text-slate-900 dark:text-white">To enable Google OAuth:</strong> In Supabase, go to <em>Authentication &gt; Providers &gt; Google</em>, toggle Enable, and enter your Google Cloud Client ID &amp; Secret. Add redirect URI: <code className="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-[10px]">{supabaseUrl ? `${supabaseUrl}/auth/v1/callback` : 'https://<project-ref>.supabase.co/auth/v1/callback'}</code>.
                 </li>
               </ol>
             </div>
@@ -294,7 +294,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
               <button
                 type="button"
                 onClick={handleCopyMigrationNotice}
-                className="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center space-x-1.5 transition-colors"
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] flex items-center space-x-1.5 transition-colors"
               >
                 {copiedMigration ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedMigration ? 'Full SQL Copied to Clipboard!' : 'Copy Full Migration SQL'}</span>
@@ -303,7 +303,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-600/20 flex items-center space-x-2 transition-all"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-600/20 flex items-center space-x-2 transition-all cursor-pointer"
               >
                 {saving ? (
                   <>

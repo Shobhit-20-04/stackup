@@ -173,7 +173,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-[#0b1120]/85 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo with 5-tap secret trigger */}
@@ -183,14 +183,14 @@ export default function Navbar() {
             className="flex items-center space-x-2.5 group select-none"
             title="StackUp"
           >
-            <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200 ${
-              logoTapCount >= 3 ? 'ring-2 ring-indigo-500 animate-pulse' : ''
+            <div className={`w-9 h-9 rounded-xl bg-blue-600 hover:bg-blue-500 flex items-center justify-center text-white shadow-md shadow-blue-600/20 group-hover:scale-105 transition-transform duration-200 ${
+              logoTapCount >= 3 ? 'ring-2 ring-blue-500 animate-pulse' : ''
             }`}>
               <Layers className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-xl tracking-tight text-zinc-900 dark:text-white flex items-center">
-                Stack<span className="text-indigo-600 dark:text-indigo-400">Up</span>
+              <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white flex items-center">
+                Stack<span className="text-blue-600 dark:text-blue-400">Up</span>
               </span>
             </div>
           </Link>
@@ -206,8 +206,8 @@ export default function Navbar() {
                   href={item.href}
                   className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900'
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -226,11 +226,11 @@ export default function Navbar() {
                     href="/profile"
                     className={`flex items-center space-x-2 px-3 py-1.5 rounded-full border transition-all ${
                       pathname === '/profile'
-                        ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400'
-                        : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 text-zinc-700 dark:text-zinc-300'
+                        ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden">
                       {user.avatar_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -249,7 +249,7 @@ export default function Navbar() {
                   <button
                     onClick={handleSignOut}
                     title="Sign out"
-                    className="p-2 text-zinc-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+                    className="p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
                   </button>
@@ -258,13 +258,13 @@ export default function Navbar() {
                 <div className="flex items-center space-x-2">
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm transition-all shadow-indigo-500/20 hover:shadow-indigo-500/30"
+                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm transition-all shadow-blue-500/20 hover:shadow-blue-500/30"
                   >
                     Sign In
                   </Link>
                 </div>
               ) : (
-                <div className="w-20 h-8 bg-zinc-200 dark:bg-zinc-800 rounded-lg animate-pulse" />
+                <div className="w-20 h-8 bg-slate-200 dark:bg-slate-800 rounded-lg animate-pulse" />
               )}
             </div>
           </div>
@@ -273,7 +273,7 @@ export default function Navbar() {
           <div className="flex md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60"
               aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -284,7 +284,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 pt-2 pb-4 space-y-1">
+        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1120] px-4 pt-2 pb-4 space-y-1">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = pathname.startsWith(item.href);
@@ -295,8 +295,8 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium ${
                   isActive
-                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40'
-                    : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900'
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 font-semibold'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -304,15 +304,15 @@ export default function Navbar() {
               </Link>
             );
           })}
-          <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 space-y-1">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-1">
             {user ? (
               <div className="space-y-1">
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                  className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60"
                 >
-                  <UserIcon className="w-5 h-5 text-indigo-500" />
+                  <UserIcon className="w-5 h-5 text-blue-500" />
                   <span>Profile Dashboard</span>
                 </Link>
                 <button
@@ -330,7 +330,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center px-4 py-2.5 text-base font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm"
+                className="w-full flex items-center justify-center px-4 py-2.5 text-base font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm"
               >
                 Sign In
               </Link>
@@ -350,17 +350,17 @@ export default function Navbar() {
           }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in"
         >
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl space-y-5 text-white">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl space-y-5 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm text-white">
                     Staff Authorization Gateway
                   </h3>
-                  <p className="text-[11px] text-zinc-400">
+                  <p className="text-[11px] text-slate-400">
                     Restricted administrative access
                   </p>
                 </div>
@@ -374,7 +374,7 @@ export default function Navbar() {
                   setSecretError('');
                 }}
                 aria-label="Close dialog"
-                className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -389,18 +389,18 @@ export default function Navbar() {
 
             <form onSubmit={handleSecretSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+                <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
                   Master Security Key
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-zinc-400 absolute left-3 top-3" />
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
                     type="password"
                     value={secretPasscode}
                     onChange={(e) => setSecretPasscode(e.target.value)}
                     placeholder="Enter security key..."
                     autoFocus
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-zinc-700 bg-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -413,7 +413,7 @@ export default function Navbar() {
                     setSecretPasscode('');
                     setSecretError('');
                   }}
-                  className="flex-1 py-2.5 px-3 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
+                  className="flex-1 py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-750 text-xs font-semibold text-slate-300 transition-colors cursor-pointer"
                 >
                   Cancel &amp; Return
                 </button>
@@ -421,7 +421,7 @@ export default function Navbar() {
                 <button
                   type="submit"
                   disabled={secretLoading}
-                  className="flex-1 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+                  className="flex-1 py-2.5 px-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-blue-600/30 disabled:opacity-50 cursor-pointer"
                 >
                   {secretLoading ? (
                     <>

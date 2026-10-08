@@ -358,8 +358,8 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
-        <span className="text-sm text-zinc-500 font-medium">Loading your real profile metrics...</span>
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+        <span className="text-sm text-slate-500 font-medium">Loading your real profile metrics...</span>
       </div>
     );
   }
@@ -376,9 +376,9 @@ export default function ProfilePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* User Header Profile Card */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center space-x-5">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-amber-500 flex items-center justify-center text-white text-2xl font-extrabold uppercase shadow-lg shadow-indigo-500/20 overflow-hidden flex-shrink-0">
+          <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-white text-2xl font-extrabold uppercase shadow-lg shadow-blue-600/20 overflow-hidden flex-shrink-0">
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -392,17 +392,17 @@ export default function ProfilePage() {
           </div>
           <div>
             <div className="flex items-center space-x-3">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
                 {profile?.full_name || 'StackUp Student'}
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
                 Verified Student
               </span>
             </div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {profile?.email || profile?.phone || 'Connected Session'}
             </p>
-            <div className="flex items-center space-x-4 mt-2 text-xs text-zinc-400">
+            <div className="flex items-center space-x-4 mt-2 text-xs text-slate-400">
               <span className="flex items-center space-x-1">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>
@@ -421,14 +421,14 @@ export default function ProfilePage() {
         <div className="flex items-center space-x-3 w-full md:w-auto">
           <Link
             href="/dsa"
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors shadow-sm shadow-indigo-500/20"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors shadow-sm shadow-blue-600/20"
           >
             <Code2 className="w-4 h-4" />
             <span>Practice DSA</span>
           </Link>
           <button
             onClick={handleSignOut}
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           >
             <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
@@ -439,63 +439,63 @@ export default function ProfilePage() {
       {/* Grid: Real Streak Tracker & Real Performance Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Streak Tracker Card */}
-        <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Daily Study Streak
               </span>
-              <div className={`p-2 rounded-xl ${streakCount > 0 ? 'bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'}`}>
+              <div className={`p-2 rounded-xl ${streakCount > 0 ? 'bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400' : 'bg-slate-100 dark:bg-[#1e293b] text-slate-400'}`}>
                 <Flame className={`w-5 h-5 ${streakCount > 0 ? 'animate-bounce' : ''}`} />
               </div>
             </div>
             <div className="mt-4 flex items-baseline space-x-2">
-              <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">
+              <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
                 {streakCount}
               </span>
-              <span className="text-sm font-semibold text-zinc-500">
+              <span className="text-sm font-semibold text-slate-500">
                 {streakCount === 1 ? 'Day Active' : 'Days Active'}
               </span>
             </div>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-slate-500">
               {streakCount > 0 
                 ? 'Great consistency! Keep solving daily quizzes to build your habit.'
                 : 'Solve a quiz or scan your resume today to start your study streak!'}
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
             {streakDays.map((item, idx) => (
               <div key={idx} className="flex flex-col items-center space-y-1.5">
                 <div
                   className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
                     item.active
                       ? 'bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-sm shadow-orange-500/30'
-                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
+                      : 'bg-slate-100 dark:bg-[#1e293b] text-slate-400'
                   }`}
                   title={`${item.day}: ${item.active ? 'Activity recorded' : 'No activity'}`}
                 >
                   {item.active ? '✓' : '·'}
                 </div>
-                <span className="text-[10px] text-zinc-400">{item.day}</span>
+                <span className="text-[10px] text-slate-400">{item.day}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Quizzes Taken Stat Card */}
-        <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Quizzes Attempted
               </span>
-              <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+              <div className="p-2 rounded-xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
                 <TrendingUp className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-4 flex items-baseline space-x-2">
-              <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">
+              <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
                 {quizHistory.length}
               </span>
               {averageQuizScore !== null ? (
@@ -503,16 +503,16 @@ export default function ProfilePage() {
                   {averageQuizScore}% Avg. Score
                 </span>
               ) : (
-                <span className="text-sm font-semibold text-zinc-400">
+                <span className="text-sm font-semibold text-slate-400">
                   0 Attempts Yet
                 </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-slate-500">
               Scored quizzes across Aptitude and Core CS topics.
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-400 flex items-center space-x-1">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 flex items-center space-x-1">
             <Clock className="w-3.5 h-3.5" />
             <span>
               Latest attempt:{' '}
@@ -522,10 +522,10 @@ export default function ProfilePage() {
         </div>
 
         {/* ATS Score Benchmark Card */}
-        <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Latest ATS Benchmark
               </span>
               <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400">
@@ -535,22 +535,22 @@ export default function ProfilePage() {
             <div className="mt-4 flex items-baseline space-x-2">
               {resumeHistory.length > 0 ? (
                 <>
-                  <span className="text-4xl font-extrabold text-zinc-900 dark:text-white">
+                  <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
                     {resumeHistory[0].ats_score}
                   </span>
-                  <span className="text-sm font-semibold text-zinc-500">/ 100</span>
+                  <span className="text-sm font-semibold text-slate-500">/ 100</span>
                 </>
               ) : (
-                <span className="text-3xl font-extrabold text-zinc-400">
+                <span className="text-3xl font-extrabold text-slate-400">
                   Not Scanned
                 </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-slate-500">
               Target &gt;80 score for Tier-1 ATS system passing rate.
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-400 truncate">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 truncate">
             <span>
               {resumeHistory.length > 0 
                 ? `File: ${resumeHistory[0].filename}` 
@@ -561,12 +561,12 @@ export default function ProfilePage() {
       </div>
 
       {/* Per-Section Real Progress Bars */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm space-y-6">
         <div>
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
             Curriculum Completion Progress
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-500">
+          <p className="text-xs sm:text-sm text-slate-500">
             Real-time track of topics tested in quizzes and algorithms solved.
           </p>
         </div>
@@ -576,28 +576,28 @@ export default function ProfilePage() {
             <Link
               key={item.slug}
               href={`/${item.slug}`}
-              className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-850/50 hover:border-indigo-500/40 transition-all space-y-3 group"
+              className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#1e293b]/50 hover:border-blue-500/40 transition-all space-y-3 group"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {item.section_name}
                 </span>
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 ml-2">
+                <span className="text-xs font-bold text-blue-600 dark:text-blue-400 ml-2">
                   {item.percent}%
                 </span>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
+              <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                 <div
                   className={`h-full rounded-full ${item.color} transition-all duration-500`}
                   style={{ width: `${item.percent}%` }}
                 />
               </div>
 
-              <div className="flex items-center justify-between text-xs text-zinc-500">
+              <div className="flex items-center justify-between text-xs text-slate-500">
                 <span>{item.completed_items} of {item.total_items} complete</span>
-                <span className="capitalize text-indigo-600 dark:text-indigo-400 flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
+                <span className="capitalize text-blue-600 dark:text-blue-400 flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
                   <span>Practice</span>
                   <ArrowRight className="w-3 h-3 ml-0.5" />
                 </span>
@@ -608,18 +608,18 @@ export default function ProfilePage() {
       </div>
 
       {/* Quiz Score History Chart (Recharts) */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Quiz Score Performance History
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500">
+            <p className="text-xs sm:text-sm text-slate-500">
               Score trajectory across your completed timed quiz attempts (%)
             </p>
           </div>
           {quizHistory.length > 0 && (
-            <div className="text-xs font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg self-start sm:self-auto">
+            <div className="text-xs font-medium text-slate-500 bg-slate-100 dark:bg-[#1e293b] px-3 py-1.5 rounded-lg self-start sm:self-auto">
               Last {quizHistory.length} Attempts
             </div>
           )}
@@ -631,19 +631,19 @@ export default function ProfilePage() {
               <AreaChart data={quizHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" opacity={0.3} />
-                <XAxis dataKey="date" stroke="#71717a" fontSize={12} tickLine={false} />
-                <YAxis domain={[0, 100]} stroke="#71717a" fontSize={12} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.5} />
+                <XAxis dataKey="date" stroke="#64748b" fontSize={12} tickLine={false} />
+                <YAxis domain={[0, 100]} stroke="#64748b" fontSize={12} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18181b',
-                    borderColor: '#27272a',
+                    backgroundColor: '#0f172a',
+                    borderColor: '#1e293b',
                     borderRadius: '0.75rem',
-                    color: '#fff',
+                    color: '#f8fafc',
                     fontSize: '0.75rem',
                   }}
                   formatter={(value: unknown) => [`${value}%`, 'Score']}
@@ -657,7 +657,7 @@ export default function ProfilePage() {
                 <Area
                   type="monotone"
                   dataKey="percentage"
-                  stroke="#6366f1"
+                  stroke="#2563eb"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#scoreGradient)"
@@ -666,29 +666,29 @@ export default function ProfilePage() {
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="p-8 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
               <TrendingUp className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                 No Quizzes Attempted Yet
               </h3>
-              <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 Take timed MCQ quizzes in Quantitative Aptitude or Core CS to view your historical score trajectory and accuracy curves here.
               </p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
               <Link
                 href="/aptitude"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-sm"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>Practice Aptitude</span>
               </Link>
               <Link
                 href="/core-cs"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
               >
                 <Cpu className="w-3.5 h-3.5" />
                 <span>Practice Core CS</span>
@@ -699,19 +699,19 @@ export default function ProfilePage() {
       </div>
 
       {/* Resume Analysis History */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Resume Analysis History
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500">
+            <p className="text-xs sm:text-sm text-slate-500">
               Past resumes processed through the ATS Diagnostic Engine
             </p>
           </div>
           <Link
             href="/resume-checker"
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition-colors self-start sm:self-auto"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors self-start sm:self-auto"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Scan New Resume</span>
@@ -719,21 +719,21 @@ export default function ProfilePage() {
         </div>
 
         {resumeHistory.length > 0 ? (
-          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {resumeHistory.map((item) => (
               <div
                 key={item.id}
                 className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div className="flex items-center space-x-3.5">
-                  <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
-                    <FileCheck2 className="w-5 h-5 text-indigo-500" />
+                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-[#1e293b] text-slate-600 dark:text-slate-300">
+                    <FileCheck2 className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-zinc-900 dark:text-white">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-white">
                       {item.filename}
                     </div>
-                    <div className="text-xs text-zinc-400">
+                    <div className="text-xs text-slate-400">
                       Scored on {item.created_at}
                     </div>
                   </div>
@@ -741,7 +741,7 @@ export default function ProfilePage() {
 
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <div className="text-sm font-bold text-zinc-900 dark:text-white">
+                    <div className="text-sm font-bold text-slate-900 dark:text-white">
                       {item.ats_score}/100
                     </div>
                     <span
@@ -759,22 +759,22 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="p-8 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center space-y-4">
+          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
               <FileCheck2 className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                 No Resumes Analyzed Yet
               </h3>
-              <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 Upload your PDF or Word document to get instant ATS scoring, keyword detection, and section-by-section bullet rewrites.
               </p>
             </div>
             <div className="pt-2">
               <Link
                 href="/resume-checker"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-sm"
               >
                 <FileCheck2 className="w-3.5 h-3.5" />
                 <span>Upload Resume in ATS Checker</span>
