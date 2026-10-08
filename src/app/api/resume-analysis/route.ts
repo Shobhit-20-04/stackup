@@ -456,34 +456,40 @@ export async function POST(req: NextRequest) {
       const emailMatch = resumeText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
       const detectedEmail = effectiveEmail || (emailMatch ? emailMatch[0] : null);
 
-      // Store in uploaded_resumes table (accessible to admin dashboard)
-      await (supabase.from('uploaded_resumes') as unknown as {
-        insert: (data: Record<string, unknown>) => Promise<unknown>;
-      }).insert({
-        filename: analysis.filename,
-        file_size: fileSize,
-        mime_type: mimeType,
-        resume_text: resumeText,
-        ats_score: analysis.ats_score,
-        analysis: analysis as unknown as Json,
-        user_id: effectiveUserId,
-        user_email: detectedEmail,
-        ip_address: ip,
-        file_data: fileDataBase64,
-      });
-
-      // Also record in resume_analyses table for user profile history
-      if (effectiveUserId) {
-        await (supabase.from('resume_analyses') as unknown as {
+      // Store in uploaded_resumes table and resume_analyses concurrently
+      const persistPromises: Promise<unknown>[] = [
+        (supabase.from('uploaded_resumes') as unknown as {
           insert: (data: Record<string, unknown>) => Promise<unknown>;
         }).insert({
-          user_id: effectiveUserId,
           filename: analysis.filename,
-          ats_score: analysis.ats_score,
-          feedback: analysis as unknown as Json,
+          file_size: fileSize,
+          mime_type: mimeType,
           resume_text: resumeText,
-        });
+          ats_score: analysis.ats_score,
+          analysis: analysis as unknown as Json,
+          user_id: effectiveUserId,
+          user_email: detectedEmail,
+          ip_address: ip,
+          file_data: fileDataBase64,
+        }),
+      ];
+
+      // Also record in resume_analyses table for user profile history concurrently
+      if (effectiveUserId) {
+        persistPromises.push(
+          (supabase.from('resume_analyses') as unknown as {
+            insert: (data: Record<string, unknown>) => Promise<unknown>;
+          }).insert({
+            user_id: effectiveUserId,
+            filename: analysis.filename,
+            ats_score: analysis.ats_score,
+            feedback: analysis as unknown as Json,
+            resume_text: resumeText,
+          })
+        );
       }
+
+      await Promise.all(persistPromises);
     } catch (dbErr) {
       console.warn('Note: Storing resume in database encountered an issue:', dbErr);
     }

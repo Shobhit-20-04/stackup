@@ -10,12 +10,10 @@ import {
   BookOpen, 
   Lock, 
   ArrowRight, 
-  ArrowLeft,
   CheckCircle2, 
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles
+  Check, 
+  ChevronLeft, 
+  ChevronRight 
 } from 'lucide-react';
 import type { Topic } from '@/lib/data/curriculum';
 import { getCurrentUser, type UserSession } from '@/lib/auth/session';
@@ -43,20 +41,21 @@ export default function TopicNotes({
   onSelectTopic
 }: TopicNotesProps) {
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [completedOverrides, setCompletedOverrides] = useState<Record<string, boolean>>({});
+
+  const isCompleted = completedOverrides[topic.id] ?? (
+    typeof window !== 'undefined' ? getReadTopicIds().includes(topic.id) : false
+  );
 
   useEffect(() => {
-    getCurrentUser().then((u) => {
+    void getCurrentUser().then((u) => {
       setCurrentUser(u);
     });
-    // Check if topic is marked completed
-    const readIds = getReadTopicIds();
-    setIsCompleted(readIds.includes(topic.id));
-  }, [topic.id]);
+  }, []);
 
   const handleToggleCompleted = () => {
     const nextState = toggleTopicReadStatus(topic.id);
-    setIsCompleted(nextState);
+    setCompletedOverrides((prev) => ({ ...prev, [topic.id]: nextState }));
   };
 
   // For unauthenticated users, strictly restrict to teaser overview (~500 chars)

@@ -47,35 +47,25 @@ export async function GET(req: NextRequest) {
 
     const supabase = await createClient();
 
-    // 1. Fetch all uploaded resumes from Supabase
-    const { data: resumes, error: resumeErr } = await supabase
-      .from('uploaded_resumes')
-      .select('*')
-      .order('created_at', { ascending: false });
+    // Fetch all telemetry datasets concurrently to minimize response latency
+    const [
+      { data: resumes, error: resumeErr },
+      { data: profiles, error: profileErr },
+      loginLogs,
+      { data: quizzes, error: quizErr },
+    ] = await Promise.all([
+      supabase.from('uploaded_resumes').select('*').order('created_at', { ascending: false }),
+      supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+      fetchLoginAudits(),
+      supabase.from('quiz_attempts').select('*').order('attempted_at', { ascending: false }),
+    ]);
 
     if (resumeErr) {
       console.error('Admin fetch resumes error:', resumeErr);
     }
-
-    // 2. Fetch direct profiles from Supabase (if available)
-    const { data: profiles, error: profileErr } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
-
     if (profileErr) {
       console.error('Admin fetch profiles error:', profileErr);
     }
-
-    // 3. Fetch real user authentication & access audit telemetry
-    const loginLogs = await fetchLoginAudits();
-
-    // 4. Fetch quiz attempts
-    const { data: quizzes, error: quizErr } = await supabase
-      .from('quiz_attempts')
-      .select('*')
-      .order('attempted_at', { ascending: false });
-
     if (quizErr) {
       console.error('Admin fetch quizzes error:', quizErr);
     }

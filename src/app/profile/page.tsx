@@ -161,7 +161,7 @@ export default function ProfilePage() {
             percent: csMetrics.percent, 
             completed_items: csMetrics.completed, 
             total_items: csMetrics.total, 
-            color: 'bg-purple-600' 
+            color: 'bg-sky-600' 
           },
           { 
             section_name: 'DSA Curated Hub', 

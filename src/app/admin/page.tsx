@@ -153,7 +153,12 @@ interface AdminData {
 }
 
 export default function AdminDashboardPage() {
-  const [passcode, setPasscode] = useState('');
+  const [passcode, setPasscode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '';
+    }
+    return '';
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -220,8 +225,8 @@ export default function AdminDashboardPage() {
       }
 
       // Auto-select first resume if none selected
-      if (json.resumes && json.resumes.length > 0 && !selectedResumeId) {
-        setSelectedResumeId(json.resumes[0].id);
+      if (json.resumes && json.resumes.length > 0) {
+        setSelectedResumeId((prev) => prev || json.resumes[0].id);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error loading admin data';
@@ -229,20 +234,16 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [selectedResumeId]);
+  }, []);
 
   // Check stored admin key on mount (localStorage for trusted persistent device access)
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key');
-    if (stored) {
-      setPasscode(stored);
-      const timer = setTimeout(() => {
-        void fetchAdminData(stored);
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [fetchAdminData]);
+    if (!passcode) return;
+    const timer = setTimeout(() => {
+      void fetchAdminData(passcode);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [fetchAdminData, passcode]);
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
@@ -721,12 +722,12 @@ export default function AdminDashboardPage() {
           <div className="bg-[#131c31] p-3.5 sm:p-5 rounded-2xl border border-slate-800 shadow-xs col-span-2 sm:col-span-1">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Audited Logins</span>
-              <LogIn className="w-3.5 h-3.5 text-purple-400" />
+              <LogIn className="w-3.5 h-3.5 text-sky-400" />
             </div>
             <div className="text-xl sm:text-3xl font-black text-white">
               {data?.loginLogs?.length ?? data?.metrics.totalLogins ?? 0}
             </div>
-            <div className="text-[10px] sm:text-[11px] text-purple-400 mt-0.5 font-semibold">
+            <div className="text-[10px] sm:text-[11px] text-sky-400 mt-0.5 font-semibold">
               Tracked sessions
             </div>
           </div>
@@ -1176,7 +1177,7 @@ export default function AdminDashboardPage() {
                             </div>
                             <div className="p-3.5 rounded-xl bg-[#0b1120] border border-slate-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">ATS Formatting</span>
-                              <span className="text-lg font-black text-purple-400">{currentResume.analysis.breakdown.formatting_score}%</span>
+                              <span className="text-lg font-black text-sky-400">{currentResume.analysis.breakdown.formatting_score}%</span>
                             </div>
                           </div>
                         )}
@@ -1547,7 +1548,7 @@ export default function AdminDashboardPage() {
                   <h2 className="text-base font-bold text-white">
                     User Login &amp; Access Audit
                   </h2>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-950/60 text-purple-400 border border-purple-800">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-950/60 text-sky-400 border border-sky-800">
                     Live Security Telemetry
                   </span>
                 </div>

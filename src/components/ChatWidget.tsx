@@ -161,12 +161,12 @@ export default function ChatWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center space-x-2.5 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-xl shadow-blue-600/30 hover:scale-105 transition-all duration-200"
+          className="group relative flex items-center space-x-2.5 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-xl shadow-blue-600/30 hover:scale-105 active:scale-95 transition-all duration-200 animate-float-gentle"
           aria-label="Open StackUp AI Chatbot"
         >
           <div className="relative">
-            <Bot className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 border-2 border-blue-700 rounded-full" />
+            <Bot className="w-5 h-5 group-hover:rotate-6 transition-transform" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 border-2 border-blue-700 rounded-full animate-pulse" />
           </div>
           <span className="text-xs font-bold tracking-tight pr-1">Ask AI</span>
         </button>

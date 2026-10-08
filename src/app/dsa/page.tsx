@@ -694,7 +694,7 @@ export default function DsaHubPage() {
 
                             {/* Space Complexity */}
                             <div className="bg-white dark:bg-[#131c31] p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-start space-x-3">
-                              <div className="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400">
+                              <div className="p-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400">
                                 <HardDrive className="w-5 h-5" />
                               </div>
                               <div>

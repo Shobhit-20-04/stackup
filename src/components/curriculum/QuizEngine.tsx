@@ -266,8 +266,16 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
         </div>
       </div>
 
+      {/* Visual Progress Bar */}
+      <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden -mt-2">
+        <div
+          className="h-full bg-blue-600 transition-all duration-300 rounded-full"
+          style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+        />
+      </div>
+
       {/* Question Card */}
-      <div className="p-6 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-sm space-y-8">
+      <div className="p-6 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-sm space-y-8 animate-in fade-in duration-200">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
             Question {currentIndex + 1}

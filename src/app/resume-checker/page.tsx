@@ -357,6 +357,17 @@ export default function ResumeCheckerPage() {
                     )}
                   </button>
                 )}
+
+                {analyzing && (
+                  <div className="w-full max-w-xs mt-4 space-y-1.5 animate-in fade-in duration-200">
+                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-600 animate-pulse w-full rounded-full" />
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 text-center animate-pulse">
+                      Parsing sections &amp; benchmarking skills against industry standards...
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -406,7 +417,7 @@ export default function ResumeCheckerPage() {
                       ? 'bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-emerald-500/20' 
                       : result.ats_score >= 65
                       ? 'bg-gradient-to-tr from-amber-500 to-orange-500 shadow-amber-500/20'
-                      : 'bg-gradient-to-tr from-rose-600 to-pink-500 shadow-rose-500/20'
+                      : 'bg-gradient-to-tr from-rose-600 to-rose-500 shadow-rose-500/20'
                   }`}>
                     <span className="text-2xl sm:text-3xl font-black">{result.ats_score}</span>
                     <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider opacity-90">/ 100 ATS</span>

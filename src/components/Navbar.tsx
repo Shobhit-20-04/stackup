@@ -284,7 +284,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1120] px-4 pt-2 pb-4 space-y-1">
+        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1120] px-4 pt-2 pb-4 space-y-1 animate-in slide-in-from-top-2 duration-150">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = pathname.startsWith(item.href);

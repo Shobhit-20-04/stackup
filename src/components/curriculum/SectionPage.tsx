@@ -14,12 +14,9 @@ import {
   Layers,
   Search, 
   Clock, 
-  HelpCircle, 
   Play, 
-  ArrowLeft,
-  Lock,
-  ArrowRight,
-  CheckCircle2, 
+  Lock, 
+  ArrowRight, 
   ChevronRight,
   ChevronLeft,
   X,
@@ -43,26 +40,34 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [activeView, setActiveView] = useState<'list' | 'notes' | 'quiz'>('list');
-  const [completedTopicIds, setCompletedTopicIds] = useState<Set<string>>(new Set());
 
   // Metrics
   const [metricsRefresh, setMetricsRefresh] = useState(0);
-  const metrics = useMemo(() => getSectionMetrics(sectionKey), [sectionKey, metricsRefresh]);
+  const metrics = useMemo(() => {
+    void metricsRefresh;
+    return getSectionMetrics(sectionKey);
+  }, [sectionKey, metricsRefresh]);
+
+  // Derive completed topics (quizzes attempted or read) with zero cascading re-renders
+  const completedTopicIds = useMemo(() => {
+    if (typeof window === 'undefined') return new Set<string>();
+    void metricsRefresh;
+    void activeView;
+    const readIds = getReadTopicIds();
+    const attempts = getLocalQuizAttempts();
+    const sectionAttempts = attempts
+      .filter((a) => a.sectionSlug === sectionKey)
+      .map((a) => a.topicId);
+    return new Set([...readIds, ...sectionAttempts]);
+  }, [sectionKey, metricsRefresh, activeView]);
 
   // Authentication state for gating interactive quizzes
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
 
   useEffect(() => {
-    getCurrentUser().then((u) => setCurrentUser(u));
-    // Load completed topics (quizzes attempted or read)
-    const readIds = getReadTopicIds();
-    const attempts = getLocalQuizAttempts();
-    const sectionAttempts = attempts
-      .filter((a) => a.sectionSlug === sectionKey)
-      .map((a) => a.topicId);
-    setCompletedTopicIds(new Set([...readIds, ...sectionAttempts]));
-  }, [sectionKey, metricsRefresh, activeView]);
+    void getCurrentUser().then((u) => setCurrentUser(u));
+  }, []);
 
   const handleStartQuiz = (topic: Topic) => {
     if (!currentUser) {
@@ -78,11 +83,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     switch (iconName) {
       case 'Cpu':
         return {
-          icon: <Cpu className="w-5 h-5 text-purple-600 dark:text-purple-400" />,
-          accent: 'purple',
-          border: 'border-purple-500/30 hover:border-purple-500',
-          bg: 'bg-purple-50/50 dark:bg-purple-950/20',
-          badge: 'bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300',
+          icon: <Cpu className="w-5 h-5 text-sky-600 dark:text-sky-400" />,
+          accent: 'sky',
+          border: 'border-sky-500/30 hover:border-sky-500',
+          bg: 'bg-sky-50/50 dark:bg-sky-950/20',
+          badge: 'bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300',
         };
       case 'Database':
         return {
@@ -182,11 +187,6 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     return results;
   }, [section, searchQuery]);
 
-  // Total topics count
-  const totalTopicsCount = useMemo(() => {
-    if (!section) return 0;
-    return section.categories.reduce((acc, cat) => acc + cat.topics.length, 0);
-  }, [section]);
 
   if (!section) {
     return (

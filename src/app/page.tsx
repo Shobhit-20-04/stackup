@@ -25,7 +25,7 @@ export default function HomePage() {
       {/* Hero Section - Clean, High Contrast & Human Designed */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-16 pb-8 text-center">
         {/* Release Pill */}
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-blue-200/80 dark:border-blue-800/80 bg-blue-50/90 dark:bg-blue-950/50 text-xs font-bold text-blue-700 dark:text-blue-300 mb-5 shadow-xs">
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-blue-200/80 dark:border-blue-800/80 bg-blue-50/90 dark:bg-blue-950/50 text-xs font-bold text-blue-700 dark:text-blue-300 mb-5 shadow-xs animate-float-gentle">
           <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shrink-0" />
           <span>StackUp • Engineering Interview Prep Platform</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-70 shrink-0" />
@@ -48,14 +48,14 @@ export default function HomePage() {
         <div className="mt-5 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3.5 max-w-xs sm:max-w-md mx-auto w-full">
           <Link
             href="/login"
-            className="w-full sm:w-auto px-6 py-3 rounded-2xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/25 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+            className="w-full sm:w-auto px-6 py-3 rounded-2xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-md shadow-blue-600/25"
           >
             <span>Start Free Prep</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/resume-checker"
-            className="w-full sm:w-auto px-5 py-3 rounded-2xl font-semibold text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
+            className="w-full sm:w-auto px-5 py-3 rounded-2xl font-semibold text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-750 hover:scale-[1.02] active:scale-[0.98] border border-slate-200 dark:border-slate-700 transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
           >
             <FileCheck2 className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
             <span>Check Resume (ATS)</span>
@@ -86,11 +86,11 @@ export default function HomePage() {
           {/* Card 1: DSA Practice Hub */}
           <Link
             href="/dsa"
-            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-blue-500/60 dark:hover:border-blue-500/60 hover:shadow-md hover:shadow-blue-500/5 transition-all group flex flex-col justify-between cursor-pointer"
+            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-blue-500/60 dark:hover:border-blue-500/60 card-hover-lift group flex flex-col justify-between cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/20 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/20 shrink-0 group-hover:scale-105 transition-transform duration-200">
                   <Code2 className="w-5 h-5" />
                 </div>
                 <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/50 dark:border-blue-800/50">
@@ -113,11 +113,11 @@ export default function HomePage() {
           {/* Card 2: Core CS Subjects */}
           <Link
             href="/core-cs"
-            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-sky-500/60 dark:hover:border-sky-500/60 hover:shadow-md hover:shadow-sky-500/5 transition-all group flex flex-col justify-between cursor-pointer"
+            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-sky-500/60 dark:hover:border-sky-500/60 card-hover-lift group flex flex-col justify-between cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/20 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/20 shrink-0 group-hover:scale-105 transition-transform duration-200">
                   <Cpu className="w-5 h-5" />
                 </div>
                 <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/50 dark:border-sky-800/50">
@@ -140,11 +140,11 @@ export default function HomePage() {
           {/* Card 3: Quantitative & Aptitude */}
           <Link
             href="/aptitude"
-            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-amber-500/60 dark:hover:border-amber-500/60 hover:shadow-md hover:shadow-amber-500/5 transition-all group flex flex-col justify-between cursor-pointer"
+            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-amber-500/60 dark:hover:border-amber-500/60 card-hover-lift group flex flex-col justify-between cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-md shadow-amber-600/20 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-md shadow-amber-600/20 shrink-0 group-hover:scale-105 transition-transform duration-200">
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/50 dark:border-amber-800/50">
@@ -167,11 +167,11 @@ export default function HomePage() {
           {/* Card 4: ATS Resume Evaluator */}
           <Link
             href="/resume-checker"
-            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-emerald-500/60 dark:hover:border-emerald-500/60 hover:shadow-md hover:shadow-emerald-500/5 transition-all group flex flex-col justify-between cursor-pointer"
+            className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-emerald-500/60 dark:hover:border-emerald-500/60 card-hover-lift group flex flex-col justify-between cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 shrink-0 group-hover:scale-105 transition-transform duration-200">
                   <FileCheck2 className="w-5 h-5" />
                 </div>
                 <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/50">
