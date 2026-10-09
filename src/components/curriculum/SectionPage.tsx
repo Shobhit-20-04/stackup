@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   BookOpen, 
@@ -17,12 +17,14 @@ import {
   Play, 
   Lock, 
   ArrowRight, 
-  ChevronRight,
+  ChevronRight, 
   ChevronLeft,
   X,
   Sparkles,
   Zap,
-  Check
+  Check,
+  SlidersHorizontal,
+  Building2
 } from 'lucide-react';
 import { CURRICULUM_DATA, type Topic, type SectionCategory } from '@/lib/data/curriculum';
 import { getSectionMetrics, getReadTopicIds, getLocalQuizAttempts } from '@/lib/services/progress';
@@ -38,6 +40,12 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   const section = CURRICULUM_DATA[sectionKey];
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'Easy' | 'Medium' | 'Hard'>('all');
+  const [selectedStatus, setSelectedStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
+  const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
+  const [cheatsheetSearch, setCheatsheetSearch] = useState('');
+  const [cheatsheetCategory, setCheatsheetCategory] = useState<string>('all');
+
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [activeView, setActiveView] = useState<'list' | 'notes' | 'quiz'>('list');
 
@@ -69,6 +77,18 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     void getCurrentUser().then((u) => setCurrentUser(u));
   }, []);
 
+  // Keyboard escape for modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsCheatsheetOpen(false);
+        setAuthPromptOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleStartQuiz = (topic: Topic) => {
     if (!currentUser) {
       setSelectedTopic(topic);
@@ -77,6 +97,19 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     }
     setSelectedTopic(topic);
     setActiveView('quiz');
+  };
+
+  const getDifficultyBadge = (difficulty?: 'Easy' | 'Medium' | 'Hard') => {
+    const diff = difficulty || 'Medium';
+    switch (diff) {
+      case 'Easy':
+        return 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+      case 'Hard':
+        return 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+      case 'Medium':
+      default:
+        return 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+    }
   };
 
   const getCategoryTheme = (iconName: string) => {
@@ -156,6 +189,20 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     }
   };
 
+  // Topic filter helper
+  const filterTopic = useCallback((t: Topic): boolean => {
+    if (selectedDifficulty !== 'all') {
+      const diff = t.difficulty || 'Medium';
+      if (diff !== selectedDifficulty) return false;
+    }
+    if (selectedStatus !== 'all') {
+      const isCompleted = completedTopicIds.has(t.id);
+      if (selectedStatus === 'completed' && !isCompleted) return false;
+      if (selectedStatus === 'incomplete' && isCompleted) return false;
+    }
+    return true;
+  }, [selectedDifficulty, selectedStatus, completedTopicIds]);
+
   // Find the active single category object if one is selected
   const activeCategoryObj = useMemo(() => {
     if (!section || selectedCategory === 'all') return null;
@@ -172,6 +219,12 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     };
   }, [section, activeCategoryObj]);
 
+  // Filtered topics for the active category
+  const filteredActiveTopics = useMemo(() => {
+    if (!activeCategoryObj) return [];
+    return activeCategoryObj.topics.filter(filterTopic);
+  }, [activeCategoryObj, filterTopic]);
+
   // Search Results Mode
   const searchResults = useMemo(() => {
     if (!section || !searchQuery.trim()) return null;
@@ -179,14 +232,43 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     const results: { topic: Topic; category: SectionCategory }[] = [];
     section.categories.forEach((cat) => {
       cat.topics.forEach((t) => {
-        if (t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q)) {
+        const matchesQuery = 
+          t.title.toLowerCase().includes(q) || 
+          t.description.toLowerCase().includes(q) ||
+          t.companyTags?.some(tag => tag.toLowerCase().includes(q)) ||
+          t.keyTakeaways?.some(k => k.toLowerCase().includes(q));
+
+        if (matchesQuery && filterTopic(t)) {
           results.push({ topic: t, category: cat });
         }
       });
     });
     return results;
-  }, [section, searchQuery]);
+  }, [section, searchQuery, filterTopic]);
 
+  // Cheatsheet Compiled Topics
+  const cheatsheetTopics = useMemo(() => {
+    if (!section) return [];
+    const list: { topic: Topic; category: SectionCategory }[] = [];
+    const q = cheatsheetSearch.toLowerCase().trim();
+
+    section.categories.forEach((cat) => {
+      if (cheatsheetCategory !== 'all' && cat.id !== cheatsheetCategory) return;
+      cat.topics.forEach((t) => {
+        if (!q) {
+          list.push({ topic: t, category: cat });
+        } else {
+          const match = 
+            t.title.toLowerCase().includes(q) ||
+            t.description.toLowerCase().includes(q) ||
+            t.companyTags?.some(tag => tag.toLowerCase().includes(q)) ||
+            t.keyTakeaways?.some(k => k.toLowerCase().includes(q));
+          if (match) list.push({ topic: t, category: cat });
+        }
+      });
+    });
+    return list;
+  }, [section, cheatsheetCategory, cheatsheetSearch]);
 
   if (!section) {
     return (
@@ -215,7 +297,6 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
   // Active Topic Notes View
   if (activeView === 'notes' && selectedTopic) {
-    // Find category topics to allow next/previous module hopping
     const currentCat = section.categories.find((c) => c.topics.some((t) => t.id === selectedTopic.id));
     const catTopics = currentCat ? currentCat.topics : [];
     const topicIdx = catTopics.findIndex((t) => t.id === selectedTopic.id);
@@ -241,14 +322,16 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     );
   }
 
+  const hasActiveFilters = selectedDifficulty !== 'all' || selectedStatus !== 'all';
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
       {/* Header Banner */}
       <div className="p-5 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-        <div className="space-y-1.5 max-w-2xl">
+        <div className="space-y-2 max-w-2xl">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Interview Curriculum • Structured Pathway</span>
+            <span>Placement Interview Curriculum • Structured Modules</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
             {section.name}
@@ -256,10 +339,20 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
             {section.description}
           </p>
+
+          <div className="pt-1">
+            <button
+              onClick={() => setIsCheatsheetOpen(true)}
+              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+            >
+              <Zap className="w-3.5 h-3.5 text-amber-300" />
+              <span>⚡ Quick Revision Cheatsheet</span>
+            </button>
+          </div>
         </div>
 
         {/* Progress Metric */}
-        <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#1e293b] w-full md:w-60 space-y-2.5 shrink-0">
+        <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#1e293b] w-full md:w-64 space-y-2.5 shrink-0">
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="text-slate-600 dark:text-slate-300 uppercase tracking-wider text-[11px]">Syllabus Progress</span>
             <span className="text-blue-600 dark:text-blue-400 font-extrabold">{metrics.percent}%</span>
@@ -270,33 +363,136 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               style={{ width: `${metrics.percent}%` }}
             />
           </div>
-          <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-            {metrics.completed} of {metrics.total} topics completed
+          <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+            <span>{metrics.completed} of {metrics.total} topics completed</span>
+            <span>{section.categories.reduce((acc, c) => acc + c.topics.reduce((q, t) => q + t.questions.length, 0), 0)} MCQs</span>
           </div>
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={`Search all ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP 3-Way, Normalization, CAP Theorem)...`}
-          className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#131c31] text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => setSearchQuery('')}
-            className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
+      {/* Search & Multi-Filter Bar */}
+      <div className="space-y-3">
+        <div className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={`Search all ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP 3-Way, Normalization, Probability)...`}
+            className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#131c31] text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Filter Chips Toolbar */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 mr-1">
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Filters:</span>
+            </div>
+
+            {/* Difficulty Filter */}
+            <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 text-xs font-semibold">
+              <button
+                onClick={() => setSelectedDifficulty('all')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  selectedDifficulty === 'all'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                All Difficulty
+              </button>
+              <button
+                onClick={() => setSelectedDifficulty('Easy')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  selectedDifficulty === 'Easy'
+                    ? 'bg-emerald-600 text-white shadow-xs font-bold'
+                    : 'text-emerald-700 dark:text-emerald-400 hover:text-emerald-800'
+                }`}
+              >
+                Easy
+              </button>
+              <button
+                onClick={() => setSelectedDifficulty('Medium')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  selectedDifficulty === 'Medium'
+                    ? 'bg-amber-600 text-white shadow-xs font-bold'
+                    : 'text-amber-700 dark:text-amber-400 hover:text-amber-800'
+                }`}
+              >
+                Medium
+              </button>
+              <button
+                onClick={() => setSelectedDifficulty('Hard')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  selectedDifficulty === 'Hard'
+                    ? 'bg-rose-600 text-white shadow-xs font-bold'
+                    : 'text-rose-700 dark:text-rose-400 hover:text-rose-800'
+                }`}
+              >
+                Hard
+              </button>
+            </div>
+
+            {/* Status Filter */}
+            <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 text-xs font-semibold">
+              <button
+                onClick={() => setSelectedStatus('all')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  selectedStatus === 'all'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                All Status
+              </button>
+              <button
+                onClick={() => setSelectedStatus('completed')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  selectedStatus === 'completed'
+                    ? 'bg-blue-600 text-white shadow-xs font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                ✓ Completed
+              </button>
+              <button
+                onClick={() => setSelectedStatus('incomplete')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  selectedStatus === 'incomplete'
+                    ? 'bg-blue-600 text-white shadow-xs font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                ○ Incomplete
+              </button>
+            </div>
+          </div>
+
+          {hasActiveFilters && (
+            <button
+              onClick={() => {
+                setSelectedDifficulty('all');
+                setSelectedStatus('all');
+              }}
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+            >
+              Reset Filters
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Sticky Fast Subject Chip Switcher */}
+      {/* Sticky Subject Chip Switcher */}
       <div className="sticky top-16 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-slate-50/95 dark:bg-[#0b1120]/95 backdrop-blur-md border-y sm:border-y-0 sm:rounded-2xl border-slate-200 dark:border-slate-800">
         <div className="flex items-center space-x-2 overflow-x-auto scrollbar-none pb-1 pt-0.5">
           <button
@@ -355,8 +551,8 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
           {searchResults.length === 0 ? (
             <div className="p-12 text-center bg-white dark:bg-[#131c31] rounded-3xl border border-slate-200 dark:border-slate-800 space-y-2">
-              <p className="text-sm font-bold text-slate-900 dark:text-white">No topics matching &quot;{searchQuery}&quot;</p>
-              <p className="text-xs text-slate-500">Try searching for keywords like &quot;Deadlock&quot;, &quot;TCP&quot;, &quot;Normal Form&quot;, or &quot;Probability&quot;.</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white">No topics matching your criteria</p>
+              <p className="text-xs text-slate-500">Try adjusting your filters or keywords like &quot;Deadlock&quot;, &quot;TCP&quot;, &quot;Normal Form&quot;, or &quot;Probability&quot;.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -369,10 +565,15 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] hover:border-blue-500 shadow-xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                          {category.title}
-                        </span>
+                      <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                            {category.title}
+                          </span>
+                          <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${getDifficultyBadge(topic.difficulty)}`}>
+                            {topic.difficulty || 'Medium'}
+                          </span>
+                        </div>
                         {isCompleted && (
                           <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                             <Check className="w-3.5 h-3.5" />
@@ -386,9 +587,28 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
                         {topic.description}
                       </p>
+
+                      {topic.companyTags && topic.companyTags.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+                          <Building2 className="w-3 h-3 text-slate-400 shrink-0" />
+                          {topic.companyTags.slice(0, 3).map((comp) => (
+                            <span
+                              key={comp}
+                              className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                            >
+                              {comp}
+                            </span>
+                          ))}
+                          {topic.companyTags.length > 3 && (
+                            <span className="text-[10px] font-semibold text-slate-400">
+                              +{topic.companyTags.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
-                      <span>Study Module Notes</span>
+                      <span>Study Module Notes ({topic.questions.length} MCQs)</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
@@ -399,7 +619,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         </div>
       )}
 
-      {/* VIEW 2: SUBJECT DASHBOARD (THE CLEAN OVERVIEW OF ALL SUBJECTS) */}
+      {/* VIEW 2: SUBJECT DASHBOARD */}
       {searchResults === null && selectedCategory === 'all' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
@@ -467,7 +687,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         </div>
       )}
 
-      {/* VIEW 3: DEDICATED SUBJECT SYLLABUS WORKSPACE (1 SUBJECT AT A TIME - ZERO SCROLLING) */}
+      {/* VIEW 3: DEDICATED SUBJECT SYLLABUS WORKSPACE */}
       {searchResults === null && activeCategoryObj !== null && (
         <div className="space-y-6 animate-in fade-in">
           {/* Breadcrumb & Quick Subject Nav */}
@@ -517,96 +737,291 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 shrink-0 text-center w-full md:w-auto">
-              <div className="text-xs font-bold text-slate-300">Subject Coverage</div>
+              <div className="text-xs font-bold text-slate-300">Filtered Modules</div>
               <div className="text-lg font-black text-white">
-                {activeCategoryObj.topics.filter((t) => completedTopicIds.has(t.id)).length} of {activeCategoryObj.topics.length}
-                <span className="text-xs text-slate-400 font-semibold"> Modules Done</span>
+                {filteredActiveTopics.length} of {activeCategoryObj.topics.length}
+                <span className="text-xs text-slate-400 font-semibold"> Shown</span>
               </div>
             </div>
           </div>
 
-          {/* Topic Modules List - Sequential Step Order */}
-          <div className="space-y-3.5">
-            {activeCategoryObj.topics.map((topic, index) => {
-              const isCompleted = completedTopicIds.has(topic.id);
+          {/* Topic Modules List */}
+          {filteredActiveTopics.length === 0 ? (
+            <div className="p-12 text-center bg-white dark:bg-[#131c31] rounded-3xl border border-slate-200 dark:border-slate-800 space-y-2">
+              <p className="text-sm font-bold text-slate-900 dark:text-white">No modules match your current filter</p>
+              <p className="text-xs text-slate-500">Try changing difficulty or status filters to view modules.</p>
+              <button
+                onClick={() => {
+                  setSelectedDifficulty('all');
+                  setSelectedStatus('all');
+                }}
+                className="mt-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+              >
+                Clear Filters
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3.5">
+              {filteredActiveTopics.map((topic, index) => {
+                const isCompleted = completedTopicIds.has(topic.id);
 
-              return (
-                <div
-                  key={topic.id}
-                  onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
-                  className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer group shadow-xs hover:shadow-md ${
-                    isCompleted
-                      ? 'border-emerald-500/30 bg-emerald-50/20 dark:bg-emerald-950/10'
-                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] hover:border-blue-500'
-                  }`}
-                >
-                  <div className="flex items-start space-x-3.5 min-w-0">
-                    {/* Step Number or Checkmark */}
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs ${
+                return (
+                  <div
+                    key={topic.id}
+                    onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
+                    className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer group shadow-xs hover:shadow-md ${
                       isCompleted
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
-                    }`}>
-                      {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
+                        ? 'border-emerald-500/30 bg-emerald-50/20 dark:bg-emerald-950/10'
+                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] hover:border-blue-500'
+                    }`}
+                  >
+                    <div className="flex items-start space-x-3.5 min-w-0">
+                      {/* Step Number or Checkmark */}
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs ${
+                        isCompleted
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
+                      }`}>
+                        {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <span className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                            {topic.title}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${getDifficultyBadge(topic.difficulty)}`}>
+                            {topic.difficulty || 'Medium'}
+                          </span>
+                          {isCompleted ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300">
+                              ✓ Completed
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                              Ready to Study
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                          {topic.description}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] font-semibold text-slate-500">
+                          <span className="flex items-center space-x-1">
+                            <Clock className="w-3 h-3 text-blue-500" />
+                            <span>{topic.estimatedMinutes} min read</span>
+                          </span>
+                          <span>•</span>
+                          <span>{topic.questions.length} MCQ Questions</span>
+
+                          {topic.companyTags && topic.companyTags.length > 0 && (
+                            <>
+                              <span>•</span>
+                              <div className="flex items-center gap-1">
+                                <Building2 className="w-3 h-3 text-slate-400" />
+                                {topic.companyTags.slice(0, 3).map((comp) => (
+                                  <span key={comp} className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                    {comp}
+                                  </span>
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
-                          {topic.title}
-                        </span>
-                        {isCompleted ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300">
-                            ✓ Completed
-                          </span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                            Ready to Study
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                        {topic.description}
-                      </p>
-                      <div className="flex items-center space-x-3 mt-2 text-[11px] font-semibold text-slate-500">
-                        <span className="flex items-center space-x-1">
-                          <Clock className="w-3 h-3 text-blue-500" />
-                          <span>{topic.estimatedMinutes} min read</span>
-                        </span>
-                        <span>•</span>
-                        <span>{topic.questions.length} MCQ Questions</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center space-x-2 self-stretch md:self-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800 shrink-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedTopic(topic);
-                        setActiveView('notes');
-                      }}
-                      className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-center"
-                    >
-                      Read Notes
-                    </button>
-                    {topic.questions.length > 0 && (
+                    {/* Actions */}
+                    <div className="flex items-center space-x-2 self-stretch md:self-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800 shrink-0">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleStartQuiz(topic);
+                          setSelectedTopic(topic);
+                          setActiveView('notes');
                         }}
-                        className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                        className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-center"
                       >
-                        <Play className="w-3 h-3 fill-white" />
-                        <span>Start Quiz</span>
+                        Read Notes
                       </button>
+                      {topic.questions.length > 0 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartQuiz(topic);
+                          }}
+                          className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                        >
+                          <Play className="w-3 h-3 fill-white" />
+                          <span>Start Quiz</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* QUICK REVISION CHEATSHEET MODAL */}
+      {isCheatsheetOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-[#17223b]/50">
+              <div className="space-y-1">
+                <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                  <Zap className="w-3 h-3" />
+                  <span>Rapid Placement Cheatsheet</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                  ⚡ High-Yield Principles & Key Takeaways
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Formula cards and core interview concepts compiled across {section.name}.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setIsCheatsheetOpen(false)}
+                className="w-8 h-8 rounded-xl bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Cheatsheet Controls */}
+            <div className="p-4 border-b border-slate-200 dark:border-slate-800 space-y-3 bg-white dark:bg-[#131c31]">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <input
+                  type="text"
+                  value={cheatsheetSearch}
+                  onChange={(e) => setCheatsheetSearch(e.target.value)}
+                  placeholder="Filter formulas or concepts (e.g. Virtual Memory, Deadlock, Work Rate, ACID)..."
+                  className="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#1e293b] text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {cheatsheetSearch && (
+                  <button
+                    onClick={() => setCheatsheetSearch('')}
+                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+
+              {/* Cheatsheet Subject Tabs */}
+              <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none pb-0.5">
+                <button
+                  onClick={() => setCheatsheetCategory('all')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                    cheatsheetCategory === 'all'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  All ({section.categories.length})
+                </button>
+                {section.categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setCheatsheetCategory(cat.id)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                      cheatsheetCategory === cat.id
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                    }`}
+                  >
+                    {cat.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Cheatsheet Content List */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+              {cheatsheetTopics.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 text-xs">
+                  No revision topics match your search query.
+                </div>
+              ) : (
+                cheatsheetTopics.map(({ topic, category }) => (
+                  <div
+                    key={topic.id}
+                    className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-[#18233d]/50 space-y-3 shadow-xs"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300">
+                          {category.title}
+                        </span>
+                        <h4 className="text-sm font-black text-slate-900 dark:text-white">
+                          {topic.title}
+                        </h4>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => {
+                            setIsCheatsheetOpen(false);
+                            setSelectedTopic(topic);
+                            setActiveView('notes');
+                          }}
+                          className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                        >
+                          Notes →
+                        </button>
+                        {topic.questions.length > 0 && (
+                          <button
+                            onClick={() => {
+                              setIsCheatsheetOpen(false);
+                              handleStartQuiz(topic);
+                            }}
+                            className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer flex items-center space-x-1"
+                          >
+                            <Play className="w-2.5 h-2.5 fill-white" />
+                            <span>Quiz ({topic.questions.length})</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Key Takeaways */}
+                    {topic.keyTakeaways && topic.keyTakeaways.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        {topic.keyTakeaways.map((takeaway, idx) => (
+                          <div
+                            key={idx}
+                            className="p-2.5 rounded-xl bg-white dark:bg-[#131c31] border border-slate-200/80 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-200 flex items-start space-x-2"
+                          >
+                            <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                            <span className="leading-snug font-medium">{takeaway}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">
+                        {topic.description}
+                      </p>
                     )}
                   </div>
-                </div>
-              );
-            })}
+                ))
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 sm:p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#131c31] flex items-center justify-between text-xs text-slate-500">
+              <span>Showing {cheatsheetTopics.length} high-yield revision modules</span>
+              <button
+                onClick={() => setIsCheatsheetOpen(false)}
+                className="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+              >
+                Close Cheatsheet
+              </button>
+            </div>
           </div>
         </div>
       )}

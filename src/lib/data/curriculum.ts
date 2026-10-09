@@ -13,6 +13,9 @@ export interface Topic {
   description: string;
   estimatedMinutes: number;
   notesMarkdown: string;
+  difficulty?: 'Easy' | 'Medium' | 'Hard';
+  companyTags?: string[];
+  keyTakeaways?: string[];
   questions: Question[];
 }
 
@@ -86,7 +89,32 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Efficiency of A = 2 units/day, B = 1 unit/day. Together = 3 units/day. Total work = 3 * 14 = 42 units. Time for A alone = 42 / 2 = 21 days."
+              },
+              {
+                "id": "tw-4",
+                "question": "A can do a work in 15 days and B in 20 days. If they work on it together for 4 days, what fraction of the work is left?",
+                "options": [
+                  "7/15",
+                  "8/15",
+                  "1/3",
+                  "11/15"
+                ],
+                "correct_option": 1,
+                "explanation": "Work done by A and B in 1 day = 1/15 + 1/20 = 7/60. In 4 days, work done = 4 * (7/60) = 7/15. Fraction of work remaining = 1 - 7/15 = 8/15."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "TCS Digital",
+              "Infosys SP",
+              "Amazon",
+              "Wipro Turbo"
+            ],
+            "keyTakeaways": [
+              "Work per day = 1 / N days.",
+              "Combined time for A and B = (A * B) / (A + B).",
+              "Assume Total Work = LCM(A, B, C) to avoid fractions.",
+              "Wages ratio = Efficiency ratio = 1/TimeA : 1/TimeB."
             ]
           },
           {
@@ -120,7 +148,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Favorable pairs for sum 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) -> 6 outcomes. Total outcomes = 36. Probability = 6/36 = 1/6."
+              },
+              {
+                "id": "pp-3",
+                "question": "A committee of 5 is to be formed from 5 men and 4 women. What is the probability that the committee consists of at least 3 men?",
+                "options": [
+                  "81/126",
+                  "65/126",
+                  "50/126",
+                  "91/126"
+                ],
+                "correct_option": 0,
+                "explanation": "Total ways = 9C5 = 126. Favorable: (3M, 2W) = 5C3 * 4C2 = 10 * 6 = 60; (4M, 1W) = 5C4 * 4C1 = 5 * 4 = 20; (5M, 0W) = 5C5 * 4C0 = 1. Total favorable = 60 + 20 + 1 = 81. Probability = 81/126."
+              },
+              {
+                "id": "pp-4",
+                "question": "In how many different ways can the letters of the word \"CORPORATION\" be arranged so that all the vowels always come together?",
+                "options": [
+                  "50,400",
+                  "12,600",
+                  "75,600",
+                  "25,200"
+                ],
+                "correct_option": 0,
+                "explanation": "Vowels: O, O, A, I, O (5 vowels: three O, one A, one I). Consonants: C, R, P, R, T, N (6 consonants: two R). Group vowels as 1 unit: 7 units can be arranged in 7! / 2! ways = 2,520. Vowels internally arranged in 5! / 3! ways = 20. Total = 2,520 * 20 = 50,400."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Google",
+              "Microsoft",
+              "Goldman Sachs",
+              "Amazon"
+            ],
+            "keyTakeaways": [
+              "Permutation (nPr): Order matters (arrangements, passwords).",
+              "Combination (nCr): Order does not matter (committees, groups).",
+              "Complementary rule: P(E) = 1 - P(none).",
+              "Independent events: P(A ∩ B) = P(A) * P(B)."
             ]
           },
           {
@@ -154,7 +219,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Downstream speed D = 24/2 = 12 km/h. Upstream speed U = 24/4 = 6 km/h. Stream speed = (D - U) / 2 = (12 - 6) / 2 = 3 km/h."
+              },
+              {
+                "id": "std-3",
+                "question": "Two trains 140m and 160m long run at speeds of 60 km/h and 40 km/h respectively in opposite directions. How long will they take to cross each other completely?",
+                "options": [
+                  "10.8 seconds",
+                  "12 seconds",
+                  "9.5 seconds",
+                  "15 seconds"
+                ],
+                "correct_option": 0,
+                "explanation": "Total distance = 140 + 160 = 300m. Relative speed = 60 + 40 = 100 km/h = 100 * (5/18) = 250/9 m/s. Time = Distance / Speed = 300 / (250/9) = (300 * 9) / 250 = 10.8 seconds."
+              },
+              {
+                "id": "std-4",
+                "question": "A person travels a distance at 20 km/h and returns at 30 km/h. If the total time taken is 5 hours, what is the one-way distance?",
+                "options": [
+                  "60 km",
+                  "50 km",
+                  "75 km",
+                  "40 km"
+                ],
+                "correct_option": 0,
+                "explanation": "Average speed = 2 * 20 * 30 / (20 + 30) = 1200 / 50 = 24 km/h. Total round-trip distance = 24 * 5 = 120 km. One-way distance = 120 / 2 = 60 km."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "TCS Digital",
+              "Cognizant GenC Next",
+              "Amazon",
+              "Accenture"
+            ],
+            "keyTakeaways": [
+              "Conversion: 1 km/h = 5/18 m/s; 1 m/s = 18/5 km/h.",
+              "Average Speed for equal distances = 2xy / (x + y).",
+              "Relative Speed: Opposite = S1 + S2; Same direction = |S1 - S2|.",
+              "Boat Speed = (Downstream + Upstream) / 2."
             ]
           },
           {
@@ -176,7 +278,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Net discount = 20 + 10 - (20 * 10 / 100) = 30 - 2 = 28%. Final SP = 500 * (1 - 0.28) = 500 * 0.72 = $360."
+              },
+              {
+                "id": "pl-2",
+                "question": "A dishonest dealer professes to sell his goods at cost price, but uses a false weight of 900 grams for a 1 kg (1000g) weight. Find his actual gain percentage.",
+                "options": [
+                  "11.11%",
+                  "10%",
+                  "12.5%",
+                  "9.09%"
+                ],
+                "correct_option": 0,
+                "explanation": "Gain % = [Error / (True Value - Error)] * 100 = [100 / (1000 - 100)] * 100 = (100 / 900) * 100 = 11.11% (or 11 1/9%)."
+              },
+              {
+                "id": "pl-3",
+                "question": "By selling 33 meters of cloth, a merchant gains the selling price of 11 meters. Find the merchant’s profit percentage.",
+                "options": [
+                  "50%",
+                  "33.33%",
+                  "25%",
+                  "20%"
+                ],
+                "correct_option": 0,
+                "explanation": "Gain = SP(11) = SP(33) - CP(33) => CP(33) = SP(22). Profit % = [SP(33) - SP(22)] / SP(22) * 100 = (11 / 22) * 100 = 50%."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Infosys",
+              "Capgemini",
+              "Wipro",
+              "TCS"
+            ],
+            "keyTakeaways": [
+              "Profit % = ((SP - CP) / CP) * 100.",
+              "Marked Price (MP) Discount % = ((MP - SP) / MP) * 100.",
+              "Successive discounts of a% and b% = (a + b - ab/100)%.",
+              "Dishonest dealer profit % = (Error / (True Value - Error)) * 100."
             ]
           },
           {
@@ -198,7 +337,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Using the shortcut formula: Difference = P * (R/100)^2 = 5000 * (10/100)^2 = 5000 * 0.01 = $50."
+              },
+              {
+                "id": "pi-2",
+                "question": "If the price of petrol increases by 25%, by what percentage must a car owner reduce fuel consumption to keep overall expenditure constant?",
+                "options": [
+                  "20%",
+                  "25%",
+                  "16.67%",
+                  "15%"
+                ],
+                "correct_option": 0,
+                "explanation": "Reduction % = [x / (100 + x)] * 100% = [25 / 125] * 100% = (1/5) * 100% = 20%."
+              },
+              {
+                "id": "pi-3",
+                "question": "A sum of money doubles itself in 5 years at a certain rate of simple interest. In how many years will it become 4 times its original principal?",
+                "options": [
+                  "15 years",
+                  "10 years",
+                  "20 years",
+                  "12 years"
+                ],
+                "correct_option": 0,
+                "explanation": "In 5 years, interest earned = P (amount = 2P). To become 4P, interest needed = 3P. Since simple interest grows linearly: Time = 3 * 5 = 15 years."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "TCS Digital",
+              "Infosys",
+              "Accenture",
+              "Tech Mahindra"
+            ],
+            "keyTakeaways": [
+              "If A is x% more than B, B is less than A by [x / (100 + x)] * 100%.",
+              "Simple Interest = (P * R * T) / 100.",
+              "Compound Interest A = P * (1 + R/100)^T.",
+              "Difference between CI and SI for 2 years: D2 = P * (R / 100)^2."
             ]
           },
           {
@@ -220,7 +396,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Using Alligation: (Dearer - Mean) / (Mean - Cheaper) = (45 - 35) / (35 - 30) = 10 / 5 = 2 : 1."
+              },
+              {
+                "id": "rp-2",
+                "question": "If A : B = 2 : 3 and B : C = 4 : 5, what is the combined ratio A : B : C?",
+                "options": [
+                  "8 : 12 : 15",
+                  "6 : 8 : 10",
+                  "2 : 4 : 5",
+                  "8 : 10 : 15"
+                ],
+                "correct_option": 0,
+                "explanation": "Multiply first ratio by 4 and second by 3 to equalize B: A:B = 8:12, B:C = 12:15. Combined A:B:C = 8 : 12 : 15."
+              },
+              {
+                "id": "rp-3",
+                "question": "The ratio of boys to girls in a college is 5 : 3. If 50 boys leave and 50 girls join, the ratio becomes 9 : 7. What was the original number of boys?",
+                "options": [
+                  "500",
+                  "400",
+                  "300",
+                  "600"
+                ],
+                "correct_option": 0,
+                "explanation": "Let boys = 5x, girls = 3x. (5x - 50) / (3x + 50) = 9 / 7 => 35x - 350 = 27x + 450 => 8x = 800 => x = 100. Original boys = 5 * 100 = 500."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Cognizant",
+              "Capgemini",
+              "Wipro",
+              "TCS"
+            ],
+            "keyTakeaways": [
+              "Mean proportional of a and b = sqrt(ab).",
+              "If A:B = a:b and B:C = c:d, then A:B:C = (a*c) : (b*c) : (b*d).",
+              "Alligation formula: (Cheaper / Dearer) = (Dearer Price - Mean) / (Mean - Cheaper Price)."
             ]
           },
           {
@@ -254,7 +466,30 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Inlet rate = (1/8 - 1/12) = 1/24 tank/hr. Inlet fills tank alone in 24 hours. Rate = 6 L/min = 360 L/hr. Capacity = 24 * 360 = 8,640 liters."
+              },
+              {
+                "id": "pc-3",
+                "question": "Three pipes A, B, and C together fill a tank in 6 hours. After working together for 2 hours, pipe C is closed and pipes A and B fill the remaining tank in 7 hours. How long would pipe C alone take to fill the tank?",
+                "options": [
+                  "14 hours",
+                  "12 hours",
+                  "16 hours",
+                  "18 hours"
+                ],
+                "correct_option": 0,
+                "explanation": "Work done by A, B, C in 2 hours = 2/6 = 1/3. Remaining work = 2/3. A and B do 2/3 work in 7 hours => A+B do full work in 7 * (3/2) = 10.5 hours = 21/2 hours. Rate of C = 1/6 - 2/21 = (7 - 4) / 42 = 3/42 = 1/14. C takes 14 hours."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Infosys",
+              "TCS Digital",
+              "Accenture"
+            ],
+            "keyTakeaways": [
+              "Inlet flow rate is positive (+1/A); leak rate is negative (-1/B).",
+              "Net time to fill with leak = (A * B) / (B - A).",
+              "Use LCM method to find total capacity units and individual hourly rates."
             ]
           },
           {
@@ -288,7 +523,29 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Using replacement formula: x * (1 - y/x)^n = 40 * (1 - 4/40)^3 = 40 * (0.9)^3 = 40 * 0.729 = 29.16 liters."
+              },
+              {
+                "id": "ma-3",
+                "question": "A container contains 40 liters of milk. From this, 4 liters of milk is taken out and replaced by water. This process is repeated 2 more times. How much pure milk remains in the container?",
+                "options": [
+                  "29.16 liters",
+                  "30.24 liters",
+                  "28.50 liters",
+                  "32.40 liters"
+                ],
+                "correct_option": 0,
+                "explanation": "Formula: Remaining = Initial * (1 - x/V)^n = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * 0.729 = 29.16 liters."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Amazon",
+              "Flipkart",
+              "TCS Digital"
+            ],
+            "keyTakeaways": [
+              "Repeated replacement formula: Final Liquid = Initial * (1 - x / V)^n.",
+              "Alligation ratio = (Dearer Price - Mean) / (Mean - Cheaper Price)."
             ]
           },
           {
@@ -322,7 +579,31 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "2007 is an ordinary year with 365 days, so it has 1 odd day. Jan 1, 2008 is 1 day after Monday = Tuesday."
+              },
+              {
+                "id": "cc-3",
+                "question": "At what time between 3 o’clock and 4 o’clock will the minute hand and hour hand of a clock coincide?",
+                "options": [
+                  "16 (4/11) minutes past 3",
+                  "15 (5/11) minutes past 3",
+                  "18 minutes past 3",
+                  "16 (2/11) minutes past 3"
+                ],
+                "correct_option": 0,
+                "explanation": "At 3 o'clock, hands are 15 minute spaces apart. Relative speed = 55 min spaces gained in 60 min = 11/12 min spaces per min. Time to gain 15 spaces = 15 * (12/11) = 180 / 11 = 16 (4/11) minutes past 3."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Wipro",
+              "Capgemini",
+              "Infosys",
+              "Cognizant"
+            ],
+            "keyTakeaways": [
+              "Angle between clock hands: θ = |30H - (11/2)M|.",
+              "Normal year has 1 odd day; leap year has 2 odd days.",
+              "Hands of clock coincide 22 times in 24 hours (not 24!)."
             ]
           }
         ]
@@ -353,7 +634,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "Dogs is a subset of Mammals, which is a subset of Animals. Therefore, all dogs are animals (I follows) and since dogs exist, some animals are dogs (II follows)."
+              },
+              {
+                "id": "syl-2",
+                "question": "Statements: All cats are dogs. No dog is a bird. Conclusions: I. No cat is a bird. II. Some dogs are cats.",
+                "options": [
+                  "Both conclusions I and II follow",
+                  "Only conclusion I follows",
+                  "Only conclusion II follows",
+                  "Neither conclusion follows"
+                ],
+                "correct_option": 0,
+                "explanation": "Since all cats are dogs and no dog is a bird, no cat can possibly be a bird (I follows). Since all cats are dogs, some dogs must be cats (II follows). Both follow."
+              },
+              {
+                "id": "syl-3",
+                "question": "Statements: Some papers are pens. All pens are scales. Conclusions: I. Some scales are papers. II. All scales are pens.",
+                "options": [
+                  "Only conclusion I follows",
+                  "Only conclusion II follows",
+                  "Both follow",
+                  "Neither follows"
+                ],
+                "correct_option": 0,
+                "explanation": "Some papers are pens, and all pens are scales, so the papers that are pens are definitely scales (I follows). However, all scales are pens is invalid (II does not follow)."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Amazon",
+              "TCS Digital",
+              "Infosys",
+              "Capgemini"
+            ],
+            "keyTakeaways": [
+              "Universal Affirmative: All A are B. (Does NOT imply All B are A).",
+              "Negative Premise: No A is B. Combines to yield negative conclusions.",
+              "Either-Or condition: Same elements, one affirmative + one negative, neither individually certain."
             ]
           },
           {
@@ -375,7 +692,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Since B is right of A and F is opposite B, F must be to the immediate left of D."
+              },
+              {
+                "id": "sa-2",
+                "question": "Six persons A, B, C, D, E, and F sit around a circular table facing the center. A is opposite to D. B is to the immediate right of A. E is between D and F. Who is sitting opposite to B?",
+                "options": [
+                  "E",
+                  "C",
+                  "F",
+                  "D"
+                ],
+                "correct_option": 0,
+                "explanation": "Placing A at bottom: D is at top. B is immediately right of A. E is between D and F. That leaves C to complete the circle between A and D. Looking across the circle: opposite of B is E."
+              },
+              {
+                "id": "sa-3",
+                "question": "In a linear row of 7 people facing North, P sits fourth from the left end. Q is second to the right of P. R is to the immediate left of Q. What is R’s position from the left end?",
+                "options": [
+                  "5th",
+                  "6th",
+                  "4th",
+                  "3rd"
+                ],
+                "correct_option": 0,
+                "explanation": "P is at index 4 (1-based). Q is 2 places to right => index 4 + 2 = 6th. R is immediately left of Q => index 5 (5th from left end)."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Amazon",
+              "Microsoft",
+              "Goldman Sachs",
+              "TCS Digital"
+            ],
+            "keyTakeaways": [
+              "In circular seating facing center: clockwise is left, anti-clockwise is right.",
+              "Identify definite statements first (e.g., fixed corner or extreme end).",
+              "Map secondary clues relative to already-anchored members."
             ]
           },
           {
@@ -397,7 +750,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Only daughter of the speaker's mother is the woman herself. Therefore, 'His mother is me', meaning she is his mother."
+              },
+              {
+                "id": "br-2",
+                "question": "Pointing to a photograph, a woman says: \"He is the only son of the father of my daughter’s father.\" How is the man in the photograph related to the woman?",
+                "options": [
+                  "Husband",
+                  "Brother",
+                  "Father",
+                  "Father-in-law"
+                ],
+                "correct_option": 0,
+                "explanation": "\"My daughter’s father\" is the woman’s husband. \"Father of my daughter’s father\" is her father-in-law. \"Only son of her father-in-law\" is her husband."
+              },
+              {
+                "id": "br-3",
+                "question": "If A + B means A is the brother of B; A - B means A is the sister of B; and A * B means A is the father of B. Which expression indicates that M is the niece of N?",
+                "options": [
+                  "N + K * M - P",
+                  "N - M * K",
+                  "N + M - K",
+                  "M - P * N"
+                ],
+                "correct_option": 0,
+                "explanation": "In N + K * M - P: N is brother of K, K is father of M, and M is sister of P (female). Since K is brother of N, K's daughter M is the niece of N."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Infosys",
+              "Wipro",
+              "Cognizant",
+              "TCS"
+            ],
+            "keyTakeaways": [
+              "Break statement backwards from the speaker (\"my mother's only son\").",
+              "Draw generational tree: Horizontal for siblings/spouses, Vertical for parent/child.",
+              "Never assume gender purely from name unless explicitly stated."
             ]
           },
           {
@@ -419,7 +808,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Using the Pythagorean theorem: distance = sqrt(3^2 + 4^2) = sqrt(9 + 16) = sqrt(25) = 5 km."
+              },
+              {
+                "id": "cd-2",
+                "question": "If in a code language, ROSE is written as 6821, CHAIR is written as 73456, and PREACH is written as 961473, what is the code for SEARCH?",
+                "options": [
+                  "214673",
+                  "214573",
+                  "216473",
+                  "241673"
+                ],
+                "correct_option": 0,
+                "explanation": "Direct letter substitution: S=2, E=1, A=4, R=6, C=7, H=3. Hence SEARCH = 214673."
+              },
+              {
+                "id": "cd-3",
+                "question": "In a certain code, COMPUTER is written as RFUVQNPC. Following the same rule, how will MEDICINE be written?",
+                "options": [
+                  "EOJDJEFM",
+                  "EOJDEJFM",
+                  "MFEJDJOE",
+                  "EOJDJFEM"
+                ],
+                "correct_option": 0,
+                "explanation": "The word is reversed, and each intermediate letter is replaced by its next alphabet (+1): R -> R, E+1=F, T+1=U, U+1=V, P+1=Q, M+1=N, O+1=P, C -> C. For MEDICINE: First and last swapped (E ... M), middle letters +1: E, N+1=O, I+1=J, C+1=D, I+1=J, D+1=E, E+1=F, M => EOJDJEFM."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Accenture",
+              "Capgemini",
+              "TCS",
+              "Infosys"
+            ],
+            "keyTakeaways": [
+              "Number alphabetical ranks: A=1, Z=26; reverse rank: 27 - rank.",
+              "Check standard shift patterns (+1, -1, +2, reverse sequence).",
+              "Cross-check direct letter-to-symbol substitutions."
             ]
           },
           {
@@ -441,7 +866,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Distance = sqrt(12^2 + 5^2) = sqrt(144 + 25) = sqrt(169) = 13 km. Direction is North-East."
+              },
+              {
+                "id": "ds-2",
+                "question": "A man walks 30m North, then turns right and walks 40m. How far and in which direction is he from his original starting point?",
+                "options": [
+                  "50m North-East",
+                  "70m North-East",
+                  "50m South-East",
+                  "40m North"
+                ],
+                "correct_option": 0,
+                "explanation": "Forms a right-angled triangle: Distance = sqrt(30^2 + 40^2) = sqrt(900 + 1600) = sqrt(2500) = 50m. Direction from origin is North-East."
+              },
+              {
+                "id": "ds-3",
+                "question": "One morning after sunrise, Gopal was standing facing a pole. The shadow of the pole fell exactly to Gopal’s right. Which direction was Gopal facing?",
+                "options": [
+                  "South",
+                  "North",
+                  "East",
+                  "West"
+                ],
+                "correct_option": 0,
+                "explanation": "In the morning, the sun is in the East, so shadows fall toward the West. For the shadow to fall to Gopal's right, West must be to his right, which means Gopal is facing South."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Cognizant",
+              "Wipro",
+              "Tech Mahindra",
+              "TCS"
+            ],
+            "keyTakeaways": [
+              "Right turn is 90° clockwise; Left turn is 90° anti-clockwise.",
+              "Pythagorean theorem: Distance = sqrt(Δx^2 + Δy^2).",
+              "Morning shadow falls towards West; evening shadow falls towards East."
             ]
           },
           {
@@ -463,7 +924,42 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "Recommending a specialist assumes specialists are more capable (I) and that consultation can help cure the issue (II)."
+              },
+              {
+                "id": "sa-assump-2",
+                "question": "Statement: \"Please do not lean out of the train window while the train is in motion.\" Assumptions: I. Leaning out of moving trains can cause severe injury. II. Passengers generally adhere to safety notices.",
+                "options": [
+                  "Both assumptions I and II are implicit",
+                  "Only assumption I is implicit",
+                  "Only assumption II is implicit",
+                  "Neither is implicit"
+                ],
+                "correct_option": 0,
+                "explanation": "The authority puts the warning because the act carries risk (I is implicit) and expects passengers to read and comply (II is implicit). Both are implicit."
+              },
+              {
+                "id": "sa-assump-3",
+                "question": "Statement: \"Enroll in StackUp’s core curriculum to crack Tier-1 software engineering technical screening tests.\" Assumptions: I. Students aspire to crack software engineering tests. II. StackUp provides targeted interview preparation.",
+                "options": [
+                  "Both I and II are implicit",
+                  "Only I is implicit",
+                  "Only II is implicit",
+                  "Neither is implicit"
+                ],
+                "correct_option": 0,
+                "explanation": "The statement assumes people have the goal of cracking tech interviews (I) and that the platform delivers the relevant preparation for that goal (II). Both are implicit."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "TCS Digital",
+              "Infosys SP",
+              "Amazon"
+            ],
+            "keyTakeaways": [
+              "An assumption is something presupposed, taken for granted, before making the statement.",
+              "Assumptions must be logically implicit, not external speculation.",
+              "Words like \"only\", \"always\", \"best\" usually weaken an assumption unless explicit."
             ]
           }
         ]
@@ -494,7 +990,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Percentage = (72 / 360) * 100 = 1/5 * 100 = 20%."
+              },
+              {
+                "id": "di-2",
+                "question": "In a company pie chart, Engineering accounts for 108° of the total 360°. If the company has 2,400 employees, how many work in Engineering?",
+                "options": [
+                  "720",
+                  "640",
+                  "800",
+                  "750"
+                ],
+                "correct_option": 0,
+                "explanation": "Fraction = 108 / 360 = 3 / 10 = 30%. Engineering employees = 30% of 2,400 = 720."
+              },
+              {
+                "id": "di-3",
+                "question": "A company’s revenue grew from $200k in 2021 to $320k in 2024. What was the total percentage increase in revenue over this 3-year period?",
+                "options": [
+                  "60%",
+                  "50%",
+                  "40%",
+                  "65%"
+                ],
+                "correct_option": 0,
+                "explanation": "Percentage increase = ((320 - 200) / 200) * 100% = (120 / 200) * 100% = 60%."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Amazon",
+              "Flipkart",
+              "TCS Digital",
+              "Cognizant"
+            ],
+            "keyTakeaways": [
+              "Pie chart degree to percentage: % = (Degrees / 360) * 100.",
+              "Percentage Growth = ((Final - Initial) / Initial) * 100%.",
+              "Always simplify ratios before calculating large multiplied values."
             ]
           },
           {
@@ -516,7 +1048,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "'Neither' is a singular distributive pronoun and requires the singular verb 'has' and singular pronouns."
+              },
+              {
+                "id": "sc-2",
+                "question": "Identify the sentence with the correct subject-verb agreement:",
+                "options": [
+                  "Neither the manager nor the engineers were aware of the production outage.",
+                  "Neither the manager nor the engineers was aware of the production outage.",
+                  "Neither the engineers nor the manager were aware of the production outage.",
+                  "Neither the manager or the engineers was aware of the production outage."
+                ],
+                "correct_option": 0,
+                "explanation": "In \"neither...nor\" constructions, the verb agrees with the subject closest to it. Here \"engineers\" is plural and adjacent to the verb, so the plural verb \"were\" is grammatically correct."
+              },
+              {
+                "id": "sc-3",
+                "question": "Choose the grammatically correct option to complete: \"The lead architect, together with his entire development team, ______ attending the conference.\"",
+                "options": [
+                  "is",
+                  "are",
+                  "were",
+                  "have been"
+                ],
+                "correct_option": 0,
+                "explanation": "Parenthetical phrases introduced by \"together with\", \"as well as\", or \"along with\" do not compound the subject. The true subject is \"The lead architect\" (singular), so the verb must be singular \"is\"."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "TCS",
+              "Infosys",
+              "Accenture",
+              "Cognizant"
+            ],
+            "keyTakeaways": [
+              "Neither...nor takes the verb agreeing with the closest subject.",
+              "Collective nouns (team, group) take singular verbs when acting as a single unit.",
+              "Modifier placement: Modifying phrases must be right next to the noun they modify."
             ]
           }
         ]
@@ -566,7 +1134,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Because threads share memory mappings, the CPU TLB (Translation Lookaside Buffer) does not need to be completely invalidated during a thread switch within the same process."
+              },
+              {
+                "id": "pt-3",
+                "question": "Which of the following resources is NOT shared between multiple threads belonging to the same process?",
+                "options": [
+                  "Call stack & registers",
+                  "Heap memory",
+                  "Global variables",
+                  "Open file descriptors"
+                ],
+                "correct_option": 0,
+                "explanation": "Each thread executes its own sequence of function calls and requires an independent call stack and set of CPU registers. Heap, global variables, and open file descriptors are shared across the process."
+              },
+              {
+                "id": "pt-4",
+                "question": "What is a \"Zombie Process\" in Unix/Linux operating systems?",
+                "options": [
+                  "A process that has terminated, but its exit status has not yet been read by its parent via wait()",
+                  "A process whose parent terminated, leaving it adopted by init/systemd",
+                  "A process blocked indefinitely waiting on a deadlocked mutex",
+                  "A process consuming 100% CPU in an infinite loop"
+                ],
+                "correct_option": 0,
+                "explanation": "A zombie process has finished execution but remains in the OS process table to allow its parent process to read its exit code via wait(). An orphan process is one whose parent died before it did."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Google",
+              "Microsoft",
+              "Amazon",
+              "Meta"
+            ],
+            "keyTakeaways": [
+              "Processes have isolated virtual address spaces; threads share heap, code, data, and open files.",
+              "Threads have private program counters, registers, and stacks.",
+              "Thread context switching is significantly faster due to shared page table caches (no TLB flush).",
+              "Zombie process: finished execution but retains entry in process table until parent calls wait()."
             ]
           },
           {
@@ -588,7 +1193,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "Strict global numbering and increasing order resource allocation mathematically eliminates the possibility of a circular dependency graph (Circular Wait)."
+              },
+              {
+                "id": "dl-2",
+                "question": "Which algorithm is famously employed by operating systems for Deadlock Avoidance by checking if granting a request leaves the system in a \"Safe State\"?",
+                "options": [
+                  "Banker's Algorithm",
+                  "Round Robin Algorithm",
+                  "SSTF Algorithm",
+                  "Peterson's Algorithm"
+                ],
+                "correct_option": 0,
+                "explanation": "Dijkstra's Banker's Algorithm tests for safety by simulating the allocation of predetermined maximum possible amounts of all resources, preventing entering an unsafe state."
+              },
+              {
+                "id": "dl-3",
+                "question": "In a Resource Allocation Graph (RAG) where every resource type has exactly one instance, what does the existence of a directed cycle indicate?",
+                "options": [
+                  "Deadlock is guaranteed to exist",
+                  "Deadlock may or may not exist",
+                  "System is in a starvation state only",
+                  "Deadlock is impossible"
+                ],
+                "correct_option": 0,
+                "explanation": "For single-instance resource types, a cycle in the Resource Allocation Graph is both a necessary and sufficient condition for deadlock."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Amazon",
+              "Microsoft",
+              "Oracle",
+              "Adobe"
+            ],
+            "keyTakeaways": [
+              "4 Coffman Conditions: Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.",
+              "Banker's Algorithm: Used for deadlock avoidance by verifying safe states before allocation.",
+              "In single-instance RAG, a cycle is necessary and sufficient for deadlock."
             ]
           },
           {
@@ -610,7 +1251,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "SJF is provably optimal because scheduling short jobs first reduces the waiting time of all subsequent jobs the most."
+              },
+              {
+                "id": "cs-2",
+                "question": "Which CPU scheduling algorithm is prone to the \"Convoy Effect\", where short CPU-bound processes queue behind a long CPU-burst process?",
+                "options": [
+                  "First-Come, First-Served (FCFS)",
+                  "Round Robin (RR)",
+                  "Shortest Remaining Time First (SRTF)",
+                  "Multi-level Feedback Queue"
+                ],
+                "correct_option": 0,
+                "explanation": "In FCFS, when a long process holds the CPU, all subsequent shorter I/O-bound or CPU-bound processes are delayed, causing the convoy effect and low resource utilization."
+              },
+              {
+                "id": "cs-3",
+                "question": "What is the primary practical drawback of the Shortest Job First (SJF) scheduling algorithm in real operating systems?",
+                "options": [
+                  "It is impossible to know the exact length of the next CPU burst in advance",
+                  "It causes excessive thrashing in virtual memory",
+                  "It cannot be implemented with preemption",
+                  "It has the highest context switching overhead"
+                ],
+                "correct_option": 0,
+                "explanation": "SJF requires knowing the exact duration of upcoming CPU bursts beforehand, which is impossible in general-purpose computing and must instead be approximated using exponential smoothing."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Google",
+              "Amazon",
+              "Cisco",
+              "Qualcomm"
+            ],
+            "keyTakeaways": [
+              "SJF (Shortest Job First) is provably optimal for minimizing average waiting time.",
+              "FCFS suffers from the Convoy Effect (short processes waiting behind long CPU bursts).",
+              "Round Robin (RR) with time quantum provides minimum average response time for interactive systems."
             ]
           },
           {
@@ -632,7 +1309,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "FIFO does not satisfy the stack property, meaning the set of pages in memory for n frames is not guaranteed to be a subset of that for n+1 frames, causing Belady's Anomaly."
+              },
+              {
+                "id": "mp-2",
+                "question": "What is Bélády’s Anomaly in operating systems virtual memory management?",
+                "options": [
+                  "The phenomenon where increasing the number of page frames results in an increase in page faults under FIFO",
+                  "A page fault occurring while servicing another page fault",
+                  "Memory thrashing caused by excessive thread creation",
+                  "Fragmentation occurring when segment sizes exceed page frame boundaries"
+                ],
+                "correct_option": 0,
+                "explanation": "Bélády's Anomaly proves that for certain page reference strings, the FIFO page replacement algorithm experiences more page faults when given more physical memory frames."
+              },
+              {
+                "id": "mp-3",
+                "question": "What is the primary function of the Translation Lookaside Buffer (TLB)?",
+                "options": [
+                  "High-speed hardware cache for page table translations (Virtual Page Number to Frame Number)",
+                  "Secondary storage partition for inactive process pages (swap space)",
+                  "Registers holding process state during context switches",
+                  "L1 cache holding instruction code for pipelined execution"
+                ],
+                "correct_option": 0,
+                "explanation": "The TLB is an associative, high-speed hardware cache on the MMU that stores recent virtual-to-physical address mappings, drastically speeding up memory address translation."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Google",
+              "Microsoft",
+              "Intel",
+              "Apple"
+            ],
+            "keyTakeaways": [
+              "Paging eliminates external fragmentation but introduces internal fragmentation within frames.",
+              "TLB (Translation Lookaside Buffer) caches recent Virtual-to-Physical page translations in hardware.",
+              "Bélády's Anomaly: In FIFO page replacement, allocating MORE page frames can cause MORE page faults."
             ]
           },
           {
@@ -654,7 +1367,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "A Mutex has an ownership concept: only the thread that locks it may unlock it. A semaphore is a signaling mechanism: any thread can invoke signal(S) to unblock a waiting thread."
+              },
+              {
+                "id": "ipc-2",
+                "question": "What is the key functional difference between a Binary Semaphore and a Mutex?",
+                "options": [
+                  "A Mutex has ownership semantics (only the thread that locked it can unlock it); a Semaphore can be signaled by any thread",
+                  "A Mutex can take integer values up to N; a Semaphore can only take 0 and 1",
+                  "A Semaphore cannot be used for inter-process synchronization",
+                  "A Mutex is implemented purely in user space without kernel support"
+                ],
+                "correct_option": 0,
+                "explanation": "A mutex enforces ownership: only the thread that acquired the mutex is permitted to release it. Semaphores are signaling primitives where one thread can signal (V/post) a semaphore that was locked (P/wait) by another."
+              },
+              {
+                "id": "ipc-3",
+                "question": "What protocol solves the \"Priority Inversion\" problem in real-time operating systems?",
+                "options": [
+                  "Priority Inheritance Protocol",
+                  "Round Robin Scheduling",
+                  "Banker's Protocol",
+                  "Peterson’s Lockout"
+                ],
+                "correct_option": 0,
+                "explanation": "Under Priority Inheritance, when a lower-priority task holds a resource requested by a higher-priority task, the lower-priority task temporarily inherits the higher priority until it releases the resource."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Microsoft",
+              "Amazon",
+              "Meta",
+              "Uber"
+            ],
+            "keyTakeaways": [
+              "Mutex: Mutual exclusion locking mechanism with ownership (thread that locks must unlock).",
+              "Semaphore: Signaling mechanism without ownership; can be binary (0/1) or counting (0..N).",
+              "Priority Inversion: Low-priority thread holding lock needed by high-priority thread gets preempted by medium-priority thread."
             ]
           },
           {
@@ -676,7 +1425,42 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "C-SCAN treats cylinders as a circular list, moving in one direction only and returning directly to start, ensuring uniform wait times without starvation."
+              },
+              {
+                "id": "ds-disk-2",
+                "question": "Why is C-SCAN (Circular SCAN) often preferred over standard SCAN in busy disk subsystems?",
+                "options": [
+                  "It provides a more uniform waiting time across all track cylinders",
+                  "It completely eliminates rotational latency",
+                  "It guarantees zero starvation without needing elevator algorithms",
+                  "It moves the disk arm faster on return strokes"
+                ],
+                "correct_option": 0,
+                "explanation": "In SCAN, cylinders near the ends are visited less frequently than middle cylinders. C-SCAN treats cylinders as a circular list, servicing in one direction and returning to the beginning, yielding a uniform waiting time distribution."
+              },
+              {
+                "id": "ds-disk-3",
+                "question": "What is the main drawback of the Shortest Seek Time First (SSTF) disk scheduling algorithm?",
+                "options": [
+                  "Starvation of requests located far from the current head position",
+                  "Excessive head movement compared to FCFS",
+                  "Inability to handle read requests while writing",
+                  "High rotational latency on solid-state drives"
+                ],
+                "correct_option": 0,
+                "explanation": "SSTF always picks the closest request to the current head position. If a stream of close requests arrives, distant cylinders may starve indefinitely."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Western Digital",
+              "Cisco",
+              "Amazon"
+            ],
+            "keyTakeaways": [
+              "Seek time is the dominant factor in mechanical disk access latency.",
+              "SSTF minimizes seek time locally but can cause starvation for far tracks.",
+              "SCAN (Elevator algorithm) sweeps back and forth; C-SCAN sweeps in one direction and resets."
             ]
           },
           {
@@ -698,7 +1482,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "fork() returns 0 in the child process and the child PID in the parent process, allowing code to branch based on identity."
+              },
+              {
+                "id": "sc-linux-2",
+                "question": "In Unix/Linux, what does the fork() system call return to the newly created child process upon success?",
+                "options": [
+                  "0",
+                  "The PID of the parent",
+                  "The PID of the child",
+                  "1"
+                ],
+                "correct_option": 0,
+                "explanation": "fork() returns 0 to the child process, allowing it to determine its role, and returns the child’s new non-zero PID to the parent process."
+              },
+              {
+                "id": "sc-linux-3",
+                "question": "Why is the Linux epoll system call significantly more scalable than select() and poll() for high-concurrency servers?",
+                "options": [
+                  "epoll uses an event-driven kernel callback mechanism with O(1) readiness lookups instead of scanning all file descriptors O(N)",
+                  "epoll runs entirely in kernel space without user-space buffer copying",
+                  "epoll automatically handles thread pooling and CPU core pinning",
+                  "epoll does not require non-blocking sockets"
+                ],
+                "correct_option": 0,
+                "explanation": "select() and poll() require the operating system to iterate over all monitored file descriptors O(N) every poll. epoll registers callbacks and returns only the descriptors with ready I/O events in O(1) time."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Google",
+              "Meta",
+              "Netflix",
+              "Red Hat"
+            ],
+            "keyTakeaways": [
+              "fork() creates an identical child process; returns 0 to child, child PID to parent, -1 on error.",
+              "execve() replaces the current process image with a new executable without changing the PID.",
+              "epoll is O(1) event notification scaling to tens of thousands of concurrent connections."
             ]
           }
         ]
@@ -741,7 +1561,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Write-Ahead Logging (WAL) writes changes to non-volatile append-only logs before applying them to data pages, allowing recovery of committed transactions and rollback of incomplete ones."
+              },
+              {
+                "id": "acid-3",
+                "question": "Which ANSI SQL transaction isolation level prevents Dirty Reads and Non-Repeatable Reads, but may still permit Phantom Reads?",
+                "options": [
+                  "Repeatable Read",
+                  "Read Committed",
+                  "Serializable",
+                  "Read Uncommitted"
+                ],
+                "correct_option": 0,
+                "explanation": "Repeatable Read locks all rows read by queries so other transactions cannot modify them, preventing dirty and non-repeatable reads. However, range queries may still encounter newly inserted rows (phantoms)."
+              },
+              {
+                "id": "acid-4",
+                "question": "What fundamental logging protocol ensures both Atomicity and Durability in relational database crash recovery?",
+                "options": [
+                  "Write-Ahead Logging (WAL)",
+                  "Shadow Paging",
+                  "Two-Phase Commit",
+                  "Event Sourcing"
+                ],
+                "correct_option": 0,
+                "explanation": "Write-Ahead Logging dictates that changes and commit records must be appended and flushed to non-volatile disk logs before dirty database data pages are written to disk, ensuring complete recovery."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Amazon",
+              "Google",
+              "Stripe",
+              "Oracle"
+            ],
+            "keyTakeaways": [
+              "Atomicity: All operations succeed or all roll back (WAL protocol).",
+              "Consistency: Transactions move DB from one valid state to another satisfying constraints.",
+              "Isolation levels: Read Uncommitted < Read Committed < Repeatable Read < Serializable.",
+              "Durability: Committed updates survive system crashes (fsync to disk / WAL)."
             ]
           },
           {
@@ -763,7 +1620,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "2NF specifically eliminates partial dependencies where a non-prime attribute depends only on part of a composite primary key."
+              },
+              {
+                "id": "norm-2",
+                "question": "What condition distinguishes Boyce-Codd Normal Form (BCNF) from Third Normal Form (3NF)?",
+                "options": [
+                  "For every functional dependency X -> Y, X must strictly be a Superkey",
+                  "Table must not contain foreign keys",
+                  "All columns must have unique constraints",
+                  "Every attribute must be a prime attribute"
+                ],
+                "correct_option": 0,
+                "explanation": "In 3NF, for X -> Y, either X is a superkey OR Y is a prime attribute. BCNF removes the second relaxation: X must strictly be a superkey for every non-trivial functional dependency."
+              },
+              {
+                "id": "norm-3",
+                "question": "Elimination of partial dependency (where a non-prime attribute depends on a proper subset of a composite candidate key) transitions a table into which normal form?",
+                "options": [
+                  "Second Normal Form (2NF)",
+                  "Third Normal Form (3NF)",
+                  "First Normal Form (1NF)",
+                  "BCNF"
+                ],
+                "correct_option": 0,
+                "explanation": "A relation is in 2NF if it is in 1NF and contains no partial functional dependencies on any candidate key."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Microsoft",
+              "Oracle",
+              "TCS",
+              "Infosys"
+            ],
+            "keyTakeaways": [
+              "1NF: Atomic values, no repeating groups.",
+              "2NF: 1NF + No partial dependencies (every non-key attribute fully dependent on composite primary key).",
+              "3NF: 2NF + No transitive dependencies.",
+              "BCNF: For every functional dependency X -> Y, X must be a superkey."
             ]
           },
           {
@@ -785,7 +1679,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "If two rows tie for rank 1, RANK() gives 1, 1, 3 for the third row, while DENSE_RANK() gives 1, 1, 2."
+              },
+              {
+                "id": "sql-2",
+                "question": "What is the key difference between the SQL window functions RANK() and DENSE_RANK() when duplicate values occur?",
+                "options": [
+                  "RANK() skips ranks following duplicate ties (e.g. 1, 2, 2, 4); DENSE_RANK() leaves no gaps (1, 2, 2, 3)",
+                  "DENSE_RANK() only works with descending orders",
+                  "RANK() requires an explicit PARTITION BY clause while DENSE_RANK() does not",
+                  "DENSE_RANK() returns fractional percentiles instead of integer ranks"
+                ],
+                "correct_option": 0,
+                "explanation": "When ties occur, RANK() produces gaps equal to the tie count (e.g., 1, 2, 2, 4). DENSE_RANK() increments sequentially without gaps (e.g., 1, 2, 2, 3)."
+              },
+              {
+                "id": "sql-3",
+                "question": "What is the correct logical order of query execution in a standard SQL SELECT statement?",
+                "options": [
+                  "FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT",
+                  "SELECT -> FROM -> WHERE -> GROUP BY -> ORDER BY",
+                  "FROM -> SELECT -> WHERE -> HAVING -> ORDER BY",
+                  "WHERE -> FROM -> GROUP BY -> SELECT -> ORDER BY"
+                ],
+                "correct_option": 0,
+                "explanation": "The SQL query engine evaluates tables (FROM/JOIN), filters rows (WHERE), aggregates (GROUP BY), filters groups (HAVING), extracts projections (SELECT), sorts (ORDER BY), and limits pagination (LIMIT)."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Amazon",
+              "Uber",
+              "Goldman Sachs",
+              "Meta"
+            ],
+            "keyTakeaways": [
+              "SQL logical execution order: FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT.",
+              "RANK() leaves gaps in sequence for ties (1, 2, 2, 4); DENSE_RANK() leaves no gaps (1, 2, 2, 3).",
+              "COUNT(column) ignores NULLs; COUNT(*) counts all rows including NULLs."
             ]
           },
           {
@@ -807,7 +1737,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "B+ tree internal nodes only store navigation keys (increasing fanout), and all leaf nodes form a contiguous linked list, making range queries extremely efficient with sequential disk reads."
+              },
+              {
+                "id": "idx-2",
+                "question": "Why are B+ Trees overwhelmingly preferred over standard B-Trees for relational database disk indexing?",
+                "options": [
+                  "All records are stored in leaf nodes linked sequentially, making range queries and full table scans fast",
+                  "B+ trees do not require disk rebalancing during insertions",
+                  "B+ trees have O(1) worst-case lookup time",
+                  "B+ trees consume zero memory cache overhead"
+                ],
+                "correct_option": 0,
+                "explanation": "In B+ trees, all record pointers are confined to leaf nodes linked in sequence, allowing rapid range scans by following leaf pointers, while internal nodes hold only keys, maximizing branching fanout."
+              },
+              {
+                "id": "idx-3",
+                "question": "What is a \"Covering Index\" in SQL databases?",
+                "options": [
+                  "An index that contains all columns requested by a query, allowing the DB to resolve the query without accessing table heap pages",
+                  "An index applied across all tables in a schema",
+                  "A clustered index covering the primary key alone",
+                  "An index that covers NULL values exclusively"
+                ],
+                "correct_option": 0,
+                "explanation": "A covering index includes all fields in the SELECT, WHERE, and JOIN clauses. The engine satisfies the entire query directly from index memory without performing secondary lookups into the heap."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Google",
+              "Amazon",
+              "Microsoft",
+              "Databricks"
+            ],
+            "keyTakeaways": [
+              "B+ Tree stores all actual data records/pointers in leaf nodes linked as a doubly-linked list.",
+              "Internal nodes store only routing keys, allowing high fan-out and shallow tree height (3-4 I/O lookups).",
+              "Covering index satisfies query entirely from index leaf nodes without fetching table heap pages."
             ]
           },
           {
@@ -829,7 +1795,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Network delays and packet loss will always happen across physical networks, making Partition Tolerance (P) mandatory."
+              },
+              {
+                "id": "cap-2",
+                "question": "According to Brewer’s CAP Theorem, when a network partition (P) occurs in a distributed database cluster, what trade-off must be made?",
+                "options": [
+                  "Choose between Consistency (rejecting updates to keep state identical) or Availability (accepting updates that may diverge)",
+                  "Choose between Relational normalization and NoSQL document storage",
+                  "Choose between disk storage and in-memory caching",
+                  "Choose between horizontal and vertical scaling"
+                ],
+                "correct_option": 0,
+                "explanation": "Network partitions are inevitable in real networks. When nodes cannot communicate, the system must either refuse writes to guarantee consistency (CP) or accept writes on isolated nodes sacrificing immediate consistency (AP)."
+              },
+              {
+                "id": "cap-3",
+                "question": "What does the acronym BASE stand for in distributed NoSQL database architectures?",
+                "options": [
+                  "Basically Available, Soft state, Eventual consistency",
+                  "Binary Access, Scalable Execution, Encrypted",
+                  "Buffered Asynchronous Synchronized Entities",
+                  "Balanced Allocation, Segmented Execution"
+                ],
+                "correct_option": 0,
+                "explanation": "BASE contrasts with ACID: Basically Available (system remains functional), Soft state (state may change over time without inputs due to replication), and Eventual consistency."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Netflix",
+              "Meta",
+              "Amazon",
+              "Uber"
+            ],
+            "keyTakeaways": [
+              "CAP Theorem: In the event of a network partition (P), a distributed system must choose Consistency (C) or Availability (A).",
+              "BASE model: Basically Available, Soft state, Eventual consistency.",
+              "Cassandra and DynamoDB are AP (high availability + partition tolerance + eventual consistency)."
             ]
           },
           {
@@ -851,7 +1853,42 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "2PL guarantees that any concurrent execution schedule is conflict serializable, though it can still suffer from deadlocks."
+              },
+              {
+                "id": "c2pl-2",
+                "question": "Does standard Two-Phase Locking (2PL) prevent deadlocks in relational databases?",
+                "options": [
+                  "No, 2PL guarantees serializability but can still result in deadlocks",
+                  "Yes, 2PL completely prevents deadlocks by design",
+                  "Yes, because locks are acquired simultaneously at transaction start",
+                  "No, 2PL causes starvation but never deadlock"
+                ],
+                "correct_option": 0,
+                "explanation": "2PL guarantees conflict serializable schedules, but transactions can still request locks in conflicting orders, leading to deadlocks that require timeout or wait-for graph cycle detection."
+              },
+              {
+                "id": "c2pl-3",
+                "question": "What distinguishes Strict Two-Phase Locking (Strict 2PL) from standard 2PL?",
+                "options": [
+                  "All Exclusive (X) locks must be held until the transaction explicitly commits or rolls back",
+                  "Transactions cannot acquire Shared locks",
+                  "No locks can be acquired after the first read operation",
+                  "Locking is managed entirely without database recovery logs"
+                ],
+                "correct_option": 0,
+                "explanation": "In Strict 2PL, a transaction must hold all its exclusive (write) locks until it terminates (commits or aborts), which eliminates cascading rollbacks."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Oracle",
+              "Microsoft",
+              "Amazon"
+            ],
+            "keyTakeaways": [
+              "Two-Phase Locking (2PL): Growing Phase (acquires locks, no releases) -> Shrinking Phase (releases locks, no acquisitions).",
+              "2PL guarantees conflict serializability but DOES NOT prevent deadlocks.",
+              "Strict 2PL: All exclusive (X) locks held until transaction commits or aborts (prevents cascading rollbacks)."
             ]
           }
         ]
@@ -882,7 +1919,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "TIME_WAIT lasts 2 * MSL (Maximum Segment Lifetime). It ensures that if the final ACK was lost, retransmitted FIN segments can be answered, and stale duplicate segments cannot interfere with a new connection."
+              },
+              {
+                "id": "tcp-2",
+                "question": "What is the purpose of the TIME_WAIT state in the TCP connection termination process?",
+                "options": [
+                  "To ensure the final ACK was received by the remote endpoint and to allow lingering duplicate segments to expire (2 MSL)",
+                  "To keep the socket buffer warm for immediate reconnection",
+                  "To calculate round-trip time (RTT) for future packets",
+                  "To renegotiate encryption keys before closing"
+                ],
+                "correct_option": 0,
+                "explanation": "TIME_WAIT holds the connection closed for 2 * Maximum Segment Lifetime (2 MSL) so that the remote peer receives the final ACK, and prevents late-arriving packets from interfering with a future new connection on the same port."
+              },
+              {
+                "id": "tcp-3",
+                "question": "What mechanism in TCP prevents a fast sender from overwhelming a slow receiver’s buffer capacity?",
+                "options": [
+                  "Flow Control (Sliding Window)",
+                  "Congestion Control (Slow Start)",
+                  "DNS Throttling",
+                  "Nagle’s Algorithm"
+                ],
+                "correct_option": 0,
+                "explanation": "Flow Control uses the TCP Receive Window (rwnd) field advertised by the receiver to inform the sender how many bytes of buffer capacity remain available."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Cisco",
+              "Cloudflare",
+              "Google",
+              "Amazon"
+            ],
+            "keyTakeaways": [
+              "TCP 3-Way Handshake: SYN -> SYN-ACK -> ACK.",
+              "TCP 4-Way Teardown: FIN -> ACK -> FIN -> ACK.",
+              "TIME_WAIT state lasts 2 * MSL (Maximum Segment Lifetime) to ensure delayed packets clear and final ACK is received."
             ]
           },
           {
@@ -904,7 +1977,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Routers inspect destination IP headers and consult routing tables at the Network Layer (Layer 3). Switches typically operate at Layer 2 (MAC addresses)."
+              },
+              {
+                "id": "osi-2",
+                "question": "What is the Protocol Data Unit (PDU) at the Transport Layer of the OSI model called?",
+                "options": [
+                  "Segment (or Datagram for UDP)",
+                  "Packet",
+                  "Frame",
+                  "Bit"
+                ],
+                "correct_option": 0,
+                "explanation": "At Layer 4 (Transport), data is encapsulated into Segments (TCP) or Datagrams (UDP). Layer 3 uses Packets, Layer 2 uses Frames, and Layer 1 transmits Bits."
+              },
+              {
+                "id": "osi-3",
+                "question": "Which layer of the OSI model handles data format translation, character encoding, and encryption/compression?",
+                "options": [
+                  "Presentation Layer (Layer 6)",
+                  "Session Layer (Layer 5)",
+                  "Application Layer (Layer 7)",
+                  "Transport Layer (Layer 4)"
+                ],
+                "correct_option": 0,
+                "explanation": "The Presentation Layer is responsible for syntax conversion, data formatting (e.g., ASCII, UTF-8, JPEG), and encryption/decryption between the application and network."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Cisco",
+              "Juniper",
+              "TCS",
+              "Infosys"
+            ],
+            "keyTakeaways": [
+              "OSI 7 Layers: Physical, Data Link, Network, Transport, Session, Presentation, Application.",
+              "PDUs: Bits (Physical), Frames (Data Link), Packets (Network), Segments (Transport), Data (Application).",
+              "Routers operate at Layer 3; traditional switches operate at Layer 2."
             ]
           },
           {
@@ -926,7 +2035,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "CNAME (Canonical Name) creates an alias pointing to the canonical domain name."
+              },
+              {
+                "id": "dns-2",
+                "question": "Which DNS record type maps a domain name directly to an IPv6 address?",
+                "options": [
+                  "AAAA record",
+                  "A record",
+                  "CNAME record",
+                  "PTR record"
+                ],
+                "correct_option": 0,
+                "explanation": "An \"A\" record maps a hostname to a 32-bit IPv4 address, whereas a \"AAAA\" (quad-A) record maps a hostname to a 128-bit IPv6 address."
+              },
+              {
+                "id": "dns-3",
+                "question": "What is the role of an Authoritative DNS Server in the DNS lookup process?",
+                "options": [
+                  "It holds the definitive, verified DNS records for a specific domain zone",
+                  "It caches queries for client ISPs",
+                  "It is the 13 root servers coordinating global top-level domains",
+                  "It encrypts browser HTTPS traffic"
+                ],
+                "correct_option": 0,
+                "explanation": "Authoritative DNS servers are the source of truth for specific domain names; they provide the final IP answer to the recursive resolver."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Cloudflare",
+              "Google",
+              "Amazon",
+              "Meta"
+            ],
+            "keyTakeaways": [
+              "Resolution hierarchy: Browser Cache -> OS Cache -> Recursive Resolver -> Root Server -> TLD Server -> Authoritative Server.",
+              "A record = IPv4; AAAA record = IPv6; CNAME = Canonical Name alias; MX = Mail exchange.",
+              "TTL (Time to Live) governs how long resolvers cache DNS records."
             ]
           },
           {
@@ -948,7 +2093,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "HTTP/3 uses QUIC running over UDP, allowing independent multiplexed streams where packet loss on one stream does not stall other streams."
+              },
+              {
+                "id": "http-2",
+                "question": "Why was HTTP/3 designed to operate over UDP (via the QUIC protocol) rather than traditional TCP?",
+                "options": [
+                  "To eliminate TCP-level Head-of-Line (HoL) blocking across multiplexed streams and enable fast 0-RTT handshakes",
+                  "Because UDP is encrypted by default at the kernel level",
+                  "Because TCP cannot support audio/video streaming",
+                  "To bypass firewall port 443 restrictions"
+                ],
+                "correct_option": 0,
+                "explanation": "In HTTP/2 over TCP, if a single packet is lost, all multiplexed streams stall until TCP retransmits it (HoL blocking). HTTP/3 over QUIC handles packet loss independently per stream over UDP."
+              },
+              {
+                "id": "http-3",
+                "question": "During a TLS 1.3 handshake, how is the symmetric encryption session key established securely?",
+                "options": [
+                  "Diffie-Hellman Key Exchange (ECDHE)",
+                  "The client encrypts the key with the server’s private key",
+                  "The server sends the secret key in plain text over HTTPS",
+                  "The certificate authority transmits the key via DNS"
+                ],
+                "correct_option": 0,
+                "explanation": "Modern TLS uses Elliptic Curve Diffie-Hellman Ephemeral (ECDHE) key exchange to establish a shared symmetric session key with Forward Secrecy."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Cloudflare",
+              "Google",
+              "Meta",
+              "Netflix"
+            ],
+            "keyTakeaways": [
+              "HTTP/1.1 introduced persistent connections but suffers from Head-of-Line (HoL) blocking on single TCP streams.",
+              "HTTP/2 multiplexes multiple binary requests/streams over a single TCP connection.",
+              "HTTP/3 runs over UDP using QUIC, eliminating TCP-level Head-of-Line blocking and enabling zero-RTT handshakes."
             ]
           },
           {
@@ -970,7 +2151,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Host bits = 32 - 26 = 6. Total addresses = 2^6 = 64. Usable hosts = 64 - 2 (network & broadcast) = 62."
+              },
+              {
+                "id": "sub-2",
+                "question": "How many usable host IP addresses are available in an IPv4 subnet with CIDR notation /28?",
+                "options": [
+                  "14",
+                  "16",
+                  "30",
+                  "12"
+                ],
+                "correct_option": 0,
+                "explanation": "Host bits = 32 - 28 = 4. Total IP addresses = 2^4 = 16. Subtract 2 for the Network address and Broadcast address = 16 - 2 = 14 usable hosts."
+              },
+              {
+                "id": "sub-3",
+                "question": "What is the dotted decimal subnet mask corresponding to CIDR prefix /26?",
+                "options": [
+                  "255.255.255.192",
+                  "255.255.255.128",
+                  "255.255.255.224",
+                  "255.255.255.240"
+                ],
+                "correct_option": 0,
+                "explanation": "26 bits set: First 3 octets are 255.255.255. Fourth octet has top 2 bits set: 128 + 64 = 192. Thus, 255.255.255.192."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Cisco",
+              "Amazon AWS",
+              "Microsoft Azure",
+              "Google Cloud"
+            ],
+            "keyTakeaways": [
+              "Usable hosts in a /N subnet = 2^(32 - N) - 2 (subtract Network ID and Broadcast Address).",
+              "/24 = 256 addresses (254 hosts); /28 = 16 addresses (14 hosts); /30 = 4 addresses (2 hosts).",
+              "Private IP ranges (RFC 1918): 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16."
             ]
           },
           {
@@ -992,7 +2209,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "OSPF is a link-state routing protocol that maintains a complete topological database and runs Dijkstra's algorithm to compute the shortest-path tree."
+              },
+              {
+                "id": "rp-net-2",
+                "question": "Which routing algorithm is used by OSPF (Open Shortest Path First) to calculate the shortest path tree from a router to all destinations?",
+                "options": [
+                  "Dijkstra's Shortest Path Algorithm",
+                  "Bellman-Ford Algorithm",
+                  "Floyd-Warshall Algorithm",
+                  "Kruskal's Algorithm"
+                ],
+                "correct_option": 0,
+                "explanation": "OSPF is a link-state routing protocol where each router constructs a complete topological map of the autonomous system and executes Dijkstra’s algorithm to calculate the lowest-cost paths."
+              },
+              {
+                "id": "rp-net-3",
+                "question": "Which routing protocol serves as the standard Exterior Gateway Protocol (EGP) powering inter-domain routing between Autonomous Systems on the global Internet?",
+                "options": [
+                  "BGP (Border Gateway Protocol)",
+                  "OSPF",
+                  "RIP",
+                  "EIGRP"
+                ],
+                "correct_option": 0,
+                "explanation": "BGP is the path-vector exterior gateway protocol that enables routing decisions across independent Autonomous Systems (ASes) constituting the global Internet backbone."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Cisco",
+              "Juniper",
+              "Cloudflare",
+              "Google"
+            ],
+            "keyTakeaways": [
+              "Distance Vector (RIP): Uses hop count (max 15), Bellman-Ford algorithm, split-horizon rule.",
+              "Link State (OSPF): Uses Dijkstra shortest path algorithm, floods link-state advertisements (LSAs).",
+              "BGP (Border Gateway Protocol): Path-vector protocol connecting Autonomous Systems across the Internet."
             ]
           }
         ]
@@ -1023,7 +2276,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Each class with virtual/overridden methods has a vtable containing pointers to the most derived implementations. Each object instance stores a hidden vptr pointing to its class vtable."
+              },
+              {
+                "id": "oops-2",
+                "question": "What is the key difference between Method Overloading and Method Overriding?",
+                "options": [
+                  "Overloading occurs in the same class at compile time (same name, different parameter signature); Overriding occurs in a subclass at runtime (same signature)",
+                  "Overloading requires virtual functions while Overriding does not",
+                  "Overriding can only be performed on private methods",
+                  "Overloading is runtime dynamic dispatch while Overriding is compile-time static binding"
+                ],
+                "correct_option": 0,
+                "explanation": "Overloading (compile-time polymorphism) allows multiple methods in the same class to share a name with different signatures. Overriding (runtime polymorphism) allows a subclass to provide a specific implementation of a parent method with identical signature."
+              },
+              {
+                "id": "oops-3",
+                "question": "Why do modern software architecture guidelines advise: \"Favor Composition over Inheritance\"?",
+                "options": [
+                  "Composition enables dynamic behavior changes at runtime and avoids rigid class hierarchies and tight coupling",
+                  "Composition completely eliminates heap memory allocations",
+                  "Inheritance is not supported in modern programming languages like Java or C#",
+                  "Composition automatically implements all abstract methods"
+                ],
+                "correct_option": 0,
+                "explanation": "Composition (HAS-A) creates loose coupling, permits swapping internal delegate components at runtime, and avoids the fragile base class problem inherent in deep inheritance trees."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Amazon",
+              "Microsoft",
+              "Google",
+              "Adobe"
+            ],
+            "keyTakeaways": [
+              "Encapsulation: Bundling data and methods, restricting direct access via access modifiers.",
+              "Abstraction: Hiding internal implementation details and exposing clear interfaces.",
+              "Inheritance: IS-A relationship; favor Composition (HAS-A) for flexible architectures.",
+              "Polymorphism: Compile-time (Overloading) vs Run-time (Overriding / Virtual dispatch)."
             ]
           },
           {
@@ -1045,7 +2335,45 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "LSP requires that derived classes preserve the behavioral invariants of base classes. A Square altering width when height is set violates the independent dimension contract of Rectangle."
+              },
+              {
+                "id": "solid-2",
+                "question": "Which SOLID principle is violated when a derived Square class overrides setWidth() and setHeight() from a Rectangle class, breaking code that assumes width and height vary independently?",
+                "options": [
+                  "Liskov Substitution Principle (LSP)",
+                  "Single Responsibility Principle (SRP)",
+                  "Interface Segregation Principle (ISP)",
+                  "Dependency Inversion Principle (DIP)"
+                ],
+                "correct_option": 0,
+                "explanation": "The classic Rectangle-Square problem violates LSP because a client expecting a Rectangle cannot substitute a Square without altering the expected invariant (independent width and height)."
+              },
+              {
+                "id": "solid-3",
+                "question": "What does the Dependency Inversion Principle (DIP) mandate?",
+                "options": [
+                  "High-level modules should depend on abstractions (interfaces), not on low-level concrete implementations",
+                  "Classes should invert the order of inheritance hierarchies",
+                  "Dependencies must always be instantiated inside constructors using the new operator",
+                  "Singletons must be passed as global dependencies"
+                ],
+                "correct_option": 0,
+                "explanation": "DIP states that high-level business logic should not depend on low-level modules (e.g. database, I/O); both should depend on abstractions (interfaces/abstract classes)."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Microsoft",
+              "Amazon",
+              "Meta",
+              "Uber"
+            ],
+            "keyTakeaways": [
+              "Single Responsibility: A class should have one, and only one, reason to change.",
+              "Open/Closed: Open for extension, closed for modification (use interfaces/strategies).",
+              "Liskov Substitution: Subtypes must be substitutable for their base types without breaking code.",
+              "Interface Segregation: Clients should not be forced to depend on interfaces they do not use.",
+              "Dependency Inversion: High-level modules should depend on abstractions, not concrete implementations."
             ]
           },
           {
@@ -1067,7 +2395,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "The Observer pattern defines a one-to-many relationship where subjects notify registered observers of state changes without knowing their concrete types."
+              },
+              {
+                "id": "dp-2",
+                "question": "Which Gang of Four (GoF) design pattern provides a unified, simplified high-level interface to a complex subsystem of classes and libraries?",
+                "options": [
+                  "Facade Pattern",
+                  "Decorator Pattern",
+                  "Adapter Pattern",
+                  "Proxy Pattern"
+                ],
+                "correct_option": 0,
+                "explanation": "The Facade pattern defines a higher-level interface that makes a complex subsystem easier to use by wrapping multiple internal subsystems behind a clean, unified API."
+              },
+              {
+                "id": "dp-3",
+                "question": "What is a major criticism and testing drawback associated with the Singleton pattern in enterprise codebases?",
+                "options": [
+                  "It introduces global shared mutable state, making unit testing difficult and hindering parallel test execution",
+                  "It cannot be instantiated in multithreaded environments",
+                  "It forces classes to use multiple inheritance",
+                  "It consumes exponential stack space"
+                ],
+                "correct_option": 0,
+                "explanation": "Singletons act like global state, creating hidden dependencies across classes and making it hard to mock or isolate components in unit tests."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Amazon",
+              "Google",
+              "Uber",
+              "Microsoft"
+            ],
+            "keyTakeaways": [
+              "Creational: Deal with object creation mechanisms (Singleton, Factory, Builder, Prototype).",
+              "Structural: Deal with object composition and structure (Adapter, Decorator, Facade, Proxy).",
+              "Behavioral: Deal with communication and responsibility between objects (Observer, Strategy, State)."
             ]
           },
           {
@@ -1089,7 +2453,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "The Builder pattern provides a fluent API to configure optional attributes step-by-step, avoiding anti-pattern telescoping constructors."
+              },
+              {
+                "id": "cp-2",
+                "question": "When should the Builder design pattern be chosen over telescoping constructors?",
+                "options": [
+                  "When an object has numerous optional parameters or complex multi-step construction logic",
+                  "When only a single instance of a class should ever exist",
+                  "When objects need to be cloned without calling constructors",
+                  "When decoupling legacy class interfaces"
+                ],
+                "correct_option": 0,
+                "explanation": "The Builder pattern eliminates telescoping constructor anti-patterns with 5+ arguments and allows constructing immutable objects cleanly step-by-step."
+              },
+              {
+                "id": "cp-3",
+                "question": "How does the Prototype design pattern instantiate new objects?",
+                "options": [
+                  "By cloning an existing prototype instance (e.g. clone() / shallow or deep copy)",
+                  "By using reflection to discover private constructors",
+                  "By invoking an abstract factory method on a remote server",
+                  "By deserializing hardcoded XML templates"
+                ],
+                "correct_option": 0,
+                "explanation": "The Prototype pattern specifies the kind of objects to create using a prototypical instance, creating new objects by copying or cloning this prototype."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Google",
+              "Meta",
+              "Amazon",
+              "Apple"
+            ],
+            "keyTakeaways": [
+              "Factory Method: Defines an interface for creating an object, but lets subclasses decide which class to instantiate.",
+              "Builder: Separates the construction of a complex object from its representation (fluent API).",
+              "Prototype: Creates new objects by cloning an existing instance."
             ]
           },
           {
@@ -1123,7 +2523,31 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Adapter bridges two incompatible existing interfaces so they can communicate; Facade creates a higher-level simplified interface to hide subsystem complexity."
+              },
+              {
+                "id": "sp-3",
+                "question": "What is the primary difference in intent between the Decorator pattern and the Proxy pattern?",
+                "options": [
+                  "Decorator adds new behaviors or responsibilities to an object dynamically; Proxy controls or manages access to the object (e.g. lazy loading, security check)",
+                  "Decorator can only be applied to interfaces while Proxy applies only to abstract classes",
+                  "Proxy converts incompatible interfaces while Decorator modifies data formats",
+                  "They are identical in design and purpose"
+                ],
+                "correct_option": 0,
+                "explanation": "While both wrap an underlying target object, Decorator’s intent is to augment functionality dynamically, whereas Proxy’s intent is to control, defer, or restrict access to the target."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Amazon",
+              "Microsoft",
+              "Netflix",
+              "Spotify"
+            ],
+            "keyTakeaways": [
+              "Adapter: Converts the interface of a class into another interface clients expect.",
+              "Decorator: Attaches additional responsibilities dynamically to an object without subclassing.",
+              "Proxy: Provides a placeholder or surrogate for another object to control access (lazy loading, security)."
             ]
           },
           {
@@ -1145,7 +2569,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "The Command pattern encapsulates all information needed to perform or reverse an action inside a standalone object, making it trivial to store in history stacks for undo/redo."
+              },
+              {
+                "id": "bp-2",
+                "question": "Which behavioral pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime?",
+                "options": [
+                  "Strategy Pattern",
+                  "State Pattern",
+                  "Template Method Pattern",
+                  "Visitor Pattern"
+                ],
+                "correct_option": 0,
+                "explanation": "The Strategy pattern enables selecting an algorithm’s implementation at runtime (e.g., choosing between PaymentStrategy: CreditCard, PayPal, UPI)."
+              },
+              {
+                "id": "bp-3",
+                "question": "In the Command design pattern, what is the role of the Command object?",
+                "options": [
+                  "It encapsulates a request as a standalone object containing all information needed to execute the action",
+                  "It acts as an event bus broadcasting changes to all registered subscribers",
+                  "It caches results of idempotent database queries",
+                  "It validates SQL queries before sending them to the database"
+                ],
+                "correct_option": 0,
+                "explanation": "The Command pattern packages a request into an object, enabling delayed execution, queuing, remote execution, and undoable operations."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Google",
+              "Amazon",
+              "Meta",
+              "Uber"
+            ],
+            "keyTakeaways": [
+              "Strategy: Defines a family of interchangeable algorithms and selects one at runtime.",
+              "Observer: Defines a one-to-many dependency between objects so when one changes state, all dependents are notified.",
+              "Command: Encapsulates a request as an object, allowing parameterizing clients with queues, logs, and undo operations."
             ]
           }
         ]
@@ -1176,7 +2636,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "In simple modulo hashing, changing N shifts almost 100% of keys to new servers, causing complete cache stampedes. Consistent hashing minimizes remapped keys to K/N."
+              },
+              {
+                "id": "slb-2",
+                "question": "Why is Consistent Hashing critical for distributed caching clusters (like Memcached or Redis) compared to simple modulo hashing (hash(key) % N)?",
+                "options": [
+                  "Adding or removing a server node only requires remapping K/N keys on average, avoiding catastrophic cluster-wide cache invalidation",
+                  "It guarantees zero memory fragmentation across cache nodes",
+                  "It converts all key queries to O(1) direct hardware lookups",
+                  "It eliminates the need for replication"
+                ],
+                "correct_option": 0,
+                "explanation": "With hash(key) % N, changing N (adding/removing a node) invalidates almost 100% of cached keys. Consistent Hashing places nodes and keys on a virtual ring, remapping only K/N keys."
+              },
+              {
+                "id": "slb-3",
+                "question": "What is the primary difference between a Layer 4 (L4) and a Layer 7 (L7) load balancer?",
+                "options": [
+                  "L4 routes traffic based on IP address and TCP/UDP ports without inspecting packet payload; L7 inspects HTTP headers, cookies, and URLs for smart routing",
+                  "L4 can terminate SSL while L7 cannot",
+                  "L4 runs in user space while L7 runs exclusively in kernel space",
+                  "L7 has higher throughput and lower CPU overhead than L4"
+                ],
+                "correct_option": 0,
+                "explanation": "Layer 4 load balancers make routing decisions purely at transport layer (IP/port) with high speed. Layer 7 load balancers parse application-layer data (HTTP path, auth headers) to make content-aware routing decisions."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Amazon",
+              "Google",
+              "Meta",
+              "Uber",
+              "Netflix"
+            ],
+            "keyTakeaways": [
+              "Vertical scaling (scale up) hits physical hardware limits; Horizontal scaling (scale out) adds more commodity nodes.",
+              "Load balancing algorithms: Round Robin, Least Connections, IP Hash, Weighted Round Robin.",
+              "Consistent Hashing minimizes key redistribution when nodes are added or removed (only K/N keys remapped)."
             ]
           },
           {
@@ -1198,7 +2695,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 2,
                 "explanation": "Write-Behind acknowledges writes immediately after writing to volatile cache memory, delaying asynchronous persistence to the database."
+              },
+              {
+                "id": "cs-strat-2",
+                "question": "In the Cache-Aside (Lazy Loading) pattern, what steps are taken when a read operation encounters a cache miss?",
+                "options": [
+                  "The application reads the data from the database, writes it into the cache, and returns it to the client",
+                  "The cache engine automatically queries the database directly via internal triggers",
+                  "The request fails with a 404 error",
+                  "The database updates the cache asynchronously using Change Data Capture"
+                ],
+                "correct_option": 0,
+                "explanation": "In Cache-Aside, the application coordinates reads: checks cache -> misses -> queries database -> populates cache -> returns data to client."
+              },
+              {
+                "id": "cs-strat-3",
+                "question": "What is the \"Cache Stampede\" (Thundering Herd) problem in high-traffic web architectures, and how is it prevented?",
+                "options": [
+                  "A popular cached key expires, causing massive concurrent requests to hit the database simultaneously; mitigated with mutex locking or probabilistic early recomputation",
+                  "Cache memory fills up, causing random key deletions",
+                  "Network partitions cause cache servers to duplicate keys",
+                  "Redis instances crashing due to memory leak"
+                ],
+                "correct_option": 0,
+                "explanation": "When a hot key expires in a system serving tens of thousands of requests per second, all requests bypass cache simultaneously, overloading the database. Mutex locks or XFetch probabilistic algorithms prevent this."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Netflix",
+              "Meta",
+              "Amazon",
+              "Twitter"
+            ],
+            "keyTakeaways": [
+              "Cache-Aside (Lazy Loading): App reads cache first; on miss, reads DB, writes to cache.",
+              "Write-Through: App writes to cache; cache synchronously writes to DB before confirming.",
+              "Write-Back (Write-Behind): App writes to cache; cache asynchronously writes to DB in batches.",
+              "Thundering Herd / Cache Stampede: Millions of concurrent requests hit DB simultaneously when popular cache key expires."
             ]
           },
           {
@@ -1232,7 +2766,31 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Asynchronous replication allows the primary to confirm writes immediately without waiting for replicas to confirm, reducing latency but exposing replicas to replication lag."
+              },
+              {
+                "id": "dbs-3",
+                "question": "What is the primary risk associated with asynchronous replication between a database primary and its read replicas?",
+                "options": [
+                  "Replication lag can cause clients to read stale data, and un-replicated commits are lost if the primary crashes before sync",
+                  "Write latency increases proportionally with the number of replicas",
+                  "Write operations must be approved by a 2/3 quorum",
+                  "Foreign key constraints cannot be enforced"
+                ],
+                "correct_option": 0,
+                "explanation": "In async replication, the primary confirms writes before sending them to replicas. Replicas may serve stale reads (replication lag), and if the primary dies before replicating, data loss occurs."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Amazon",
+              "Google",
+              "Meta",
+              "Salesforce"
+            ],
+            "keyTakeaways": [
+              "Replication: Replicating identical data across replicas for read scaling and fault tolerance.",
+              "Sharding: Horizontal partitioning of table rows across different database instances using a shard key.",
+              "Split-Brain: When network partition causes two nodes to both believe they are the active leader."
             ]
           },
           {
@@ -1266,7 +2824,31 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "A DLQ isolates malformed or failing messages after a threshold of retries, allowing the main processing pipeline to continue without getting stuck on a single message."
+              },
+              {
+                "id": "mq-3",
+                "question": "How does Apache Kafka achieve extreme throughput and low latency even when persisting billions of messages to physical disk?",
+                "options": [
+                  "Sequential append-only disk I/O, OS page cache utilization, and kernel sendfile() zero-copy data transfer",
+                  "By storing all messages strictly in RAM without disk commits",
+                  "By encrypting messages with symmetric AES hardware acceleration",
+                  "By bypassing consumer acknowledgments completely"
+                ],
+                "correct_option": 0,
+                "explanation": "Sequential disk access is nearly as fast as random memory access. Kafka writes sequentially to immutable commit logs and uses the Linux kernel sendfile() system call to transfer data directly from OS page cache to network sockets without user-space buffer copies."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "LinkedIn",
+              "Netflix",
+              "Uber",
+              "Stripe"
+            ],
+            "keyTakeaways": [
+              "Kafka is an append-only commit log partitioned across topics, enabling sequential disk I/O and zero-copy OS paging.",
+              "Delivery semantics: At-most-once (zero duplicates, possible loss), At-least-once (no loss, possible duplicates), Exactly-once (idempotent producer + transactional API).",
+              "Consumer groups allow multiple workers to consume partitions in parallel."
             ]
           },
           {
@@ -1300,7 +2882,32 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Clients can concentrate maximum requests right before a window closes and right after the next window opens, generating twice the allowed requests in a short time frame."
+              },
+              {
+                "id": "rl-3",
+                "question": "Which rate limiting algorithm allows temporary bursts of traffic up to a predefined capacity while maintaining a steady long-term average rate?",
+                "options": [
+                  "Token Bucket",
+                  "Leaky Bucket",
+                  "Fixed Window Counter",
+                  "Round Robin"
+                ],
+                "correct_option": 0,
+                "explanation": "The Token Bucket algorithm accumulates tokens up to its maximum capacity. A burst of requests can consume all available tokens instantly, but subsequent requests are restricted by the token refill rate."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Stripe",
+              "Cloudflare",
+              "Twitter",
+              "GitHub"
+            ],
+            "keyTakeaways": [
+              "Token Bucket: Tokens added at constant rate; allows bursts up to bucket capacity.",
+              "Leaky Bucket: Requests enter bucket; leaked out to processing at fixed, smooth rate.",
+              "Sliding Window Log: Precise timestamp tracking; high memory overhead.",
+              "Sliding Window Counter: Combines fixed window counters with weighted ratio for smooth, low-memory rate limiting."
             ]
           },
           {
@@ -1322,7 +2929,44 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "gRPC encodes data into compact binary Protocol Buffers and uses HTTP/2 multiplexing over a single persistent TCP connection, drastically cutting payload size and latency."
+              },
+              {
+                "id": "api-2",
+                "question": "What major problem associated with traditional REST APIs does GraphQL specifically solve?",
+                "options": [
+                  "Over-fetching and Under-fetching of data (clients specify exact fields needed in a single request)",
+                  "High latency caused by TCP handshakes",
+                  "Lack of support for JSON responses",
+                  "Inability to authenticate requests using JWT tokens"
+                ],
+                "correct_option": 0,
+                "explanation": "In REST, endpoints return fixed payloads (over-fetching) or require multiple endpoint calls to assemble related data (under-fetching). GraphQL lets clients declare the exact fields required in one query."
+              },
+              {
+                "id": "api-3",
+                "question": "Why is gRPC predominantly favored over REST for high-throughput internal microservice-to-microservice communication?",
+                "options": [
+                  "Compact binary serialization via Protocol Buffers over HTTP/2 multiplexed streams with built-in code generation",
+                  "It is easier to inspect in web browser developer tools",
+                  "It eliminates the need for schema definitions",
+                  "It runs directly over raw Ethernet frames without TCP"
+                ],
+                "correct_option": 0,
+                "explanation": "gRPC uses Protocol Buffers (Protobuf) for compact binary payloads and HTTP/2 for multiplexing, streaming, and header compression, providing significantly lower CPU and network overhead than REST/JSON."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Netflix",
+              "Meta",
+              "Stripe",
+              "Amazon"
+            ],
+            "keyTakeaways": [
+              "REST: Resource-oriented, standard HTTP verbs, stateless, JSON payloads.",
+              "GraphQL: Single endpoint, client requests exact fields, solves over-fetching and under-fetching.",
+              "gRPC: Protocol Buffers over HTTP/2, high performance binary serialization, streaming.",
+              "WebSockets: Full-duplex persistent bidirectional TCP connection for real-time events."
             ]
           }
         ]
@@ -1365,7 +3009,31 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "git merge combines histories with a merge commit having two parents; git rebase replays your commits atop the target branch, rewriting commit hashes for a linear history."
+              },
+              {
+                "id": "git-3",
+                "question": "What is the key difference between \"git merge\" and \"git rebase\"?",
+                "options": [
+                  "git merge creates a new merge commit preserving branching history; git rebase rewrites commit history linearly by replaying commits onto the target base",
+                  "git merge deletes the feature branch while rebase preserves it",
+                  "git rebase is non-destructive and cannot cause conflicts",
+                  "git merge only works on remote repositories"
+                ],
+                "correct_option": 0,
+                "explanation": "git merge creates a 3-way merge commit that preserves exact historical branching context. git rebase reapplies feature commits one by one on top of the base branch, producing a clean, linear commit history."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "GitHub",
+              "GitLab",
+              "Atlassian",
+              "Microsoft"
+            ],
+            "keyTakeaways": [
+              "Git objects: Blobs (file contents), Trees (directories), Commits (commit metadata + root tree), Annotated Tags.",
+              "Git merge preserves branch history with a merge commit; Git rebase rewrites commit history on top of base.",
+              "git cherry-pick applies the changes from an existing commit onto the current branch."
             ]
           },
           {
@@ -1387,7 +3055,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "The Product Owner is responsible for maximizing product value and prioritizing backlog user stories based on customer and business needs."
+              },
+              {
+                "id": "agile-2",
+                "question": "What is the primary objective of a Sprint Retrospective meeting in Scrum?",
+                "options": [
+                  "For the team to inspect how the last sprint went with regards to people, processes, and tools, and identify continuous improvements",
+                  "To demonstrate completed features to external stakeholders and customers",
+                  "To estimate story points for the next 6 months of backlog items",
+                  "To conduct performance appraisals of software engineers"
+                ],
+                "correct_option": 0,
+                "explanation": "The Sprint Retrospective is an internal team inspection meeting focused on identifying what went well, what went wrong, and concrete improvements for the upcoming sprint."
+              },
+              {
+                "id": "agile-3",
+                "question": "In Scrum, who is solely responsible for prioritizing and managing the Product Backlog?",
+                "options": [
+                  "Product Owner",
+                  "Scrum Master",
+                  "Lead Software Architect",
+                  "Engineering Manager"
+                ],
+                "correct_option": 0,
+                "explanation": "The Product Owner owns the Product Backlog and is responsible for ordering items to maximize product value delivered by the development team."
               }
+            ],
+            "difficulty": "Easy",
+            "companyTags": [
+              "Amazon",
+              "Microsoft",
+              "Accenture",
+              "TCS"
+            ],
+            "keyTakeaways": [
+              "Scrum ceremonies: Sprint Planning, Daily Standup, Sprint Review (demo), Sprint Retrospective (process improvement).",
+              "Sprint backlog is owned by the developers; Product backlog is prioritized by the Product Owner.",
+              "Definition of Done (DoD) specifies quality criteria for a story to be considered shippable."
             ]
           },
           {
@@ -1409,7 +3113,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "A stub returns fixed responses to queries, while a mock verifies the behavior and method invocations made on the dependency."
+              },
+              {
+                "id": "test-2",
+                "question": "What are the three steps of the Test-Driven Development (TDD) cycle in exact sequence?",
+                "options": [
+                  "Red (Write failing test) -> Green (Make test pass) -> Refactor (Improve code quality)",
+                  "Design -> Code -> Test",
+                  "Write code -> Write test -> Deploy",
+                  "Unit test -> Integration test -> E2E test"
+                ],
+                "correct_option": 0,
+                "explanation": "TDD follows the Red-Green-Refactor cycle: write an automated test that fails initially (Red), implement the minimum code to satisfy the test (Green), and clean up design while keeping tests green (Refactor)."
+              },
+              {
+                "id": "test-3",
+                "question": "Why does 100% code coverage NOT guarantee that a software application is bug-free?",
+                "options": [
+                  "Coverage measures lines executed, not whether edge cases, unexpected user inputs, or invalid states were asserted",
+                  "Because compilers optimize out test assertions in release builds",
+                  "Code coverage only applies to frontend JavaScript code",
+                  "Tests cannot execute concurrent code paths"
+                ],
+                "correct_option": 0,
+                "explanation": "Line coverage tracks which statements executed during a test suite, but a statement can execute without asserting correct business invariants or testing missing edge cases."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Google",
+              "Meta",
+              "Amazon",
+              "Microsoft"
+            ],
+            "keyTakeaways": [
+              "Testing pyramid: Broad base of Unit Tests -> Integration Tests -> Few E2E / UI Tests.",
+              "TDD cycle: Red (write failing test) -> Green (write minimal code to pass) -> Refactor.",
+              "Code coverage measures executed code paths; 100% coverage does NOT prove absence of logical bugs."
             ]
           },
           {
@@ -1431,7 +3171,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Containers virtualize at the OS level, sharing the underlying host kernel via cgroups and namespaces rather than virtualizing physical hardware and booting full guest operating systems."
+              },
+              {
+                "id": "cicd-2",
+                "question": "What is the defining distinction between Continuous Delivery and Continuous Deployment?",
+                "options": [
+                  "Continuous Delivery automates release readiness up to staging, requiring human approval to deploy to production; Continuous Deployment deploys every passing build directly to production automatically",
+                  "Continuous Delivery requires Docker while Continuous Deployment requires Kubernetes",
+                  "Continuous Deployment does not run unit tests",
+                  "Continuous Delivery is for open-source repositories only"
+                ],
+                "correct_option": 0,
+                "explanation": "Continuous Delivery produces an artifact verified and ready for deployment with a manual \"push to prod\" approval gate. Continuous Deployment eliminates the manual gate, releasing verified code automatically."
+              },
+              {
+                "id": "cicd-3",
+                "question": "What is the primary benefit of Containerization (e.g. Docker) in modern software delivery pipelines?",
+                "options": [
+                  "It bundles application code, runtime, system libraries, and settings into an immutable image, ensuring consistent execution across dev, test, and production",
+                  "It provides faster execution speed than bare-metal hardware",
+                  "It completely removes the need for operating system kernels",
+                  "It allows running x86 binaries on ARM without performance loss"
+                ],
+                "correct_option": 0,
+                "explanation": "Containers eliminate the \"works on my machine\" problem by encapsulating code with all required runtime dependencies into an immutable image that runs identically everywhere."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "Amazon",
+              "Netflix",
+              "Google",
+              "GitLab"
+            ],
+            "keyTakeaways": [
+              "Continuous Integration (CI): Developers merge code frequently; automated build and test suites run on every commit.",
+              "Continuous Delivery (CD): Code is automatically tested and ready to release to production at any time.",
+              "Continuous Deployment: Every change that passes automated tests is automatically deployed to production without manual gate."
             ]
           }
         ]
@@ -1474,7 +3250,32 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Operand Forwarding routes the computed ALU result directly from the output of the EX stage to the input of the dependent instruction's EX stage, avoiding stalls."
+              },
+              {
+                "id": "pip-3",
+                "question": "What are the three fundamental types of hazards encountered in CPU instruction pipelining?",
+                "options": [
+                  "Structural Hazards, Data Hazards, and Control Hazards",
+                  "Cache Misses, Page Faults, and Memory Leaks",
+                  "Compilation Errors, Linker Errors, and Runtime Exceptions",
+                  "Paging Hazards, Segmentation Hazards, and Deadlocks"
+                ],
+                "correct_option": 0,
+                "explanation": "Pipelining hazards stall instruction execution: Structural hazards (resource conflicts), Data hazards (data dependencies between instructions), and Control hazards (branching and jumps)."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Intel",
+              "ARM",
+              "Qualcomm",
+              "AMD"
+            ],
+            "keyTakeaways": [
+              "Instruction pipeline phases: IF (Fetch), ID (Decode), EX (Execute), MEM (Memory), WB (Write-back).",
+              "Structural hazards: Hardware resource conflict (e.g. single memory port for instruction and data).",
+              "Data hazards: Read-After-Write (RAW), Write-After-Read (WAR), Write-After-Write (WAW); mitigated with Forwarding/Bypassing.",
+              "Control hazards: Caused by branch and jump instructions; mitigated with Branch Prediction."
             ]
           },
           {
@@ -1496,7 +3297,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "The Exclusive (E) state denotes that the block is cached exclusively by this one core and has not yet been modified (it is clean with respect to main RAM)."
+              },
+              {
+                "id": "cache-2",
+                "question": "What critical hardware problem does the MESI (Modified, Exclusive, Shared, Invalid) protocol solve in multi-core CPU architectures?",
+                "options": [
+                  "Cache Coherence: Ensuring all CPU cores observe consistent and up-to-date values for shared memory locations across private L1/L2 caches",
+                  "Virtual memory page swapping",
+                  "Instruction branch prediction",
+                  "Thermal throttling and fan speed regulation"
+                ],
+                "correct_option": 0,
+                "explanation": "In multi-core systems, each core has private L1 caches. If one core updates a memory location, the MESI protocol snoops or invalidates other cores’ cached copies to ensure coherence."
+              },
+              {
+                "id": "cache-3",
+                "question": "Iterating through a 2D array row-by-row in C/C++ (row-major order) is dramatically faster than column-by-column due to which hardware caching principle?",
+                "options": [
+                  "Spatial Locality",
+                  "Temporal Locality",
+                  "Instruction Pipelining",
+                  "Virtual Address Translation"
+                ],
+                "correct_option": 0,
+                "explanation": "In row-major languages, contiguous row elements reside adjacently in memory. Accessing row-by-row exploits Spatial Locality because fetching one element pulls an entire cache line (64 bytes) into L1 cache."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Intel",
+              "AMD",
+              "Apple",
+              "NVIDIA"
+            ],
+            "keyTakeaways": [
+              "Memory hierarchy: Registers < L1 Cache < L2 Cache < L3 Cache < Main Memory (RAM) < SSD/Disk.",
+              "Cache Coherence protocols (like MESI: Modified, Exclusive, Shared, Invalid) ensure multiple CPU cores see consistent memory values.",
+              "Spatial Locality (accessing nearby addresses) vs Temporal Locality (accessing same address repeatedly)."
             ]
           },
           {
@@ -1518,7 +3355,43 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "RISC architectures use a strict Load/Store model: memory is only accessed via LOAD and STORE instructions, while arithmetic operations strictly operate on registers."
+              },
+              {
+                "id": "rc-2",
+                "question": "What is the hallmark architectural characteristic of a RISC (e.g. ARM, RISC-V) processor compared to a CISC (x86) processor?",
+                "options": [
+                  "Load/Store architecture where memory access is strictly restricted to LOAD and STORE instructions, and all arithmetic operations occur between registers",
+                  "Variable instruction length with complex addressing modes directly operating on RAM",
+                  "Absence of hardware registers",
+                  "Inability to execute pipelined instructions"
+                ],
+                "correct_option": 0,
+                "explanation": "RISC processors enforce a strict Load/Store architecture: arithmetic/logic instructions operate exclusively on CPU registers; memory is only accessed via explicit load and store instructions."
+              },
+              {
+                "id": "rc-3",
+                "question": "What is the role of the Program Counter (PC) register in a CPU?",
+                "options": [
+                  "It holds the memory address of the next instruction to be fetched and executed",
+                  "It counts the total number of clock cycles since system boot",
+                  "It stores the result of the most recent ALU computation",
+                  "It tracks the memory address of the bottom of the stack"
+                ],
+                "correct_option": 0,
+                "explanation": "The Program Counter (PC) is a dedicated CPU register that holds the memory address of the instruction that is to be fetched and executed next."
               }
+            ],
+            "difficulty": "Medium",
+            "companyTags": [
+              "ARM",
+              "Apple",
+              "Intel",
+              "Qualcomm"
+            ],
+            "keyTakeaways": [
+              "RISC (Reduced Instruction Set Computer): Fixed instruction length, single-cycle execution, Load/Store architecture (ARM, RISC-V).",
+              "CISC (Complex Instruction Set Computer): Variable-length instructions, complex multi-clock instructions that access memory directly (x86).",
+              "Program Counter (PC) stores the address of the next instruction to be fetched."
             ]
           }
         ]
@@ -1561,7 +3434,30 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 1,
                 "explanation": "Pushdown Automata (PDA), which augment a finite automaton with a stack memory, recognize Context-Free Languages (Type 2)."
+              },
+              {
+                "id": "fa-3",
+                "question": "Can every Non-Deterministic Finite Automaton (NFA) be converted into an equivalent Deterministic Finite Automaton (DFA)?",
+                "options": [
+                  "Yes, using the Subset Construction (Powerset Construction) algorithm, although the DFA may have up to 2^N states in the worst case",
+                  "No, NFAs are fundamentally more powerful than DFAs and can accept non-regular languages",
+                  "Only if the NFA contains zero epsilon transitions",
+                  "Only for finite alphabets with size equal to 1"
+                ],
+                "correct_option": 0,
+                "explanation": "By the Subset Construction algorithm, every NFA can be transformed into an equivalent DFA recognizing the exact same regular language, with at most 2^N states."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Google",
+              "Microsoft",
+              "Adobe"
+            ],
+            "keyTakeaways": [
+              "DFA (Deterministic Finite Automaton): Exactly one transition for every state and input symbol; no epsilon moves.",
+              "NFA (Non-deterministic): Multiple or zero transitions per state and symbol; allows epsilon transitions.",
+              "DFA and NFA have identical computational power: both recognize precisely the class of Regular Languages (Subset Construction Algorithm)."
             ]
           },
           {
@@ -1595,7 +3491,31 @@ export const CURRICULUM_DATA: Record<string, {
                 ],
                 "correct_option": 0,
                 "explanation": "Direct left recursion causes a top-down predictive LL parser to recursively expand the left non-terminal without advancing the input pointer, triggering an infinite recursive loop."
+              },
+              {
+                "id": "cp-parse-3",
+                "question": "What data structure is produced by the Syntax Analysis (Parsing) phase of a modern compiler to represent the grammatical structure of the source code?",
+                "options": [
+                  "Abstract Syntax Tree (AST)",
+                  "Symbol Table",
+                  "Three-Address Code (TAC)",
+                  "Bytecode Object File"
+                ],
+                "correct_option": 0,
+                "explanation": "The parser takes the linear sequence of tokens from the lexical analyzer and builds an Abstract Syntax Tree (AST) or Parse Tree capturing the syntactic hierarchy defined by the grammar."
               }
+            ],
+            "difficulty": "Hard",
+            "companyTags": [
+              "Google",
+              "Microsoft",
+              "Meta",
+              "Apple"
+            ],
+            "keyTakeaways": [
+              "Phases: Lexical Analysis (Scanner -> Tokens) -> Syntax Analysis (Parser -> Parse Tree / AST) -> Semantic Analysis (Type checking) -> Intermediate Code Generation -> Optimization -> Target Code Generation.",
+              "Top-down parsing (LL): Starts from Start symbol and derives string; uses lookahead tokens.",
+              "Bottom-up parsing (LR): Starts from string tokens and reduces to Start symbol (shift-reduce)."
             ]
           }
         ]

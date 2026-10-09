@@ -68,13 +68,30 @@ export async function recordQuizAttempt(params: RecordAttemptParams): Promise<St
     console.warn('Could not write attempt to localStorage:', err);
   }
 
-  // 2. If Supabase is connected with authenticated user, sync to Supabase
+  // 2. Sync to server-side API endpoint and Supabase in background
+  if (typeof window !== 'undefined') {
+    void fetch('/api/curriculum/record-attempt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: params.userId,
+        sectionSlug: params.sectionSlug,
+        topicId: params.topicId,
+        topicTitle: params.topicTitle,
+        score: params.score,
+        total: params.total,
+      }),
+    }).catch((err) => {
+      console.debug('Background curriculum attempt sync note:', err);
+    });
+  }
+
+  // 3. If Supabase client is connected directly with authenticated user, sync client-side as well
   try {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {
-      // Check if topic exists in supabase topics table or write directly if UUID
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.topicId);
       if (isUUID) {
         await (supabase.from('quiz_attempts') as unknown as {
@@ -93,8 +110,7 @@ export async function recordQuizAttempt(params: RecordAttemptParams): Promise<St
       }
     }
   } catch (err) {
-    // Graceful fallback: local attempt is already preserved
-    console.debug('Supabase sync skipped or failed gracefully:', err);
+    console.debug('Supabase client sync skipped or failed gracefully:', err);
   }
 
   return newAttempt;
