@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { getCurrentUser, signOutUser } from '@/lib/auth/session';
+import { getCurrentUser, signOutUser, updateUserSession } from '@/lib/auth/session';
 import { getLocalQuizAttempts, getSectionMetrics, type StoredAttempt } from '@/lib/services/progress';
 import { 
   Flame, 
@@ -19,7 +19,12 @@ import {
   Cpu,
   Code2,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Edit3,
+  GraduationCap,
+  Briefcase,
+  X,
+  CheckCircle2
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -37,6 +42,11 @@ interface ProfileData {
   avatar_url: string | null;
   email?: string;
   phone?: string | null;
+  target_role?: string | null;
+  college?: string | null;
+  grad_year?: string | null;
+  github_url?: string | null;
+  linkedin_url?: string | null;
   created_at: string;
 }
 
@@ -99,6 +109,85 @@ export default function ProfilePage() {
   // Real solved DSA problem count
   const [solvedDsaCount, setSolvedDsaCount] = useState(0);
 
+  // Edit Profile Modal States
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editFullName, setEditFullName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editTargetRole, setEditTargetRole] = useState('');
+  const [editCollege, setEditCollege] = useState('');
+  const [editGradYear, setEditGradYear] = useState('');
+  const [editGithubUrl, setEditGithubUrl] = useState('');
+  const [editLinkedinUrl, setEditLinkedinUrl] = useState('');
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileSaveSuccess, setProfileSaveSuccess] = useState(false);
+  const [profileSaveError, setProfileSaveError] = useState<string | null>(null);
+
+  const openEditModal = () => {
+    if (profile) {
+      setEditFullName(profile.full_name || '');
+      setEditPhone(profile.phone || '');
+      setEditTargetRole(profile.target_role || '');
+      setEditCollege(profile.college || '');
+      setEditGradYear(profile.grad_year || '');
+      setEditGithubUrl(profile.github_url || '');
+      setEditLinkedinUrl(profile.linkedin_url || '');
+    }
+    setProfileSaveSuccess(false);
+    setProfileSaveError(null);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!profile) return;
+    setIsSavingProfile(true);
+    setProfileSaveError(null);
+    try {
+      const res = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: profile.id,
+          fullName: editFullName.trim(),
+          phone: editPhone.trim(),
+          targetRole: editTargetRole.trim(),
+          college: editCollege.trim(),
+          gradYear: editGradYear.trim(),
+          githubUrl: editGithubUrl.trim(),
+          linkedinUrl: editLinkedinUrl.trim(),
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to update profile');
+      }
+
+      const updated = {
+        full_name: editFullName.trim() || 'StackUp Student',
+        phone: editPhone.trim() || null,
+        target_role: editTargetRole.trim() || null,
+        college: editCollege.trim() || null,
+        grad_year: editGradYear.trim() || null,
+        github_url: editGithubUrl.trim() || null,
+        linkedin_url: editLinkedinUrl.trim() || null,
+      };
+
+      updateUserSession(updated);
+      setProfile((prev) => (prev ? { ...prev, ...updated } : null));
+      setProfileSaveSuccess(true);
+      setTimeout(() => {
+        setIsEditModalOpen(false);
+        setProfileSaveSuccess(false);
+      }, 900);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error updating profile';
+      setProfileSaveError(msg);
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
   useEffect(() => {
     async function loadUserData() {
       try {
@@ -114,6 +203,11 @@ export default function ProfilePage() {
           full_name?: string | null;
           avatar_url?: string | null;
           phone?: string | null;
+          target_role?: string | null;
+          college?: string | null;
+          grad_year?: string | null;
+          github_url?: string | null;
+          linkedin_url?: string | null;
           created_at?: string;
         };
         let profileRow: ProfileRowType | null = null;
@@ -137,6 +231,11 @@ export default function ProfilePage() {
           avatar_url: profileRow?.avatar_url || activeUser.avatar_url || null,
           email: activeUser.email,
           phone: profileRow?.phone || activeUser.phone,
+          target_role: profileRow?.target_role || activeUser.target_role || null,
+          college: profileRow?.college || activeUser.college || null,
+          grad_year: profileRow?.grad_year || activeUser.grad_year || null,
+          github_url: profileRow?.github_url || activeUser.github_url || null,
+          linkedin_url: profileRow?.linkedin_url || activeUser.linkedin_url || null,
           created_at: profileRow?.created_at || new Date().toISOString(),
         });
 
@@ -391,17 +490,62 @@ export default function ProfilePage() {
             )}
           </div>
           <div>
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
                 {profile?.full_name || 'StackUp Student'}
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
                 Verified Student
               </span>
+              {profile?.target_role && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-300 dark:border-blue-800 flex items-center gap-1.5">
+                  <Briefcase className="w-3 h-3 text-blue-500" />
+                  <span>{profile.target_role}</span>
+                </span>
+              )}
             </div>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {profile?.email || profile?.phone || 'Connected Session'}
             </p>
+            {(profile?.college || profile?.github_url || profile?.linkedin_url) && (
+              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-600 dark:text-slate-300">
+                {profile.college && (
+                  <span className="flex items-center space-x-1 font-medium">
+                    <GraduationCap className="w-3.5 h-3.5 text-blue-500" />
+                    <span>
+                      {profile.college}
+                      {profile.grad_year ? ` ('${profile.grad_year.slice(-2)})` : ''}
+                    </span>
+                  </span>
+                )}
+                {profile.github_url && (
+                  <a
+                    href={profile.github_url.startsWith('http') ? profile.github_url : `https://${profile.github_url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-1 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                    </svg>
+                    <span>GitHub</span>
+                  </a>
+                )}
+                {profile.linkedin_url && (
+                  <a
+                    href={profile.linkedin_url.startsWith('http') ? profile.linkedin_url : `https://${profile.linkedin_url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-1 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46v-8.37M7.86 6.5a1.63 1.63 0 0 0-1.63 1.63c0 .9.73 1.63 1.63 1.63a1.63 1.63 0 0 0 1.63-1.63c0-.9-.73-1.63-1.63-1.63Z" />
+                    </svg>
+                    <span>LinkedIn</span>
+                  </a>
+                )}
+              </div>
+            )}
             <div className="flex items-center space-x-4 mt-2 text-xs text-slate-400">
               <span className="flex items-center space-x-1">
                 <Calendar className="w-3.5 h-3.5" />
@@ -418,7 +562,14 @@ export default function ProfilePage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex items-center space-x-3 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          <button
+            onClick={openEditModal}
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
+          >
+            <Edit3 className="w-4 h-4 text-blue-500" />
+            <span>Edit Profile</span>
+          </button>
           <Link
             href="/dsa"
             className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors shadow-sm shadow-blue-600/20"
@@ -783,6 +934,183 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      {/* Edit Profile Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center space-x-2.5">
+                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
+                  <Edit3 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">Edit Student Profile</h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Update your career goals and placement details</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditModalOpen(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {profileSaveError && (
+              <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/80 text-xs text-red-600 dark:text-red-400">
+                {profileSaveError}
+              </div>
+            )}
+
+            {profileSaveSuccess && (
+              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-xs text-emerald-600 dark:text-emerald-400 flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <span>Profile updated successfully!</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              {/* Full Name */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                  placeholder="e.g. Alex Johnson"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                />
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="+91 9876543210"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                />
+              </div>
+
+              {/* Target Role & Quick Chips */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Target Role
+                </label>
+                <input
+                  type="text"
+                  value={editTargetRole}
+                  onChange={(e) => setEditTargetRole(e.target.value)}
+                  placeholder="e.g. SDE-1 (Full Stack)"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                />
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {['SDE-1', 'Frontend Engineer', 'Backend Engineer', 'Full Stack Dev', 'Data Analyst'].map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => setEditTargetRole(chip)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
+                        editTargetRole === chip
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'bg-slate-100 dark:bg-[#1e293b] text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* College & Grad Year */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                    College / University
+                  </label>
+                  <input
+                    type="text"
+                    value={editCollege}
+                    onChange={(e) => setEditCollege(e.target.value)}
+                    placeholder="e.g. IIT Bombay / State Tech"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                    Grad Year
+                  </label>
+                  <input
+                    type="text"
+                    value={editGradYear}
+                    onChange={(e) => setEditGradYear(e.target.value)}
+                    placeholder="2026"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* GitHub & LinkedIn URLs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                    GitHub Profile URL
+                  </label>
+                  <input
+                    type="text"
+                    value={editGithubUrl}
+                    onChange={(e) => setEditGithubUrl(e.target.value)}
+                    placeholder="https://github.com/username"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                    LinkedIn Profile URL
+                  </label>
+                  <input
+                    type="text"
+                    value={editLinkedinUrl}
+                    onChange={(e) => setEditLinkedinUrl(e.target.value)}
+                    placeholder="https://linkedin.com/in/username"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  disabled={isSavingProfile}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingProfile}
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold transition-colors shadow-sm shadow-blue-600/20"
+                >
+                  {isSavingProfile && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  <span>{isSavingProfile ? 'Saving...' : 'Save Profile'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

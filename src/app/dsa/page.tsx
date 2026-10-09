@@ -14,19 +14,36 @@ import {
   Building2,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  LayoutList,
+  FolderTree,
+  CheckCircle2,
   Copy,
   Clock,
   HardDrive,
   Lightbulb,
   FileText,
   Terminal,
-  Loader2,
   Lock,
   ArrowRight
 } from 'lucide-react';
 import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
 import { getCurrentUser, type UserSession } from '@/lib/auth/session';
+
+function getPageNumbers(current: number, total: number): (number | '...')[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, '...', total];
+  }
+  if (current >= total - 3) {
+    return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+  }
+  return [1, '...', current - 1, current, current + 1, '...', total];
+}
 
 export default function DsaHubPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -40,11 +57,14 @@ export default function DsaHubPage() {
   const [activeLang, setActiveLang] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Progressive scroll loading
-  const PAGE_SIZE = 10;
-  const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
-  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
-  const observerTarget = useRef<HTMLDivElement>(null);
+  // Structured Pagination & View Mode State
+  const [viewMode, setViewMode] = useState<'list' | 'pattern'>('list');
+  const [pageSize, setPageSize] = useState<number>(12);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const problemContainerRef = useRef<HTMLDivElement>(null);
+
+  // Expanded pattern accordions for pattern view
+  const [expandedPatterns, setExpandedPatterns] = useState<Record<string, boolean>>({});
 
   // Authentication state for feature gating
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
@@ -127,39 +147,60 @@ export default function DsaHubPage() {
     });
   }, [selectedCategory, selectedDifficulty, showOnlyUnsolved, searchQuery, solvedIds]);
 
-  // Reset visibleCount whenever filters change (React render-phase pattern)
-  const filterKey = `${selectedCategory}-${selectedDifficulty}-${searchQuery}-${showOnlyUnsolved}`;
+  // Reset currentPage to 1 whenever filters change (React render-phase pattern)
+  const filterKey = `${selectedCategory}-${selectedDifficulty}-${searchQuery}-${showOnlyUnsolved}-${pageSize}`;
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
   if (prevFilterKey !== filterKey) {
     setPrevFilterKey(filterKey);
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
   }
 
-  // Progressive infinite scroll intersection observer
-  useEffect(() => {
-    const target = observerTarget.current;
-    if (!target) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && visibleCount < filteredProblems.length && !isLoadingMore) {
-          setIsLoadingMore(true);
-          setTimeout(() => {
-            setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredProblems.length));
-            setIsLoadingMore(false);
-          }, 200);
-        }
-      },
-      { threshold: 0.1, rootMargin: '250px' }
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [visibleCount, filteredProblems.length, isLoadingMore]);
+  // Calculate pagination parameters
+  const effectivePageSize = pageSize === -1 ? (filteredProblems.length || 1) : pageSize;
+  const totalPages = Math.max(1, Math.ceil(filteredProblems.length / effectivePageSize));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const startIndex = pageSize === -1 ? 0 : (effectivePage - 1) * effectivePageSize;
+  const endIndex = pageSize === -1 ? filteredProblems.length : Math.min(startIndex + effectivePageSize, filteredProblems.length);
 
   const displayedProblems = useMemo(() => {
-    return filteredProblems.slice(0, visibleCount);
-  }, [filteredProblems, visibleCount]);
+    if (pageSize === -1) return filteredProblems;
+    return filteredProblems.slice(startIndex, endIndex);
+  }, [filteredProblems, pageSize, startIndex, endIndex]);
+
+  // Grouped problems by pattern for Pattern Accordion View
+  const groupedByPattern = useMemo(() => {
+    const map = new Map<string, DsaProblem[]>();
+    filteredProblems.forEach((p) => {
+      const existing = map.get(p.pattern_tag) || [];
+      existing.push(p);
+      map.set(p.pattern_tag, existing);
+    });
+    return Array.from(map.entries()).map(([pattern, problems]) => {
+      const solvedInGroup = problems.filter((p) => solvedIds.includes(p.id)).length;
+      return {
+        pattern,
+        problems,
+        solvedCount: solvedInGroup,
+        totalCount: problems.length,
+        percentage: Math.round((solvedInGroup / problems.length) * 100),
+      };
+    });
+  }, [filteredProblems, solvedIds]);
+
+  const handlePageChange = (page: number) => {
+    const targetPage = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(targetPage);
+    if (problemContainerRef.current) {
+      problemContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const togglePatternAccordion = (pattern: string) => {
+    setExpandedPatterns((prev) => ({
+      ...prev,
+      [pattern]: prev[pattern] === undefined ? true : !prev[pattern],
+    }));
+  };
 
   const handleCopyCode = (code: string, id: string) => {
     if (typeof navigator !== 'undefined') {
@@ -317,27 +358,77 @@ export default function DsaHubPage() {
           </div>
         </div>
 
-        {/* Dynamic Problem Count Header */}
-        <div className="flex items-center justify-between px-2 mb-3 text-xs text-zinc-500 dark:text-zinc-400">
-          <div>
-            Showing <span className="font-semibold text-zinc-800 dark:text-zinc-200">{displayedProblems.length}</span> of{' '}
-            <span className="font-semibold text-zinc-800 dark:text-zinc-200">{filteredProblems.length}</span> problems
+        {/* Dynamic Problem Count Header & View Switcher */}
+        <div ref={problemContainerRef} className="scroll-mt-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1 mb-4 text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center space-x-2">
+            <span className="font-semibold text-slate-900 dark:text-white">
+              {filteredProblems.length} {filteredProblems.length === 1 ? 'problem' : 'problems'} found
+            </span>
+            {viewMode === 'list' && pageSize !== -1 && totalPages > 1 && (
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-[#1e293b] text-slate-600 dark:text-slate-400 font-medium">
+                Page {effectivePage} of {totalPages}
+              </span>
+            )}
           </div>
-          {visibleCount < filteredProblems.length && (
-            <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Scroll down to reveal more</span>
+
+          <div className="flex items-center space-x-3 self-end sm:self-auto">
+            {/* View Mode Toggle: Paginated List vs Group by Pattern */}
+            <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === 'list'
+                    ? 'bg-white dark:bg-[#131c31] text-blue-600 dark:text-blue-400 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <LayoutList className="w-3.5 h-3.5" />
+                <span>List View</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('pattern')}
+                className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === 'pattern'
+                    ? 'bg-white dark:bg-[#131c31] text-blue-600 dark:text-blue-400 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <FolderTree className="w-3.5 h-3.5" />
+                <span>By Pattern ({groupedByPattern.length})</span>
+              </button>
             </div>
-          )}
+
+            {/* Items Per Page Selector (in list view) */}
+            {viewMode === 'list' && (
+              <div className="hidden sm:flex items-center space-x-1 text-slate-400">
+                <span>Per page:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="bg-slate-100 dark:bg-[#1e293b] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                >
+                  <option value={12}>12</option>
+                  <option value={24}>24</option>
+                  <option value={48}>48</option>
+                  <option value={-1}>All</option>
+                </select>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Problems List */}
         <div className="space-y-4">
           {filteredProblems.length === 0 ? (
-            <div className="bg-white dark:bg-zinc-900 p-12 text-center rounded-2xl border border-zinc-200 dark:border-zinc-800">
-              <Code2 className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
-              <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">No problems found</h3>
-              <p className="text-sm text-zinc-500 mt-1">Try clearing your search query or filter settings.</p>
+            <div className="bg-white dark:bg-[#131c31] p-12 text-center rounded-2xl border border-slate-200 dark:border-slate-800">
+              <Code2 className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+              <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">No problems found</h3>
+              <p className="text-sm text-slate-500 mt-1">Try clearing your search query or filter settings.</p>
               <button
                 onClick={() => {
                   setSelectedCategory('All');
@@ -345,23 +436,24 @@ export default function DsaHubPage() {
                   setSearchQuery('');
                   setShowOnlyUnsolved(false);
                 }}
-                className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl"
+                className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-colors cursor-pointer"
               >
                 Reset All Filters
               </button>
             </div>
           ) : (
-            displayedProblems.map((problem: DsaProblem) => {
-              const isSolved = solvedIds.includes(problem.id);
-              const isExpanded = expandedProblemId === problem.id;
+            (() => {
+              const renderCard = (problem: DsaProblem) => {
+                const isSolved = solvedIds.includes(problem.id);
+                const isExpanded = expandedProblemId === problem.id;
 
-              return (
+                return (
                 <div 
                   key={problem.id}
-                  className={`bg-white dark:bg-zinc-900 rounded-2xl border transition-all duration-200 shadow-sm ${
+                  className={`bg-white dark:bg-[#131c31] rounded-2xl border transition-all duration-200 shadow-sm ${
                     isSolved 
                       ? 'border-emerald-200 dark:border-emerald-950/60 bg-emerald-50/20 dark:bg-emerald-950/10' 
-                      : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
+                      : 'border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
                   }`}
                 >
                   <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -369,10 +461,10 @@ export default function DsaHubPage() {
                     <div className="flex items-start space-x-3.5 flex-1 min-w-0">
                       <button
                         onClick={() => toggleSolved(problem.id)}
-                        className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
+                        className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                           isSolved
                             ? 'bg-emerald-500 text-white shadow-sm'
-                            : 'border-2 border-zinc-300 dark:border-zinc-600 hover:border-emerald-500 text-transparent'
+                            : 'border-2 border-slate-300 dark:border-slate-600 hover:border-emerald-500 text-transparent'
                         }`}
                         title={isSolved ? 'Mark as Unsolved' : 'Mark as Solved'}
                       >
@@ -383,8 +475,8 @@ export default function DsaHubPage() {
                         <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
                           <h3 className={`text-base font-semibold transition-all ${
                             isSolved 
-                              ? 'line-through text-zinc-400 dark:text-zinc-500' 
-                              : 'text-zinc-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400'
+                              ? 'line-through text-slate-400 dark:text-slate-500' 
+                              : 'text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400'
                           }`}>
                             {problem.title}
                           </h3>
@@ -401,18 +493,18 @@ export default function DsaHubPage() {
                           </span>
 
                           {/* Pattern Tag */}
-                          <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+                          <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                             {problem.pattern_tag}
                           </span>
                         </div>
 
                         {/* Company badges */}
-                        <div className="flex items-center space-x-1.5 mt-2 flex-wrap gap-y-1 text-xs text-zinc-500">
-                          <Building2 className="w-3 h-3 text-zinc-400 mr-0.5" />
+                        <div className="flex items-center space-x-1.5 mt-2 flex-wrap gap-y-1 text-xs text-slate-500">
+                          <Building2 className="w-3 h-3 text-slate-400 mr-0.5" />
                           {problem.companies.map((c) => (
                             <span 
                               key={c}
-                              className="text-[10px] bg-zinc-100 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-400 px-1.5 py-0.5 rounded font-mono"
+                              className="text-[10px] bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded font-mono"
                             >
                               {c}
                             </span>
@@ -809,8 +901,71 @@ export default function DsaHubPage() {
                   )}
                 </div>
               );
-            })
-          )}
+            };
+
+            if (viewMode === 'pattern') {
+              return (
+                <div className="space-y-4">
+                  {groupedByPattern.map((group) => {
+                    const isGroupOpen = expandedPatterns[group.pattern] ?? true;
+                    return (
+                      <div
+                        key={group.pattern}
+                        className="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] overflow-hidden shadow-sm"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => togglePatternAccordion(group.pattern)}
+                          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#1e293b]/50 transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center space-x-3 min-w-0">
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+                              group.solvedCount === group.totalCount && group.totalCount > 0
+                                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                : 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'
+                            }`}>
+                              {group.solvedCount === group.totalCount && group.totalCount > 0 ? (
+                                <CheckCircle2 className="w-4 h-4" />
+                              ) : (
+                                <span>{group.problems.length}</span>
+                              )}
+                            </div>
+                            <div>
+                              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                                {group.pattern}
+                              </h3>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">
+                                {group.solvedCount} of {group.totalCount} completed ({group.percentage}%)
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center space-x-3">
+                            <div className="hidden sm:block w-24 bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                              <div
+                                className="bg-blue-600 h-full rounded-full transition-all duration-300"
+                                style={{ width: `${group.percentage}%` }}
+                              />
+                            </div>
+                            {isGroupOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                          </div>
+                        </button>
+
+                        {isGroupOpen && (
+                          <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3 bg-slate-50/50 dark:bg-[#0b1120]/40">
+                            {group.problems.map((p) => renderCard(p))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            }
+
+            return displayedProblems.map((problem) => renderCard(problem));
+          })()
+        )}
         </div>
 
         {/* Auth Prompt Modal */}
@@ -847,26 +1002,99 @@ export default function DsaHubPage() {
           </div>
         )}
 
-        {/* Scroll Sentinel for Progressive Loading */}
-        <div ref={observerTarget} className="pt-8 pb-4 flex flex-col items-center justify-center">
-          {isLoadingMore ? (
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-600 dark:text-zinc-400 shadow-sm">
-              <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
-              <span>Loading more problems on scroll...</span>
+        {/* Modern Pagination Controls (List View) */}
+        {viewMode === 'list' && filteredProblems.length > 0 && pageSize !== -1 && totalPages > 1 && (
+          <div className="pt-8 pb-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-800">
+            {/* Left: Summary */}
+            <div className="text-xs text-slate-500 dark:text-slate-400">
+              Showing <span className="font-bold text-slate-900 dark:text-white">{startIndex + 1}</span>–
+              <span className="font-bold text-slate-900 dark:text-white">{endIndex}</span> of{' '}
+              <span className="font-bold text-slate-900 dark:text-white">{filteredProblems.length}</span> problems
             </div>
-          ) : visibleCount < filteredProblems.length ? (
-            <button
-              onClick={() => setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredProblems.length))}
-              className="px-5 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 shadow-sm transition-all"
-            >
-              Load More ({filteredProblems.length - displayedProblems.length} remaining)
-            </button>
-          ) : filteredProblems.length > 0 ? (
-            <div className="text-center text-xs text-zinc-400 dark:text-zinc-500 py-2">
-              All {filteredProblems.length} problems loaded • Ready to crack your technical interviews
+
+            {/* Center: Page navigation pills */}
+            <div className="flex items-center space-x-1.5 flex-wrap justify-center">
+              <button
+                type="button"
+                onClick={() => handlePageChange(effectivePage - 1)}
+                disabled={effectivePage <= 1}
+                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
+                title="Previous Page"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Prev</span>
+              </button>
+
+              {getPageNumbers(effectivePage, totalPages).map((p, idx) => {
+                if (p === '...') {
+                  return (
+                    <span key={`dots-${idx}`} className="px-2 py-1 text-xs text-slate-400 select-none">
+                      ...
+                    </span>
+                  );
+                }
+                const pageNum = Number(p);
+                const isActive = pageNum === effectivePage;
+                return (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`min-w-[32px] h-8 px-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                        : 'border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b]'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => handlePageChange(effectivePage + 1)}
+                disabled={effectivePage >= totalPages}
+                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
+                title="Next Page"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
-          ) : null}
-        </div>
+
+            {/* Right: Per-page selector pills */}
+            <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
+              <span>Per page:</span>
+              <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-800">
+                {[12, 24, 48, -1].map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => {
+                      setPageSize(size);
+                      setCurrentPage(1);
+                    }}
+                    className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                      pageSize === size
+                        ? 'bg-white dark:bg-[#131c31] text-blue-600 dark:text-blue-400 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {size === -1 ? 'All' : size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Footer Completion Note */}
+        {filteredProblems.length > 0 && (
+          <div className="text-center text-xs text-slate-400 dark:text-slate-500 pt-4 pb-2">
+            All {filteredProblems.length} curated problems available • Ready to crack your technical interviews
+          </div>
+        )}
       </div>
     </div>
   );

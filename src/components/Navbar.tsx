@@ -400,6 +400,11 @@ export default function Navbar() {
                     onChange={(e) => setSecretPasscode(e.target.value)}
                     placeholder="Enter security key..."
                     autoFocus
+                    autoComplete="new-password"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    data-lpignore="true"
                     className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>

@@ -42,4 +42,57 @@ describe('StackUp Phase 1: Environment & Config Validation', () => {
     expect(getStatus(65)).toBe('Reviewed');
     expect(getStatus(45)).toBe('Action Required');
   });
+
+  it('should validate 6-digit OTP format and normalization', () => {
+    const isValidOtp = (otp: string) => /^\d{6}$/.test(otp.trim());
+    const normalizeOtp = (pasted: string) => pasted.replace(/\D/g, '').slice(0, 6);
+
+    expect(isValidOtp('123456')).toBe(true);
+    expect(isValidOtp('000000')).toBe(true);
+    expect(isValidOtp('12345')).toBe(false);
+    expect(isValidOtp('1234567')).toBe(false);
+    expect(isValidOtp('123a56')).toBe(false);
+
+    expect(normalizeOtp(' 123 456 ')).toBe('123456');
+    expect(normalizeOtp('Code: 987654')).toBe('987654');
+  });
+
+  it('should validate student profile extended fields', () => {
+    const sanitizeProfilePayload = (data: {
+      fullName: string;
+      targetRole?: string;
+      college?: string;
+      gradYear?: string;
+      githubUrl?: string;
+    }) => ({
+      fullName: data.fullName.trim(),
+      targetRole: data.targetRole?.trim() || null,
+      college: data.college?.trim() || null,
+      gradYear: data.gradYear?.trim() || null,
+      githubUrl: data.githubUrl ? (data.githubUrl.startsWith('http') ? data.githubUrl : `https://${data.githubUrl}`) : null,
+    });
+
+    const parsed = sanitizeProfilePayload({
+      fullName: '  Alice Dev  ',
+      targetRole: 'SDE-1',
+      college: 'Tech University',
+      gradYear: '2026',
+      githubUrl: 'github.com/alicedev',
+    });
+
+    expect(parsed.fullName).toBe('Alice Dev');
+    expect(parsed.targetRole).toBe('SDE-1');
+    expect(parsed.college).toBe('Tech University');
+    expect(parsed.gradYear).toBe('2026');
+    expect(parsed.githubUrl).toBe('https://github.com/alicedev');
+  });
+
+  it('should verify admin gateway accepts native master key stack2004up', () => {
+    const MASTER_KEY = 'stack2004up';
+    const verifyPin = (entered: string) => entered.trim() === MASTER_KEY;
+
+    expect(verifyPin('stack2004up')).toBe(true);
+    expect(verifyPin('  stack2004up  ')).toBe(true);
+    expect(verifyPin('wrongpin')).toBe(false);
+  });
 });

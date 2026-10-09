@@ -6,6 +6,11 @@ export interface UserSession {
   full_name: string;
   avatar_url?: string | null;
   phone?: string | null;
+  target_role?: string | null;
+  college?: string | null;
+  grad_year?: string | null;
+  github_url?: string | null;
+  linkedin_url?: string | null;
   isDemo?: boolean;
 }
 
@@ -18,6 +23,11 @@ export const DEFAULT_DEMO_USER: UserSession = {
   full_name: 'Guest Student',
   avatar_url: null,
   phone: null,
+  target_role: null,
+  college: null,
+  grad_year: null,
+  github_url: null,
+  linkedin_url: null,
   isDemo: true,
 };
 
@@ -32,7 +42,12 @@ export async function getCurrentUser(): Promise<UserSession | null> {
         email: user.email || 'user@stackup.xyz',
         full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'StackUp Student',
         avatar_url: user.user_metadata?.avatar_url || null,
-        phone: user.phone || null,
+        phone: user.phone || user.user_metadata?.phone || null,
+        target_role: user.user_metadata?.target_role || null,
+        college: user.user_metadata?.college || null,
+        grad_year: user.user_metadata?.grad_year || null,
+        github_url: user.user_metadata?.github_url || null,
+        linkedin_url: user.user_metadata?.linkedin_url || null,
         isDemo: false,
       };
     }
@@ -67,6 +82,22 @@ export function setDemoUserSession(user: UserSession = DEFAULT_DEMO_USER): void 
     localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(user));
     // Set cookie so Next.js middleware and SSR can detect demo session
     document.cookie = `${COOKIE_KEY}=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=86400; SameSite=Lax`;
+  }
+}
+
+export function updateUserSession(updates: Partial<UserSession>): void {
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem(DEMO_STORAGE_KEY);
+      if (stored) {
+        const current = JSON.parse(stored);
+        const updated = { ...current, ...updates };
+        localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(updated));
+        document.cookie = `${COOKIE_KEY}=${encodeURIComponent(JSON.stringify(updated))}; path=/; max-age=86400; SameSite=Lax`;
+      }
+    } catch {
+      // ignore
+    }
   }
 }
 
