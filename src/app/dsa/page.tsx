@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useDeferredValue } from 'react';
 import Link from 'next/link';
 import { 
   Code2, 
@@ -49,6 +49,8 @@ export default function DsaHubPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const showSearchSpinner = searchQuery !== deferredSearchQuery;
   const [showOnlyUnsolved, setShowOnlyUnsolved] = useState(false);
   
   // Expanded Complete Output panel state
@@ -74,6 +76,17 @@ export default function DsaHubPage() {
   useEffect(() => {
     getCurrentUser().then((u) => setCurrentUser(u));
   }, []);
+
+  // Keyboard shortcut: Escape closes expanded problem drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && expandedProblemId) {
+        setExpandedProblemId(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [expandedProblemId]);
 
   // Solved problem IDs persisted in localStorage (lazy initializer for SSR & React 19)
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
@@ -135,9 +148,9 @@ export default function DsaHubPage() {
       if (showOnlyUnsolved && solvedIds.includes(problem.id)) {
         return false;
       }
-      // Search query
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
+      // Search query (using concurrent deferred value for 60fps typing)
+      if (deferredSearchQuery.trim()) {
+        const query = deferredSearchQuery.toLowerCase();
         const matchesTitle = problem.title.toLowerCase().includes(query);
         const matchesPattern = problem.pattern_tag.toLowerCase().includes(query);
         const matchesCompany = problem.companies.some((c) => c.toLowerCase().includes(query));
@@ -145,10 +158,10 @@ export default function DsaHubPage() {
       }
       return true;
     });
-  }, [selectedCategory, selectedDifficulty, showOnlyUnsolved, searchQuery, solvedIds]);
+  }, [selectedCategory, selectedDifficulty, showOnlyUnsolved, deferredSearchQuery, solvedIds]);
 
   // Reset currentPage to 1 whenever filters change (React render-phase pattern)
-  const filterKey = `${selectedCategory}-${selectedDifficulty}-${searchQuery}-${showOnlyUnsolved}-${pageSize}`;
+  const filterKey = `${selectedCategory}-${selectedDifficulty}-${deferredSearchQuery}-${showOnlyUnsolved}-${pageSize}`;
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
   if (prevFilterKey !== filterKey) {
     setPrevFilterKey(filterKey);
@@ -292,8 +305,13 @@ export default function DsaHubPage() {
                 placeholder="Search problem name, company (e.g. Google), or pattern..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white placeholder:text-slate-400"
+                className="w-full pl-10 pr-9 py-2 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white placeholder:text-slate-400"
               />
+              {showSearchSpinner && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <div className="w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                </div>
+              )}
             </div>
 
             {/* Difficulty Toggle Buttons */}

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useDeferredValue } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { 
   BookOpen, 
   Cpu, 
@@ -30,8 +31,26 @@ import {
 import { CURRICULUM_DATA, type Topic, type SectionCategory } from '@/lib/data/curriculum';
 import { getSectionMetrics, getReadTopicIds, getLocalQuizAttempts } from '@/lib/services/progress';
 import { getCurrentUser, type UserSession } from '@/lib/auth/session';
-import TopicNotes from './TopicNotes';
-import QuizEngine from './QuizEngine';
+// Lazy-load Markdown parser and Quiz Engine to reduce initial bundle and accelerate FCP
+const TopicNotes = dynamic(() => import('./TopicNotes'), {
+  ssr: false,
+  loading: () => (
+    <div className="max-w-4xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
+      <div className="h-28 bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800 rounded-3xl" />
+      <div className="h-64 bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800 rounded-3xl" />
+    </div>
+  ),
+});
+
+const QuizEngine = dynamic(() => import('./QuizEngine'), {
+  ssr: false,
+  loading: () => (
+    <div className="max-w-3xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
+      <div className="h-20 bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800 rounded-3xl" />
+      <div className="h-72 bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800 rounded-3xl" />
+    </div>
+  ),
+});
 
 interface SectionPageProps {
   sectionKey: 'aptitude' | 'core-cs';
@@ -40,15 +59,35 @@ interface SectionPageProps {
 export default function SectionPage({ sectionKey }: SectionPageProps) {
   const section = CURRICULUM_DATA[sectionKey];
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const isSearchPending = searchQuery !== deferredSearchQuery;
+
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'Easy' | 'Medium' | 'Hard'>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
+  const [subjectCluster, setSubjectCluster] = useState<'all' | 'systems' | 'algo-theory' | 'math' | 'software'>('all');
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
   const [cheatsheetSearch, setCheatsheetSearch] = useState('');
+  const deferredCheatsheetSearch = useDeferredValue(cheatsheetSearch);
   const [cheatsheetCategory, setCheatsheetCategory] = useState<string>('all');
 
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [activeView, setActiveView] = useState<'list' | 'notes' | 'quiz'>('list');
+
+  // Global keyboard shortcuts (Escape to close modals or return to syllabus view)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isCheatsheetOpen) {
+          setIsCheatsheetOpen(false);
+        } else if (activeView !== 'list') {
+          setActiveView('list');
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isCheatsheetOpen, activeView]);
 
   // Metrics
   const [metricsRefresh, setMetricsRefresh] = useState(0);
@@ -226,10 +265,10 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     return activeCategoryObj.topics.filter(filterTopic);
   }, [activeCategoryObj, filterTopic]);
 
-  // Search Results Mode
+  // Search Results Mode with Concurrent Deferred Query (maintains 60fps input response)
   const searchResults = useMemo(() => {
-    if (!section || !searchQuery.trim()) return null;
-    const q = searchQuery.toLowerCase().trim();
+    if (!section || !deferredSearchQuery.trim()) return null;
+    const q = deferredSearchQuery.toLowerCase().trim();
     const results: { topic: Topic; category: SectionCategory }[] = [];
     section.categories.forEach((cat) => {
       cat.topics.forEach((t) => {
@@ -245,13 +284,32 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       });
     });
     return results;
-  }, [section, searchQuery, filterTopic]);
+  }, [section, deferredSearchQuery, filterTopic]);
+
+  // Filtered categories for Subject Dashboard view
+  const filteredDashboardCategories = useMemo(() => {
+    if (!section) return [];
+    if (sectionKey !== 'core-cs' || subjectCluster === 'all') return section.categories;
+    
+    switch (subjectCluster) {
+      case 'systems':
+        return section.categories.filter((c) => ['os', 'dbms', 'cn', 'coa', 'compiler-design', 'dld'].includes(c.id));
+      case 'algo-theory':
+        return section.categories.filter((c) => ['c-prog', 'data-structures', 'algorithms', 'toc'].includes(c.id));
+      case 'math':
+        return section.categories.filter((c) => ['discrete-math', 'eng-math'].includes(c.id));
+      case 'software':
+        return section.categories.filter((c) => ['oops', 'system-design', 'swe-git'].includes(c.id));
+      default:
+        return section.categories;
+    }
+  }, [section, sectionKey, subjectCluster]);
 
   // Cheatsheet Compiled Topics
   const cheatsheetTopics = useMemo(() => {
     if (!section) return [];
     const list: { topic: Topic; category: SectionCategory }[] = [];
-    const q = cheatsheetSearch.toLowerCase().trim();
+    const q = deferredCheatsheetSearch.toLowerCase().trim();
 
     section.categories.forEach((cat) => {
       if (cheatsheetCategory !== 'all' && cat.id !== cheatsheetCategory) return;
@@ -269,7 +327,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       });
     });
     return list;
-  }, [section, cheatsheetCategory, cheatsheetSearch]);
+  }, [section, cheatsheetCategory, deferredCheatsheetSearch]);
 
   if (!section) {
     return (
@@ -382,14 +440,18 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             placeholder={`Search all ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP 3-Way, Normalization, Probability)...`}
             className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#131c31] text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
           />
-          {searchQuery && (
+          {isSearchPending ? (
+            <div className="absolute right-3.5 top-3.5">
+              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : searchQuery ? (
             <button
               onClick={() => setSearchQuery('')}
               className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
-          )}
+          ) : null}
         </div>
 
         {/* Filter Chips Toolbar */}
@@ -640,13 +702,38 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           <div className="flex items-center justify-between px-1">
             <h2 className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
               <Zap className="w-3.5 h-3.5 text-blue-500" />
-              <span>Choose a Subject to Study ({section.categories.length} Modules Available)</span>
+              <span>Choose a Subject to Study ({filteredDashboardCategories.length} Modules Available)</span>
             </h2>
             <span className="text-[11px] font-bold text-slate-500">Tap any subject to open syllabus</span>
           </div>
 
+          {/* Quick Subject Cluster Filter Tabs for Core CS */}
+          {sectionKey === 'core-cs' && (
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+              {[
+                { id: 'all', label: 'All Subjects', count: 15 },
+                { id: 'systems', label: 'Systems & Architecture', count: 6 },
+                { id: 'algo-theory', label: 'Algorithms & Foundations', count: 4 },
+                { id: 'math', label: 'Mathematics', count: 2 },
+                { id: 'software', label: 'Software & Design', count: 3 },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setSubjectCluster(tab.id as 'all' | 'systems' | 'algo-theory' | 'math' | 'software')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                    subjectCluster === tab.id
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-[#131c31] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {tab.label} ({tab.count})
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-            {section.categories.map((cat) => {
+            {filteredDashboardCategories.map((cat) => {
               const theme = getCategoryTheme(cat.icon);
               const completedCount = cat.topics.filter((t) => completedTopicIds.has(t.id)).length;
               const catPercent = Math.round((completedCount / cat.topics.length) * 100);
@@ -662,9 +749,22 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-xs shrink-0">
                         {theme.icon}
                       </div>
-                      <span className={`text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-xl ${theme.badge}`}>
-                        {cat.topics.length} Topics • {cat.topics.reduce((acc, t) => acc + t.questions.length, 0)} MCQs
-                      </span>
+                      <div className="flex items-center space-x-1.5">
+                        <a
+                          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(cat.title + ' gate lecture course')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-2 py-1 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-50/80 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200/50 dark:border-rose-900/40 transition-colors inline-flex items-center space-x-1"
+                          title={`Watch ${cat.title} video lectures on YouTube`}
+                        >
+                          <Video className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-bold">Videos</span>
+                        </a>
+                        <span className={`text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-xl ${theme.badge}`}>
+                          {cat.topics.length} Topics
+                        </span>
+                      </div>
                     </div>
 
                     <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">

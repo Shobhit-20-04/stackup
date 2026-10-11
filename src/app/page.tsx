@@ -41,7 +41,7 @@ export default function HomePage() {
 
         {/* Subtitle - High Readability */}
         <p className="mt-3.5 sm:mt-5 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-xl mx-auto leading-relaxed px-1">
-          Everything in one fast portal: 150+ curated DSA patterns, Core CS revision notes, timed aptitude tests, and an ATS resume evaluator.
+          Everything in one fast portal: 150+ curated DSA patterns, 15 Core CS subjects, Aptitude modules with YouTube video walkthroughs, and an ATS resume evaluator.
         </p>
 
         {/* Primary Action Buttons */}
@@ -121,14 +121,14 @@ export default function HomePage() {
                   <Cpu className="w-5 h-5" />
                 </div>
                 <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/50 dark:border-sky-800/50">
-                  8 Subjects
+                  15 Subjects
                 </span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                 Core CS Subjects
               </h3>
               <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                Structured cheat sheets for OS, DBMS, Computer Networks, OOP, System Design &amp; COA.
+                190+ topics with notes, MCQs &amp; YouTube lectures: OS, DBMS, Networks, COA, Compilers, TOC &amp; Math.
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-sky-600 dark:text-sky-400">
@@ -148,14 +148,14 @@ export default function HomePage() {
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/50 dark:border-amber-800/50">
-                  Timed Tests
+                  4 Categories
                 </span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                 Aptitude &amp; Logic
               </h3>
               <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                Speed drills for campus placements: Probability, Time &amp; Work, and Logical Reasoning MCQs.
+                Quantitative, Logical Reasoning, Verbal Ability &amp; Spatial Aptitude with timed tests and video solutions.
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-amber-600 dark:text-amber-400">
