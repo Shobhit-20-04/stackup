@@ -24,7 +24,8 @@ import {
   Zap,
   Check,
   SlidersHorizontal,
-  Building2
+  Building2,
+  Video
 } from 'lucide-react';
 import { CURRICULUM_DATA, type Topic, type SectionCategory } from '@/lib/data/curriculum';
 import { getSectionMetrics, getReadTopicIds, getLocalQuizAttempts } from '@/lib/services/progress';
@@ -609,7 +610,21 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     </div>
                     <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
                       <span>Study Module Notes ({topic.questions.length} MCQs)</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      <div className="flex items-center space-x-2">
+                        {topic.youtube_url && (
+                          <a
+                            href={topic.youtube_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 transition-colors inline-flex items-center"
+                            title="Study topic on YouTube"
+                          >
+                            <Video className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 );
@@ -834,6 +849,18 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2 self-stretch md:self-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800 shrink-0">
+                      {topic.youtube_url && (
+                        <a
+                          href={topic.youtube_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="p-2 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/40 transition-colors inline-flex items-center justify-center"
+                          title="Watch video lecture on YouTube"
+                        >
+                          <Video className="w-4 h-4" />
+                        </a>
+                      )}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -964,6 +991,17 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       </div>
 
                       <div className="flex items-center space-x-2">
+                        {topic.youtube_url && (
+                          <a
+                            href={topic.youtube_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 transition-colors inline-flex items-center"
+                            title="Study topic on YouTube"
+                          >
+                            <Video className="w-3.5 h-3.5" />
+                          </a>
+                        )}
                         <button
                           onClick={() => {
                             setIsCheatsheetOpen(false);

@@ -17,7 +17,8 @@ import {
   Copy,
   Building2,
   Zap,
-  Sparkles
+  Sparkles,
+  Video
 } from 'lucide-react';
 import type { Topic } from '@/lib/data/curriculum';
 import { getCurrentUser, type UserSession } from '@/lib/auth/session';
@@ -276,16 +277,30 @@ export default function TopicNotes({
           </div>
         </div>
 
-        {/* Start Quiz Action */}
-        {topic.questions.length > 0 && (
-          <button
-            onClick={onStartQuiz}
-            className="w-full md:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/25 transition-all shrink-0 cursor-pointer text-xs sm:text-sm"
-          >
-            <Play className="w-4 h-4 fill-white" />
-            <span>Launch Practice Quiz ({topic.questions.length} Qs)</span>
-          </button>
-        )}
+        {/* Topic Actions */}
+        <div className="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+          {topic.youtube_url && (
+            <a
+              href={topic.youtube_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center space-x-2 px-5 py-3.5 rounded-xl font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200/60 dark:border-rose-900/50 transition-all cursor-pointer text-xs sm:text-sm text-center"
+              title="Study this topic on YouTube"
+            >
+              <Video className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+              <span>Watch on YouTube</span>
+            </a>
+          )}
+          {topic.questions.length > 0 && (
+            <button
+              onClick={onStartQuiz}
+              className="inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/25 transition-all shrink-0 cursor-pointer text-xs sm:text-sm"
+            >
+              <Play className="w-4 h-4 fill-white" />
+              <span>Launch Practice Quiz ({topic.questions.length} Qs)</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Key Takeaways & Cheat Formulas Banner */}
@@ -423,6 +438,19 @@ export default function TopicNotes({
               </button>
             ) : (
               <div />
+            )}
+
+            {topic.youtube_url && (
+              <a
+                href={topic.youtube_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-2xl border border-rose-200/60 dark:border-rose-900/40 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                title="Watch lecture on YouTube"
+              >
+                <Video className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                <span>YouTube Lecture</span>
+              </a>
             )}
 
             {nextTopic ? (

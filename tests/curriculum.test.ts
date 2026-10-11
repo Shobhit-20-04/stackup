@@ -7,6 +7,31 @@ describe('Phase 2 Curriculum & Notes Validation', () => {
     expect(CURRICULUM_DATA).toHaveProperty('core-cs');
   });
 
+  it('should have all 4 Aptitude categories and at least 12 Core CS subjects', () => {
+    const aptitude = CURRICULUM_DATA['aptitude'];
+    const coreCs = CURRICULUM_DATA['core-cs'];
+
+    const aptCatIds = aptitude.categories.map((c) => c.id);
+    expect(aptCatIds).toContain('quant');
+    expect(aptCatIds).toContain('logical');
+    expect(aptCatIds).toContain('verbal-ability');
+    expect(aptCatIds).toContain('spatial-aptitude');
+
+    const csCatIds = coreCs.categories.map((c) => c.id);
+    expect(csCatIds).toContain('c-prog');
+    expect(csCatIds).toContain('data-structures');
+    expect(csCatIds).toContain('algorithms');
+    expect(csCatIds).toContain('discrete-math');
+    expect(csCatIds).toContain('eng-math');
+    expect(csCatIds).toContain('dld');
+    expect(csCatIds).toContain('coa');
+    expect(csCatIds).toContain('toc');
+    expect(csCatIds).toContain('compiler-design');
+    expect(csCatIds).toContain('os');
+    expect(csCatIds).toContain('dbms');
+    expect(csCatIds).toContain('cn');
+  });
+
   it('should have valid topics with non-empty markdown notes in Aptitude', () => {
     const aptitude = CURRICULUM_DATA['aptitude'];
     expect(aptitude.categories.length).toBeGreaterThan(0);
@@ -19,6 +44,24 @@ describe('Phase 2 Curriculum & Notes Validation', () => {
         expect(topic.estimatedMinutes).toBeGreaterThan(0);
       });
     });
+  });
+
+  it('should verify that EVERY topic has a valid youtube_url matching the DSA pattern', () => {
+    const sections = [CURRICULUM_DATA['aptitude'], CURRICULUM_DATA['core-cs']];
+    let totalTopics = 0;
+
+    sections.forEach((section) => {
+      section.categories.forEach((cat) => {
+        cat.topics.forEach((topic) => {
+          totalTopics++;
+          expect(topic.youtube_url).toBeDefined();
+          expect(topic.youtube_url).toMatch(/^https:\/\/www\.youtube\.com\/results\?search_query=/);
+        });
+      });
+    });
+
+    // Over 190 topics across all categories
+    expect(totalTopics).toBeGreaterThanOrEqual(185);
   });
 
   it('should have valid questions with correct_option index in bounds across all topics', () => {
@@ -41,8 +84,8 @@ describe('Phase 2 Curriculum & Notes Validation', () => {
       });
     });
 
-    // Enriched question bank verification: we expanded to 176 questions
-    expect(totalQuestions).toBeGreaterThanOrEqual(170);
+    // Over 380 rich MCQs across all topics
+    expect(totalQuestions).toBeGreaterThanOrEqual(350);
   });
 
   it('should have difficulty, company tags, and key takeaways across all topics', () => {
