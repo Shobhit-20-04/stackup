@@ -8,16 +8,16 @@ describe('StackUp Phase 1: Environment & Config Validation', () => {
     expect(targetDomain).toBe('stackup.xyz');
   });
 
-  it('should validate phone number format for OTP login', () => {
-    const isValidPhone = (phone: string) => {
-      // E.164-ish basic check: starts with +, followed by 10 to 15 digits
-      return /^\+[1-9]\d{9,14}$/.test(phone.replace(/\s+/g, ''));
+  it('should validate email format for Email/Password login', () => {
+    const isValidEmail = (email: string) => {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
     };
 
-    expect(isValidPhone('+919876543210')).toBe(true);
-    expect(isValidPhone('+14155552671')).toBe(true);
-    expect(isValidPhone('invalid-phone')).toBe(false);
-    expect(isValidPhone('12345')).toBe(false);
+    expect(isValidEmail('student@stackup.dev')).toBe(true);
+    expect(isValidEmail('user.name+tag@college.edu')).toBe(true);
+    expect(isValidEmail('invalid-email')).toBe(false);
+    expect(isValidEmail('@domain.com')).toBe(false);
+    expect(isValidEmail('user@')).toBe(false);
   });
 
   it('should validate core sections schema mapping', () => {
@@ -43,18 +43,13 @@ describe('StackUp Phase 1: Environment & Config Validation', () => {
     expect(getStatus(45)).toBe('Action Required');
   });
 
-  it('should validate 6-digit OTP format and normalization', () => {
-    const isValidOtp = (otp: string) => /^\d{6}$/.test(otp.trim());
-    const normalizeOtp = (pasted: string) => pasted.replace(/\D/g, '').slice(0, 6);
+  it('should validate password security constraints for email signup', () => {
+    const isValidPassword = (password: string) => password.length >= 6;
 
-    expect(isValidOtp('123456')).toBe(true);
-    expect(isValidOtp('000000')).toBe(true);
-    expect(isValidOtp('12345')).toBe(false);
-    expect(isValidOtp('1234567')).toBe(false);
-    expect(isValidOtp('123a56')).toBe(false);
-
-    expect(normalizeOtp(' 123 456 ')).toBe('123456');
-    expect(normalizeOtp('Code: 987654')).toBe('987654');
+    expect(isValidPassword('securepass123')).toBe(true);
+    expect(isValidPassword('123456')).toBe(true);
+    expect(isValidPassword('short')).toBe(false);
+    expect(isValidPassword('')).toBe(false);
   });
 
   it('should validate student profile extended fields', () => {
