@@ -459,12 +459,12 @@ export default function AdminDashboardPage() {
   // If not authenticated, render the secured admin access portal
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0b1120] flex flex-col justify-center items-center px-4 py-8 sm:py-12">
+      <div className="min-h-screen bg-[#09090b] flex flex-col justify-center items-center px-4 py-8 sm:py-12">
         {/* Prominent Back Link for Mobile & Desktop */}
         <div className="w-full max-w-md mb-3 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-300 hover:text-white bg-[#131c31] hover:bg-[#1e293b] border border-slate-800 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-300 hover:text-white bg-[#121215] hover:bg-zinc-850 border border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-sm"
           >
             <ChevronLeft className="w-4 h-4 text-slate-400" />
             <span>&larr; Back to StackUp Website</span>
@@ -472,7 +472,7 @@ export default function AdminDashboardPage() {
           <span className="text-[11px] text-slate-500 font-medium">Admin Authorization</span>
         </div>
 
-        <div className="max-w-md w-full bg-[#131c31] border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+        <div className="max-w-md w-full bg-[#121215] border border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
           <div className="flex items-center space-x-3.5">
             <div className="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-6 h-6" />
@@ -515,7 +515,7 @@ export default function AdminDashboardPage() {
                   autoCapitalize="off"
                   spellCheck={false}
                   data-lpignore="true"
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-700 bg-[#1e293b]/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-text"
+                  className="w-full pl-10 pr-4 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-text"
                 />
               </div>
               <p className="mt-1.5 text-[11px] text-slate-400 leading-normal">
@@ -526,7 +526,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center space-x-2.5 pt-1">
               <Link
                 href="/"
-                className="flex-1 py-3 px-3 rounded-2xl border border-slate-700 bg-[#1e293b] hover:bg-slate-700 text-slate-200 text-xs font-bold text-center transition-colors flex items-center justify-center space-x-1 cursor-pointer"
+                className="flex-1 py-3 px-3 rounded-2xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-slate-200 text-xs font-bold text-center transition-colors flex items-center justify-center space-x-1 cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>Go Back</span>
@@ -552,7 +552,7 @@ export default function AdminDashboardPage() {
             </div>
           </form>
 
-          <div className="pt-2 text-center border-t border-slate-800/80">
+          <div className="pt-2 text-center border-t border-zinc-800">
             <Link
               href="/"
               className="text-xs text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center space-x-1 font-semibold"
@@ -566,9 +566,9 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b1120] text-slate-900 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-100 flex flex-col">
       {/* Top Admin Header Bar - Fully Responsive for Mobile & Tablet */}
-      <header className="bg-white dark:bg-[#131c31] border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-xs">
+      <header className="bg-white dark:bg-[#121215] border-b border-slate-200 dark:border-zinc-800 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center justify-between">
@@ -594,7 +594,7 @@ export default function AdminDashboardPage() {
               {/* Mobile Main Site Link */}
               <Link
                 href="/"
-                className="sm:hidden p-2 rounded-xl border border-slate-700 bg-[#1e293b] text-xs font-semibold text-slate-300 hover:text-white"
+                className="sm:hidden p-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-slate-300 hover:text-white"
                 title="Return to Main Portal"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -605,7 +605,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center flex-wrap gap-2">
               <Link
                 href="/"
-                className="hidden sm:inline-flex px-3 py-1.5 sm:py-2 rounded-xl border border-slate-700 bg-[#1e293b] text-xs font-semibold text-slate-300 hover:text-white items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                className="hidden sm:inline-flex px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-slate-300 hover:text-white items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>Main Site</span>
@@ -614,7 +614,7 @@ export default function AdminDashboardPage() {
               <button
                 onClick={() => fetchAdminData(passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : ''))}
                 disabled={loading}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-700 bg-[#1e293b] text-xs font-semibold text-slate-200 hover:bg-slate-700 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-slate-200 hover:bg-slate-700 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-blue-400' : ''}`} />
                 <span className="hidden xs:inline">Refresh</span>
@@ -626,7 +626,7 @@ export default function AdminDashboardPage() {
                   setChangeKeyMsg('');
                   setChangeKeyModalOpen(true);
                 }}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-700 bg-[#1e293b] text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
                 title="Change master admin security key"
               >
                 <KeyRound className="w-3.5 h-3.5 text-amber-400" />
@@ -635,7 +635,7 @@ export default function AdminDashboardPage() {
 
               <button
                 onClick={handlePurgeTestRecords}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-700 bg-[#1e293b] text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
                 title="Purge dummy seeds (@example.com, etc.)"
               >
                 <Trash2 className="w-3.5 h-3.5 text-slate-400" />
@@ -664,7 +664,7 @@ export default function AdminDashboardPage() {
 
         {/* Real Metrics Summary Grid - Fluid responsive for phones & tablets */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
-          <div className="bg-[#131c31] p-3.5 sm:p-5 rounded-2xl border border-slate-800 shadow-xs">
+          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Candidate Resumes</span>
               <FileText className="w-3.5 h-3.5 text-blue-400" />
@@ -677,7 +677,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#131c31] p-3.5 sm:p-5 rounded-2xl border border-slate-800 shadow-xs">
+          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Avg ATS Score</span>
               <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
@@ -691,7 +691,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#131c31] p-3.5 sm:p-5 rounded-2xl border border-slate-800 shadow-xs">
+          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Student Profiles</span>
               <Users className="w-3.5 h-3.5 text-blue-400" />
@@ -704,7 +704,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#131c31] p-3.5 sm:p-5 rounded-2xl border border-slate-800 shadow-xs">
+          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Quiz Attempts</span>
               <Award className="w-3.5 h-3.5 text-amber-400" />
@@ -717,7 +717,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#131c31] p-3.5 sm:p-5 rounded-2xl border border-slate-800 shadow-xs col-span-2 sm:col-span-1">
+          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs col-span-2 sm:col-span-1">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Audited Logins</span>
               <LogIn className="w-3.5 h-3.5 text-sky-400" />
@@ -732,13 +732,13 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Primary Tab Navigation - Horizontal Swipeable Container on Mobile */}
-        <div className="flex items-center space-x-2 border-b border-slate-800 pb-2 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex items-center space-x-2 border-b border-zinc-800 pb-2 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <button
             onClick={() => { setActiveTab('workspace'); setMobileDetailOpen(false); }}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'workspace'
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-[#1e293b]'
+                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
@@ -750,7 +750,7 @@ export default function AdminDashboardPage() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'table'
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-[#1e293b]'
+                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -762,7 +762,7 @@ export default function AdminDashboardPage() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'users'
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-[#1e293b]'
+                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -774,7 +774,7 @@ export default function AdminDashboardPage() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'skills'
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-[#1e293b]'
+                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -786,7 +786,7 @@ export default function AdminDashboardPage() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'logins'
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-[#1e293b]'
+                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
             <LogIn className="w-3.5 h-3.5" />
@@ -802,7 +802,7 @@ export default function AdminDashboardPage() {
             {/* Left Column: Candidate List Selector */}
             <div className={`lg:col-span-5 space-y-3 ${mobileDetailOpen ? 'hidden lg:block' : 'block'}`}>
               {/* Search & Sort Controls */}
-              <div className="bg-[#131c31] p-3.5 rounded-2xl border border-slate-800 space-y-2.5">
+              <div className="bg-[#121215] p-3.5 rounded-2xl border border-zinc-800 space-y-2.5">
                 <div className="relative">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                   <input
@@ -810,7 +810,7 @@ export default function AdminDashboardPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search candidate name, email, or skill..."
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-800 bg-[#0b1120] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-800 bg-[#09090b] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -818,7 +818,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={gradeFilter}
                     onChange={(e) => setGradeFilter(e.target.value)}
-                    className="px-2.5 py-1.5 rounded-xl border border-slate-800 bg-[#0b1120] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
+                    className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
                   >
                     <option value="ALL">All Grades</option>
                     <option value="A+">Grade A+ (88-100)</option>
@@ -831,7 +831,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'date' | 'score')}
-                    className="px-2.5 py-1.5 rounded-xl border border-slate-800 bg-[#0b1120] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
+                    className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
                   >
                     <option value="date">Sort: Latest First</option>
                     <option value="score">Sort: Highest Score</option>
@@ -842,7 +842,7 @@ export default function AdminDashboardPage() {
               {/* Candidate Cards List */}
               <div className="space-y-2 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
                 {filteredResumes.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400 bg-[#131c31] rounded-2xl border border-slate-800 text-xs">
+                  <div className="p-8 text-center text-slate-400 bg-[#121215] rounded-2xl border border-zinc-800 text-xs">
                     No uploaded resumes match the selected search filters.
                   </div>
                 ) : (
@@ -859,7 +859,7 @@ export default function AdminDashboardPage() {
                         className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                           isSelected
                             ? 'bg-blue-950/50 border-blue-500 shadow-sm'
-                            : 'bg-[#131c31] border-slate-800 hover:border-slate-700 hover:bg-slate-850/60'
+                            : 'bg-[#121215] border-zinc-800 hover:border-zinc-700 hover:bg-slate-850/60'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -888,7 +888,7 @@ export default function AdminDashboardPage() {
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between text-[10px] text-slate-400 mt-2.5 pt-2 border-t border-slate-800">
+                        <div className="flex items-center justify-between text-[10px] text-slate-400 mt-2.5 pt-2 border-t border-zinc-800">
                           <div className="flex items-center space-x-1">
                             <Calendar className="w-3 h-3 text-slate-500" />
                             <span>{new Date(resume.created_at).toLocaleDateString()}</span>
@@ -907,9 +907,9 @@ export default function AdminDashboardPage() {
             {/* Right Column: Dedicated Space to View Uploaded Resume Document */}
             <div className={`lg:col-span-7 ${mobileDetailOpen ? 'block' : 'hidden lg:block'}`}>
               {currentResume ? (
-                <div className="bg-[#131c31] rounded-3xl border border-slate-800 shadow-sm overflow-hidden flex flex-col">
+                <div className="bg-[#121215] rounded-3xl border border-zinc-800 shadow-sm overflow-hidden flex flex-col">
                   {/* Mobile Back Button */}
-                  <div className="p-3 bg-[#131c31] border-b border-slate-800 lg:hidden flex items-center justify-between">
+                  <div className="p-3 bg-[#121215] border-b border-zinc-800 lg:hidden flex items-center justify-between">
                     <button
                       onClick={() => setMobileDetailOpen(false)}
                       className="inline-flex items-center space-x-1 text-xs font-bold text-blue-400 cursor-pointer"
@@ -923,7 +923,7 @@ export default function AdminDashboardPage() {
                   </div>
 
                   {/* Header Dossier Strip - Clean Matte Slate Surface */}
-                  <div className="p-5 sm:p-6 border-b border-slate-800 bg-[#131c31]/95">
+                  <div className="p-5 sm:p-6 border-b border-zinc-800 bg-[#121215]/95">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center space-x-2 mb-1.5">
@@ -963,14 +963,14 @@ export default function AdminDashboardPage() {
                     </div>
 
                     {/* Action Bar */}
-                    <div className="flex flex-wrap items-center justify-between gap-2.5 mt-5 pt-4 border-t border-slate-800">
+                    <div className="flex flex-wrap items-center justify-between gap-2.5 mt-5 pt-4 border-t border-zinc-800">
                       {/* Reader View Mode Switcher */}
-                      <div className="inline-flex items-center bg-[#0b1120] p-1 rounded-xl text-xs font-semibold border border-slate-800">
+                      <div className="inline-flex items-center bg-[#09090b] p-1 rounded-xl text-xs font-semibold border border-zinc-800">
                         <button
                           onClick={() => setReaderViewMode('formatted')}
                           className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                             readerViewMode === 'formatted'
-                              ? 'bg-[#1e293b] text-white shadow-xs border border-slate-700'
+                              ? 'bg-zinc-800 text-white shadow-xs border border-zinc-700'
                               : 'text-slate-400 hover:text-white'
                           }`}
                         >
@@ -980,7 +980,7 @@ export default function AdminDashboardPage() {
                           onClick={() => setReaderViewMode('raw')}
                           className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                             readerViewMode === 'raw'
-                              ? 'bg-[#1e293b] text-white shadow-xs border border-slate-700'
+                              ? 'bg-zinc-800 text-white shadow-xs border border-zinc-700'
                               : 'text-slate-400 hover:text-white'
                           }`}
                         >
@@ -990,7 +990,7 @@ export default function AdminDashboardPage() {
                           onClick={() => setReaderViewMode('diagnostics')}
                           className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                             readerViewMode === 'diagnostics'
-                              ? 'bg-[#1e293b] text-white shadow-xs border border-slate-700'
+                              ? 'bg-zinc-800 text-white shadow-xs border border-zinc-700'
                               : 'text-slate-400 hover:text-white'
                           }`}
                         >
@@ -1020,7 +1020,7 @@ export default function AdminDashboardPage() {
                         {currentResume.resume_text && (
                           <button
                             onClick={() => handleDownloadText(currentResume)}
-                            className="px-2.5 py-1.5 rounded-xl border border-slate-700 bg-[#1e293b] hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
                             title="Download plain text (.txt)"
                           >
                             <FileText className="w-3.5 h-3.5 text-slate-400" />
@@ -1032,7 +1032,7 @@ export default function AdminDashboardPage() {
                         {currentResume.resume_text && (
                           <button
                             onClick={() => handleCopyText(currentResume.resume_text || '')}
-                            className="px-2.5 py-1.5 rounded-xl border border-slate-700 bg-[#1e293b] hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
                           >
                             {copiedText ? (
                               <>
@@ -1106,7 +1106,7 @@ export default function AdminDashboardPage() {
                             <span>Extracted Resume Content (Document Flow)</span>
                             <span className="text-[10px] text-slate-500 font-mono">Clean Text Stream</span>
                           </h3>
-                          <div className="p-5 sm:p-6 rounded-2xl bg-[#0b1120] border border-slate-800 text-xs leading-relaxed font-sans text-slate-100 whitespace-pre-wrap selection:bg-blue-600 selection:text-white shadow-inner">
+                          <div className="p-5 sm:p-6 rounded-2xl bg-[#09090b] border border-zinc-800 text-xs leading-relaxed font-sans text-slate-100 whitespace-pre-wrap selection:bg-blue-600 selection:text-white shadow-inner">
                             {currentResume.resume_text || 'No readable text content found in document.'}
                           </div>
                         </div>
@@ -1120,7 +1120,7 @@ export default function AdminDashboardPage() {
                             </h3>
                             <div className="space-y-3">
                               {currentResume.analysis.bullet_rewrites.map((b, idx) => (
-                                <div key={idx} className="p-4 rounded-2xl border border-slate-800 bg-[#0b1120]/70 text-xs space-y-2">
+                                <div key={idx} className="p-4 rounded-2xl border border-zinc-800 bg-[#09090b]/70 text-xs space-y-2">
                                   <div className="text-rose-400">
                                     <span className="font-bold">Original: </span>
                                     {b.original}
@@ -1149,7 +1149,7 @@ export default function AdminDashboardPage() {
                             {currentResume.resume_text ? `${currentResume.resume_text.split(/\s+/).length} words • ${currentResume.resume_text.length} characters` : '0 words'}
                           </span>
                         </div>
-                        <div className="p-4 sm:p-5 rounded-2xl bg-[#0b1120] text-slate-100 font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-slate-800">
+                        <div className="p-4 sm:p-5 rounded-2xl bg-[#09090b] text-slate-100 font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-zinc-800">
                           {currentResume.resume_text || 'No raw text stream available.'}
                         </div>
                       </div>
@@ -1161,19 +1161,19 @@ export default function AdminDashboardPage() {
                         {/* 4 Category Breakdown Progress Bars */}
                         {currentResume.analysis?.breakdown && (
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div className="p-3.5 rounded-xl bg-[#0b1120] border border-slate-800">
+                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Contact &amp; Links</span>
                               <span className="text-lg font-black text-blue-400">{currentResume.analysis.breakdown.contact_score}%</span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-[#0b1120] border border-slate-800">
+                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Skills Match</span>
                               <span className="text-lg font-black text-emerald-400">{currentResume.analysis.breakdown.skills_score}%</span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-[#0b1120] border border-slate-800">
+                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Impact &amp; STAR</span>
                               <span className="text-lg font-black text-blue-400">{currentResume.analysis.breakdown.experience_score}%</span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-[#0b1120] border border-slate-800">
+                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">ATS Formatting</span>
                               <span className="text-lg font-black text-sky-400">{currentResume.analysis.breakdown.formatting_score}%</span>
                             </div>
@@ -1217,7 +1217,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white dark:bg-[#131c31] rounded-3xl border border-slate-200 dark:border-slate-800 p-12 text-center text-slate-400">
+                <div className="bg-white dark:bg-[#121215] rounded-3xl border border-slate-200 dark:border-zinc-800 p-12 text-center text-slate-400">
                   <FileText className="w-12 h-12 mx-auto mb-3 opacity-40" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     No Resume Selected
@@ -1237,7 +1237,7 @@ export default function AdminDashboardPage() {
         {activeTab === 'table' && (
           <div className="space-y-4">
             {/* Search and Filters Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#131c31] p-4 rounded-2xl border border-slate-800">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#121215] p-4 rounded-2xl border border-zinc-800">
               <div className="relative w-full sm:w-96">
                 <label htmlFor={searchInputId} className="sr-only">Search resumes</label>
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
@@ -1247,7 +1247,7 @@ export default function AdminDashboardPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search candidate, email, filename, or skill..."
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-800 bg-[#0b1120] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-800 bg-[#09090b] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -1256,7 +1256,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={gradeFilter}
                   onChange={(e) => setGradeFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl border border-slate-800 bg-[#0b1120] text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer"
+                  className="px-3 py-2 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer"
                 >
                   <option value="ALL">All Grades</option>
                   <option value="A+">Grade A+ (88-100)</option>
@@ -1269,10 +1269,10 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Table */}
-            <div className="bg-[#131c31] rounded-2xl border border-slate-800 overflow-hidden shadow-xs">
+            <div className="bg-[#121215] rounded-2xl border border-zinc-800 overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#0b1120] border-b border-slate-800 text-slate-400 uppercase tracking-wider font-bold">
+                  <thead className="bg-[#09090b] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
                     <tr>
                       <th className="py-3.5 px-4">Candidate / Document</th>
                       <th className="py-3.5 px-4">ATS Score</th>
@@ -1340,7 +1340,7 @@ export default function AdminDashboardPage() {
                                   {matchedCount} skills detected
                                 </span>
                                 {resume.analysis?.matched_keywords?.slice(0, 3).map((s, idx) => (
-                                  <span key={idx} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#1e293b] text-[10px] text-slate-600 dark:text-slate-400">
+                                  <span key={idx} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-[10px] text-slate-600 dark:text-slate-400">
                                     {s}
                                   </span>
                                 ))}
@@ -1398,7 +1398,7 @@ export default function AdminDashboardPage() {
         {/* TAB 3: REGISTERED USERS                                                   */}
         {/* ========================================================================= */}
         {activeTab === 'users' && (
-          <div className="bg-[#131c31] rounded-2xl border border-slate-800 p-6 space-y-4">
+          <div className="bg-[#121215] rounded-2xl border border-zinc-800 p-6 space-y-4">
             <div>
               <h2 className="text-base font-bold text-white">
                 Registered Student Accounts ({data?.profiles.length ?? 0})
@@ -1420,9 +1420,9 @@ export default function AdminDashboardPage() {
               </div>
             )}
 
-            <div className="overflow-x-auto rounded-xl border border-slate-800">
+            <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#0b1120] border-b border-slate-800 text-slate-400 uppercase tracking-wider font-bold">
+                <thead className="bg-[#09090b] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
                   <tr>
                     <th className="py-3 px-4">Candidate Profile</th>
                     <th className="py-3 px-4">User ID</th>
@@ -1441,7 +1441,7 @@ export default function AdminDashboardPage() {
                     </tr>
                   ) : (
                     data?.profiles.map((profile) => (
-                      <tr key={profile.id} className="hover:bg-[#1e293b]/40 transition-colors">
+                      <tr key={profile.id} className="hover:bg-zinc-850/40 transition-colors">
                         <td className="py-3.5 px-4">
                           <div className="font-bold text-white text-xs sm:text-sm">
                             {profile.full_name || 'Student Account'}
@@ -1472,7 +1472,7 @@ export default function AdminDashboardPage() {
                           )}
                         </td>
                         <td className="py-3.5 px-4 text-slate-300">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#1e293b] border border-slate-700 text-slate-200">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-zinc-800 border border-zinc-700 text-slate-200">
                             {profile.resumes_count ?? 0} {profile.resumes_count === 1 ? 'dossier' : 'dossiers'}
                           </span>
                         </td>
@@ -1510,7 +1510,7 @@ export default function AdminDashboardPage() {
         {/* TAB 4: SKILL TRENDS                                                       */}
         {/* ========================================================================= */}
         {activeTab === 'skills' && (
-          <div className="bg-[#131c31] rounded-2xl border border-slate-800 p-6 space-y-6">
+          <div className="bg-[#121215] rounded-2xl border border-zinc-800 p-6 space-y-6">
             <div>
               <h2 className="text-base font-bold text-white">
                 Technical Skills Detected Across Uploaded Resumes
@@ -1522,7 +1522,7 @@ export default function AdminDashboardPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {(data?.topSkills || []).map((item, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-[#0b1120] border border-slate-800 flex items-center justify-between">
+                <div key={idx} className="p-4 rounded-xl bg-[#09090b] border border-zinc-800 flex items-center justify-between">
                   <div className="font-bold text-sm text-slate-100">
                     {item.skill}
                   </div>
@@ -1539,7 +1539,7 @@ export default function AdminDashboardPage() {
         {/* TAB 5: LOGIN & ACCESS AUDIT (REAL DATA ONLY)                             */}
         {/* ========================================================================= */}
         {activeTab === 'logins' && (
-          <div className="bg-[#131c31] rounded-2xl border border-slate-800 p-6 space-y-5">
+          <div className="bg-[#121215] rounded-2xl border border-zinc-800 p-6 space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center space-x-2">
@@ -1564,14 +1564,14 @@ export default function AdminDashboardPage() {
                     value={loginSearchQuery}
                     onChange={(e) => setLoginSearchQuery(e.target.value)}
                     placeholder="Search by email, name, or IP..."
-                    className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-700 bg-[#0b1120] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 w-56"
+                    className="pl-8 pr-3 py-1.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 w-56"
                   />
                 </div>
 
                 <select
                   value={authMethodFilter}
                   onChange={(e) => setAuthMethodFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl border border-slate-700 bg-[#0b1120] text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
                   <option value="ALL">All Auth Methods</option>
                   <option value="google">Google OAuth</option>
@@ -1583,9 +1583,9 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Audit Table */}
-            <div className="overflow-x-auto rounded-xl border border-slate-800">
+            <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#0b1120] border-b border-slate-800 text-slate-400 uppercase tracking-wider font-bold">
+                <thead className="bg-[#09090b] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
                   <tr>
                     <th className="py-3 px-4">User / Account</th>
                     <th className="py-3 px-4">How They Logged In</th>
@@ -1614,7 +1614,7 @@ export default function AdminDashboardPage() {
                       const isPhoneOtp = methodKey.includes('phone') || methodKey.includes('sms');
                       const isEmailOtp = methodKey.includes('otp') && !isPhoneOtp;
 
-                      let badgeClass = 'bg-[#1e293b] text-slate-300 border-slate-700';
+                      let badgeClass = 'bg-zinc-800 text-slate-300 border-zinc-700';
                       let methodLabel = log.auth_method;
                       let MethodIcon = Lock;
 
@@ -1664,7 +1664,7 @@ export default function AdminDashboardPage() {
                           });
 
                       return (
-                        <tr key={log.id} className="hover:bg-[#1e293b]/40 transition-colors">
+                        <tr key={log.id} className="hover:bg-zinc-850/40 transition-colors">
                           {/* User info */}
                           <td className="py-3 px-4">
                             <div className="font-bold text-white">
@@ -1722,7 +1722,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Privacy & Credentials Notice */}
-            <div className="p-3.5 rounded-xl bg-[#0b1120]/70 border border-slate-800/80 text-[11px] text-slate-400 flex items-center space-x-2">
+            <div className="p-3.5 rounded-xl bg-[#09090b]/70 border border-zinc-800 text-[11px] text-slate-400 flex items-center space-x-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>
                 <strong>End-User Privacy Guarantee:</strong> Passwords are encrypted cryptographically with salt and never stored or visible in plaintext. Only authentication methods and access telemetry are audited.
@@ -1737,14 +1737,14 @@ export default function AdminDashboardPage() {
       {/* ========================================================================= */}
       {changeKeyModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-[#131c31] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
+          <div className="max-w-md w-full bg-[#121215] border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
             <button
               onClick={() => {
                 setChangeKeyModalOpen(false);
                 setChangeKeyErr('');
                 setChangeKeyMsg('');
               }}
-              className="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-[#1e293b] transition-colors cursor-pointer"
+              className="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-zinc-850 transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -1764,7 +1764,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Quick Access Active Keys */}
-            <div className="space-y-2.5 p-3.5 rounded-2xl bg-[#0b1120]/90 border border-slate-800">
+            <div className="space-y-2.5 p-3.5 rounded-2xl bg-[#09090b]/90 border border-zinc-800">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
                   Active Master Key
@@ -1778,7 +1778,7 @@ export default function AdminDashboardPage() {
               </p>
               
               <div className="space-y-2 pt-1">
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#131c31] border border-slate-800 text-xs">
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#121215] border border-zinc-800 text-xs">
                   <div>
                     <span className="text-[10px] text-blue-400 font-bold block uppercase tracking-wide">Native Master PIN</span>
                     <code className="text-white font-mono font-bold text-xs">stack2004up</code>
@@ -1786,7 +1786,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => handleCopyKey('stack2004up')}
-                    className="px-2.5 py-1.5 rounded-lg bg-[#1e293b] hover:bg-slate-700 text-[11px] font-semibold text-slate-200 flex items-center space-x-1.5 cursor-pointer transition-colors"
+                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 flex items-center space-x-1.5 cursor-pointer transition-colors"
                   >
                     {copiedKey === 'stack2004up' ? (
                       <>
@@ -1804,8 +1804,8 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-[#0b1120]/60 border border-slate-800/60 text-[11px] text-slate-400 leading-relaxed">
-              Want to set a custom key? Enter it below. To persist custom keys across server redeployments, you can also set <code className="text-blue-400 bg-[#131c31] px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in Vercel.
+            <div className="p-3 rounded-xl bg-[#09090b]/60 border border-zinc-800 text-[11px] text-slate-400 leading-relaxed">
+              Want to set a custom key? Enter it below. To persist custom keys across server redeployments, you can also set <code className="text-indigo-400 bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in Vercel.
             </div>
 
             {changeKeyErr && (
@@ -1841,7 +1841,7 @@ export default function AdminDashboardPage() {
                     autoCapitalize="off"
                     spellCheck={false}
                     data-lpignore="true"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-[#0b1120] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -1864,7 +1864,7 @@ export default function AdminDashboardPage() {
                     autoCapitalize="off"
                     spellCheck={false}
                     data-lpignore="true"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-[#0b1120] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -1877,7 +1877,7 @@ export default function AdminDashboardPage() {
                     setChangeKeyErr('');
                     setChangeKeyMsg('');
                   }}
-                  className="flex-1 py-2.5 px-3 rounded-xl border border-slate-700 bg-[#1e293b] hover:bg-slate-700 text-xs font-bold text-slate-300 transition-colors cursor-pointer"
+                  className="flex-1 py-2.5 px-3 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

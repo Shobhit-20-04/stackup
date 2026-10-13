@@ -6,7 +6,7 @@ import { Layers, Code2, BookOpen, Cpu, FileCheck2, ShieldCheck } from 'lucide-re
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-[#0b1120]/70 backdrop-blur-md mt-auto">
+    <footer className="border-t border-slate-200 dark:border-zinc-800 bg-white/70 dark:bg-[#09090b]/80 backdrop-blur-md mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Col 1: Brand & Mission */}

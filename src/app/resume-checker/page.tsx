@@ -205,27 +205,27 @@ export default function ResumeCheckerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-[#0b1120] pb-20">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-[#09090b] pb-20">
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#131c31] border-b border-slate-200 dark:border-slate-800/80">
+      <div className="bg-white dark:bg-[#121215] border-b border-slate-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 mb-3">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/80 mb-3">
                 <FileCheck2 className="w-3.5 h-3.5" />
                 <span>AI-Powered ATS Evaluator</span>
               </div>
               <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 Resume ATS Checker
               </h1>
-              <p className="mt-2 text-slate-600 dark:text-slate-400 max-w-2xl text-sm leading-relaxed">
+              <p className="mt-2 text-slate-600 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
                 Scan your software engineering resume against standard Applicant Tracking Systems. Uncover missing tech keywords, detect formatting red flags, and get instant line-by-line STAR rewrites.
               </p>
             </div>
 
             {/* Mandatory Upload Info Tag */}
-            <div className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300">
-              <UploadCloud className="w-4 h-4 text-blue-500" />
+            <div className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs font-semibold text-slate-700 dark:text-zinc-300">
+              <UploadCloud className="w-4 h-4 text-indigo-500" />
               <span>Resume Upload Mandatory • PDF, DOCX, TXT</span>
             </div>
           </div>
@@ -245,15 +245,15 @@ export default function ResumeCheckerPage() {
         )}
 
         {authLoading ? (
-          <div className="p-12 border border-slate-200 dark:border-slate-800/80 rounded-3xl text-center bg-white dark:bg-[#131c31] shadow-sm flex flex-col items-center justify-center space-y-3">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-            <p className="text-xs text-slate-500">Checking student session...</p>
+          <div className="p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#121215] shadow-xs flex flex-col items-center justify-center space-y-3">
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            <p className="text-xs text-slate-500 dark:text-zinc-400">Checking student session...</p>
           </div>
         ) : !currentUser ? (
           /* Locked State for Unauthenticated Visitors */
-          <div className="p-8 sm:p-12 border border-slate-200 dark:border-slate-800/80 rounded-3xl text-center bg-white dark:bg-[#131c31] shadow-sm space-y-6">
+          <div className="p-8 sm:p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#121215] shadow-xs space-y-6">
             <div className="max-w-md mx-auto flex flex-col items-center">
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 shadow-sm border border-blue-100 dark:border-blue-900/50">
+              <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 shadow-xs border border-indigo-100 dark:border-indigo-900/50">
                 <Lock className="w-8 h-8" />
               </div>
               <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900 mb-3">
@@ -262,20 +262,20 @@ export default function ResumeCheckerPage() {
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                 Sign in to upload &amp; evaluate your resume
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2 mb-6 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 mt-2 mb-6 leading-relaxed">
                 Resume scanning, keyword matching, and AI bullet rewrites require an active student account. Sign in to analyze your resume and securely store your progress.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <Link
                   href="/login?next=/resume-checker"
-                  className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-blue-600/20 inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
                 >
                   <span>Sign In to Upload Resume</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/login?next=/resume-checker"
-                  className="w-full sm:w-auto px-6 py-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1e293b] hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3 border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-750 text-slate-800 dark:text-zinc-200 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
                 >
                   <span>Create Free Account</span>
                 </Link>
@@ -289,36 +289,36 @@ export default function ResumeCheckerPage() {
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleFileDrop}
-              className={`p-10 border-2 border-dashed rounded-3xl text-center transition-all bg-white dark:bg-[#131c31] ${
+              className={`p-10 border-2 border-dashed rounded-3xl text-center transition-all bg-white dark:bg-[#121215] ${
                 isDragging 
-                  ? 'border-blue-500 bg-blue-50/20 dark:bg-blue-950/20 scale-[1.01]' 
-                  : 'border-slate-300 dark:border-slate-700 hover:border-slate-400'
+                  ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 scale-[1.01]' 
+                  : 'border-slate-300 dark:border-zinc-800 hover:border-slate-400 dark:hover:border-zinc-700'
               }`}
             >
               <div className="max-w-md mx-auto flex flex-col items-center">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 shadow-sm border border-blue-100 dark:border-blue-900/40">
+                <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 shadow-xs border border-indigo-100 dark:border-indigo-900/40">
                   <UploadCloud className="w-8 h-8" />
                 </div>
                 
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   Drop your resume here
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-6">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-6">
                   Supports PDF (.pdf) and Word (.docx) files up to 5MB.
                 </p>
 
                 {file ? (
-                  <div className="flex items-center space-x-3 bg-slate-100 dark:bg-[#1e293b] px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 mb-6">
-                    <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate max-w-xs">
+                  <div className="flex items-center space-x-3 bg-slate-100 dark:bg-zinc-800 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-700 mb-6">
+                    <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    <span className="text-sm font-semibold text-slate-800 dark:text-zinc-200 truncate max-w-xs">
                       {file.name}
                     </span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-slate-400 dark:text-zinc-500">
                       ({(file.size / (1024 * 1024)).toFixed(2)} MB)
                     </span>
                     <button 
                       onClick={() => setFile(null)} 
-                      className="p-1 text-slate-400 hover:text-rose-500"
+                      className="p-1 text-slate-400 hover:text-rose-500 cursor-pointer"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -331,7 +331,7 @@ export default function ResumeCheckerPage() {
                       onChange={handleFileSelect} 
                       className="hidden" 
                     />
-                    <span className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md shadow-blue-600/20 inline-flex items-center space-x-2 transition-all cursor-pointer">
+                    <span className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center space-x-2 transition-all cursor-pointer">
                       <FileText className="w-4 h-4" />
                       <span>Browse Files</span>
                     </span>
@@ -373,7 +373,7 @@ export default function ResumeCheckerPage() {
 
             {/* Feature Highlights Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div className="bg-white dark:bg-[#131c31] p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80">
+              <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
                 <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center mb-3">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
@@ -383,7 +383,7 @@ export default function ResumeCheckerPage() {
                 </p>
               </div>
 
-              <div className="bg-white dark:bg-[#131c31] p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80">
+              <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
                 <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 flex items-center justify-center mb-3">
                   <TrendingUp className="w-5 h-5" />
                 </div>
@@ -393,7 +393,7 @@ export default function ResumeCheckerPage() {
                 </p>
               </div>
 
-              <div className="bg-white dark:bg-[#131c31] p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80">
+              <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
                 <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
                   <Sparkles className="w-5 h-5" />
                 </div>
@@ -408,8 +408,8 @@ export default function ResumeCheckerPage() {
           /* Scorecard Result View */
           <div className="space-y-6">
             {/* Top Score Summary Banner */}
-            <div className="bg-white dark:bg-[#131c31] rounded-3xl border border-slate-200 dark:border-slate-800/80 p-5 sm:p-8 shadow-sm">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-[#121215] rounded-3xl border border-slate-200 dark:border-zinc-800 p-5 sm:p-8 shadow-sm">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-zinc-800">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:space-x-5">
                   {/* Big Circular Score */}
                   <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex flex-col items-center justify-center text-white shadow-md shrink-0 ${
@@ -428,7 +428,7 @@ export default function ResumeCheckerPage() {
                       <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                         {result.ats_score >= 80 ? 'Strong Match' : result.ats_score >= 65 ? 'Competitive Profile' : 'Needs Optimization'}
                       </h2>
-                      <span className="px-2 py-0.5 rounded text-xs font-black bg-slate-100 dark:bg-[#1e293b] text-slate-800 dark:text-slate-200">
+                      <span className="px-2 py-0.5 rounded text-xs font-black bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-slate-200">
                         Grade {result.grade}
                       </span>
                     </div>
@@ -464,7 +464,7 @@ export default function ResumeCheckerPage() {
 
                   <button
                     onClick={handleReset}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-[#1e293b] dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all"
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Scan Another</span>
@@ -478,13 +478,13 @@ export default function ResumeCheckerPage() {
               </p>
 
               {/* 4-Part Category Breakdown */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100 dark:border-zinc-800">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1.5">
                     <span className="text-slate-500 font-medium">Contact & Links</span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.contact_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-[#1e293b] h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
                     <div className="bg-blue-500 h-full rounded-full" style={{ width: `${result.breakdown.contact_score}%` }} />
                   </div>
                 </div>
@@ -494,7 +494,7 @@ export default function ResumeCheckerPage() {
                     <span className="text-slate-500 font-medium">Tech Skills</span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.skills_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-[#1e293b] h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
                     <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${result.breakdown.skills_score}%` }} />
                   </div>
                 </div>
@@ -504,7 +504,7 @@ export default function ResumeCheckerPage() {
                     <span className="text-slate-500 font-medium">Experience & Impact</span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.experience_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-[#1e293b] h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
                     <div className="bg-blue-600 h-full rounded-full" style={{ width: `${result.breakdown.experience_score}%` }} />
                   </div>
                 </div>
@@ -514,7 +514,7 @@ export default function ResumeCheckerPage() {
                     <span className="text-slate-500 font-medium">ATS Layout</span>
                     <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.formatting_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-[#1e293b] h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
                     <div className="bg-sky-500 h-full rounded-full" style={{ width: `${result.breakdown.formatting_score}%` }} />
                   </div>
                 </div>
@@ -523,7 +523,7 @@ export default function ResumeCheckerPage() {
 
             {/* Restricted Content Lock for Visitors */}
             {!currentUser ? (
-              <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-8 text-center shadow-lg space-y-4">
+              <div className="rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#111827] p-8 text-center shadow-lg space-y-4">
                 <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mx-auto mb-2">
                   <Lock className="w-7 h-7" />
                 </div>
@@ -544,7 +544,7 @@ export default function ResumeCheckerPage() {
                   </Link>
                   <Link
                     href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1e293b] text-slate-800 dark:text-slate-200 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-slate-800 dark:text-slate-200 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
                   >
                     Create Free Account
                   </Link>
@@ -555,7 +555,7 @@ export default function ResumeCheckerPage() {
             {/* Keyword Analysis Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Matched Keywords */}
-              <div className="bg-white dark:bg-[#131c31] rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6">
+              <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
                 <div className="flex items-center space-x-2 mb-3">
                   <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -582,7 +582,7 @@ export default function ResumeCheckerPage() {
               </div>
 
               {/* Missing Recommended Keywords */}
-              <div className="bg-white dark:bg-[#131c31] rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6">
+              <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
                 <div className="flex items-center space-x-2 mb-3">
                   <AlertCircle className="w-5 h-5 text-amber-500" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -611,7 +611,7 @@ export default function ResumeCheckerPage() {
 
             {/* AI Bullet Point Optimization */}
             {result.bullet_rewrites && result.bullet_rewrites.length > 0 && (
-              <div className="bg-white dark:bg-[#131c31] rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6">
+              <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
                 <div className="flex items-center space-x-2 mb-2">
                   <Sparkles className="w-5 h-5 text-blue-500" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -624,7 +624,7 @@ export default function ResumeCheckerPage() {
 
                 <div className="space-y-4">
                   {result.bullet_rewrites.map((rewrite, idx) => (
-                    <div key={idx} className="p-4 rounded-xl bg-slate-50 dark:bg-[#1e293b]/50 border border-slate-200 dark:border-slate-700/60 space-y-2.5">
+                    <div key={idx} className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800 space-y-2.5">
                       <div className="flex items-start space-x-2">
                         <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-400 shrink-0 mt-0.5">
                           Before
@@ -653,13 +653,13 @@ export default function ResumeCheckerPage() {
             )}
 
             {/* Actionable Suggestions Checklist */}
-            <div className="bg-white dark:bg-[#131c31] rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6">
+            <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
               <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4">
                 Section-by-Section Recommendations
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#1e293b]/40 border border-slate-100 dark:border-slate-800">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                     Work Experience
                   </h4>
@@ -673,7 +673,7 @@ export default function ResumeCheckerPage() {
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#1e293b]/40 border border-slate-100 dark:border-slate-800">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                     Technical Skills & Tools
                   </h4>
@@ -687,7 +687,7 @@ export default function ResumeCheckerPage() {
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#1e293b]/40 border border-slate-100 dark:border-slate-800">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                     Personal Projects
                   </h4>
@@ -701,7 +701,7 @@ export default function ResumeCheckerPage() {
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#1e293b]/40 border border-slate-100 dark:border-slate-800">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                     Contact & Links
                   </h4>

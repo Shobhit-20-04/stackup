@@ -176,36 +176,36 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
     return (
       <div className="space-y-8 max-w-4xl mx-auto">
         {/* Scorecard Hero */}
-        <div className="p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-sm text-center">
-          <div className="inline-flex p-4 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-600/25 mb-4">
+        <div className="p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs text-center">
+          <div className="inline-flex p-4 rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-600/20 mb-4">
             <Award className="w-10 h-10" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
             {passed ? 'Outstanding Performance!' : 'Quiz Completed — Keep Practicing!'}
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Topic: <span className="font-semibold text-slate-800 dark:text-slate-200">{topic.title}</span>
+          <p className="mt-1 text-sm text-slate-500 dark:text-zinc-400">
+            Topic: <span className="font-semibold text-slate-800 dark:text-zinc-200">{topic.title}</span>
             {isRetryingMissed && <span className="ml-2 text-xs font-bold text-amber-500">(Targeted Remediation Mode)</span>}
           </p>
 
           <div className="mt-6 grid grid-cols-3 gap-2 max-w-lg mx-auto">
-            <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#1e293b]/50 border border-slate-100 dark:border-slate-800">
-              <div className="text-3xl sm:text-4xl font-black text-blue-600 dark:text-blue-400">
+            <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#18181b] border border-slate-100 dark:border-zinc-800">
+              <div className="text-3xl sm:text-4xl font-black text-indigo-600 dark:text-indigo-400">
                 {score}/{activeQuestions.length}
               </div>
-              <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold mt-1">Raw Score</div>
+              <div className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-zinc-400 font-bold mt-1">Raw Score</div>
             </div>
-            <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#1e293b]/50 border border-slate-100 dark:border-slate-800">
+            <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#18181b] border border-slate-100 dark:border-zinc-800">
               <div className={`text-3xl sm:text-4xl font-black ${passed ? 'text-emerald-500' : 'text-amber-500'}`}>
                 {percentage}%
               </div>
-              <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold mt-1">Accuracy</div>
+              <div className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-zinc-400 font-bold mt-1">Accuracy</div>
             </div>
-            <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#1e293b]/50 border border-slate-100 dark:border-slate-800">
-              <div className="text-3xl sm:text-4xl font-black text-slate-800 dark:text-slate-200">
+            <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#18181b] border border-slate-100 dark:border-zinc-800">
+              <div className="text-3xl sm:text-4xl font-black text-slate-800 dark:text-zinc-200">
                 {formatTime(quizMode === 'exam' ? initialTimeSeconds - timeLeft : timeElapsed)}
               </div>
-              <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold mt-1">Duration</div>
+              <div className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-zinc-400 font-bold mt-1">Duration</div>
             </div>
           </div>
 
@@ -213,7 +213,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={handleRetakeFull}
-              className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center space-x-1.5"
+              className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-bold text-slate-800 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors flex items-center space-x-1.5"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Retake Full Quiz</span>
@@ -222,7 +222,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             {missedQuestionsCount > 0 && !isRetryingMissed && (
               <button
                 onClick={handlePracticeMissed}
-                className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-md shadow-amber-500/20 transition-all flex items-center space-x-1.5"
+                className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-xs transition-all flex items-center space-x-1.5"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Practice Missed ({missedQuestionsCount} Qs)</span>
@@ -231,7 +231,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
 
             <button
               onClick={copyResultSummary}
-              className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center space-x-1.5"
+              className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-bold text-slate-800 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors flex items-center space-x-1.5"
             >
               {copiedSummary ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
               <span>{copiedSummary ? 'Summary Copied!' : 'Copy Result'}</span>
@@ -239,7 +239,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
 
             <button
               onClick={onExitQuiz}
-              className="px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-500/20 transition-all flex items-center space-x-1.5"
+              className="px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-500 shadow-xs transition-all flex items-center space-x-1.5"
             >
               <BookOpen className="w-4 h-4" />
               <span>Back to Topic Notes</span>
@@ -248,15 +248,15 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
         </div>
 
         {/* Detailed Solutions Breakdown with Filter Tabs */}
-        <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-zinc-800 pb-4">
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Detailed Solutions & Explanations</h3>
-              <p className="text-xs text-slate-500">Step-by-step reasoning and algorithmic insights for every question.</p>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Detailed Solutions &amp; Explanations</h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">Step-by-step reasoning and algorithmic insights for every question.</p>
             </div>
 
             {/* Filter Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 dark:bg-[#1e293b] p-1 rounded-xl text-xs font-medium">
+            <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl text-xs font-medium">
               <button
                 onClick={() => setSolutionFilter('all')}
                 className={`px-3 py-1 rounded-lg transition-colors ${
@@ -375,10 +375,10 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                   </div>
 
                   {/* Explanation Callout */}
-                  <div className="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-[#1e293b]/70 text-xs text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                    <div className="flex items-center space-x-1.5 font-bold text-blue-600 dark:text-blue-400 mb-1">
+                  <div className="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-[#18181b] text-xs text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800">
+                    <div className="flex items-center space-x-1.5 font-bold text-indigo-600 dark:text-indigo-400 mb-1">
                       <Lightbulb className="w-4 h-4" />
-                      <span>Conceptual Solution & Step-by-Step Explanation:</span>
+                      <span>Conceptual Solution &amp; Step-by-Step Explanation:</span>
                     </div>
                     <p className="leading-relaxed">{q.explanation}</p>
                   </div>
@@ -395,34 +395,34 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Quiz Top Bar with Mode Switcher & Timer */}
-      <div className="p-4 sm:p-5 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
           <button
             onClick={onExitQuiz}
-            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Exit to Notes</span>
           </button>
 
           {/* Mode Switcher */}
-          <div className="inline-flex p-1 bg-slate-100 dark:bg-[#1e293b] rounded-xl text-xs font-bold">
+          <div className="inline-flex p-1 bg-slate-100 dark:bg-zinc-800 rounded-xl text-xs font-bold">
             <button
               onClick={() => setQuizMode('exam')}
-              className={`px-3 py-1 rounded-lg transition-colors ${
+              className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
                 quizMode === 'exam'
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white'
               }`}
             >
               Timed Exam
             </button>
             <button
               onClick={() => setQuizMode('practice')}
-              className={`px-3 py-1 rounded-lg transition-colors ${
+              className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
                 quizMode === 'practice'
                   ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white'
               }`}
             >
               Tutor Mode
@@ -435,10 +435,10 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
           <button
             type="button"
             onClick={toggleFlag}
-            className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+            className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
               isFlagged
                 ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400'
-                : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:border-slate-300'
+                : 'border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
             }`}
           >
             <Flag className={`w-3.5 h-3.5 ${isFlagged ? 'fill-amber-500' : ''}`} />
@@ -449,15 +449,15 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             <div
               className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
                 timeLeft < 30
-                  ? 'border-red-500 bg-red-50 dark:bg-red-950/50 text-red-600 animate-pulse'
-                  : 'border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300'
+                  ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 animate-pulse'
+                  : 'border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300'
               }`}
             >
               <Clock className="w-4 h-4" />
               <span>{formatTime(timeLeft)} Remaining</span>
             </div>
           ) : (
-            <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold border border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300">
+            <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300">
               <Clock className="w-4 h-4" />
               <span>Elapsed: {formatTime(timeElapsed)}</span>
             </div>
@@ -466,17 +466,17 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       </div>
 
       {/* Visual Progress Bar */}
-      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden -mt-2">
+      <div className="h-2 w-full bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden -mt-2">
         <div
-          className={`h-full transition-all duration-300 rounded-full ${quizMode === 'practice' ? 'bg-emerald-600' : 'bg-blue-600'}`}
+          className={`h-full transition-all duration-300 rounded-full ${quizMode === 'practice' ? 'bg-emerald-600' : 'bg-indigo-600'}`}
           style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
         />
       </div>
 
       {/* Question Card */}
-      <div className="p-6 sm:p-9 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-sm space-y-7 animate-in fade-in duration-200">
+      <div className="p-6 sm:p-9 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs space-y-7 animate-in fade-in duration-200">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
             Question {currentIndex + 1} of {activeQuestions.length}
           </span>
           {isFlagged && (
@@ -498,16 +498,16 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             const isPracticeAnswered = quizMode === 'practice' && selectedAnswers[currentIndex] !== undefined;
             const isCorrectChoice = optIdx === currentQuestion.correct_option;
 
-            let optionClasses = 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800';
+            let optionClasses = 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 text-slate-800 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800/60 bg-white dark:bg-[#18181b]';
 
             if (quizMode === 'practice' && isPracticeAnswered) {
               if (isCorrectChoice) {
-                optionClasses = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200 font-semibold ring-1 ring-emerald-500';
+                optionClasses = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-semibold ring-1 ring-emerald-500';
               } else if (active) {
-                optionClasses = 'border-red-500 bg-red-50 dark:bg-red-950/50 text-red-900 dark:text-red-200 font-semibold ring-1 ring-red-500';
+                optionClasses = 'border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 font-semibold ring-1 ring-rose-500';
               }
             } else if (active) {
-              optionClasses = 'border-blue-600 bg-blue-50/70 dark:bg-blue-950/50 text-blue-900 dark:text-blue-200 shadow-sm ring-1 ring-blue-600';
+              optionClasses = 'border-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 shadow-xs ring-1 ring-indigo-500';
             }
 
             return (
@@ -523,10 +523,10 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                       quizMode === 'practice' && isPracticeAnswered && isCorrectChoice
                         ? 'border-emerald-600 bg-emerald-600 text-white'
                         : quizMode === 'practice' && active && !isCorrectChoice
-                        ? 'border-red-600 bg-red-600 text-white'
+                        ? 'border-rose-600 bg-rose-600 text-white'
                         : active
-                        ? 'border-blue-600 bg-blue-600 text-white'
-                        : 'border-slate-300 dark:border-slate-700 text-slate-500'
+                        ? 'border-indigo-600 bg-indigo-600 text-white'
+                        : 'border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
                     }`}
                   >
                     {String.fromCharCode(65 + optIdx)}
@@ -538,7 +538,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 )}
                 {quizMode === 'practice' && isPracticeAnswered && active && !isCorrectChoice && (
-                  <XCircle className="w-5 h-5 text-red-600 shrink-0" />
+                  <XCircle className="w-5 h-5 text-rose-600 shrink-0" />
                 )}
               </button>
             );
@@ -547,24 +547,24 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
 
         {/* Practice Mode Instant Explanation Callout */}
         {quizMode === 'practice' && selectedAnswers[currentIndex] !== undefined && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#1e293b]/70 border border-slate-200 dark:border-slate-700 space-y-2 animate-in fade-in duration-200">
-            <div className="flex items-center space-x-2 text-xs font-bold text-blue-600 dark:text-blue-400">
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#18181b] border border-slate-200 dark:border-zinc-800 space-y-2 animate-in fade-in duration-200">
+            <div className="flex items-center space-x-2 text-xs font-bold text-indigo-600 dark:text-indigo-400">
               <Lightbulb className="w-4 h-4" />
               <span>Step-by-Step Solution &amp; Conceptual Explanation:</span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed">
               {currentQuestion.explanation}
             </p>
           </div>
         )}
 
         {/* Navigation & Submit Bar */}
-        <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div className="pt-6 border-t border-slate-200 dark:border-zinc-800 flex items-center justify-between">
           <button
             type="button"
             disabled={currentIndex === 0}
             onClick={() => setCurrentIndex((prev) => prev - 1)}
-            className="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Previous</span>
@@ -574,7 +574,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             <button
               type="button"
               onClick={() => setCurrentIndex((prev) => prev + 1)}
-              className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
             >
               <span>Next Question</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -592,10 +592,10 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       </div>
 
       {/* Question Palette with Interactive State Indicators */}
-      <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-sm space-y-3">
+      <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs space-y-3">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-bold text-slate-700 dark:text-slate-300">Question Palette</span>
-          <div className="flex items-center space-x-3 text-[11px] text-slate-500">
+          <span className="font-bold text-slate-700 dark:text-zinc-300">Question Palette</span>
+          <div className="flex items-center space-x-3 text-[11px] text-slate-500 dark:text-zinc-400">
             <span className="flex items-center space-x-1">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
               <span>Answered</span>
@@ -605,7 +605,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
               <span>Flagged</span>
             </span>
             <span className="flex items-center space-x-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 inline-block" />
+              <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-zinc-700 inline-block" />
               <span>Pending</span>
             </span>
           </div>
@@ -617,12 +617,12 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             const isCurrent = currentIndex === qIdx;
             const flagged = Boolean(flaggedIndices[qIdx]);
 
-            let btnClasses = 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700';
+            let btnClasses = 'bg-slate-100 dark:bg-zinc-850 text-slate-600 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-transparent dark:border-zinc-800';
 
             if (isCurrent) {
-              btnClasses = 'ring-2 ring-blue-500 bg-blue-600 text-white font-extrabold shadow-sm';
+              btnClasses = 'ring-2 ring-indigo-500 bg-indigo-600 text-white font-extrabold shadow-xs';
             } else if (flagged) {
-              btnClasses = 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-400 font-bold';
+              btnClasses = 'bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-400/80 font-bold';
             } else if (answered) {
               btnClasses = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold';
             }
@@ -636,7 +636,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
               >
                 <span>{qIdx + 1}</span>
                 {flagged && !isCurrent && (
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 rounded-full ring-1 ring-white dark:ring-slate-900" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 rounded-full ring-1 ring-white dark:ring-zinc-900" />
                 )}
               </button>
             );

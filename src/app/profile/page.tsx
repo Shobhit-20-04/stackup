@@ -475,9 +475,9 @@ export default function ProfilePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* User Header Profile Card */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center space-x-5">
-          <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-white text-2xl font-extrabold uppercase shadow-lg shadow-blue-600/20 overflow-hidden flex-shrink-0">
+          <div className="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-2xl font-extrabold uppercase shadow-lg shadow-indigo-600/20 overflow-hidden flex-shrink-0">
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -498,20 +498,20 @@ export default function ProfilePage() {
                 Verified Student
               </span>
               {profile?.target_role && (
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-300 dark:border-blue-800 flex items-center gap-1.5">
-                  <Briefcase className="w-3 h-3 text-blue-500" />
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800 flex items-center gap-1.5">
+                  <Briefcase className="w-3 h-3 text-indigo-500" />
                   <span>{profile.target_role}</span>
                 </span>
               )}
             </div>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1">
               {profile?.email || profile?.phone || 'Connected Session'}
             </p>
             {(profile?.college || profile?.github_url || profile?.linkedin_url) && (
-              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-600 dark:text-slate-300">
+              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-600 dark:text-zinc-300">
                 {profile.college && (
                   <span className="flex items-center space-x-1 font-medium">
-                    <GraduationCap className="w-3.5 h-3.5 text-blue-500" />
+                    <GraduationCap className="w-3.5 h-3.5 text-indigo-500" />
                     <span>
                       {profile.college}
                       {profile.grad_year ? ` ('${profile.grad_year.slice(-2)})` : ''}
@@ -523,7 +523,7 @@ export default function ProfilePage() {
                     href={profile.github_url.startsWith('http') ? profile.github_url : `https://${profile.github_url}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-1 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    className="flex items-center space-x-1 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   >
                     <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                       <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
@@ -536,7 +536,7 @@ export default function ProfilePage() {
                     href={profile.linkedin_url.startsWith('http') ? profile.linkedin_url : `https://${profile.linkedin_url}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-1 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    className="flex items-center space-x-1 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   >
                     <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46v-8.37M7.86 6.5a1.63 1.63 0 0 0-1.63 1.63c0 .9.73 1.63 1.63 1.63a1.63 1.63 0 0 0 1.63-1.63c0-.9-.73-1.63-1.63-1.63Z" />
@@ -546,7 +546,7 @@ export default function ProfilePage() {
                 )}
               </div>
             )}
-            <div className="flex items-center space-x-4 mt-2 text-xs text-slate-400">
+            <div className="flex items-center space-x-4 mt-2 text-xs text-slate-400 dark:text-zinc-500">
               <span className="flex items-center space-x-1">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>
@@ -565,21 +565,21 @@ export default function ProfilePage() {
         <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
           <button
             onClick={openEditModal}
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-sm font-medium text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
-            <Edit3 className="w-4 h-4 text-blue-500" />
+            <Edit3 className="w-4 h-4 text-indigo-500" />
             <span>Edit Profile</span>
           </button>
           <Link
             href="/dsa"
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors shadow-sm shadow-blue-600/20"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors shadow-sm shadow-indigo-600/20 cursor-pointer"
           >
             <Code2 className="w-4 h-4" />
             <span>Practice DSA</span>
           </Link>
           <button
             onClick={handleSignOut}
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
@@ -590,13 +590,13 @@ export default function ProfilePage() {
       {/* Grid: Real Streak Tracker & Real Performance Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Streak Tracker Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                 Daily Study Streak
               </span>
-              <div className={`p-2 rounded-xl ${streakCount > 0 ? 'bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400' : 'bg-slate-100 dark:bg-[#1e293b] text-slate-400'}`}>
+              <div className={`p-2 rounded-xl ${streakCount > 0 ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400' : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500'}`}>
                 <Flame className={`w-5 h-5 ${streakCount > 0 ? 'animate-bounce' : ''}`} />
               </div>
             </div>
@@ -604,44 +604,44 @@ export default function ProfilePage() {
               <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
                 {streakCount}
               </span>
-              <span className="text-sm font-semibold text-slate-500">
+              <span className="text-sm font-semibold text-slate-500 dark:text-zinc-400">
                 {streakCount === 1 ? 'Day Active' : 'Days Active'}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
               {streakCount > 0 
                 ? 'Great consistency! Keep solving daily quizzes to build your habit.'
                 : 'Solve a quiz or scan your resume today to start your study streak!'}
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between">
             {streakDays.map((item, idx) => (
               <div key={idx} className="flex flex-col items-center space-y-1.5">
                 <div
                   className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
                     item.active
                       ? 'bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-sm shadow-orange-500/30'
-                      : 'bg-slate-100 dark:bg-[#1e293b] text-slate-400'
+                      : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500'
                   }`}
                   title={`${item.day}: ${item.active ? 'Activity recorded' : 'No activity'}`}
                 >
                   {item.active ? '✓' : '·'}
                 </div>
-                <span className="text-[10px] text-slate-400">{item.day}</span>
+                <span className="text-[10px] text-slate-400 dark:text-zinc-500">{item.day}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Quizzes Taken Stat Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                 Quizzes Attempted
               </span>
-              <div className="p-2 rounded-xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
+              <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
                 <TrendingUp className="w-5 h-5" />
               </div>
             </div>
@@ -654,16 +654,16 @@ export default function ProfilePage() {
                   {averageQuizScore}% Avg. Score
                 </span>
               ) : (
-                <span className="text-sm font-semibold text-slate-400">
+                <span className="text-sm font-semibold text-slate-400 dark:text-zinc-500">
                   0 Attempts Yet
                 </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
               Scored quizzes across Aptitude and Core CS topics.
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 flex items-center space-x-1">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800 text-xs text-slate-400 dark:text-zinc-500 flex items-center space-x-1">
             <Clock className="w-3.5 h-3.5" />
             <span>
               Latest attempt:{' '}
@@ -673,10 +673,10 @@ export default function ProfilePage() {
         </div>
 
         {/* ATS Score Benchmark Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                 Latest ATS Benchmark
               </span>
               <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400">
@@ -689,19 +689,19 @@ export default function ProfilePage() {
                   <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
                     {resumeHistory[0].ats_score}
                   </span>
-                  <span className="text-sm font-semibold text-slate-500">/ 100</span>
+                  <span className="text-sm font-semibold text-slate-500 dark:text-zinc-400">/ 100</span>
                 </>
               ) : (
-                <span className="text-3xl font-extrabold text-slate-400">
+                <span className="text-3xl font-extrabold text-slate-400 dark:text-zinc-500">
                   Not Scanned
                 </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
               Target &gt;80 score for Tier-1 ATS system passing rate.
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 truncate">
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800 text-xs text-slate-400 dark:text-zinc-500 truncate">
             <span>
               {resumeHistory.length > 0 
                 ? `File: ${resumeHistory[0].filename}` 
@@ -712,12 +712,12 @@ export default function ProfilePage() {
       </div>
 
       {/* Per-Section Real Progress Bars */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs space-y-6">
         <div>
           <h2 className="text-lg font-bold text-slate-900 dark:text-white">
             Curriculum Completion Progress
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
             Real-time track of topics tested in quizzes and algorithms solved.
           </p>
         </div>
@@ -727,28 +727,28 @@ export default function ProfilePage() {
             <Link
               key={item.slug}
               href={`/${item.slug}`}
-              className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#1e293b]/50 hover:border-blue-500/40 transition-all space-y-3 group"
+              className="p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60 hover:border-indigo-500/40 transition-all space-y-3 group cursor-pointer"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <span className="text-sm font-semibold text-slate-800 dark:text-zinc-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                   {item.section_name}
                 </span>
-                <span className="text-xs font-bold text-blue-600 dark:text-blue-400 ml-2">
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 ml-2">
                   {item.percent}%
                 </span>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
                 <div
                   className={`h-full rounded-full ${item.color} transition-all duration-500`}
                   style={{ width: `${item.percent}%` }}
                 />
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-400">
                 <span>{item.completed_items} of {item.total_items} complete</span>
-                <span className="capitalize text-blue-600 dark:text-blue-400 flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
+                <span className="capitalize text-indigo-600 dark:text-indigo-400 flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
                   <span>Practice</span>
                   <ArrowRight className="w-3 h-3 ml-0.5" />
                 </span>
@@ -759,18 +759,18 @@ export default function ProfilePage() {
       </div>
 
       {/* Quiz Score History Chart (Recharts) */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Quiz Score Performance History
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
               Score trajectory across your completed timed quiz attempts (%)
             </p>
           </div>
           {quizHistory.length > 0 && (
-            <div className="text-xs font-medium text-slate-500 bg-slate-100 dark:bg-[#1e293b] px-3 py-1.5 rounded-lg self-start sm:self-auto">
+            <div className="text-xs font-medium text-slate-500 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg self-start sm:self-auto">
               Last {quizHistory.length} Attempts
             </div>
           )}
@@ -782,19 +782,19 @@ export default function ProfilePage() {
               <AreaChart data={quizHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.5} />
-                <XAxis dataKey="date" stroke="#64748b" fontSize={12} tickLine={false} />
-                <YAxis domain={[0, 100]} stroke="#64748b" fontSize={12} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" opacity={0.6} />
+                <XAxis dataKey="date" stroke="#71717a" fontSize={12} tickLine={false} />
+                <YAxis domain={[0, 100]} stroke="#71717a" fontSize={12} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderColor: '#1e293b',
+                    backgroundColor: '#121215',
+                    borderColor: '#27272a',
                     borderRadius: '0.75rem',
-                    color: '#f8fafc',
+                    color: '#f4f4f5',
                     fontSize: '0.75rem',
                   }}
                   formatter={(value: unknown) => [`${value}%`, 'Score']}
@@ -808,7 +808,7 @@ export default function ProfilePage() {
                 <Area
                   type="monotone"
                   dataKey="percentage"
-                  stroke="#2563eb"
+                  stroke="#6366f1"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#scoreGradient)"
@@ -817,29 +817,29 @@ export default function ProfilePage() {
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
+          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
               <TrendingUp className="w-6 h-6" />
             </div>
             <div className="space-y-1">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                 No Quizzes Attempted Yet
               </h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-sm mx-auto">
                 Take timed MCQ quizzes in Quantitative Aptitude or Core CS to view your historical score trajectory and accuracy curves here.
               </p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
               <Link
                 href="/aptitude"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-sm"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm cursor-pointer"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>Practice Aptitude</span>
               </Link>
               <Link
                 href="/core-cs"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
               >
                 <Cpu className="w-3.5 h-3.5" />
                 <span>Practice Core CS</span>
@@ -850,19 +850,19 @@ export default function ProfilePage() {
       </div>
 
       {/* Resume Analysis History */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Resume Analysis History
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
               Past resumes processed through the ATS Diagnostic Engine
             </p>
           </div>
           <Link
             href="/resume-checker"
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors self-start sm:self-auto"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors self-start sm:self-auto cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Scan New Resume</span>
@@ -870,21 +870,21 @@ export default function ProfilePage() {
         </div>
 
         {resumeHistory.length > 0 ? (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y divide-slate-100 dark:divide-zinc-800">
             {resumeHistory.map((item) => (
               <div
                 key={item.id}
                 className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div className="flex items-center space-x-3.5">
-                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-[#1e293b] text-slate-600 dark:text-slate-300">
-                    <FileCheck2 className="w-5 h-5 text-blue-500" />
+                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">
+                    <FileCheck2 className="w-5 h-5 text-indigo-500" />
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-slate-900 dark:text-white">
                       {item.filename}
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-xs text-slate-400 dark:text-zinc-500">
                       Scored on {item.created_at}
                     </div>
                   </div>
@@ -910,7 +910,7 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center space-y-4">
+          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
               <FileCheck2 className="w-6 h-6" />
             </div>
@@ -918,14 +918,14 @@ export default function ProfilePage() {
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                 No Resumes Analyzed Yet
               </h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-sm mx-auto">
                 Upload your PDF or Word document to get instant ATS scoring, keyword detection, and section-by-section bullet rewrites.
               </p>
             </div>
             <div className="pt-2">
               <Link
                 href="/resume-checker"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-sm"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm cursor-pointer"
               >
                 <FileCheck2 className="w-3.5 h-3.5" />
                 <span>Upload Resume in ATS Checker</span>
@@ -937,30 +937,30 @@ export default function ProfilePage() {
 
       {/* Edit Profile Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-zinc-800">
               <div className="flex items-center space-x-2.5">
-                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
+                <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
                   <Edit3 className="w-5 h-5" />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-slate-900 dark:text-white">Edit Student Profile</h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Update your career goals and placement details</p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">Update your career goals and placement details</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {profileSaveError && (
-              <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/80 text-xs text-red-600 dark:text-red-400">
+              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/80 text-xs text-rose-600 dark:text-rose-400">
                 {profileSaveError}
               </div>
             )}
@@ -975,7 +975,7 @@ export default function ProfilePage() {
             <form onSubmit={handleSaveProfile} className="space-y-4">
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                   Full Name
                 </label>
                 <input
@@ -984,13 +984,13 @@ export default function ProfilePage() {
                   onChange={(e) => setEditFullName(e.target.value)}
                   placeholder="e.g. Alex Johnson"
                   required
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
                 />
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                   Phone Number
                 </label>
                 <input
@@ -998,13 +998,13 @@ export default function ProfilePage() {
                   value={editPhone}
                   onChange={(e) => setEditPhone(e.target.value)}
                   placeholder="+91 9876543210"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
                 />
               </div>
 
               {/* Target Role & Quick Chips */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                   Target Role
                 </label>
                 <input
@@ -1012,7 +1012,7 @@ export default function ProfilePage() {
                   value={editTargetRole}
                   onChange={(e) => setEditTargetRole(e.target.value)}
                   placeholder="e.g. SDE-1 (Full Stack)"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
                 />
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {['SDE-1', 'Frontend Engineer', 'Backend Engineer', 'Full Stack Dev', 'Data Analyst'].map((chip) => (
@@ -1020,10 +1020,10 @@ export default function ProfilePage() {
                       key={chip}
                       type="button"
                       onClick={() => setEditTargetRole(chip)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors cursor-pointer ${
                         editTargetRole === chip
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-slate-100 dark:bg-[#1e293b] text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
                       }`}
                     >
                       {chip}
@@ -1035,7 +1035,7 @@ export default function ProfilePage() {
               {/* College & Grad Year */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                     College / University
                   </label>
                   <input
@@ -1043,11 +1043,11 @@ export default function ProfilePage() {
                     value={editCollege}
                     onChange={(e) => setEditCollege(e.target.value)}
                     placeholder="e.g. IIT Bombay / State Tech"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                     Grad Year
                   </label>
                   <input
@@ -1055,7 +1055,7 @@ export default function ProfilePage() {
                     value={editGradYear}
                     onChange={(e) => setEditGradYear(e.target.value)}
                     placeholder="2026"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
                   />
                 </div>
               </div>
@@ -1063,7 +1063,7 @@ export default function ProfilePage() {
               {/* GitHub & LinkedIn URLs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                     GitHub Profile URL
                   </label>
                   <input
@@ -1071,11 +1071,11 @@ export default function ProfilePage() {
                     value={editGithubUrl}
                     onChange={(e) => setEditGithubUrl(e.target.value)}
                     placeholder="https://github.com/username"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                     LinkedIn Profile URL
                   </label>
                   <input
@@ -1083,25 +1083,25 @@ export default function ProfilePage() {
                     value={editLinkedinUrl}
                     onChange={(e) => setEditLinkedinUrl(e.target.value)}
                     placeholder="https://linkedin.com/in/username"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#1e293b]/70 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
                   />
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   disabled={isSavingProfile}
-                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-colors"
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-semibold text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingProfile}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold transition-colors shadow-sm shadow-blue-600/20"
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold transition-colors shadow-sm shadow-indigo-600/20 cursor-pointer"
                 >
                   {isSavingProfile && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   <span>{isSavingProfile ? 'Saving...' : 'Save Profile'}</span>

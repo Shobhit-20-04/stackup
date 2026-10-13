@@ -173,7 +173,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-[#0b1120]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-zinc-800/80 bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo with 5-tap secret trigger */}
@@ -284,7 +284,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1120] px-4 pt-2 pb-4 space-y-1 animate-in slide-in-from-top-2 duration-150">
+        <div className="md:hidden border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#09090b] px-4 pt-2 pb-4 space-y-1 animate-in slide-in-from-top-2 duration-150">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = pathname.startsWith(item.href);
@@ -295,8 +295,8 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-base transition-all ${
                   isActive
-                    ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800/80 font-semibold'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
+                    ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-zinc-800/80 font-semibold'
+                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800/60 font-medium'
                 }`}
               >
                 <Icon className="w-5 h-5" />
