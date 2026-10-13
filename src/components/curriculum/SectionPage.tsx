@@ -143,12 +143,12 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     const diff = difficulty || 'Medium';
     switch (diff) {
       case 'Easy':
-        return 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20';
       case 'Hard':
-        return 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20';
       case 'Medium':
       default:
-        return 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20';
     }
   };
 
@@ -156,75 +156,75 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     switch (iconName) {
       case 'Cpu':
         return {
-          icon: <Cpu className="w-5 h-5 text-violet-600 dark:text-violet-400" />,
-          accent: 'violet',
-          border: 'border-violet-500/30 hover:border-violet-500',
-          bg: 'bg-violet-50/50 dark:bg-violet-950/20',
-          badge: 'bg-violet-100 dark:bg-violet-900/60 text-violet-800 dark:text-violet-300',
+          icon: <Cpu className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-indigo-500/10 border-indigo-500/20',
         };
       case 'Database':
         return {
           icon: <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />,
-          accent: 'emerald',
-          border: 'border-emerald-500/30 hover:border-emerald-500',
-          bg: 'bg-emerald-50/50 dark:bg-emerald-950/20',
-          badge: 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300',
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-emerald-500/10 border-emerald-500/20',
         };
       case 'Network':
         return {
           icon: <Network className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />,
-          accent: 'cyan',
-          border: 'border-cyan-500/30 hover:border-cyan-500',
-          bg: 'bg-cyan-50/50 dark:bg-cyan-950/20',
-          badge: 'bg-cyan-100 dark:bg-cyan-900/60 text-cyan-800 dark:text-cyan-300',
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-cyan-500/10 border-cyan-500/20',
         };
       case 'Code2':
         return {
           icon: <Code2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />,
-          accent: 'amber',
-          border: 'border-amber-500/30 hover:border-amber-500',
-          bg: 'bg-amber-50/50 dark:bg-amber-950/20',
-          badge: 'bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300',
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-amber-500/10 border-amber-500/20',
         };
       case 'Server':
         return {
           icon: <Server className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
-          accent: 'indigo',
-          border: 'border-indigo-500/30 hover:border-indigo-500',
-          bg: 'bg-indigo-50/50 dark:bg-indigo-950/20',
-          badge: 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300',
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-indigo-500/10 border-indigo-500/20',
         };
       case 'GitBranch':
         return {
           icon: <GitBranch className="w-5 h-5 text-rose-600 dark:text-rose-400" />,
-          accent: 'rose',
-          border: 'border-rose-500/30 hover:border-rose-500',
-          bg: 'bg-rose-50/50 dark:bg-rose-950/20',
-          badge: 'bg-rose-100 dark:bg-rose-900/60 text-rose-800 dark:text-rose-300',
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-rose-500/10 border-rose-500/20',
         };
       case 'Terminal':
         return {
-          icon: <Terminal className="w-5 h-5 text-fuchsia-600 dark:text-fuchsia-400" />,
-          accent: 'fuchsia',
-          border: 'border-fuchsia-500/30 hover:border-fuchsia-500',
-          bg: 'bg-fuchsia-50/50 dark:bg-fuchsia-950/20',
-          badge: 'bg-fuchsia-100 dark:bg-fuchsia-900/60 text-fuchsia-800 dark:text-fuchsia-300',
+          icon: <Terminal className="w-5 h-5 text-violet-600 dark:text-violet-400" />,
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-violet-500/10 border-violet-500/20',
         };
       case 'Layers':
         return {
           icon: <Layers className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
-          accent: 'teal',
-          border: 'border-teal-500/30 hover:border-teal-500',
-          bg: 'bg-teal-50/50 dark:bg-teal-950/20',
-          badge: 'bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-300',
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-teal-500/10 border-teal-500/20',
         };
       default:
         return {
-          icon: <BookOpen className="w-5 h-5 text-orange-600 dark:text-orange-400" />,
-          accent: 'orange',
-          border: 'border-orange-500/30 hover:border-orange-500',
-          bg: 'bg-orange-50/50 dark:bg-orange-950/20',
-          badge: 'bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-300',
+          icon: <BookOpen className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
+          border: 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700',
+          bg: 'bg-white dark:bg-[#111827]',
+          badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60',
+          iconBg: 'bg-indigo-500/10 border-indigo-500/20',
         };
     }
   };
@@ -383,39 +383,39 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
   const hasActiveFilters = selectedDifficulty !== 'all' || selectedStatus !== 'all';
   const isAptitude = sectionKey === 'aptitude';
-  const accentBadgeClasses = isAptitude 
-    ? 'bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
-    : 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800';
-  const accentProgressBg = isAptitude ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-indigo-500 to-purple-600';
+  const accentBadgeClasses = isAptitude
+    ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20'
+    : 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20';
+  const accentProgressBg = isAptitude ? 'bg-amber-500 dark:bg-amber-400' : 'bg-indigo-600 dark:bg-indigo-500';
   const accentTextClasses = isAptitude ? 'text-amber-600 dark:text-amber-400' : 'text-indigo-600 dark:text-indigo-400';
   const accentBtnBg = isAptitude ? 'bg-amber-600 hover:bg-amber-500' : 'bg-indigo-600 hover:bg-indigo-500';
-  const accentBtnShadow = isAptitude ? 'shadow-amber-600/30' : 'shadow-indigo-600/30';
+  const accentBtnShadow = 'shadow-xs';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
       {/* Header Banner */}
-      <div className="p-5 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+      <div className="p-5 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#111827] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="space-y-2 max-w-2xl">
-          <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold border ${accentBadgeClasses}`}>
+          <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold border ${accentBadgeClasses}`}>
             <Sparkles className="w-3.5 h-3.5" />
             <span>Placement Interview Curriculum • Structured Modules</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
             {section.name}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
             {section.description}
           </p>
 
           <div className="pt-1">
             <button
               onClick={() => setIsCheatsheetOpen(true)}
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-bold text-xs shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700/80 shadow-xs transition-all cursor-pointer"
             >
               {currentUser ? (
-                <Zap className="w-3.5 h-3.5 text-amber-200" />
+                <Zap className="w-3.5 h-3.5 text-amber-400" />
               ) : (
-                <Lock className="w-3.5 h-3.5 text-amber-200" />
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
               )}
               <span>⚡ Quick Revision Cheatsheet {!currentUser && '(Sign In to Unlock)'}</span>
             </button>
@@ -637,29 +637,29 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   <div
                     key={topic.id}
                     onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
-                    className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] hover:border-blue-500 shadow-xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group"
+                    className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-slate-300 dark:hover:border-slate-750 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between cursor-pointer group"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
                         <div className="flex items-center space-x-2">
-                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
                             {category.title}
                           </span>
-                          <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${getDifficultyBadge(topic.difficulty)}`}>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${getDifficultyBadge(topic.difficulty)}`}>
                             {topic.difficulty || 'Medium'}
                           </span>
                         </div>
                         {isCompleted && (
-                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
                             <Check className="w-3.5 h-3.5" />
                             <span>Done</span>
                           </span>
                         )}
                       </div>
-                      <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                         {topic.title}
                       </h3>
-                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed font-normal">
                         {topic.description}
                       </p>
 
@@ -682,7 +682,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                         </div>
                       )}
                     </div>
-                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       <span>Study Module Notes ({topic.questions.length} MCQs)</span>
                       <div className="flex items-center space-x-2">
                         {topic.youtube_url && (
@@ -754,11 +754,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 <div
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`p-5 sm:p-6 rounded-3xl border-2 ${theme.border} ${theme.bg} transition-all flex flex-col justify-between shadow-xs hover:shadow-lg cursor-pointer group`}
+                  className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3.5">
-                      <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-xs shrink-0">
+                      <div className={`w-12 h-12 rounded-2xl ${theme.iconBg} border flex items-center justify-center shrink-0`}>
                         {theme.icon}
                       </div>
                       <div className="flex items-center space-x-1.5">
@@ -773,39 +773,39 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                           <Video className="w-3.5 h-3.5" />
                           <span className="text-[10px] font-bold">Videos</span>
                         </a>
-                        <span className={`text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-xl ${theme.badge}`}>
+                        <span className={`text-[11px] font-semibold uppercase px-2.5 py-1 rounded-xl ${theme.badge}`}>
                           {cat.topics.length} Topics
                         </span>
                       </div>
                     </div>
 
-                    <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       {cat.title}
                     </h3>
-                    <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                       {cat.description}
                     </p>
 
                     {/* Progress indicator */}
-                    <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-slate-800/80">
-                      <div className="flex items-center justify-between text-[11px] font-bold mb-1.5">
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                      <div className="flex items-center justify-between text-[11px] font-semibold mb-1.5">
                         <span className="text-slate-500 dark:text-slate-400">Subject Progress</span>
-                        <span className="text-slate-900 dark:text-slate-100 font-extrabold">
+                        <span className="text-slate-900 dark:text-slate-100 font-bold">
                           {completedCount} / {cat.topics.length} ({catPercent}%)
                         </span>
                       </div>
                       <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                         <div
-                          className="h-full bg-blue-600 rounded-full transition-all"
+                          className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all"
                           style={{ width: `${catPercent}%` }}
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between text-xs font-bold text-blue-700 dark:text-blue-300">
+                  <div className="mt-5 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                     <span>Study Syllabus ({cat.topics.length} Modules)</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               );
@@ -896,36 +896,36 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   <div
                     key={topic.id}
                     onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
-                    className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer group shadow-xs hover:shadow-md ${
+                    className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer group shadow-xs hover:shadow-sm ${
                       isCompleted
-                        ? 'border-emerald-500/30 bg-emerald-50/20 dark:bg-emerald-950/10'
-                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131c31] hover:border-blue-500'
+                        ? 'border-emerald-500/20 bg-emerald-500/5'
+                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] hover:border-slate-300 dark:hover:border-slate-750'
                     }`}
                   >
                     <div className="flex items-start space-x-3.5 min-w-0">
                       {/* Step Number or Checkmark */}
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs ${
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-xs ${
                         isCompleted
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
                       }`}>
                         {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
                       </div>
 
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <span className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                          <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                             {topic.title}
                           </span>
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${getDifficultyBadge(topic.difficulty)}`}>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${getDifficultyBadge(topic.difficulty)}`}>
                             {topic.difficulty || 'Medium'}
                           </span>
                           {isCompleted ? (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                               ✓ Completed
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/60">
                               Ready to Study
                             </span>
                           )}
@@ -936,7 +936,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
                         <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] font-semibold text-slate-500">
                           <span className="flex items-center space-x-1">
-                            <Clock className="w-3 h-3 text-blue-500" />
+                            <Clock className="w-3 h-3 text-indigo-500" />
                             <span>{topic.estimatedMinutes} min read</span>
                           </span>
                           <span>•</span>
@@ -979,7 +979,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                           setSelectedTopic(topic);
                           setActiveView('notes');
                         }}
-                        className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-center"
+                        className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors cursor-pointer text-center shadow-xs"
                       >
                         Read Notes
                       </button>
@@ -989,7 +989,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                             e.stopPropagation();
                             handleStartQuiz(topic);
                           }}
-                          className={`flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl ${accentBtnBg} text-white text-xs font-bold shadow-xs transition-all cursor-pointer`}
+                          className={`flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl ${accentBtnBg} text-white text-xs font-semibold shadow-xs transition-all cursor-pointer`}
                         >
                           <Play className="w-3 h-3 fill-white" />
                           <span>Start Quiz</span>
@@ -1048,14 +1048,14 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
                   <Link
                     href={`/login?redirect=${encodeURIComponent(`/${sectionKey}`)}`}
-                    className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-bold text-xs shadow-lg shadow-amber-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer"
                   >
                     <span>Sign In to Unlock Cheatsheet</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                   <button
                     onClick={() => setIsCheatsheetOpen(false)}
-                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     Dismiss
                   </button>
@@ -1072,7 +1072,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       value={cheatsheetSearch}
                       onChange={(e) => setCheatsheetSearch(e.target.value)}
                       placeholder="Filter formulas or concepts (e.g. Virtual Memory, Deadlock, Work Rate, ACID)..."
-                      className="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#1e293b] text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#1e293b] text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                     {cheatsheetSearch && (
                       <button
@@ -1088,9 +1088,9 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none pb-0.5">
                     <button
                       onClick={() => setCheatsheetCategory('all')}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer ${
                         cheatsheetCategory === 'all'
-                          ? 'bg-amber-600 text-white shadow-xs'
+                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                       }`}
                     >
@@ -1100,9 +1100,9 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       <button
                         key={cat.id}
                         onClick={() => setCheatsheetCategory(cat.id)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer ${
                           cheatsheetCategory === cat.id
-                            ? 'bg-amber-600 text-white shadow-xs'
+                            ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                         }`}
                       >
@@ -1122,14 +1122,14 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     cheatsheetTopics.map(({ topic, category }) => (
                       <div
                         key={topic.id}
-                        className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-[#18233d]/50 space-y-3 shadow-xs"
+                        className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] space-y-3 shadow-xs"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center space-x-2">
-                            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300">
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
                               {category.title}
                             </span>
-                            <h4 className="text-sm font-black text-slate-900 dark:text-white">
+                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                               {topic.title}
                             </h4>
                           </div>
@@ -1214,28 +1214,28 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {authPromptOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60 flex items-center justify-center mb-1">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mb-1">
               <Lock className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-black text-slate-900 dark:text-white">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 Sign In Required
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed font-normal">
                 Sign in to take interactive timed quizzes, unlock rapid placement revision cheatsheets, and sync your diagnostics with your student profile.
               </p>
             </div>
             <div className="flex items-center space-x-2.5 pt-2">
               <Link
                 href={`/login?redirect=${encodeURIComponent(`/${sectionKey}`)}`}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-amber-500 hover:from-indigo-500 hover:to-amber-400 text-white font-bold text-xs text-center shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs text-center shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <span>Sign In</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <button
                 onClick={() => setAuthPromptOpen(false)}
-                className="py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold transition-colors cursor-pointer"
+                className="py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
               >
                 Cancel
               </button>

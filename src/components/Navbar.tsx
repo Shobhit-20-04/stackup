@@ -165,21 +165,6 @@ export default function Navbar() {
     router.refresh();
   };
 
-  const getNavActiveClasses = (href: string) => {
-    switch (href) {
-      case '/aptitude':
-        return 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-900/40 font-semibold shadow-xs';
-      case '/core-cs':
-        return 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-900/40 font-semibold shadow-xs';
-      case '/dsa':
-        return 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-900/40 font-semibold shadow-xs';
-      case '/resume-checker':
-        return 'text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/40 font-semibold shadow-xs';
-      default:
-        return 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 font-semibold';
-    }
-  };
-
   const navLinks = [
     { name: 'Aptitude', href: '/aptitude', icon: BookOpen },
     { name: 'Core CS', href: '/core-cs', icon: Cpu },
@@ -188,7 +173,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-[#0b1120]/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-[#0b1120]/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo with 5-tap secret trigger */}
@@ -198,14 +183,14 @@ export default function Navbar() {
             className="flex items-center space-x-2.5 group select-none"
             title="StackUp"
           >
-            <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-amber-500 hover:from-indigo-500 hover:to-amber-400 flex items-center justify-center text-white shadow-md shadow-indigo-600/20 group-hover:scale-105 transition-transform duration-200 ${
-              logoTapCount >= 3 ? 'ring-2 ring-amber-400 animate-pulse' : ''
+            <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-600/20 group-hover:scale-105 transition-transform duration-200 ${
+              logoTapCount >= 3 ? 'ring-2 ring-indigo-400 animate-pulse' : ''
             }`}>
               <Layers className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white flex items-center">
-                Stack<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-amber-500 dark:from-indigo-400 dark:via-violet-400 dark:to-amber-300">Up</span>
+                Stack<span className="text-indigo-600 dark:text-indigo-400">Up</span>
               </span>
             </div>
           </Link>
@@ -221,7 +206,7 @@ export default function Navbar() {
                   href={item.href}
                   className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-sm transition-all ${
                     isActive
-                      ? getNavActiveClasses(item.href)
+                      ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800/80 font-semibold shadow-xs'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
                   }`}
                 >
@@ -245,7 +230,7 @@ export default function Navbar() {
                         : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden shadow-xs">
+                    <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden shadow-xs">
                       {user.avatar_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -273,7 +258,7 @@ export default function Navbar() {
                 <div className="flex items-center space-x-2">
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-xl shadow-md shadow-indigo-600/20 transition-all cursor-pointer"
+                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-xs transition-all cursor-pointer"
                   >
                     Sign In
                   </Link>
@@ -310,7 +295,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-base transition-all ${
                   isActive
-                    ? getNavActiveClasses(item.href)
+                    ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800/80 font-semibold'
                     : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
                 }`}
               >
@@ -345,7 +330,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center px-4 py-2.5 text-base font-bold text-white bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-xl shadow-md shadow-indigo-600/20"
+                className="w-full flex items-center justify-center px-4 py-2.5 text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-xs transition-colors"
               >
                 Sign In
               </Link>
