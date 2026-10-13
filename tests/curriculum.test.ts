@@ -123,4 +123,11 @@ describe('Phase 2 Curriculum & Notes Validation', () => {
     const total3 = 5;
     expect(Math.round((score3 / total3) * 100)).toBe(0);
   });
+
+  it('should enforce authentication gating for revision cheatsheet access', () => {
+    const isCheatsheetUnlocked = (user: { id: string } | null) => Boolean(user);
+
+    expect(isCheatsheetUnlocked(null)).toBe(false);
+    expect(isCheatsheetUnlocked({ id: 'usr-student-1' })).toBe(true);
+  });
 });

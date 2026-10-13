@@ -156,11 +156,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     switch (iconName) {
       case 'Cpu':
         return {
-          icon: <Cpu className="w-5 h-5 text-sky-600 dark:text-sky-400" />,
-          accent: 'sky',
-          border: 'border-sky-500/30 hover:border-sky-500',
-          bg: 'bg-sky-50/50 dark:bg-sky-950/20',
-          badge: 'bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300',
+          icon: <Cpu className="w-5 h-5 text-violet-600 dark:text-violet-400" />,
+          accent: 'violet',
+          border: 'border-violet-500/30 hover:border-violet-500',
+          bg: 'bg-violet-50/50 dark:bg-violet-950/20',
+          badge: 'bg-violet-100 dark:bg-violet-900/60 text-violet-800 dark:text-violet-300',
         };
       case 'Database':
         return {
@@ -172,11 +172,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         };
       case 'Network':
         return {
-          icon: <Network className="w-5 h-5 text-blue-600 dark:text-blue-400" />,
-          accent: 'blue',
-          border: 'border-blue-500/30 hover:border-blue-500',
-          bg: 'bg-blue-50/50 dark:bg-blue-950/20',
-          badge: 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300',
+          icon: <Network className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />,
+          accent: 'cyan',
+          border: 'border-cyan-500/30 hover:border-cyan-500',
+          bg: 'bg-cyan-50/50 dark:bg-cyan-950/20',
+          badge: 'bg-cyan-100 dark:bg-cyan-900/60 text-cyan-800 dark:text-cyan-300',
         };
       case 'Code2':
         return {
@@ -188,11 +188,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         };
       case 'Server':
         return {
-          icon: <Server className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />,
-          accent: 'cyan',
-          border: 'border-cyan-500/30 hover:border-cyan-500',
-          bg: 'bg-cyan-50/50 dark:bg-cyan-950/20',
-          badge: 'bg-cyan-100 dark:bg-cyan-900/60 text-cyan-800 dark:text-cyan-300',
+          icon: <Server className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
+          accent: 'indigo',
+          border: 'border-indigo-500/30 hover:border-indigo-500',
+          bg: 'bg-indigo-50/50 dark:bg-indigo-950/20',
+          badge: 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300',
         };
       case 'GitBranch':
         return {
@@ -204,11 +204,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         };
       case 'Terminal':
         return {
-          icon: <Terminal className="w-5 h-5 text-blue-600 dark:text-blue-400" />,
-          accent: 'blue',
-          border: 'border-blue-500/30 hover:border-blue-500',
-          bg: 'bg-blue-50/50 dark:bg-blue-950/20',
-          badge: 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300',
+          icon: <Terminal className="w-5 h-5 text-fuchsia-600 dark:text-fuchsia-400" />,
+          accent: 'fuchsia',
+          border: 'border-fuchsia-500/30 hover:border-fuchsia-500',
+          bg: 'bg-fuchsia-50/50 dark:bg-fuchsia-950/20',
+          badge: 'bg-fuchsia-100 dark:bg-fuchsia-900/60 text-fuchsia-800 dark:text-fuchsia-300',
         };
       case 'Layers':
         return {
@@ -220,11 +220,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         };
       default:
         return {
-          icon: <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />,
-          accent: 'blue',
-          border: 'border-blue-500/30 hover:border-blue-500',
-          bg: 'bg-blue-50/50 dark:bg-blue-950/20',
-          badge: 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300',
+          icon: <BookOpen className="w-5 h-5 text-orange-600 dark:text-orange-400" />,
+          accent: 'orange',
+          border: 'border-orange-500/30 hover:border-orange-500',
+          bg: 'bg-orange-50/50 dark:bg-orange-950/20',
+          badge: 'bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-300',
         };
     }
   };
@@ -382,13 +382,21 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   }
 
   const hasActiveFilters = selectedDifficulty !== 'all' || selectedStatus !== 'all';
+  const isAptitude = sectionKey === 'aptitude';
+  const accentBadgeClasses = isAptitude 
+    ? 'bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+    : 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800';
+  const accentProgressBg = isAptitude ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-indigo-500 to-purple-600';
+  const accentTextClasses = isAptitude ? 'text-amber-600 dark:text-amber-400' : 'text-indigo-600 dark:text-indigo-400';
+  const accentBtnBg = isAptitude ? 'bg-amber-600 hover:bg-amber-500' : 'bg-indigo-600 hover:bg-indigo-500';
+  const accentBtnShadow = isAptitude ? 'shadow-amber-600/30' : 'shadow-indigo-600/30';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
       {/* Header Banner */}
       <div className="p-5 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#131c31] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+          <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold border ${accentBadgeClasses}`}>
             <Sparkles className="w-3.5 h-3.5" />
             <span>Placement Interview Curriculum • Structured Modules</span>
           </div>
@@ -402,10 +410,14 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           <div className="pt-1">
             <button
               onClick={() => setIsCheatsheetOpen(true)}
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-bold text-xs shadow-md shadow-amber-500/20 transition-all cursor-pointer"
             >
-              <Zap className="w-3.5 h-3.5 text-amber-300" />
-              <span>⚡ Quick Revision Cheatsheet</span>
+              {currentUser ? (
+                <Zap className="w-3.5 h-3.5 text-amber-200" />
+              ) : (
+                <Lock className="w-3.5 h-3.5 text-amber-200" />
+              )}
+              <span>⚡ Quick Revision Cheatsheet {!currentUser && '(Sign In to Unlock)'}</span>
             </button>
           </div>
         </div>
@@ -414,11 +426,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#1e293b] w-full md:w-64 space-y-2.5 shrink-0">
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="text-slate-600 dark:text-slate-300 uppercase tracking-wider text-[11px]">Syllabus Progress</span>
-            <span className="text-blue-600 dark:text-blue-400 font-extrabold">{metrics.percent}%</span>
+            <span className={`font-extrabold ${accentTextClasses}`}>{metrics.percent}%</span>
           </div>
           <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
             <div
-              className="h-full bg-blue-600 rounded-full transition-all duration-500"
+              className={`h-full rounded-full transition-all duration-500 ${accentProgressBg}`}
               style={{ width: `${metrics.percent}%` }}
             />
           </div>
@@ -562,7 +574,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
               selectedCategory === 'all' && !searchQuery
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                ? `${accentBtnBg} text-white shadow-md ${accentBtnShadow}`
                 : 'bg-white dark:bg-[#131c31] text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
@@ -578,7 +590,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 onClick={() => { setSelectedCategory(cat.id); setSearchQuery(''); }}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
                   isSelected
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                    ? `${accentBtnBg} text-white shadow-md ${accentBtnShadow}`
                     : 'bg-white dark:bg-[#131c31] text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
@@ -977,7 +989,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                             e.stopPropagation();
                             handleStartQuiz(topic);
                           }}
-                          className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                          className={`flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl ${accentBtnBg} text-white text-xs font-bold shadow-xs transition-all cursor-pointer`}
                         >
                           <Play className="w-3 h-3 fill-white" />
                           <span>Start Quiz</span>
@@ -1019,136 +1031,170 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               </button>
             </div>
 
-            {/* Cheatsheet Controls */}
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 space-y-3 bg-white dark:bg-[#131c31]">
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                <input
-                  type="text"
-                  value={cheatsheetSearch}
-                  onChange={(e) => setCheatsheetSearch(e.target.value)}
-                  placeholder="Filter formulas or concepts (e.g. Virtual Memory, Deadlock, Work Rate, ACID)..."
-                  className="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#1e293b] text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {cheatsheetSearch && (
-                  <button
-                    onClick={() => setCheatsheetSearch('')}
-                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Cheatsheet Subject Tabs */}
-              <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none pb-0.5">
-                <button
-                  onClick={() => setCheatsheetCategory('all')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                    cheatsheetCategory === 'all'
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                  }`}
-                >
-                  All ({section.categories.length})
-                </button>
-                {section.categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setCheatsheetCategory(cat.id)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                      cheatsheetCategory === cat.id
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                    }`}
-                  >
-                    {cat.title}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Cheatsheet Content List */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-              {cheatsheetTopics.length === 0 ? (
-                <div className="p-8 text-center text-slate-500 text-xs">
-                  No revision topics match your search query.
+            {/* Cheatsheet Body */}
+            {!currentUser ? (
+              <div className="flex-1 p-8 sm:p-14 text-center flex flex-col items-center justify-center space-y-4 my-auto bg-slate-50/50 dark:bg-[#131c31]/50">
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/10">
+                  <Lock className="w-7 h-7" />
                 </div>
-              ) : (
-                cheatsheetTopics.map(({ topic, category }) => (
-                  <div
-                    key={topic.id}
-                    className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-[#18233d]/50 space-y-3 shadow-xs"
+                <div className="max-w-md space-y-2">
+                  <h4 className="text-xl font-black text-slate-900 dark:text-white">
+                    Sign In Required for Revision Cheatsheet
+                  </h4>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Quick Revision Cheatsheets provide high-yield formula cards, algorithmic complexities, and rapid interview takeaways compiled across all {section.name} modules. Sign in to your StackUp account to unlock full access.
+                  </p>
+                </div>
+                <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent(`/${sectionKey}`)}`}
+                    className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-bold text-xs shadow-lg shadow-amber-500/25 transition-all flex items-center justify-center space-x-2 cursor-pointer"
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300">
-                          {category.title}
-                        </span>
-                        <h4 className="text-sm font-black text-slate-900 dark:text-white">
-                          {topic.title}
-                        </h4>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        {topic.youtube_url && (
-                          <a
-                            href={topic.youtube_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 transition-colors inline-flex items-center"
-                            title="Study topic on YouTube"
-                          >
-                            <Video className="w-3.5 h-3.5" />
-                          </a>
-                        )}
-                        <button
-                          onClick={() => {
-                            setIsCheatsheetOpen(false);
-                            setSelectedTopic(topic);
-                            setActiveView('notes');
-                          }}
-                          className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-                        >
-                          Notes →
-                        </button>
-                        {topic.questions.length > 0 && (
-                          <button
-                            onClick={() => {
-                              setIsCheatsheetOpen(false);
-                              handleStartQuiz(topic);
-                            }}
-                            className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer flex items-center space-x-1"
-                          >
-                            <Play className="w-2.5 h-2.5 fill-white" />
-                            <span>Quiz ({topic.questions.length})</span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Key Takeaways */}
-                    {topic.keyTakeaways && topic.keyTakeaways.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                        {topic.keyTakeaways.map((takeaway, idx) => (
-                          <div
-                            key={idx}
-                            className="p-2.5 rounded-xl bg-white dark:bg-[#131c31] border border-slate-200/80 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-200 flex items-start space-x-2"
-                          >
-                            <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                            <span className="leading-snug font-medium">{takeaway}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-slate-500 italic">
-                        {topic.description}
-                      </p>
+                    <span>Sign In to Unlock Cheatsheet</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <button
+                    onClick={() => setIsCheatsheetOpen(false)}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Cheatsheet Controls */}
+                <div className="p-4 border-b border-slate-200 dark:border-slate-800 space-y-3 bg-white dark:bg-[#131c31]">
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      value={cheatsheetSearch}
+                      onChange={(e) => setCheatsheetSearch(e.target.value)}
+                      placeholder="Filter formulas or concepts (e.g. Virtual Memory, Deadlock, Work Rate, ACID)..."
+                      className="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#1e293b] text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                    {cheatsheetSearch && (
+                      <button
+                        onClick={() => setCheatsheetSearch('')}
+                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
                     )}
                   </div>
-                ))
-              )}
-            </div>
+
+                  {/* Cheatsheet Subject Tabs */}
+                  <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none pb-0.5">
+                    <button
+                      onClick={() => setCheatsheetCategory('all')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                        cheatsheetCategory === 'all'
+                          ? 'bg-amber-600 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                      }`}
+                    >
+                      All ({section.categories.length})
+                    </button>
+                    {section.categories.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => setCheatsheetCategory(cat.id)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                          cheatsheetCategory === cat.id
+                            ? 'bg-amber-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                        }`}
+                      >
+                        {cat.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Cheatsheet Content List */}
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+                  {cheatsheetTopics.length === 0 ? (
+                    <div className="p-8 text-center text-slate-500 text-xs">
+                      No revision topics match your search query.
+                    </div>
+                  ) : (
+                    cheatsheetTopics.map(({ topic, category }) => (
+                      <div
+                        key={topic.id}
+                        className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-[#18233d]/50 space-y-3 shadow-xs"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300">
+                              {category.title}
+                            </span>
+                            <h4 className="text-sm font-black text-slate-900 dark:text-white">
+                              {topic.title}
+                            </h4>
+                          </div>
+
+                          <div className="flex items-center space-x-2">
+                            {topic.youtube_url && (
+                              <a
+                                href={topic.youtube_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-1 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 transition-colors inline-flex items-center"
+                                title="Study topic on YouTube"
+                              >
+                                <Video className="w-3.5 h-3.5" />
+                              </a>
+                            )}
+                            <button
+                              onClick={() => {
+                                setIsCheatsheetOpen(false);
+                                setSelectedTopic(topic);
+                                setActiveView('notes');
+                              }}
+                              className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                            >
+                              Notes →
+                            </button>
+                            {topic.questions.length > 0 && (
+                              <button
+                                onClick={() => {
+                                  setIsCheatsheetOpen(false);
+                                  handleStartQuiz(topic);
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer flex items-center space-x-1"
+                              >
+                                <Play className="w-2.5 h-2.5 fill-white" />
+                                <span>Quiz ({topic.questions.length})</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Key Takeaways */}
+                        {topic.keyTakeaways && topic.keyTakeaways.length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                            {topic.keyTakeaways.map((takeaway, idx) => (
+                              <div
+                                key={idx}
+                                className="p-2.5 rounded-xl bg-white dark:bg-[#131c31] border border-slate-200/80 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-200 flex items-start space-x-2"
+                              >
+                                <Check className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                                <span className="leading-snug font-medium">{takeaway}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-slate-500 italic">
+                            {topic.description}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Modal Footer */}
             <div className="p-3 sm:p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#131c31] flex items-center justify-between text-xs text-slate-500">
@@ -1168,7 +1214,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {authPromptOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white dark:bg-[#131c31] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-1">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60 flex items-center justify-center mb-1">
               <Lock className="w-6 h-6" />
             </div>
             <div>
@@ -1176,13 +1222,13 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 Sign In Required
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed">
-                Sign in to take interactive timed quizzes, track your progress score, and sync your results with your profile dashboard.
+                Sign in to take interactive timed quizzes, unlock rapid placement revision cheatsheets, and sync your diagnostics with your student profile.
               </p>
             </div>
             <div className="flex items-center space-x-2.5 pt-2">
               <Link
                 href={`/login?redirect=${encodeURIComponent(`/${sectionKey}`)}`}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs text-center shadow-md shadow-blue-600/20 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-amber-500 hover:from-indigo-500 hover:to-amber-400 text-white font-bold text-xs text-center shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <span>Sign In</span>
                 <ArrowRight className="w-3.5 h-3.5" />
