@@ -26,7 +26,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Pass: One complete traversal of the source program or intermediate representation.",
         "Phase: Logical operational step within the compilation pipeline."
       ],
-      "notesMarkdown": "# Compiler Architecture & Phases\n\n---\n\n## 1. Analysis vs. Synthesis\nA compiler maps high-level source code into low-level machine code through two primary stages:\n1. **Analysis (Front-End / Machine Independent):**\n   - **Lexical Analyzer (Scanner):** Character stream \u2192 Token stream.\n   - **Syntax Analyzer (Parser):** Tokens \u2192 Parse tree / AST according to Context-Free Grammar.\n   - **Semantic Analyzer:** Type checking, scope resolution, semantic consistency.\n2. **Synthesis (Back-End / Machine Dependent):**\n   - **Intermediate Code Generator (ICG):** Generates machine-neutral Three-Address Code (TAC).\n   - **Code Optimizer:** Eliminates redundancies, dead code, loops optimization to improve speed/space.\n   - **Target Code Generator:** Converts TAC into relocatable machine code or assembly.\n\n---\n\n## 2. Passes vs. Phases\n- **Phase:** A logical organization of the compiler task.\n- **Pass:** A physical reading of the source program or intermediate representation from disk/memory. Multi-pass compilers reduce memory consumption at the cost of disk I/O.\n",
+      "notesMarkdown": "# Compiler Architecture & Phases\n\n---\n\n## 1. Analysis vs. Synthesis\nA compiler maps high-level source code into low-level machine code through two primary stages:\n1. **Analysis (Front-End / Machine Independent):**\n   - **Lexical Analyzer (Scanner):** Character stream → Token stream.\n   - **Syntax Analyzer (Parser):** Tokens → Parse tree / AST according to Context-Free Grammar.\n   - **Semantic Analyzer:** Type checking, scope resolution, semantic consistency.\n2. **Synthesis (Back-End / Machine Dependent):**\n   - **Intermediate Code Generator (ICG):** Generates machine-neutral Three-Address Code (TAC).\n   - **Code Optimizer:** Eliminates redundancies, dead code, loops optimization to improve speed/space.\n   - **Target Code Generator:** Converts TAC into relocatable machine code or assembly.\n\n---\n\n## 2. Passes vs. Phases\n- **Phase:** A logical organization of the compiler task.\n- **Pass:** A physical reading of the source program or intermediate representation from disk/memory. Multi-pass compilers reduce memory consumption at the cost of disk I/O.\n",
       "questions": [
         {
           "id": "cd-arch-1",
@@ -51,6 +51,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "A phase describes a logical operation of the compiler; a pass refers to one complete traversal over the program representation."
+        },
+        {
+          "id": "cd-arch-3",
+          "question": "Which component of compiler infrastructure manages identifier attributes (scope, type, location) across all phases?",
+          "options": [
+            "Symbol Table",
+            "Lexical Analyzer",
+            "Instruction Selector",
+            "Code Generator"
+          ],
+          "correct_option": 0,
+          "explanation": "The Symbol Table is the central data repository created by the front-end (lexical/syntax) and queried by subsequent phases to store and retrieve type, scope, and memory location attributes."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Compiler+Architecture+Compiler+Design+CD+GATE+lecture"
@@ -99,6 +111,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Sentinels placed at buffer ends permit one single branch test per character rather than two checks (end-of-buffer and character check)."
+        },
+        {
+          "id": "cd-lex-3",
+          "question": "When scanning tokens, how does a lexical analyzer resolve conflicts when multiple patterns match the input prefix?",
+          "options": [
+            "Longest Match (Maximal Munch) first, followed by First Specified Pattern in rule order.",
+            "Shortest Match first.",
+            "Random selection among matching NFAs.",
+            "Always prefers identifier tokens over keywords."
+          ],
+          "correct_option": 0,
+          "explanation": "Lexical analyzers (like Lex/Flex) resolve ambiguity via two rules: 1) Longest Match (Maximal Munch) prefers the token consuming the most characters, 2) First Rule in the specification file breaks ties (e.g., 'if' matched as keyword rather than identifier)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Lexical+Analysis+Compiler+Design+CD+GATE+lecture"
@@ -147,6 +171,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Top-down parsers expand non-terminals from left to right, constructing the leftmost derivation."
+        },
+        {
+          "id": "cd-parse-3",
+          "question": "Why can top-down recursive-descent parsers NOT handle grammars containing Left Recursion?",
+          "options": [
+            "Left recursion causes infinite recursive descent calls without consuming any input tokens.",
+            "Left recursion makes the grammar ambiguous.",
+            "Left recursion requires a deterministic finite automaton.",
+            "Left recursive grammars cannot generate terminal strings."
+          ],
+          "correct_option": 0,
+          "explanation": "In top-down parsing, a rule A -> A alpha forces the parser to recursively call procedure A() immediately before consuming any terminal token, leading to an infinite loop and call stack overflow."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Syntax+Analysis+and+Parsing+Compiler+Design+CD+GATE+lecture"
@@ -195,6 +231,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "In S -> AB, symbol B follows A. Thus FOLLOW(A) contains FIRST(B) = {b}. Since B cannot derive epsilon, FOLLOW(S) is not propagated."
+        },
+        {
+          "id": "cd-ff-3",
+          "question": "Can the empty string (epsilon) ever be a member of the FOLLOW set of a non-terminal?",
+          "options": [
+            "No, epsilon can never belong to any FOLLOW set.",
+            "Yes, if the grammar has epsilon productions.",
+            "Yes, for the start symbol only.",
+            "Yes, if the non-terminal is nullable."
+          ],
+          "correct_option": 0,
+          "explanation": "FOLLOW(A) is defined strictly as the set of terminal symbols (plus end-marker $) that can appear immediately to the right of A in some sentential form. Epsilon is an empty transition, never an input terminal, so epsilon is never in FOLLOW."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=FIRST+and+FOLLOW+Sets+Compiler+Design+CD+GATE+lecture"
@@ -243,6 +291,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Multiple entries indicate parsing conflict (non-determinism), meaning the grammar cannot be deterministically parsed using LL(1)."
+        },
+        {
+          "id": "cd-ll1-3",
+          "question": "What is the necessary and sufficient condition for a grammar to be LL(1)?",
+          "options": [
+            "For every production A -> alpha | beta: FIRST(alpha) and FIRST(beta) are disjoint, and if beta derives epsilon, FIRST(alpha) and FOLLOW(A) are disjoint.",
+            "The grammar must be right-recursive only.",
+            "The grammar must contain zero epsilon-productions.",
+            "The grammar must be LR(0)."
+          ],
+          "correct_option": 0,
+          "explanation": "A grammar is LL(1) iff for all A -> alpha | beta: 1) FIRST(alpha) intersect FIRST(beta) = empty, 2) At most one of alpha, beta can derive epsilon, 3) If beta =>* epsilon, then FIRST(alpha) intersect FOLLOW(A) = empty."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=LL%281%29+Parsing+Compiler+Design+CD+GATE+lecture"
@@ -291,6 +351,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "LALR(1) merges states with the same LR(0) core, so the total number of states in LALR(1) is identical to LR(0) and SLR(1)."
+        },
+        {
+          "id": "cd-lr-3",
+          "question": "What is the relationship between the number of states in SLR(1), LALR(1), and CLR(1) parsers for the same grammar?",
+          "options": [
+            "States(SLR(1)) = States(LALR(1)) <= States(CLR(1))",
+            "States(SLR(1)) < States(LALR(1)) < States(CLR(1))",
+            "States(CLR(1)) = States(LALR(1))",
+            "States(LALR(1)) > States(CLR(1))"
+          ],
+          "correct_option": 0,
+          "explanation": "LALR(1) merges CLR(1) states that have identical LR(0) cores. As a result, the number of states in LALR(1) is always strictly equal to the number of states in SLR(1) / LR(0), which is typically orders of magnitude smaller than CLR(1)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=LR%2C+SLR%2C+CLR%2C+and+LALR+Parsing+Compiler+Design+CD+GATE+lecture"
@@ -339,6 +411,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "L-attributed definitions enforce a left-to-right dependency order; inherited attributes may only depend on the parent and left siblings."
+        },
+        {
+          "id": "cd-sdt-3",
+          "question": "What characterizes an S-attributed Syntax-Directed Definition (SDD)?",
+          "options": [
+            "It contains synthesized attributes only and can be naturally evaluated during bottom-up parsing.",
+            "It contains inherited attributes only evaluated top-down.",
+            "Attributes are evaluated in reverse topological order.",
+            "It requires multiple passes over the parse tree."
+          ],
+          "correct_option": 0,
+          "explanation": "An S-attributed definition uses strictly synthesized attributes (values computed exclusively from children nodes in the parse tree). It can be directly evaluated during bottom-up LR parsing on reductions."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Syntax-Directed+Translation+Compiler+Design+CD+GATE+lecture"
@@ -387,6 +471,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Name equivalence requires identical type names, while structural equivalence inspects the shape and types of the component elements."
+        },
+        {
+          "id": "cd-sem-3",
+          "question": "Which of the following errors is detected during Semantic Analysis rather than Syntax Analysis?",
+          "options": [
+            "Type mismatch (e.g. adding a string to an integer without cast) and undeclared identifier usage.",
+            "Mismatched parentheses in an arithmetic expression.",
+            "Missing semicolon at the end of a statement.",
+            "Invalid character in input stream."
+          ],
+          "correct_option": 0,
+          "explanation": "Syntax analysis checks grammatical structure (context-free syntax), while semantic analysis checks contextual legality (type consistency, variable declaration before use, function signature matching)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Semantic+Analysis+Compiler+Design+CD+GATE+lecture"
@@ -434,6 +530,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "In a DAG, common subexpressions are reused, meaning a shared node can have multiple parents (indegree > 1)."
+        },
+        {
+          "id": "cd-icg-3",
+          "question": "Why do modern optimizing compilers convert Abstract Syntax Trees into Intermediate Representations (IR) like Three-Address Code or SSA?",
+          "options": [
+            "To decouple machine-independent optimizations from target-specific machine code generation, enabling M front-ends and N back-ends with M + N compilers.",
+            "To increase the binary size of the final executable.",
+            "Because ASTs cannot represent loops.",
+            "To prevent register allocation."
+          ],
+          "correct_option": 0,
+          "explanation": "Using a machine-independent IR decouples the compiler into front-end and back-end: supporting M languages on N processor architectures requires M + N modules instead of M * N separate compilers."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Intermediate+Code+Generation+Compiler+Design+CD+GATE+lecture"
@@ -482,6 +590,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Standard triples reference results by row index. Moving a triple breaks references. Indirect triples only reorder pointers in a separate array."
+        },
+        {
+          "id": "cd-tac-3",
+          "question": "What are the three standard implementation representations for Three-Address Code (TAC)?",
+          "options": [
+            "Quadruples, Triples, and Indirect Triples",
+            "Stacks, Queues, and Heaps",
+            "Binary Trees, Arrays, and Linked Lists",
+            "Tokens, Lexemes, and Patterns"
+          ],
+          "correct_option": 0,
+          "explanation": "Three-address code is conventionally represented in compiler memory as Quadruples (op, arg1, arg2, result), Triples (op, arg1, arg2 with implicit result indices), or Indirect Triples (array of pointers to triples)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Three-Address+Code+Compiler+Design+CD+GATE+lecture"
@@ -505,7 +625,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Dynamic Link (Control Link): Points to the activation record of the caller function.",
         "Static Link (Access Link): Points to the activation record of the lexical (enclosing) parent function."
       ],
-      "notesMarkdown": "# Runtime Environments & Activation Records\n\n---\n\n## 1. Runtime Memory Organization\n```text\n+-----------------------------------+ High Memory\n| Stack (grows downwards)           |\n|   Activation Records              |\n|               v                   |\n|               ^                   |\n| Heap (grows upwards)              |\n|   Dynamic Allocation (malloc)     |\n+-----------------------------------+\n| Static / Global Data              |\n+-----------------------------------+\n| Code Segment (Text)               | Low Memory\n+-----------------------------------+\n```\n\n---\n\n## 2. Activation Record Structure\n1. Return value & Actual parameters\n2. Control link (Dynamic link \u2192 caller's AR)\n3. Access link (Static link \u2192 lexically enclosing scope's AR)\n4. Saved machine status (Program counter, registers)\n5. Local variables & compiler temporaries\n",
+      "notesMarkdown": "# Runtime Environments & Activation Records\n\n---\n\n## 1. Runtime Memory Organization\n```text\n+-----------------------------------+ High Memory\n| Stack (grows downwards)           |\n|   Activation Records              |\n|               v                   |\n|               ^                   |\n| Heap (grows upwards)              |\n|   Dynamic Allocation (malloc)     |\n+-----------------------------------+\n| Static / Global Data              |\n+-----------------------------------+\n| Code Segment (Text)               | Low Memory\n+-----------------------------------+\n```\n\n---\n\n## 2. Activation Record Structure\n1. Return value & Actual parameters\n2. Control link (Dynamic link → caller's AR)\n3. Access link (Static link → lexically enclosing scope's AR)\n4. Saved machine status (Program counter, registers)\n5. Local variables & compiler temporaries\n",
       "questions": [
         {
           "id": "cd-rte-1",
@@ -530,6 +650,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Static links point to the activation record of the immediately enclosing static (lexical) parent, enabling access to outer scope variables."
+        },
+        {
+          "id": "cd-rte-3",
+          "question": "In standard C runtime call stacks, what role does the 'Control Link' (Dynamic Link) inside an activation record serve?",
+          "options": [
+            "It points to the activation record of the caller function, allowing frame restoration upon return.",
+            "It points to non-local variables in enclosing lexical scopes.",
+            "It stores the global heap base address.",
+            "It contains the CPU interrupt vector."
+          ],
+          "correct_option": 0,
+          "explanation": "The dynamic link (control link) points to the caller's stack frame, enabling the epilogue code to restore the caller's frame pointer when the callee function returns."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Runtime+Environments+Compiler+Design+CD+GATE+lecture"
@@ -578,6 +710,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Scoped lookup begins in the innermost current block; the first match found shadows any outer declarations."
+        },
+        {
+          "id": "cd-sym-3",
+          "question": "Which data structure is most commonly used in production compilers for efficient O(1) average-time symbol table operations with scope nesting?",
+          "options": [
+            "Hash table with chained buckets and scope stack markers",
+            "Unsorted linear array",
+            "Single-ended queue",
+            "Adjacency matrix"
+          ],
+          "correct_option": 0,
+          "explanation": "Production compilers use chained hash tables paired with scope stacks: entering a scope pushes a marker or new table, and exiting pops local symbols, delivering O(1) average-time symbol lookup and insertion."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Symbol+Tables+Compiler+Design+CD+GATE+lecture"
@@ -626,6 +770,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "If object A references object B and B references A, their reference counts never drop to 0 even if the cycle is disconnected from the root."
+        },
+        {
+          "id": "cd-mem-3",
+          "question": "Which memory allocation strategy is used for data whose size and lifetime cannot be determined at compile time and outlives function invocations?",
+          "options": [
+            "Dynamic / Heap Allocation",
+            "Static Allocation",
+            "Stack Allocation",
+            "Code Segment Allocation"
+          ],
+          "correct_option": 0,
+          "explanation": "Heap allocation handles dynamically sized objects with arbitrary lifetimes that outlive the activating procedure call, managed via malloc/free or garbage collection."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Memory+Allocation+Compiler+Design+CD+GATE+lecture"
@@ -675,6 +831,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Branch targets, the first program statement, and statements immediately following a branch instruction are leaders."
+        },
+        {
+          "id": "cd-opt-3",
+          "question": "What is 'Loop-Invariant Code Motion' in compiler optimization?",
+          "options": [
+            "Moving statements whose evaluation produces the same value on every iteration out of the loop body to the preheader.",
+            "Unrolling the loop body to avoid branching overhead.",
+            "Replacing multiplication by powers of 2 with bit shifts.",
+            "Combining two adjacent loops with identical iteration spaces."
+          ],
+          "correct_option": 0,
+          "explanation": "Loop-invariant code motion (hoisting) identifies computations inside a loop whose operands do not change across iterations and moves them before the loop entry, eliminating redundant computation."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Code+Optimization+Compiler+Design+CD+GATE+lecture"
@@ -723,6 +891,18 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Peephole optimization inspects a short sequence (window) of target instructions, performing localized simplifications like redundant store elimination."
+        },
+        {
+          "id": "cd-target-3",
+          "question": "In target code generation, what classic NP-complete problem does Register Allocation map to?",
+          "options": [
+            "Graph Coloring Problem (Chaitin's Algorithm)",
+            "Knapsack Problem",
+            "Traveling Salesperson Problem",
+            "Subset Sum Problem"
+          ],
+          "correct_option": 0,
+          "explanation": "Register allocation maps to Graph Coloring on the Interference Graph: variables with overlapping live ranges are connected by edges, and assigning K physical registers corresponds to finding a valid K-coloring."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Target+Code+Generation+Compiler+Design+CD+GATE+lecture"

@@ -13,7 +13,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Percentages & Simple / Compound Interest",
       "description": "Percentage base shifts, Simple Interest, Compounding frequency, and CI-SI 2-year difference formula.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "\n# Percentages & Interest Rates\n\n---\n\n## 1. Percentage Shift Rule\nIf A is $x\\%$ more than B, then B is less than A by:\n$$\\left(\\frac{x}{100 + x}\\right) \\times 100\\%$$\n\n---\n\n## 2. Simple Interest (SI)\n$$SI = \\frac{P \\times R \\times T}{100}$$\n$$A = P + SI = P \\left(1 + \\frac{RT}{100}\\right)$$\n\n---\n\n## 3. Compound Interest (CI)\n$$A = P \\left(1 + \\frac{R}{100}\\right)^T$$\n$$CI = A - P$$\n\n### High-Yield Shortcut:\nDifference between CI and SI for **2 years**:\n$$D_2 = P \\left(\\frac{R}{100}\\right)^2$$\n",
+      "notesMarkdown": "# Percentages & Simple / Compound Interest\n\nMastering percentage base shifts and compounding formulas is essential for technical screening and quantitative aptitude tests.\n\n---\n\n## 1. Percentage Shift and Constant Product Rule\n- **Inverse Variation Rule:** If price of a commodity increases by $x\\%$, consumption must decrease by:\n  $$\\text{Decrease \\%} = \\left(\\frac{x}{100 + x}\\right) \\times 100\\%$$\n- **Example:** If price rises by $25\\%$, expenditure is kept constant by reducing consumption by $\\frac{25}{125} \\times 100\\% = 20\\%$.\n- **Successive Percentage Changes:** If a value changes by $+a\\%$ then $+b\\%$, net effective change is:\n  $$\\text{Net \\%} = a + b + \\frac{ab}{100}$$\n\n---\n\n## 2. Simple Interest (SI)\n$$SI = \\frac{P \\times R \\times T}{100}, \\quad A = P + SI = P \\left(1 + \\frac{RT}{100}\\right)$$\n- Growth is strictly linear over time.\n- If sum doubles in $T$ years at SI, rate $R = \\frac{100}{T}\\%$.\n\n---\n\n## 3. Compound Interest (CI) & Compounding Frequency\n$$A = P \\left(1 + \\frac{R}{100 \\times m}\\right)^{m \\cdot T}$$\nWhere $m$ is compounding frequency per year ($m = 1$ annually, $m = 2$ half-yearly, $m = 4$ quarterly).\n\n---\n\n## 4. High-Yield Exam Difference Shortcuts\n- **Difference between CI and SI for 2 years ($D_2$):**\n  $$D_2 = P \\left(\\frac{R}{100}\\right)^2$$\n- **Difference between CI and SI for 3 years ($D_3$):**\n  $$D_3 = P \\left(\\frac{R}{100}\\right)^2 \\left(3 + \\frac{R}{100}\\right)$$\n",
       "questions": [
         {
           "id": "pi-1",
@@ -73,7 +73,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Ratio, Proportion & Rule of Alligation",
       "description": "Direct & inverse variation, mean proportional, duplicate ratios, and weighted mixture alligations.",
       "estimatedMinutes": 14,
-      "notesMarkdown": "\n# Ratio, Proportion & Mixtures\n\n---\n\n## 1. Proportions\n- Mean proportional between $a$ and $b$: $\\sqrt{ab}$\n- Third proportional to $a$ and $b$: $\\frac{b^2}{a}$\n- Fourth proportional to $a, b, c$: $\\frac{bc}{a}$\n\n---\n\n## 2. Rule of Alligation\nTo find the ratio in which two ingredients of prices $C_1$ (cheaper) and $C_2$ (dearer) are mixed to produce mean price $M$:\n$$\\frac{\\text{Quantity of Cheaper}}{\\text{Quantity of Dearer}} = \\frac{C_2 - M}{M - C_1}$$\n",
+      "notesMarkdown": "# Ratio, Proportion, and Rule of Alligation\n\nRatios compare quantities of the same kind, while alligation determines mixture proportions.\n\n---\n\n## 1. Properties of Ratios & Proportions\nFor $a : b = c : d$:\n- **Product of Extremes = Product of Means:** $a \\cdot d = b \\cdot c$.\n- **Mean Proportional:** Between $x$ and $y$ is $\\sqrt{x y}$.\n- **Third Proportional:** To $x$ and $y$ is $\\frac{y^2}{x}$.\n- **Fourth Proportional:** To $x, y, z$ is $\\frac{y z}{x}$.\n- **Compounding Ratios:** Combining $A : B = m : n$ and $B : C = p : q \\implies A : B : C = mp : np : nq$.\n\n---\n\n## 2. Rule of Alligation (Weighted Averages)\nWhen two ingredients of unit costs $C_1$ (cheaper) and $C_2$ (dearer) are mixed to achieve mean price $M$:\n$$\\frac{\\text{Quantity of Cheaper } (Q_1)}{\\text{Quantity of Dearer } (Q_2)} = \\frac{C_2 - M}{M - C_1}$$\n\n---\n\n## 3. Repeated Dilution Formula\nIf a vessel initially contains $x$ units of pure liquid, and $y$ units are withdrawn and replaced with water $n$ successive times:\n$$\\text{Amount of Pure Liquid Left} = x \\left(1 - \\frac{y}{x}\\right)^n$$\n",
       "questions": [
         {
           "id": "rp-1",
@@ -132,7 +132,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Profit, Loss & Successive Discounts",
       "description": "Cost Price, Selling Price, Marked Price, Margin, and Successive Percentage Discounts.",
       "estimatedMinutes": 16,
-      "notesMarkdown": "\n# Profit, Loss & Discount \u2014 Quick Reference\n\n---\n\n## 1. Key Formulas\n- $\\text{Profit} = SP - CP$ (when $SP > CP$)\n- $\\text{Loss} = CP - SP$ (when $CP > SP$)\n- $\\text{Profit Percentage} = \\left(\\frac{SP - CP}{CP}\\right) \\times 100$\n- $\\text{Loss Percentage} = \\left(\\frac{CP - SP}{CP}\\right) \\times 100$\n*(Note: Profit and loss are strictly calculated on CP unless stated otherwise).*\n\n---\n\n## 2. Marked Price & Discount\n- $\\text{Discount} = MP - SP$\n- $\\text{Discount \\%} = \\left(\\frac{MP - SP}{MP}\\right) \\times 100$\n\n---\n\n## 3. Successive Discounts\nTwo successive discounts of $a\\%$ and $b\\%$ are equivalent to a single net discount of:\n$$\\text{Net Discount} = \\left(a + b - \\frac{ab}{100}\\right)\\%$$\n",
+      "notesMarkdown": "\n# Profit, Loss & Discount — Quick Reference\n\n---\n\n## 1. Key Formulas\n- $\\text{Profit} = SP - CP$ (when $SP > CP$)\n- $\\text{Loss} = CP - SP$ (when $CP > SP$)\n- $\\text{Profit Percentage} = \\left(\\frac{SP - CP}{CP}\\right) \\times 100$\n- $\\text{Loss Percentage} = \\left(\\frac{CP - SP}{CP}\\right) \\times 100$\n*(Note: Profit and loss are strictly calculated on CP unless stated otherwise).*\n\n---\n\n## 2. Marked Price & Discount\n- $\\text{Discount} = MP - SP$\n- $\\text{Discount \\%} = \\left(\\frac{MP - SP}{MP}\\right) \\times 100$\n\n---\n\n## 3. Successive Discounts\nTwo successive discounts of $a\\%$ and $b\\%$ are equivalent to a single net discount of:\n$$\\text{Net Discount} = \\left(a + b - \\frac{ab}{100}\\right)\\%$$\n",
       "questions": [
         {
           "id": "pl-1",
@@ -160,7 +160,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         },
         {
           "id": "pl-3",
-          "question": "By selling 33 meters of cloth, a merchant gains the selling price of 11 meters. Find the merchant\u2019s profit percentage.",
+          "question": "By selling 33 meters of cloth, a merchant gains the selling price of 11 meters. Find the merchant’s profit percentage.",
           "options": [
             "50%",
             "33.33%",
@@ -192,7 +192,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Time and Work",
       "description": "Efficiency, individual and group completion rates, and pipe & cistern problems.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "\n# Time and Work \u2014 High-Yield Formulas & Shortcuts\n\nTime and Work questions evaluate your ability to compute individual and collective work rates.\n\n---\n\n## 1. Core Mathematical Concept\nIf a person can finish a piece of work in **$N$ days**, then in **$1$ day**, they complete:\n$$\\text{Work per day} = \\frac{1}{N}$$\n\nConversely, if $1$ day's work is $\\frac{1}{N}$, the total time to complete the entire work is **$N$ days**.\n\n---\n\n## 2. Combined Work Shortcut\nIf Person A can finish a job in $A$ days and Person B can finish in $B$ days:\n- Work done together in $1$ day = $\\frac{1}{A} + \\frac{1}{B} = \\frac{A + B}{A \\times B}$\n- **Total days taken together:**\n$$T = \\frac{A \\times B}{A + B}$$\n\n### Three Workers:\nIf A, B, and C take $A$, $B$, and $C$ days respectively:\n$$T = \\frac{A \\times B \\times C}{AB + BC + CA}$$\n\n---\n\n## 3. The LCM Method (Best for Speed)\nInstead of dealing with fractions, assume total work = **LCM of individual days**.\n\n> **Example:**\n> - A finishes in $10$ days.\n> - B finishes in $15$ days.\n> - **Total Work = LCM(10, 15) = 30 units.**\n> - Efficiency of A = $30 / 10 = 3$ units/day.\n> - Efficiency of B = $30 / 15 = 2$ units/day.\n> - Combined efficiency = $3 + 2 = 5$ units/day.\n> - Time taken together = $30 / 5 = 6$ days.\n\n---\n\n## 4. Efficiency and Wages\nWages are directly proportional to the amount of work done. If time is identical:\n$$\\text{Ratio of wages} = \\text{Ratio of efficiencies} = \\frac{1}{T_A} : \\frac{1}{T_B}$$\n\n---\n\n## 5. Pipes and Cisterns Variant\n- **Inlet Pipe:** Work done is positive ($+1/A$).\n- **Outlet / Leak Pipe:** Work done is negative ($-1/B$).\n- If Inlet takes $A$ hours and Outlet takes $B$ hours ($B > A$), net fill time is:\n$$T = \\frac{A \\times B}{B - A}$$\n",
+      "notesMarkdown": "\n# Time and Work — High-Yield Formulas & Shortcuts\n\nTime and Work questions evaluate your ability to compute individual and collective work rates.\n\n---\n\n## 1. Core Mathematical Concept\nIf a person can finish a piece of work in **$N$ days**, then in **$1$ day**, they complete:\n$$\\text{Work per day} = \\frac{1}{N}$$\n\nConversely, if $1$ day's work is $\\frac{1}{N}$, the total time to complete the entire work is **$N$ days**.\n\n---\n\n## 2. Combined Work Shortcut\nIf Person A can finish a job in $A$ days and Person B can finish in $B$ days:\n- Work done together in $1$ day = $\\frac{1}{A} + \\frac{1}{B} = \\frac{A + B}{A \\times B}$\n- **Total days taken together:**\n$$T = \\frac{A \\times B}{A + B}$$\n\n### Three Workers:\nIf A, B, and C take $A$, $B$, and $C$ days respectively:\n$$T = \\frac{A \\times B \\times C}{AB + BC + CA}$$\n\n---\n\n## 3. The LCM Method (Best for Speed)\nInstead of dealing with fractions, assume total work = **LCM of individual days**.\n\n> **Example:**\n> - A finishes in $10$ days.\n> - B finishes in $15$ days.\n> - **Total Work = LCM(10, 15) = 30 units.**\n> - Efficiency of A = $30 / 10 = 3$ units/day.\n> - Efficiency of B = $30 / 15 = 2$ units/day.\n> - Combined efficiency = $3 + 2 = 5$ units/day.\n> - Time taken together = $30 / 5 = 6$ days.\n\n---\n\n## 4. Efficiency and Wages\nWages are directly proportional to the amount of work done. If time is identical:\n$$\\text{Ratio of wages} = \\text{Ratio of efficiencies} = \\frac{1}{T_A} : \\frac{1}{T_B}$$\n\n---\n\n## 5. Pipes and Cisterns Variant\n- **Inlet Pipe:** Work done is positive ($+1/A$).\n- **Outlet / Leak Pipe:** Work done is negative ($-1/B$).\n- If Inlet takes $A$ hours and Outlet takes $B$ hours ($B > A$), net fill time is:\n$$T = \\frac{A \\times B}{B - A}$$\n",
       "questions": [
         {
           "id": "tw-1",
@@ -264,7 +264,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Speed, Time & Distance (Trains & Streams)",
       "description": "Relative speed, train crossing times, average speed harmonic mean, and upstream/downstream boats.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# Speed, Time & Distance \u2014 Master Formulas\n\nCore concepts for campus aptitude tests and speed calculation rounds.\n\n---\n\n## 1. Fundamental Conversions & Relationships\n- $\\text{Distance} = \\text{Speed} \\times \\text{Time}$\n- Conversion: $1\\text{ km/hr} = \\frac{5}{18}\\text{ m/s}$ and $1\\text{ m/s} = \\frac{18}{5}\\text{ km/hr}$\n- **Average Speed** for equal distances at speeds $x$ and $y$:\n$$\\text{Average Speed} = \\frac{2xy}{x + y}$$\n\n---\n\n## 2. Relative Speed\n- **Opposite Directions:** $S_{\\text{rel}} = S_1 + S_2$\n- **Same Direction:** $S_{\\text{rel}} = |S_1 - S_2|$\n\n---\n\n## 3. Train Scenarios\n- **Crossing a point object (pole, standing man):** Distance covered = Length of train $L_T$.\n- **Crossing a platform/bridge of length $L_P$:** Distance covered = $L_T + L_P$.\n\n---\n\n## 4. Boats and Streams\n- Downstream Speed ($D$) = $U + V$ (Boat speed in still water + Stream speed)\n- Upstream Speed ($U$) = $U - V$\n- Speed of boat in still water = $\\frac{D + U}{2}$\n- Speed of stream = $\\frac{D - U}{2}$\n",
+      "notesMarkdown": "\n# Speed, Time & Distance — Master Formulas\n\nCore concepts for campus aptitude tests and speed calculation rounds.\n\n---\n\n## 1. Fundamental Conversions & Relationships\n- $\\text{Distance} = \\text{Speed} \\times \\text{Time}$\n- Conversion: $1\\text{ km/hr} = \\frac{5}{18}\\text{ m/s}$ and $1\\text{ m/s} = \\frac{18}{5}\\text{ km/hr}$\n- **Average Speed** for equal distances at speeds $x$ and $y$:\n$$\\text{Average Speed} = \\frac{2xy}{x + y}$$\n\n---\n\n## 2. Relative Speed\n- **Opposite Directions:** $S_{\\text{rel}} = S_1 + S_2$\n- **Same Direction:** $S_{\\text{rel}} = |S_1 - S_2|$\n\n---\n\n## 3. Train Scenarios\n- **Crossing a point object (pole, standing man):** Distance covered = Length of train $L_T$.\n- **Crossing a platform/bridge of length $L_P$:** Distance covered = $L_T + L_P$.\n\n---\n\n## 4. Boats and Streams\n- Downstream Speed ($D$) = $U + V$ (Boat speed in still water + Stream speed)\n- Upstream Speed ($U$) = $U - V$\n- Speed of boat in still water = $\\frac{D + U}{2}$\n- Speed of stream = $\\frac{D - U}{2}$\n",
       "questions": [
         {
           "id": "std-1",
@@ -407,7 +407,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Product of two numbers: N1 * N2 = HCF(N1, N2) * LCM(N1, N2).",
         "Divisibility: By 3/9 (sum of digits), by 4 (last 2 digits), by 8 (last 3 digits), by 11 (alternating sum difference)."
       ],
-      "notesMarkdown": "# Number Systems \u2014 Formulas & Shortcuts\n\n---\n\n## 1. Cyclicity of Unit Digits\nTo find the unit digit of $x^n$:\n- **Cyclicity 4:** Bases ending in $2, 3, 7, 8$.\n  - Divide exponent $n$ by $4$: $n = 4k + r$.\n  - Unit digit is base$^r$ (if $r=0$, use power $4$).\n  - *Example:* Unit digit of $7^{45}$: $45 \\pmod 4 = 1 \\implies 7^1 = 7$.\n- **Cyclicity 2:**\n  - $4^{\\text{odd}} = 4$, $4^{\\text{even}} = 6$.\n  - $9^{\\text{odd}} = 9$, $9^{\\text{even}} = 1$.\n- **Cyclicity 1:** Bases ending in $0, 1, 5, 6$ always yield $0, 1, 5, 6$.\n\n---\n\n## 2. HCF and LCM Relations\n$$\\text{Product of two numbers} = \\text{HCF} \\times \\text{LCM}$$\n$$\\text{HCF of fractions} = \\frac{\\text{HCF of numerators}}{\\text{LCM of denominators}}$$\n$$\\text{LCM of fractions} = \\frac{\\text{LCM of numerators}}{\\text{HCF of denominators}}$$\n",
+      "notesMarkdown": "# Number Systems — Formulas & Shortcuts\n\n---\n\n## 1. Cyclicity of Unit Digits\nTo find the unit digit of $x^n$:\n- **Cyclicity 4:** Bases ending in $2, 3, 7, 8$.\n  - Divide exponent $n$ by $4$: $n = 4k + r$.\n  - Unit digit is base$^r$ (if $r=0$, use power $4$).\n  - *Example:* Unit digit of $7^{45}$: $45 \\pmod 4 = 1 \\implies 7^1 = 7$.\n- **Cyclicity 2:**\n  - $4^{\\text{odd}} = 4$, $4^{\\text{even}} = 6$.\n  - $9^{\\text{odd}} = 9$, $9^{\\text{even}} = 1$.\n- **Cyclicity 1:** Bases ending in $0, 1, 5, 6$ always yield $0, 1, 5, 6$.\n\n---\n\n## 2. HCF and LCM Relations\n$$\\text{Product of two numbers} = \\text{HCF} \\times \\text{LCM}$$\n$$\\text{HCF of fractions} = \\frac{\\text{HCF of numerators}}{\\text{LCM of denominators}}$$\n$$\\text{LCM of fractions} = \\frac{\\text{LCM of numerators}}{\\text{HCF of denominators}}$$\n",
       "questions": [
         {
           "id": "apt-ns-1",
@@ -432,6 +432,18 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Number 2 = (HCF * LCM) / Number 1 = (12 * 144) / 36 = 12 * 4 = 48."
+        },
+        {
+          "id": "apt-num-3",
+          "question": "What is the remainder when 2^50 is divided by 7?",
+          "options": [
+            "4",
+            "2",
+            "1",
+            "6"
+          ],
+          "correct_option": 0,
+          "explanation": "2^3 = 8 = 1 (mod 7). Expressing exponent: 50 = 3 * 16 + 2. Thus 2^50 = (2^3)^16 * 2^2 = (1)^16 * 4 = 4 (mod 7)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Number+Systems+Quantitative+Aptitude+lecture"
@@ -442,7 +454,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Permutations, Combinations & Probability",
       "description": "Selection vs arrangement, fundamental counting principle, independent events, and Bayes theorem.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "\n# Permutations & Probability \u2014 Campus Cheat Sheet\n\nFrequently tested in quantitative screening tests for software engineering and analytical roles.\n\n---\n\n## 1. Permutations vs. Combinations\n- **Permutation ($^n P_r$):** Order **matters** (arrangements, passwords, ranks).\n$$^n P_r = \\frac{n!}{(n - r)!}$$\n- **Combination ($^n C_r$):** Order **does not matter** (selections, committee, handshakes).\n$$^n C_r = \\frac{n!}{r!(n - r)!}$$\n\n---\n\n## 2. Key Identities\n- $^n C_0 = ^n C_n = 1$\n- $^n C_r = ^n C_{n-r}$\n- $^n C_1 = n$\n\n---\n\n## 3. Probability Fundamentals\n$$P(E) = \\frac{\\text{Number of favorable outcomes}}{\\text{Total number of possible outcomes}}$$\n\n- **Complementary Rule:** $P(E') = 1 - P(E)$ *(Often easier to compute \"none\" and subtract from 1)*.\n- **Independent Events:** $P(A \\cap B) = P(A) \\times P(B)$\n- **Mutually Exclusive:** $P(A \\cup B) = P(A) + P(B)$\n",
+      "notesMarkdown": "\n# Permutations & Probability — Campus Cheat Sheet\n\nFrequently tested in quantitative screening tests for software engineering and analytical roles.\n\n---\n\n## 1. Permutations vs. Combinations\n- **Permutation ($^n P_r$):** Order **matters** (arrangements, passwords, ranks).\n$$^n P_r = \\frac{n!}{(n - r)!}$$\n- **Combination ($^n C_r$):** Order **does not matter** (selections, committee, handshakes).\n$$^n C_r = \\frac{n!}{r!(n - r)!}$$\n\n---\n\n## 2. Key Identities\n- $^n C_0 = ^n C_n = 1$\n- $^n C_r = ^n C_{n-r}$\n- $^n C_1 = n$\n\n---\n\n## 3. Probability Fundamentals\n$$P(E) = \\frac{\\text{Number of favorable outcomes}}{\\text{Total number of possible outcomes}}$$\n\n- **Complementary Rule:** $P(E') = 1 - P(E)$ *(Often easier to compute \"none\" and subtract from 1)*.\n- **Independent Events:** $P(A \\cap B) = P(A) \\times P(B)$\n- **Mutually Exclusive:** $P(A \\cup B) = P(A) + P(B)$\n",
       "questions": [
         {
           "id": "pp-1",
@@ -504,7 +516,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Permutation (nPr): Order matters (arrangements, passwords).",
         "Combination (nCr): Order does not matter (committees, groups).",
         "Complementary rule: P(E) = 1 - P(none).",
-        "Independent events: P(A \u2229 B) = P(A) * P(B)."
+        "Independent events: P(A ∩ B) = P(A) * P(B)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Permutations%2C+Combinations+%26+Probability+Quantitative+Aptitude+lecture"
     },
@@ -514,7 +526,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Pipes and Cisterns",
       "description": "Inlet/outlet flow rates, net filling speed, and alternating pipe opening problems.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Pipes and Cisterns \u2014 High-Yield Formulas & Shortcuts\n\nPipes and cisterns are an immediate application of **Time and Work** principles, with one crucial difference: **inlet pipes perform positive work** (filling) and **outlet pipes perform negative work** (emptying).\n\n---\n\n## 1. Fundamental Flow Equations\n- If an inlet pipe fills a tank in $T$ hours, its filling rate is:\n  $$\\text{Rate} = +\\frac{1}{T} \\text{ tanks/hour}$$\n- If an outlet pipe/leak empties the full tank in $t$ hours, its emptying rate is:\n  $$\\text{Rate} = -\\frac{1}{t} \\text{ tanks/hour}$$\n\n## 2. Combined Work with Inlets and Leaks\nWhen an inlet pipe fills in $A$ hours and a bottom leak empties in $B$ hours ($B > A$):\n$$\\text{Net Rate per hour} = \\frac{1}{A} - \\frac{1}{B} = \\frac{B - A}{A \\times B}$$\n$$\\text{Net Time to fill} = \\frac{A \\times B}{B - A} \\text{ hours}$$\n\n## 3. The LCM Efficiency Shortcut\nInstead of handling fractions:\n1. Take the **LCM** of the individual times as the **Total Tank Capacity (in Liters)**.\n2. Calculate individual flow rates in **Liters/minute**.\n3. Sum the flow rates (inlets positive, outlets negative).\n4. Time taken = $\\frac{\\text{Total Capacity}}{\\text{Net Flow Rate}}$.\n\n### Example:\n- Pipe A fills in 12 min, Pipe B fills in 15 min, Pipe C empties in 20 min.\n- $\\text{LCM}(12, 15, 20) = 60\\text{ Liters}$ (Tank Capacity).\n- Rate of A = $+5\\text{ L/min}$, Rate of B = $+4\\text{ L/min}$, Rate of C = $-3\\text{ L/min}$.\n- Net Rate = $5 + 4 - 3 = 6\\text{ L/min}$.\n- Time to fill = $\\frac{60}{6} = 10\\text{ minutes}$.\n",
+      "notesMarkdown": "# Pipes and Cisterns — High-Yield Formulas & Shortcuts\n\nPipes and cisterns are an immediate application of **Time and Work** principles, with one crucial difference: **inlet pipes perform positive work** (filling) and **outlet pipes perform negative work** (emptying).\n\n---\n\n## 1. Fundamental Flow Equations\n- If an inlet pipe fills a tank in $T$ hours, its filling rate is:\n  $$\\text{Rate} = +\\frac{1}{T} \\text{ tanks/hour}$$\n- If an outlet pipe/leak empties the full tank in $t$ hours, its emptying rate is:\n  $$\\text{Rate} = -\\frac{1}{t} \\text{ tanks/hour}$$\n\n## 2. Combined Work with Inlets and Leaks\nWhen an inlet pipe fills in $A$ hours and a bottom leak empties in $B$ hours ($B > A$):\n$$\\text{Net Rate per hour} = \\frac{1}{A} - \\frac{1}{B} = \\frac{B - A}{A \\times B}$$\n$$\\text{Net Time to fill} = \\frac{A \\times B}{B - A} \\text{ hours}$$\n\n## 3. The LCM Efficiency Shortcut\nInstead of handling fractions:\n1. Take the **LCM** of the individual times as the **Total Tank Capacity (in Liters)**.\n2. Calculate individual flow rates in **Liters/minute**.\n3. Sum the flow rates (inlets positive, outlets negative).\n4. Time taken = $\\frac{\\text{Total Capacity}}{\\text{Net Flow Rate}}$.\n\n### Example:\n- Pipe A fills in 12 min, Pipe B fills in 15 min, Pipe C empties in 20 min.\n- $\\text{LCM}(12, 15, 20) = 60\\text{ Liters}$ (Tank Capacity).\n- Rate of A = $+5\\text{ L/min}$, Rate of B = $+4\\text{ L/min}$, Rate of C = $-3\\text{ L/min}$.\n- Net Rate = $5 + 4 - 3 = 6\\text{ L/min}$.\n- Time to fill = $\\frac{60}{6} = 10\\text{ minutes}$.\n",
       "questions": [
         {
           "id": "pc-1",
@@ -572,7 +584,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Clocks and Calendars",
       "description": "Angle between hands, clock gains/losses, leap year rules, and odd days computation.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Clocks & Calendars \u2014 Formulas & Rapid Solving\n\n---\n\n## 1. Clock Speed Relationships\n- Minute hand moves at **$6^\\circ$ per minute** ($360^\\circ / 60\\text{ min}$).\n- Hour hand moves at **$0.5^\\circ$ per minute** ($30^\\circ / 60\\text{ min}$).\n- Relative speed = $6^\\circ - 0.5^\\circ = \\mathbf{5.5^\\circ \\text{ per minute}}$ ($11/2^\\circ$).\n\n### Formula for Angle $\\theta$ between Hands:\n$$\\theta = \\left| 30H - \\frac{11}{2}M \\right|$$\n*(If $\\theta > 180^\\circ$, reflex angle = $360^\\circ - \\theta$)*.\n\n---\n\n## 2. Calendars & Odd Days\n- **Odd Days**: Remainder when total days are divided by 7.\n- **Ordinary Year**: 365 days = 52 weeks + **1 odd day**.\n- **Leap Year**: 366 days = 52 weeks + **2 odd days**.\n- **100 years** has **5 odd days**.\n- **200 years** has **3 odd days**.\n- **300 years** has **1 odd day**.\n- **400 years** has **0 odd days**.\n",
+      "notesMarkdown": "# Clocks & Calendars — Formulas & Rapid Solving\n\n---\n\n## 1. Clock Speed Relationships\n- Minute hand moves at **$6^\\circ$ per minute** ($360^\\circ / 60\\text{ min}$).\n- Hour hand moves at **$0.5^\\circ$ per minute** ($30^\\circ / 60\\text{ min}$).\n- Relative speed = $6^\\circ - 0.5^\\circ = \\mathbf{5.5^\\circ \\text{ per minute}}$ ($11/2^\\circ$).\n\n### Formula for Angle $\\theta$ between Hands:\n$$\\theta = \\left| 30H - \\frac{11}{2}M \\right|$$\n*(If $\\theta > 180^\\circ$, reflex angle = $360^\\circ - \\theta$)*.\n\n---\n\n## 2. Calendars & Odd Days\n- **Odd Days**: Remainder when total days are divided by 7.\n- **Ordinary Year**: 365 days = 52 weeks + **1 odd day**.\n- **Leap Year**: 366 days = 52 weeks + **2 odd days**.\n- **100 years** has **5 odd days**.\n- **200 years** has **3 odd days**.\n- **300 years** has **1 odd day**.\n- **400 years** has **0 odd days**.\n",
       "questions": [
         {
           "id": "cc-1",
@@ -600,7 +612,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         },
         {
           "id": "cc-3",
-          "question": "At what time between 3 o\u2019clock and 4 o\u2019clock will the minute hand and hour hand of a clock coincide?",
+          "question": "At what time between 3 o’clock and 4 o’clock will the minute hand and hour hand of a clock coincide?",
           "options": [
             "16 (4/11) minutes past 3",
             "15 (5/11) minutes past 3",
@@ -619,7 +631,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Cognizant"
       ],
       "keyTakeaways": [
-        "Angle between clock hands: \u03b8 = |30H - (11/2)M|.",
+        "Angle between clock hands: θ = |30H - (11/2)M|.",
         "Normal year has 1 odd day; leap year has 2 odd days.",
         "Hands of clock coincide 22 times in 24 hours (not 24!)."
       ],
@@ -679,6 +691,18 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Positions: B(2) -> +2 -> D(4) -> +3 -> G(7) -> +4 -> K(11) -> +5 -> P(16) -> +6 -> 22, which corresponds to letter V."
+        },
+        {
+          "id": "apt-ser-3",
+          "question": "What is the next number in the sequence: 2, 6, 12, 20, 30, 42, ...?",
+          "options": [
+            "56",
+            "54",
+            "52",
+            "60"
+          ],
+          "correct_option": 0,
+          "explanation": "The pattern is n * (n + 1): 1*2=2, 2*3=6, 3*4=12, 4*5=20, 5*6=30, 6*7=42. The next term is 7*8 = 56 (or differences: +4, +6, +8, +10, +12, +14 => 42 + 14 = 56)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Series+and+Patterns+Logical+Reasoning+lecture"
@@ -725,6 +749,18 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "27 (3^3), 64 (4^3), 125 (5^3), and 216 (6^3) are all perfect cubes. 144 is 12^2 (a square, not a cube)."
+        },
+        {
+          "id": "apt-ana-3",
+          "question": "Thermometer : Temperature :: Barometer : ?",
+          "options": [
+            "Atmospheric Pressure",
+            "Humidity",
+            "Wind Speed",
+            "Altitude"
+          ],
+          "correct_option": 0,
+          "explanation": "A thermometer is an instrument used to measure temperature; a barometer is an instrument used to measure atmospheric pressure."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Analogies+and+Classification+Logical+Reasoning+lecture"
@@ -735,7 +771,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "title": "Syllogisms & Logical Deductions",
       "description": "Venn diagram approach, \"All/Some/No\" rules, and definite vs possibility conclusions.",
       "estimatedMinutes": 12,
-      "notesMarkdown": "\n# Syllogisms \u2014 High-Accuracy Venn Method\n\nSyllogisms test your ability to derive strictly true deductions from arbitrary premises.\n\n---\n\n## 1. The 4 Standard Statement Types\n1. **Universal Affirmative (A):** \"All A are B\" (Circle A inside Circle B)\n2. **Universal Negative (E):** \"No A is B\" (Disjoint circles A and B)\n3. **Particular Affirmative (I):** \"Some A are B\" (Intersecting circles A and B)\n4. **Particular Negative (O):** \"Some A are not B\"\n\n---\n\n## 2. Golden Rules for Definite Conclusions\n- Never assume beyond what is stated.\n- A conclusion is **definitely true** only if it holds across **every single valid Venn diagram**.\n- If a conclusion fails in even one valid diagram, it does not follow.\n",
+      "notesMarkdown": "\n# Syllogisms — High-Accuracy Venn Method\n\nSyllogisms test your ability to derive strictly true deductions from arbitrary premises.\n\n---\n\n## 1. The 4 Standard Statement Types\n1. **Universal Affirmative (A):** \"All A are B\" (Circle A inside Circle B)\n2. **Universal Negative (E):** \"No A is B\" (Disjoint circles A and B)\n3. **Particular Affirmative (I):** \"Some A are B\" (Intersecting circles A and B)\n4. **Particular Negative (O):** \"Some A are not B\"\n\n---\n\n## 2. Golden Rules for Definite Conclusions\n- Never assume beyond what is stated.\n- A conclusion is **definitely true** only if it holds across **every single valid Venn diagram**.\n- If a conclusion fails in even one valid diagram, it does not follow.\n",
       "questions": [
         {
           "id": "syl-1",
@@ -794,7 +830,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "title": "Coding-Decoding & Direction Sense",
       "description": "Letter shifts, reverse opposites (A-Z, B-Y), alphanumeric series, and 8-direction navigation paths.",
       "estimatedMinutes": 14,
-      "notesMarkdown": "\n# Coding-Decoding & Direction Sense\n\n---\n\n## 1. Reverse Letter Pairs (Sum = 27)\n- A (1) <-> Z (26)\n- B (2) <-> Y (25)\n- C (3) <-> X (24)\n- D (4) <-> W (23)\n- E (5) <-> V (22) (LOVE)\n\n---\n\n## 2. Direction & Pythagoras\n- Remember 8 directions: N, NE, E, SE, S, SW, W, NW.\n- Shortest distance between start and finish = $\\sqrt{\\Delta x^2 + \\Delta y^2}$.\n",
+      "notesMarkdown": "# Coding-Decoding and Spatial Direction Navigation\n\nLogical deduction using letter positions, shift cyphers, and 2D compass mapping.\n\n---\n\n## 1. Alphabet Position Matrices\n- **EJOTY Rule (Multiples of 5):**\n  - E = 5, J = 10, O = 15, T = 20, Y = 25.\n- **Reverse Alphabet Pairs (Sum = 27):**\n  - A (1) $\\leftrightarrow$ Z (26)\n  - B (2) $\\leftrightarrow$ Y (25)\n  - C (3) $\\leftrightarrow$ X (24)\n  - D (4) $\\leftrightarrow$ W (23)\n  - E (5) $\\leftrightarrow$ V (22) *(LOVE: L-O, V-E)*\n  - F (6) $\\leftrightarrow$ U (21)\n  - G (7) $\\leftrightarrow$ T (20) *(GT Road)*\n  - H (8) $\\leftrightarrow$ S (19) *(High School)*\n  - I (9) $\\leftrightarrow$ R (18) *(Indian Railway)*\n  - J (10) $\\leftrightarrow$ Q (17) *(Jungle Queen)*\n  - K (11) $\\leftrightarrow$ P (16) *(Kanpur)*\n  - M (13) $\\leftrightarrow$ N (14)\n\n---\n\n## 2. Direction Sense & Pythagorean Distance\n- Standard 8-point compass: North (N), North-East (NE), East (E), South-East (SE), South (S), South-West (SW), West (W), North-West (NW).\n- Right Turn $= 90^\\circ$ Clockwise. Left Turn $= 90^\\circ$ Counter-Clockwise.\n- Shortest aerial displacement between start $(x_1, y_1)$ and finish $(x_2, y_2)$:\n  $$d = \\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$$\n- **Shadow Clues:**\n  - Morning (Sunrise in East): Shadows fall towards **West**.\n  - Evening (Sunset in West): Shadows fall towards **East**.\n  - Noon ($12\\text{ PM}$): No shadow cast (sun overhead).\n",
       "questions": [
         {
           "id": "cd-1",
@@ -853,7 +889,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "title": "Seating Arrangements & Puzzles",
       "description": "Circular (facing inward vs outward), linear, parallel rows, and multi-attribute grid constraints.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# Seating Arrangements & Puzzles\n\nCrucial for campus assessment round 1 logical reasoning sections.\n\n---\n\n## 1. Circular Arrangements\n- **Facing Center:**\n  - Left = Clockwise\n  - Right = Anti-Clockwise\n- **Facing Away from Center:**\n  - Left = Anti-Clockwise\n  - Right = Clockwise\n\n---\n\n## 2. Step-by-Step Strategy\n1. Identify definite clues (e.g. \"A sits 3rd to the left of B\").\n2. Fill relative positions before conditional clues.\n3. Use a 2-case diagram when branching possibilities arise.\n",
+      "notesMarkdown": "# Seating Arrangements and Multi-Attribute Puzzles\n\nStructured methodology for resolving circular, linear, and parallel constraint puzzles.\n\n---\n\n## 1. Circular Seating Guidelines\n- **Facing Center:**\n  - Left direction = **Clockwise**.\n  - Right direction = **Anti-Clockwise**.\n- **Facing Outward (Away from Center):**\n  - Left direction = **Anti-Clockwise**.\n  - Right direction = **Clockwise**.\n- **Opposite Positions:** In a circle of $N$ people (where $N$ is even), opposite person is at offset $N / 2$ in either direction.\n\n---\n\n## 2. Linear and Parallel Row Arrangements\n- **Facing North:** Left is towards your left hand; Right is towards your right hand.\n- **Facing South:** Left is towards your right hand; Right is towards your left hand.\n- **Two Parallel Rows:** One row faces South, the other faces North; people directly opposite face each other.\n\n---\n\n## 3. Systematic 4-Step Solution Algorithm\n1. **Identify Definite Clues:** Anchor elements with fixed positions (e.g., \"P sits at extreme left end\").\n2. **Link Related Clues:** Connect secondary clues containing the names of already-anchored members.\n3. **Branch Multiple Cases:** Maintain two parallel sketch tracks (Case A vs Case B) when facing ambiguous placements.\n4. **Eliminate Contradictions:** Discard branched sketches that violate negative or conditional constraints.\n",
       "questions": [
         {
           "id": "sa-1",
@@ -881,7 +917,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         },
         {
           "id": "sa-3",
-          "question": "In a linear row of 7 people facing North, P sits fourth from the left end. Q is second to the right of P. R is to the immediate left of Q. What is R\u2019s position from the left end?",
+          "question": "In a linear row of 7 people facing North, P sits fourth from the left end. Q is second to the right of P. R is to the immediate left of Q. What is R’s position from the left end?",
           "options": [
             "5th",
             "6th",
@@ -912,7 +948,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "title": "Blood Relations & Family Trees",
       "description": "Family tree generation symbols, maternal vs paternal lineages, and coded relation statements.",
       "estimatedMinutes": 12,
-      "notesMarkdown": "\n# Blood Relations Strategy\n\n---\n\n## 1. Standard Notation\n- Male: $[+]$ or Square\n- Female: $[-]$ or Circle\n- Marriage / Couple: Double line $\\iff$\n- Siblings: Single horizontal line $-$\n- Next Generation (Child): Vertical down arrow $\\downarrow$\n\n---\n\n## 2. Common Terminology\n- Maternal Uncle: Mother's brother\n- Paternal Aunt: Father's sister\n- Nephew / Niece: Sibling's son / daughter\n",
+      "notesMarkdown": "# Blood Relations and Family Tree Analysis\n\nDecoding family relationships through standard symbolic conventions.\n\n---\n\n## 1. Family Tree Symbolic Convention\n- **Gender:** Male $= [\\text{Square}]$ or $(+)$; Female $= (\\text{Circle})$ or $(-)$.\n- **Marital Relationship:** Double horizontal line $(A = B)$ or $(A \\iff B)$.\n- **Sibling Relationship:** Single horizontal line $(A - B)$.\n- **Generational Step:** Vertical connector downwards $(A \\to B)$.\n\n---\n\n## 2. Standard Relationship Classifications\n- **Maternal Relations (Mother's side):**\n  - Maternal Grandfather: Mother's father.\n  - Maternal Uncle: Mother's brother.\n  - Maternal Aunt: Mother's sister.\n- **Paternal Relations (Father's side):**\n  - Paternal Uncle: Father's brother.\n  - Paternal Aunt: Father's sister.\n- **In-Laws:**\n  - Father-in-law: Spouse's father.\n  - Brother-in-law: Spouse's brother OR Sister's husband.\n- **Children of Siblings:**\n  - Nephew: Sibling's son.\n  - Niece: Sibling's daughter.\n  - First Cousin: Aunt's or Uncle's child.\n\n---\n\n## 3. Deciphering Pointing Statements\n- Break statements backwards from the perspective of the speaker:\n  - Example: *\"His mother is the only daughter of my father.\"*\n  - Step 1: *\"My father\"* (Speaker's father).\n  - Step 2: *\"Only daughter of my father\"* (The speaker herself, if female).\n  - Step 3: *\"His mother is me\"* $\\implies$ The speaker is his mother.\n",
       "questions": [
         {
           "id": "br-1",
@@ -928,7 +964,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         },
         {
           "id": "br-2",
-          "question": "Pointing to a photograph, a woman says: \"He is the only son of the father of my daughter\u2019s father.\" How is the man in the photograph related to the woman?",
+          "question": "Pointing to a photograph, a woman says: \"He is the only son of the father of my daughter’s father.\" How is the man in the photograph related to the woman?",
           "options": [
             "Husband",
             "Brother",
@@ -936,7 +972,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
             "Father-in-law"
           ],
           "correct_option": 0,
-          "explanation": "\"My daughter\u2019s father\" is the woman\u2019s husband. \"Father of my daughter\u2019s father\" is her father-in-law. \"Only son of her father-in-law\" is her husband."
+          "explanation": "\"My daughter’s father\" is the woman’s husband. \"Father of my daughter’s father\" is her father-in-law. \"Only son of her father-in-law\" is her husband."
         },
         {
           "id": "br-3",
@@ -999,7 +1035,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         },
         {
           "id": "ds-3",
-          "question": "One morning after sunrise, Gopal was standing facing a pole. The shadow of the pole fell exactly to Gopal\u2019s right. Which direction was Gopal facing?",
+          "question": "One morning after sunrise, Gopal was standing facing a pole. The shadow of the pole fell exactly to Gopal’s right. Which direction was Gopal facing?",
           "options": [
             "South",
             "North",
@@ -1018,8 +1054,8 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "TCS"
       ],
       "keyTakeaways": [
-        "Right turn is 90\u00b0 clockwise; Left turn is 90\u00b0 anti-clockwise.",
-        "Pythagorean theorem: Distance = sqrt(\u0394x^2 + \u0394y^2).",
+        "Right turn is 90° clockwise; Left turn is 90° anti-clockwise.",
+        "Pythagorean theorem: Distance = sqrt(Δx^2 + Δy^2).",
         "Morning shadow falls towards West; evening shadow falls towards East."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Direction+Sense+%26+Compass+Navigation+Logical+Reasoning+lecture"
@@ -1030,7 +1066,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "title": "Statements, Assumptions & Deductions",
       "description": "Critical verbal reasoning, identifying implicit premises, and testing validity.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Critical Reasoning: Statements & Assumptions\n\nAn **assumption** is an unstated, implicit belief that the author takes for granted when making a statement.\n\n---\n\n## 1. Golden Rules of Assumptions\n1. **Never go beyond the scope**: An assumption must strictly belong to the context of the statement.\n2. **Beware of extreme words**: Words like *all, only, every, never, always* generally render assumptions invalid unless explicitly stated.\n3. **The Negation Test**: If negating the assumption collapses the argument, the assumption is **valid**.\n",
+      "notesMarkdown": "# Critical Reasoning: Statements, Assumptions, and Deductions\n\nAnalyzing logical premises, unstated assumptions, courses of action, and valid syllogistic deductions.\n\n---\n\n## 1. Assumptions vs Inferences\n- **Assumption:** An unstated premise taken for granted by the speaker before making the statement.\n- **Inference / Conclusion:** A logical deduction drawn *after* evaluating the facts in the statement.\n- **Validity Rule:** An assumption is valid if the statement falls apart or loses sense without it. Avoid extreme qualifiers (e.g. \"all\", \"only\", \"never\", \"every\") unless explicitly supported by context.\n\n---\n\n## 2. Courses of Action\nA course of action is correct if:\n1. It directly addresses and solves the core problem or substantially minimizes it.\n2. It does not create new, more severe secondary problems.\n3. It is practical and proportional (not an extreme overreaction).\n\n---\n\n## 3. Syllogistic Deductions (Euler Diagrams)\n- **Universal Affirmative (All A are B):** Circle A is entirely contained inside Circle B.\n- **Universal Negative (No A is B):** Circles A and B are completely disjoint.\n- **Particular Affirmative (Some A are B):** Circles A and B overlap.\n- **Particular Negative (Some A are not B):** At least one element of A is outside B.\n",
       "questions": [
         {
           "id": "sa-1",
@@ -1058,7 +1094,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         },
         {
           "id": "sa-assump-3",
-          "question": "Statement: \"Enroll in StackUp\u2019s core curriculum to crack Tier-1 software engineering technical screening tests.\" Assumptions: I. Students aspire to crack software engineering tests. II. StackUp provides targeted interview preparation.",
+          "question": "Statement: \"Enroll in StackUp’s core curriculum to crack Tier-1 software engineering technical screening tests.\" Assumptions: I. Students aspire to crack software engineering tests. II. StackUp provides targeted interview preparation.",
           "options": [
             "Both I and II are implicit",
             "Only I is implicit",
@@ -1194,6 +1230,18 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "To take something with a grain of salt means to maintain skepticism and not accept a claim as wholly true."
+        },
+        {
+          "id": "apt-voc-3",
+          "question": "Choose the word that is most nearly OPPOSITE in meaning to 'EPHEMERAL':",
+          "options": [
+            "Permanent / Eternal",
+            "Fleeting",
+            "Transient",
+            "Momentary"
+          ],
+          "correct_option": 0,
+          "explanation": "'Ephemeral' means lasting for a very short time (transient/fleeting). The exact antonym is Permanent or Eternal."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Vocabulary+Verbal+Ability+English+lecture"
@@ -1242,6 +1290,18 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Direct facts are found verbatim or closely paraphrased, whereas inferences must be deduced logically from the textual evidence."
+        },
+        {
+          "id": "apt-rc-3",
+          "question": "When an author writes that an argument is 'specious', what does the author imply about the argument?",
+          "options": [
+            "Superficially plausible, but actually wrong or misleading.",
+            "Thoroughly proven and statistically sound.",
+            "Completely incomprehensible.",
+            "Irrelevant to the main thesis."
+          ],
+          "correct_option": 0,
+          "explanation": "'Specious' describes an argument or statement that appears superficially plausible or attractive at first glance, but is deceptive, logically flawed, or false upon examination."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Reading+Comprehension+Verbal+Ability+English+lecture"
@@ -1289,6 +1349,18 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "An obsequious person is characterized by excessive flattery; a pompous person is characterized by arrogance."
+        },
+        {
+          "id": "apt-va-3",
+          "question": "DOCTOR : STETHOSCOPE :: ASTRONOMER : ?",
+          "options": [
+            "Telescope",
+            "Microscope",
+            "Periscope",
+            "Horoscope"
+          ],
+          "correct_option": 0,
+          "explanation": "A doctor uses a stethoscope as their primary professional observational instrument; an astronomer uses a telescope."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Verbal+Analogies+Verbal+Ability+English+lecture"
@@ -1299,7 +1371,7 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
       "title": "Data Interpretation (Pie Charts, Tables & Bar Graphs)",
       "description": "Extracting key percentage shares, compound annual growth, and ratio metrics from dense datasets.",
       "estimatedMinutes": 16,
-      "notesMarkdown": "\n# Data Interpretation \u2014 Core Techniques\n\n---\n\n## 1. Pie Chart Degree Conversion\n- $360^\\circ = 100\\%$\n- $1\\% = 3.6^\\circ$\n- To convert degrees $D$ to percentage: $P = \\frac{D}{3.6}$\n\n---\n\n## 2. Percentage Growth / Decline\n$$\\text{Growth \\%} = \\left(\\frac{\\text{Final} - \\text{Initial}}{\\text{Initial}}\\right) \\times 100$$\n",
+      "notesMarkdown": "# Data Interpretation (Pie Charts, Tables, and Bar Graphs)\n\nData Interpretation assesses numerical analysis, rapid percentage estimations, and ratio calculations from complex visual datasets.\n\n---\n\n## 1. Pie Chart Degree Conversion\n- A complete circle spans $360^\\circ = 100\\%$.\n- $1\\% = 3.6^\\circ$, and $1^\\circ = \\frac{10}{36}\\% = \\frac{5}{18}\\%$.\n- **Sector Value:** $\\text{Value} = \\text{Total} \\times \\left(\\frac{\\text{Angle}}{360^\\circ}\\right)$.\n\n---\n\n## 2. Percentage Growth and CAGR\n- **Percentage Growth:**\n  $$\\text{Growth \\%} = \\left(\\frac{\\text{Final Value} - \\text{Initial Value}}{\\text{Initial Value}}\\right) \\times 100\\%$$\n- **Approximating Compound Annual Growth Rate (CAGR):**\n  $$\\text{CAGR} = \\left(\\frac{V_{\\text{final}}}{V_{\\text{initial}}}\\right)^{1/n} - 1$$\n\n---\n\n## 3. High-Speed Calculation Techniques\n- **Base Rounding & Fraction Approximations:**\n  - $1/6 \\approx 16.67\\%$\n  - $1/7 \\approx 14.28\\%$\n  - $1/8 = 12.5\\%$\n  - $1/9 \\approx 11.11\\%$\n  - $1/11 \\approx 9.09\\%$\n  - $1/12 \\approx 8.33\\%$\n- Avoid calculating absolute values when calculating ratio of two sectors in the same pie chart: simply calculate the ratio of their degrees or percentages directly!\n",
       "questions": [
         {
           "id": "di-1",
@@ -1315,7 +1387,7 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
         },
         {
           "id": "di-2",
-          "question": "In a company pie chart, Engineering accounts for 108\u00b0 of the total 360\u00b0. If the company has 2,400 employees, how many work in Engineering?",
+          "question": "In a company pie chart, Engineering accounts for 108° of the total 360°. If the company has 2,400 employees, how many work in Engineering?",
           "options": [
             "720",
             "640",
@@ -1327,7 +1399,7 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
         },
         {
           "id": "di-3",
-          "question": "A company\u2019s revenue grew from $200k in 2021 to $320k in 2024. What was the total percentage increase in revenue over this 3-year period?",
+          "question": "A company’s revenue grew from $200k in 2021 to $320k in 2024. What was the total percentage increase in revenue over this 3-year period?",
           "options": [
             "60%",
             "50%",
@@ -1405,6 +1477,18 @@ export const SPATIAL_APTITUDE_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Folding twice creates 4 layers of paper. A single hole punched through all 4 layers yields 4 holes when fully opened."
+        },
+        {
+          "id": "apt-st-3",
+          "question": "When a 2D geometric shape is reflected across the y-axis, what transformation happens to point (x, y)?",
+          "options": [
+            "(-x, y)",
+            "(x, -y)",
+            "(-x, -y)",
+            "(y, x)"
+          ],
+          "correct_option": 0,
+          "explanation": "Reflection across the vertical line (y-axis) inverts the sign of the horizontal x-coordinate while preserving the y-coordinate: (x, y) maps to (-x, y)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Shape+Transformations+Spatial+Aptitude+GATE+lecture"
@@ -1452,6 +1536,18 @@ export const SPATIAL_APTITUDE_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "The letter 'H' has both horizontal and vertical axes of symmetry, so both its mirror image and water image are identical to H."
+        },
+        {
+          "id": "apt-rr-3",
+          "question": "What is the result of rotating point (x, y) 90 degrees counter-clockwise about the origin (0, 0)?",
+          "options": [
+            "(-y, x)",
+            "(y, -x)",
+            "(-x, -y)",
+            "(y, x)"
+          ],
+          "correct_option": 0,
+          "explanation": "A 90-degree counter-clockwise rotation about the origin transforms (x, y) into (-y, x)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Rotation+and+Reflection+Spatial+Aptitude+GATE+lecture"
@@ -1499,6 +1595,18 @@ export const SPATIAL_APTITUDE_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Isolating one symbol component at a time quickly eliminates non-conforming options without visual confusion."
+        },
+        {
+          "id": "apt-pr-3",
+          "question": "In a visual matrix puzzle, if each row alternates between adding a dot and rotating the inner shape by 45 degrees, which principle of reasoning is being tested?",
+          "options": [
+            "Rule induction over composite geometric transformations",
+            "Color theory",
+            "Numerical factorials",
+            "Mirror reflection only"
+          ],
+          "correct_option": 0,
+          "explanation": "Abstract spatial matrix tests evaluate composite rule induction (identifying multiple concurrent transformation rules: count addition and angular rotation across rows and columns)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Pattern+Recognition+Spatial+Aptitude+GATE+lecture"

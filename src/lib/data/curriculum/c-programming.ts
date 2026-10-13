@@ -54,8 +54,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 3,
         "explanation": "Postfix increment (++) has precedence level 1 (highest among operators alongside function call () and array subscript [])."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-var-3",
+        "question": "What is the result of the expression (5 >> 1) in C, assuming 32-bit signed integers?",
+        "options": [ "2", "2.5", "10", "1" ],
+        "correct_option": 0,
+        "explanation": "Right shift by 1 bit (>> 1) performs integer division by 2: floor(5 / 2) = 2."
+      }
+    ]},
   {
     "id": "c-conditionals-loops",
     "slug": "conditional-statements-and-loops",
@@ -102,8 +109,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 1,
         "explanation": "A do-while loop evaluates its condition after executing the body. Thus, the body executes once, reducing x to 8. Then condition (8 > 10) evaluates to false and loop terminates."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-cond-3",
+        "question": "In C, what happens if a 'break' statement is omitted from a non-empty 'case' block in a switch statement?",
+        "options": [ "Execution falls through to the next case without evaluating its label condition.", "The program generates a compile-time error.", "The switch statement exits automatically.", "The default block executes immediately." ],
+        "correct_option": 0,
+        "explanation": "In C switch statements, omitting 'break' results in intentional fall-through, executing subsequent case statements sequentially regardless of their match condition."
+      }
+    ]},
   {
     "id": "c-functions-recursion",
     "slug": "functions-and-recursion",
@@ -150,8 +164,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 2,
         "explanation": "Without a base case, recursion continues allocating stack frames indefinitely until available call stack memory is exhausted, causing a stack overflow (segmentation fault)."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-func-3",
+        "question": "What is a 'tail-recursive' function in C?",
+        "options": [ "A recursive function where the recursive call is the very last operation executed before returning.", "A function that calls another function from inside its loop.", "A function that returns multiple pointers from the call stack.", "A recursive function that does not require a base condition." ],
+        "correct_option": 0,
+        "explanation": "In tail recursion, the recursive invocation is the final computation, allowing optimizing compilers to reuse the current stack frame (tail-call optimization) rather than allocating new stack space."
+      }
+    ]},
   {
     "id": "c-arrays-and-strings",
     "slug": "arrays-and-strings",
@@ -198,8 +219,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 3,
         "explanation": "In C, array subscript notation arr[i] is defined as *(arr + i). Because addition is commutative, *(arr + 3) == *(3 + arr) == 3[arr]."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-arr-3",
+        "question": "What occurs if you attempt to modify a string literal declared as: char *str = \"Hello\"; str[0] = 'h';?",
+        "options": [ "Undefined behavior / Segmentation fault at runtime because string literals reside in read-only memory.", "The first character changes to lowercase 'h' successfully.", "Compile-time syntax error.", "The string is copied automatically to a heap buffer." ],
+        "correct_option": 0,
+        "explanation": "String literals like \"Hello\" are placed in read-only data segments (.rodata). Modifying them through a pointer leads to undefined behavior (typically SIGSEGV). To modify, use an array: char str[] = \"Hello\";."
+      }
+    ]},
   {
     "id": "c-pointers-and-arithmetic",
     "slug": "pointers-and-pointer-arithmetic",
@@ -247,8 +275,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 1,
         "explanation": "A dangling pointer arises when memory pointed to by the pointer is deallocated (e.g. via free() or stack frame pop) while the pointer variable still holds the stale address."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-ptr-3",
+        "question": "If 'int *ptr' points to memory address 0x1000 on a system where sizeof(int) == 4, what address is produced by the expression (ptr + 2)?",
+        "options": [ "0x1008", "0x1002", "0x1004", "0x1016" ],
+        "correct_option": 0,
+        "explanation": "Pointer arithmetic automatically scales by the size of the referenced type: new address = 0x1000 + (2 * sizeof(int)) = 0x1000 + 8 = 0x1008."
+      }
+    ]},
   {
     "id": "c-structs-unions-enums",
     "slug": "structures-unions-and-enumerations",
@@ -295,8 +330,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 1,
         "explanation": "In a struct, each member has its own distinct offset and memory storage. In a union, all members share the same starting memory location, with total size equal to the largest member."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-str-3",
+        "question": "On a 64-bit architecture with 4-byte int alignment, what is sizeof(struct Test { char c; int i; char d; })?",
+        "options": [ "12 bytes (due to structure alignment padding)", "6 bytes", "8 bytes", "16 bytes" ],
+        "correct_option": 0,
+        "explanation": "The compiler pads after 'c' (3 bytes padding so 'i' aligns at offset 4), and pads 3 bytes after 'd' so the total struct size is a multiple of largest alignment (4): 1 + 3 + 4 + 1 + 3 = 12 bytes."
+      }
+    ]},
   {
     "id": "c-dynamic-memory-allocation",
     "slug": "dynamic-memory-allocation",
@@ -343,8 +385,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 1,
         "explanation": "On failure, realloc() returns NULL, but the original memory block remains valid and unchanged. Therefore, assigning the result directly to the original pointer (ptr = realloc(ptr, size)) can cause a memory leak if realloc fails."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-dma-3",
+        "question": "What is the primary difference between malloc() and calloc() in C?",
+        "options": [ "calloc() initializes all allocated bytes to zero; malloc() leaves allocated memory uninitialized.", "malloc() is thread-safe; calloc() is not.", "calloc() allocates memory on the stack; malloc() on the heap.", "malloc() takes two arguments (count, size); calloc() takes only total bytes." ],
+        "correct_option": 0,
+        "explanation": "calloc(n, size) allocates memory and clears all bits to zero (0). malloc(size) allocates uninitialized bytes containing whatever indeterminate garbage data was in memory."
+      }
+    ]},
   {
     "id": "c-storage-classes-and-scope",
     "slug": "storage-classes-and-scope",
@@ -391,8 +440,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 2,
         "explanation": "Uninitialized or zero-initialized static and global variables are stored in the BSS (Block Started by Symbol) segment of the program's data memory."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-stor-3",
+        "question": "What is the lifetime and scope of a local variable declared with the 'static' specifier inside a function?",
+        "options": [ "Lifetime: Entire program execution; Scope: Local to the enclosing function.", "Lifetime: Only during the function execution; Scope: Global.", "Lifetime: Entire program execution; Scope: Accessible across all project files.", "Lifetime: Until stack frame is destroyed; Scope: Block scope." ],
+        "correct_option": 0,
+        "explanation": "A static local variable is stored in the data segment, retaining its value between function calls across the entire program lifetime, but its visibility remains restricted to the function scope where declared."
+      }
+    ]},
   {
     "id": "c-preprocessor-directives",
     "slug": "preprocessor-directives",
@@ -439,8 +495,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 1,
         "explanation": "The token pasting operator (##) merges two separate lexical tokens into one single token during preprocessing."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-prep-3",
+        "question": "Given: #define SQUARE(x) x * x. What does the expression SQUARE(2 + 3) evaluate to?",
+        "options": [ "11 (because it expands textually to 2 + 3 * 2 + 3 = 2 + 6 + 3 = 11)", "25", "10", "Undefined behavior" ],
+        "correct_option": 0,
+        "explanation": "Preprocessors perform textual substitution without operator precedence awareness: SQUARE(2 + 3) expands to 2 + 3 * 2 + 3. Due to multiplication precedence, 3 * 2 = 6, yielding 2 + 6 + 3 = 11. To prevent this, define as ((x) * (x))."
+      }
+    ]},
   {
     "id": "c-file-handling",
     "slug": "file-handling",
@@ -487,8 +550,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 2,
         "explanation": "SEEK_END tells fseek to calculate the new file position relative to the end of the file (e.g. fseek(fp, -10, SEEK_END) moves 10 bytes before the end)."
       }
-    ]
-  },
+    ,
+      {
+        "id": "c-file-3",
+        "question": "Why should the return value of fgetc(FILE *stream) be assigned to an 'int' variable rather than a 'char'?",
+        "options": [ "Because EOF is an integer constant (typically -1) that cannot be reliably distinguished from valid characters if truncated to unsigned char.", "Because fgetc reads 4 bytes at a time from disk buffers.", "Because C files only store Unicode codepoints.", "Because char is not a legal return type in standard C library headers." ],
+        "correct_option": 0,
+        "explanation": "fgetc returns an unsigned char converted to int or EOF (-1). If stored in a char on systems where char is unsigned, EOF (255) would collide with ÿ (character 255), creating an infinite loop or terminating early."
+      }
+    ]},
   {
     "id": "c-command-line-arguments",
     "slug": "command-line-arguments",
@@ -535,7 +605,14 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
         "correct_option": 2,
         "explanation": "The ANSI C standard guarantees that argv[argc] is a NULL pointer."
       }
-    ]
-  }
+    ,
+      {
+        "id": "c-arg-3",
+        "question": "In standard C 'main(int argc, char *argv[])', what is guaranteed about argv[argc]?",
+        "options": [ "argv[argc] is guaranteed to be a null pointer (NULL).", "argv[argc] contains the return exit code of the program.", "argv[argc] holds the total character count of all arguments.", "argv[argc] points to the environment variables block." ],
+        "correct_option": 0,
+        "explanation": "According to the ISO C standard, the array element argv[argc] is always required to be a null pointer (NULL), allowing null-terminated iteration over command line arguments."
+      }
+    ]}
 ]
 };

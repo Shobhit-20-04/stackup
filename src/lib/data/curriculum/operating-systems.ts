@@ -37,7 +37,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
             "1"
           ],
           "correct_option": 0,
-          "explanation": "fork() returns 0 to the child process, allowing it to determine its role, and returns the child\u2019s new non-zero PID to the parent process."
+          "explanation": "fork() returns 0 to the child process, allowing it to determine its role, and returns the child’s new non-zero PID to the parent process."
         },
         {
           "id": "sc-linux-3",
@@ -72,7 +72,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
       "title": "Processes and Threads",
       "description": "PCB vs TCB, memory layout, IPC mechanisms, context switch overhead.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# Processes vs. Threads \u2014 Deep Dive\n\nOne of the top 3 most frequently asked Operating Systems interview topics.\n\n---\n\n## 1. Process vs. Thread\n\n| Attribute | Process | Thread (Lightweight Process) |\n| :--- | :--- | :--- |\n| **Definition** | Program in execution with isolated address space | Independent unit of execution within a process |\n| **Address Space** | Own dedicated virtual address space | Shares code, data, and heap with parent process |\n| **Resources** | Heavyweight; distinct file descriptors & memory | Lightweight; shares resources; has its own Stack & Registers |\n| **Creation Cost** | High (`fork()` / `exec()`) | Low (`pthread_create()`) |\n| **Communication** | IPC required (Pipes, Sockets, Shared Memory) | Direct memory access via shared heap |\n\n---\n\n## 2. Process Memory Layout\nA typical 32/64-bit process memory layout consists of:\n1. **Text (Code) Segment:** Executable machine instructions (Read-Only).\n2. **Data Segment:** Initialized global & static variables.\n3. **BSS Segment:** Uninitialized global & static variables (zeroed).\n4. **Heap Segment:** Dynamically allocated memory (`malloc`, `new`) growing **upwards**.\n5. **Stack Segment:** Local variables, function call frames, return addresses growing **downwards**.\n\n---\n\n## 3. Context Switch\nSaving the context (registers, Program Counter, PCB) of the current running process/thread and loading the context of the next scheduled process/thread.\n- **Process context switch** requires flushing the **TLB (Translation Lookaside Buffer)** due to virtual address space changes.\n- **Thread context switch** avoids TLB invalidation, making it significantly faster.\n",
+      "notesMarkdown": "\n# Processes vs. Threads — Deep Dive\n\nOne of the top 3 most frequently asked Operating Systems interview topics.\n\n---\n\n## 1. Process vs. Thread\n\n| Attribute | Process | Thread (Lightweight Process) |\n| :--- | :--- | :--- |\n| **Definition** | Program in execution with isolated address space | Independent unit of execution within a process |\n| **Address Space** | Own dedicated virtual address space | Shares code, data, and heap with parent process |\n| **Resources** | Heavyweight; distinct file descriptors & memory | Lightweight; shares resources; has its own Stack & Registers |\n| **Creation Cost** | High (`fork()` / `exec()`) | Low (`pthread_create()`) |\n| **Communication** | IPC required (Pipes, Sockets, Shared Memory) | Direct memory access via shared heap |\n\n---\n\n## 2. Process Memory Layout\nA typical 32/64-bit process memory layout consists of:\n1. **Text (Code) Segment:** Executable machine instructions (Read-Only).\n2. **Data Segment:** Initialized global & static variables.\n3. **BSS Segment:** Uninitialized global & static variables (zeroed).\n4. **Heap Segment:** Dynamically allocated memory (`malloc`, `new`) growing **upwards**.\n5. **Stack Segment:** Local variables, function call frames, return addresses growing **downwards**.\n\n---\n\n## 3. Context Switch\nSaving the context (registers, Program Counter, PCB) of the current running process/thread and loading the context of the next scheduled process/thread.\n- **Process context switch** requires flushing the **TLB (Translation Lookaside Buffer)** due to virtual address space changes.\n- **Thread context switch** avoids TLB invalidation, making it significantly faster.\n",
       "questions": [
         {
           "id": "os-1",
@@ -182,6 +182,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "CPU cache size is a global hardware parameter, not process-specific state information stored within an individual PCB."
+        },
+        {
+          "id": "os-pcb-3",
+          "question": "When a process transition occurs from 'Running' to 'Waiting / Blocked', what typically triggers this transition?",
+          "options": [
+            "The process initiates an I/O request or waits for an event / lock to complete.",
+            "The CPU scheduler timer quantum expires.",
+            "The process finishes execution and calls exit().",
+            "The operating system boots up."
+          ],
+          "correct_option": 0,
+          "explanation": "A running process transitions to Blocked/Waiting when it requests a synchronous resource (like reading from disk or waiting for a semaphore) that is not immediately available."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Process+States+and+Process+Control+Blocks+Operating+Systems+OS+GATE+lecture"
@@ -289,6 +301,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Named pipes (FIFOs) exist as directory entries in the filesystem, allowing any process with file permissions to open and communicate through them."
+        },
+        {
+          "id": "os-ipc-3",
+          "question": "What is the primary performance benefit of Shared Memory IPC over Message Passing IPC?",
+          "options": [
+            "Shared memory avoids kernel system call and memory copying overhead after initial attachment, operating at raw RAM speeds.",
+            "Shared memory provides automatic mutual exclusion without synchronization.",
+            "Shared memory works across distinct machines on a network.",
+            "Shared memory never causes race conditions."
+          ],
+          "correct_option": 0,
+          "explanation": "Message passing requires copying data into kernel space and back to user space via system calls. Shared memory maps the same physical frames into both address spaces, enabling zero-copy high-speed communication."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Inter-Process+Communication+%28IPC%29+Operating+Systems+OS+GATE+lecture"
@@ -337,6 +361,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Setting 'turn = j' graciously yields the turn to process j. If both set flags simultaneously, only one turn value persists, resolving the tie cleanly."
+        },
+        {
+          "id": "os-sync-3",
+          "question": "What hardware instruction is commonly provided by modern CPUs to implement atomic spinlocks without race conditions?",
+          "options": [
+            "Test-and-Set / Compare-and-Swap (CAS)",
+            "LOAD and STORE",
+            "ADD and SUB",
+            "JMP and CALL"
+          ],
+          "correct_option": 0,
+          "explanation": "CPUs provide atomic read-modify-write instructions like Test-and-Set and Compare-and-Swap (CAS) executed in a single uninterruptible hardware cycle to implement user-space spinlocks and mutex primitives."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Process+Synchronization+Operating+Systems+OS+GATE+lecture"
@@ -380,7 +416,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
             "Priority Inheritance Protocol",
             "Round Robin Scheduling",
             "Banker's Protocol",
-            "Peterson\u2019s Lockout"
+            "Peterson’s Lockout"
           ],
           "correct_option": 0,
           "explanation": "Under Priority Inheritance, when a lower-priority task holds a resource requested by a higher-priority task, the lower-priority task temporarily inherits the higher priority until it releases the resource."
@@ -444,6 +480,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Imposing a strict total ordering on resources and acquiring them in ascending order breaks the Circular Wait condition of Coffman."
+        },
+        {
+          "id": "os-classic-3",
+          "question": "In the Dining Philosophers problem, which circular condition can cause a total deadlock if every philosopher simultaneously picks up their left fork?",
+          "options": [
+            "Circular wait (each philosopher holds their left fork while waiting for the right fork held by their neighbor).",
+            "Starvation of the middle philosopher only.",
+            "Race condition in the kitchen.",
+            "Priority inversion."
+          ],
+          "correct_option": 0,
+          "explanation": "If every philosopher picks up their left fork at once, all forks are occupied and each philosopher waits indefinitely for their neighbor to release the right fork, forming a classic circular wait deadlock."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Classical+Synchronization+Problems+Operating+Systems+OS+GATE+lecture"
@@ -452,7 +500,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
       "id": "deadlocks",
       "slug": "synchronization-and-deadlocks",
       "title": "Deadlocks: Prevention, Avoidance, Detection",
-      "description": "Mutual exclusion, hold and wait, no preemption, circular wait, Banker\u2019s algorithm.",
+      "description": "Mutual exclusion, hold and wait, no preemption, circular wait, Banker’s algorithm.",
       "estimatedMinutes": 20,
       "notesMarkdown": "\n# Deadlocks & Synchronization Cheat Sheet\n\nA **Deadlock** is a state where a set of processes are blocked because each process is holding a resource and waiting for another resource held by some other process.\n\n---\n\n## 1. The 4 Necessary Conditions (Coffman Conditions)\nA deadlock can occur **if and only if** all four conditions hold simultaneously:\n\n1. **Mutual Exclusion:** At least one resource must be non-shareable.\n2. **Hold and Wait:** A process is holding at least one resource and waiting to acquire additional resources held by other processes.\n3. **No Preemption:** Resources cannot be forcibly revoked from a process; they can only be released voluntarily.\n4. **Circular Wait:** A closed chain of processes exists such that $P_0$ waits for resource held by $P_1$, $P_1$ waits for $P_2$, ..., and $P_n$ waits for $P_0$.\n\n---\n\n## 2. Prevention vs. Avoidance\n- **Deadlock Prevention:** Design the system to invalidate at least one of the 4 Coffman conditions (e.g. enforce strict resource ordering to eliminate Circular Wait).\n- **Deadlock Avoidance:** Allow the conditions, but dynamically verify safety states before granting resources (**Banker's Algorithm**).\n",
       "questions": [
@@ -551,6 +599,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Worst Fit searches the full list and breaks up largest available memory blocks, rapidly depleting large continuous chunks needed for major processes."
+        },
+        {
+          "id": "os-mm-3",
+          "question": "What is 'Internal Fragmentation' in contiguous memory management?",
+          "options": [
+            "Unused allocated space inside an assigned memory partition or page frame.",
+            "Free memory scattered in small non-contiguous blocks outside allocated regions.",
+            "Memory corruption inside the operating system kernel.",
+            "Excess disk space allocated to swap files."
+          ],
+          "correct_option": 0,
+          "explanation": "Internal fragmentation occurs when fixed-size partitions or page frames allocate more memory than a process requests, leaving wasted, unusable memory inside the allocated block."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Memory+Management+Operating+Systems+OS+GATE+lecture"
@@ -577,7 +637,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "mp-2",
-          "question": "What is B\u00e9l\u00e1dy\u2019s Anomaly in operating systems virtual memory management?",
+          "question": "What is Bélády’s Anomaly in operating systems virtual memory management?",
           "options": [
             "The phenomenon where increasing the number of page frames results in an increase in page faults under FIFO",
             "A page fault occurring while servicing another page fault",
@@ -585,7 +645,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
             "Fragmentation occurring when segment sizes exceed page frame boundaries"
           ],
           "correct_option": 0,
-          "explanation": "B\u00e9l\u00e1dy's Anomaly proves that for certain page reference strings, the FIFO page replacement algorithm experiences more page faults when given more physical memory frames."
+          "explanation": "Bélády's Anomaly proves that for certain page reference strings, the FIFO page replacement algorithm experiences more page faults when given more physical memory frames."
         },
         {
           "id": "mp-3",
@@ -610,7 +670,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
       "keyTakeaways": [
         "Paging eliminates external fragmentation but introduces internal fragmentation within frames.",
         "TLB (Translation Lookaside Buffer) caches recent Virtual-to-Physical page translations in hardware.",
-        "B\u00e9l\u00e1dy's Anomaly: In FIFO page replacement, allocating MORE page frames can cause MORE page faults."
+        "Bélády's Anomaly: In FIFO page replacement, allocating MORE page frames can cause MORE page faults."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Paging+and+Segmentation+Operating+Systems+OS+GATE+lecture"
     },
@@ -634,7 +694,7 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
         "Effective Access Time (EAT): EAT = (1 - p) * Memory_Access + p * Page_Fault_Service_Time.",
         "Thrashing: System spends more time servicing page faults than executing instructions; occurs when sum of working sets exceeds physical RAM."
       ],
-      "notesMarkdown": "# Virtual Memory & Demand Paging\n\n---\n\n## 1. Demand Paging & Page Fault Routine\n1. Process attempts to access a virtual memory address.\n2. MMU checks Page Table entry. If **valid-invalid bit is 0 (invalid)**:\n   - Hardware generates a **Page Fault trap** to OS.\n3. OS checks internal PCB table:\n   - If illegal address $\\implies$ Terminate process (`SIGSEGV`).\n   - If valid reference $\\implies$ Find free physical frame.\n4. Issue disk I/O to read page from backing store into allocated frame.\n5. While I/O runs, CPU context switches to another ready process.\n6. Disk controller signals completion via interrupt.\n7. OS updates Page Table: marks bit valid (1) and records frame number.\n8. Restart the instruction that triggered the page fault.\n\n---\n\n## 2. Effective Access Time (EAT)\nLet $p$ be the page fault rate ($0 \\le p \\le 1$):\n$$\\text{EAT} = (1 - p) \\times t_{\\text{mem}} + p \\times t_{\\text{fault}}$$\nSince $t_{\\text{fault}} \\approx 5\\text{\u2013}10\\text{ ms}$ while $t_{\\text{mem}} \\approx 100\\text{ ns}$, even a tiny fault rate $p = 0.001$ degrades performance dramatically.\n\n---\n\n## 3. Thrashing\nWhen processes lack sufficient frames, they continuously page fault. CPU utilization plummets, causing the OS to admit more processes, worsening the cycle. Resolved by the **Working Set Model**.\n",
+      "notesMarkdown": "# Virtual Memory & Demand Paging\n\n---\n\n## 1. Demand Paging & Page Fault Routine\n1. Process attempts to access a virtual memory address.\n2. MMU checks Page Table entry. If **valid-invalid bit is 0 (invalid)**:\n   - Hardware generates a **Page Fault trap** to OS.\n3. OS checks internal PCB table:\n   - If illegal address $\\implies$ Terminate process (`SIGSEGV`).\n   - If valid reference $\\implies$ Find free physical frame.\n4. Issue disk I/O to read page from backing store into allocated frame.\n5. While I/O runs, CPU context switches to another ready process.\n6. Disk controller signals completion via interrupt.\n7. OS updates Page Table: marks bit valid (1) and records frame number.\n8. Restart the instruction that triggered the page fault.\n\n---\n\n## 2. Effective Access Time (EAT)\nLet $p$ be the page fault rate ($0 \\le p \\le 1$):\n$$\\text{EAT} = (1 - p) \\times t_{\\text{mem}} + p \\times t_{\\text{fault}}$$\nSince $t_{\\text{fault}} \\approx 5\\text{–}10\\text{ ms}$ while $t_{\\text{mem}} \\approx 100\\text{ ns}$, even a tiny fault rate $p = 0.001$ degrades performance dramatically.\n\n---\n\n## 3. Thrashing\nWhen processes lack sufficient frames, they continuously page fault. CPU utilization plummets, causing the OS to admit more processes, worsening the cycle. Resolved by the **Working Set Model**.\n",
       "questions": [
         {
           "id": "os-vm-1",
@@ -659,6 +719,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "When total active process working sets exceed physical memory, frames are constantly swapped in and out, degrading CPU throughput to near zero."
+        },
+        {
+          "id": "os-vm-3",
+          "question": "What sequence of hardware and OS events is initiated when a process accesses a page with its valid/invalid bit set to 'invalid' in the page table?",
+          "options": [
+            "A Page Fault hardware trap triggers the OS kernel to locate the frame on swap disk, load it into physical RAM, update the page table, and restart the instruction.",
+            "The process is terminated immediately with a segmentation fault.",
+            "The CPU halts the entire computer.",
+            "The instruction skips execution and moves to the next PC address."
+          ],
+          "correct_option": 0,
+          "explanation": "An invalid bit access generates a Page Fault exception. The OS traps into kernel mode, allocates a free physical frame (possibly evicting one), reads the missing page from disk, marks it valid, and re-executes the faulted instruction."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Virtual+Memory+and+Demand+Paging+Operating+Systems+OS+GATE+lecture"
@@ -707,6 +779,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "If the reference bit is 1, the page has been accessed recently; the clock hand clears it to 0 and checks the next frame. A page with bit 0 is replaced."
+        },
+        {
+          "id": "os-pr-3",
+          "question": "What is Belady's Anomaly in page replacement?",
+          "options": [
+            "The counter-intuitive phenomenon where increasing the number of physical page frames results in an increase in the number of page faults (exhibited by FIFO).",
+            "When LRU performs worse than Random replacement.",
+            "When the page size is larger than physical memory.",
+            "When virtual addresses cannot be translated by the TLB."
+          ],
+          "correct_option": 0,
+          "explanation": "Belady's Anomaly is the phenomenon where adding more physical page frames increases page faults for certain reference strings under FIFO page replacement. Stack algorithms like LRU and Optimal are immune."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Page+Replacement+Algorithms+Operating+Systems+OS+GATE+lecture"
@@ -755,6 +839,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "12 direct pointers * 4 KB per block = 48 KB of file data."
+        },
+        {
+          "id": "os-fs-3",
+          "question": "In Unix inode-based file systems, how does an inode locate large file blocks that exceed its direct block pointers?",
+          "options": [
+            "Via single, double, and triple indirect block pointers pointing to index blocks on disk.",
+            "By storing the whole file directly in contiguous RAM.",
+            "Using a centralized FAT table in sector 0.",
+            "By linearly scanning all physical disk sectors."
+          ],
+          "correct_option": 0,
+          "explanation": "Unix inodes contain direct pointers for small files plus single, double, and triple indirect pointers pointing to blocks of addresses, allowing logarithmic scaling to multi-terabyte files."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=File+Systems+and+Directory+Structures+Operating+Systems+OS+GATE+lecture"
@@ -861,6 +957,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Spooling buffers requests in files to feed single-stream sequential devices (like printers) in orderly sequential batches."
+        },
+        {
+          "id": "os-io-3",
+          "question": "Which disk scheduling algorithm services disk I/O requests by moving the arm in one direction to the end of the disk, then immediately returning to the beginning without servicing requests on the return trip?",
+          "options": [
+            "C-SCAN (Circular SCAN)",
+            "SSTF (Shortest Seek Time First)",
+            "FCFS",
+            "LOOK"
+          ],
+          "correct_option": 0,
+          "explanation": "C-SCAN sweeps the disk head in one direction servicing requests, and once it reaches the outer limit, returns to the beginning without servicing requests on the return path, providing more uniform wait times than standard SCAN."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=I%2FO+Management+Operating+Systems+OS+GATE+lecture"
@@ -909,6 +1017,18 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Least privilege limits potential attack blast radius by restricting access rights strictly to what is required for operation."
+        },
+        {
+          "id": "os-sec-3",
+          "question": "What is the 'Principle of Least Privilege' in computer security architecture?",
+          "options": [
+            "Every program and user should operate using only the minimal set of privileges and capabilities necessary to complete its legitimate task.",
+            "All users should have administrator / root privileges by default.",
+            "Passwords should be as short as possible.",
+            "Hardware protection rings should be disabled for faster system calls."
+          ],
+          "correct_option": 0,
+          "explanation": "The Principle of Least Privilege dictates that any entity (process, user, service) must be granted only the minimum permissions required to perform its function, limiting the blast radius of any potential compromise."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Protection+and+Security+Basics+Operating+Systems+OS+GATE+lecture"

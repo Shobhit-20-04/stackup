@@ -50,6 +50,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Physical data independence isolates changes made to disk file structures, indices, or block sizes from affecting the logical conceptual design."
+        },
+        {
+          "id": "dbms-arch-3",
+          "question": "What is 'Physical Data Independence' in the 3-schema ANSI/SPARC DBMS architecture?",
+          "options": [
+            "The capacity to change internal physical storage structures (e.g. indexes, file organizations) without altering the conceptual/logical schema.",
+            "The ability to add new columns without recompiling the application.",
+            "Running the database without a disk drive.",
+            "Replicating tables across distinct physical servers."
+          ],
+          "correct_option": 0,
+          "explanation": "Physical data independence ensures that alterations to physical storage layouts (adding B+ tree indexes, reorganizing partitions) do not require modifications to the conceptual schema or application queries."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Database+Architecture+DBMS+Database+Management+Systems+GATE+lecture"
@@ -98,6 +110,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Derived attributes (like Age derived from Date of Birth) are represented by dashed/dotted ellipses."
+        },
+        {
+          "id": "dbms-er-3",
+          "question": "In an ER diagram, how is a 'Weak Entity' represented and identified?",
+          "options": [
+            "Represented by a double rectangle and identified by combining its partial key (discriminator) with the primary key of its identifying owner entity.",
+            "Represented by a dotted oval with an independent surrogate key.",
+            "Represented by a diamond with no attributes.",
+            "Identified strictly by its own unique foreign key."
+          ],
+          "correct_option": 0,
+          "explanation": "A weak entity set lacks a primary key of its own; it is drawn as a double rectangle and its discriminator (dashed underline) must be combined with the identifying strong entity's primary key to form its primary key."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=ER+Model+and+ER+Diagrams+DBMS+Database+Management+Systems+GATE+lecture"
@@ -146,6 +170,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "In formal relational theory, relations are sets; by mathematical definition, sets contain distinct elements."
+        },
+        {
+          "id": "dbms-rel-3",
+          "question": "In the relational model, what is the Cardinality and Degree of a relation table with 5 columns and 100 tuples (rows)?",
+          "options": [
+            "Degree = 5, Cardinality = 100",
+            "Degree = 100, Cardinality = 5",
+            "Degree = 500, Cardinality = 100",
+            "Degree = 20, Cardinality = 5"
+          ],
+          "correct_option": 0,
+          "explanation": "In relational terminology, Degree is the total number of attributes (columns = 5), while Cardinality is the total number of tuples (rows = 100)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Relational+Model+DBMS+Database+Management+Systems+GATE+lecture"
@@ -177,11 +213,11 @@ export const DBMS_CATEGORY: SectionCategory = {
           "options": [
             "Natural Join",
             "Cartesian Product",
-            "Division (\u00f7)",
+            "Division (÷)",
             "Theta Join"
           ],
           "correct_option": 2,
-          "explanation": "The Division operator R \u00f7 S selects tuples from R associated with every single tuple in relation S."
+          "explanation": "The Division operator R ÷ S selects tuples from R associated with every single tuple in relation S."
         },
         {
           "id": "dbms-ra-2",
@@ -194,6 +230,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "The 6 fundamental operators are: Selection, Projection, Union, Set Difference, Cartesian Product, and Rename."
+        },
+        {
+          "id": "dbms-ra-3",
+          "question": "Which of the following Relational Algebra operators is NOT considered one of the 5 fundamental primitive operators?",
+          "options": [
+            "Natural Join (bowtie)",
+            "Select (sigma)",
+            "Project (pi)",
+            "Cartesian Product (x)"
+          ],
+          "correct_option": 0,
+          "explanation": "The 5 primitive operators of relational algebra are Selection (sigma), Projection (pi), Union (cup), Set Difference (-), and Cartesian Product (x). Natural Join is a derived operator defined as Projection of Selection over Cartesian Product."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Relational+Algebra+and+Relational+Calculus+DBMS+Database+Management+Systems+GATE+lecture"
@@ -301,6 +349,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Entity Integrity rule mandates that primary key components cannot be NULL because they uniquely identify tuples."
+        },
+        {
+          "id": "dbms-key-3",
+          "question": "What does the 'Referential Integrity Constraint' require regarding foreign keys in a relational database?",
+          "options": [
+            "A foreign key value in a referencing table must either match a valid primary key value in the referenced table or be NULL.",
+            "Foreign keys must always be unique and non-null.",
+            "Every table must reference at least two other tables.",
+            "Foreign keys cannot reference the same table."
+          ],
+          "correct_option": 0,
+          "explanation": "Referential integrity requires that every non-null foreign key value in a referencing relation must exist as an actual primary key value in the referenced relation, preventing dangling references."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Keys+and+Integrity+Constraints+DBMS+Database+Management+Systems+GATE+lecture"
@@ -350,6 +410,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Soundness means the rules generate only valid dependencies that actually hold in all relations satisfying the original FDs."
+        },
+        {
+          "id": "dbms-fd-3",
+          "question": "Which of the following is Armstrong's Transitivity Axiom for functional dependencies?",
+          "options": [
+            "If X -> Y and Y -> Z, then X -> Z",
+            "If X -> Y, then XZ -> YZ",
+            "If Y is a subset of X, then X -> Y",
+            "If X -> Y and X -> Z, then X -> YZ"
+          ],
+          "correct_option": 0,
+          "explanation": "Armstrong's transitivity rule states that if attribute set X functionally determines Y, and Y functionally determines Z, then X functionally determines Z (X -> Z)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Functional+Dependencies+DBMS+Database+Management+Systems+GATE+lecture"
@@ -398,6 +470,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Because no other attribute can functionally determine it, it must be included in the determinant of any key to reach closure."
+        },
+        {
+          "id": "dbms-closure-3",
+          "question": "What is an attribute called if it is part of at least one Candidate Key in a relational schema?",
+          "options": [
+            "Prime Attribute",
+            "Non-Prime Attribute",
+            "Foreign Attribute",
+            "Super Attribute"
+          ],
+          "correct_option": 0,
+          "explanation": "An attribute that is a member of any candidate key of relation schema R is called a Prime Attribute. Attributes that do not belong to any candidate key are Non-Prime."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Attribute+Closure+and+Candidate+Keys+DBMS+Database+Management+Systems+GATE+lecture"
@@ -506,6 +590,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "In a lossy decomposition, joining tables creates extra phantom tuples, leading to inaccurate information."
+        },
+        {
+          "id": "dbms-lossless-3",
+          "question": "For a decomposition of relation R into R1 and R2 to be a Lossless-Join decomposition, what condition must be satisfied under functional dependencies F?",
+          "options": [
+            "(R1 intersect R2) -> R1 OR (R1 intersect R2) -> R2 must hold in F+",
+            "R1 and R2 must have zero common attributes",
+            "Both R1 and R2 must be in BCNF",
+            "|R1| must equal |R2|"
+          ],
+          "correct_option": 0,
+          "explanation": "A binary decomposition R into R1 and R2 is lossless-join iff the common attribute set (R1 intersect R2) is a superkey of either R1 or R2, ensuring no spurious tuples are generated upon natural join."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Lossless+Decomposition+DBMS+Database+Management+Systems+GATE+lecture"
@@ -553,6 +649,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "3NF synthesis algorithm guarantees both lossless-join decomposition and dependency preservation."
+        },
+        {
+          "id": "dbms-dp-3",
+          "question": "What is the primary advantage of achieving Dependency Preservation during database normalization?",
+          "options": [
+            "Enforces all functional dependencies locally within individual tables without requiring expensive multi-table joins during updates.",
+            "Eliminates all candidate keys.",
+            "Guarantees minimum disk consumption.",
+            "Eliminates the need for indexing."
+          ],
+          "correct_option": 0,
+          "explanation": "Dependency preservation allows database updates to verify all integrity constraints using only single-table checks rather than executing cross-table join operations, significantly speeding up INSERT/UPDATE performance."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Dependency+Preservation+DBMS+Database+Management+Systems+GATE+lecture"
@@ -563,7 +671,7 @@ export const DBMS_CATEGORY: SectionCategory = {
       "title": "Transactions and ACID Properties",
       "description": "Atomicity (WAL), Consistency, Isolation (Dirty Read, Non-repeatable, Phantom), Durability.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "\n# ACID Properties & Isolation Levels\n\nThe bedrock of relational database reliability and distributed systems interviews.\n\n---\n\n## 1. The ACID Guarantees\n\n- **Atomicity:** All-or-nothing execution. Achieved using **Write-Ahead Logging (WAL)** and undo logs.\n- **Consistency:** Database transitions from one valid state satisfying all schema constraints, foreign keys, and triggers to another.\n- **Isolation:** Concurrent transactions execute without interfering with one another.\n- **Durability:** Once committed, changes survive system crashes or power failures. Achieved using disk commits and redo logs.\n\n---\n\n## 2. SQL Isolation Levels & Concurrency Phenomena\n\n| Isolation Level | Dirty Read | Non-Repeatable Read | Phantom Read |\n| :--- | :---: | :---: | :---: |\n| **Read Uncommitted** | \u274c Allowed | \u274c Allowed | \u274c Allowed |\n| **Read Committed** | \u2705 Prevented | \u274c Allowed | \u274c Allowed |\n| **Repeatable Read** | \u2705 Prevented | \u2705 Prevented | \u274c Allowed |\n| **Serializable** | \u2705 Prevented | \u2705 Prevented | \u2705 Prevented |\n\n### Phenomena Explained:\n- **Dirty Read:** Reading uncommitted data written by a concurrent transaction that could still be rolled back.\n- **Non-Repeatable Read:** Re-reading the same row within a transaction produces different column values because another transaction modified and committed it.\n- **Phantom Read:** Re-executing a range query returns new rows added or deleted by another committed transaction.\n",
+      "notesMarkdown": "\n# ACID Properties & Isolation Levels\n\nThe bedrock of relational database reliability and distributed systems interviews.\n\n---\n\n## 1. The ACID Guarantees\n\n- **Atomicity:** All-or-nothing execution. Achieved using **Write-Ahead Logging (WAL)** and undo logs.\n- **Consistency:** Database transitions from one valid state satisfying all schema constraints, foreign keys, and triggers to another.\n- **Isolation:** Concurrent transactions execute without interfering with one another.\n- **Durability:** Once committed, changes survive system crashes or power failures. Achieved using disk commits and redo logs.\n\n---\n\n## 2. SQL Isolation Levels & Concurrency Phenomena\n\n| Isolation Level | Dirty Read | Non-Repeatable Read | Phantom Read |\n| :--- | :---: | :---: | :---: |\n| **Read Uncommitted** | ❌ Allowed | ❌ Allowed | ❌ Allowed |\n| **Read Committed** | ✅ Prevented | ❌ Allowed | ❌ Allowed |\n| **Repeatable Read** | ✅ Prevented | ✅ Prevented | ❌ Allowed |\n| **Serializable** | ✅ Prevented | ✅ Prevented | ✅ Prevented |\n\n### Phenomena Explained:\n- **Dirty Read:** Reading uncommitted data written by a concurrent transaction that could still be rolled back.\n- **Non-Repeatable Read:** Re-reading the same row within a transaction produces different column values because another transaction modified and committed it.\n- **Phantom Read:** Re-executing a range query returns new rows added or deleted by another committed transaction.\n",
       "questions": [
         {
           "id": "db-1",
@@ -673,6 +781,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "While testing Conflict Serializability is polynomial (O(V+E) cycle check), testing View Serializability is proven NP-Complete."
+        },
+        {
+          "id": "dbms-ser-3",
+          "question": "What condition defines two database operations as being in 'Conflict' with each other?",
+          "options": [
+            "They belong to different transactions, access the exact same data item Q, and at least one of the operations is a Write(Q).",
+            "They belong to the same transaction and both read Q.",
+            "They occur at the exact same microsecond on different CPU cores.",
+            "They belong to different transactions and both perform Read(Q)."
+          ],
+          "correct_option": 0,
+          "explanation": "Two operations conflict iff they belong to different transactions, target the same data item Q, and at least one is a Write operation (Read-Write or Write-Write conflict)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Conflict+and+View+Serializability+DBMS+Database+Management+Systems+GATE+lecture"
@@ -720,6 +840,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Topological sorting of the DAG orders vertices such that for every directed edge U -> V, U comes before V in the serial sequence."
+        },
+        {
+          "id": "dbms-prec-3",
+          "question": "In a Precedence Graph (Serialization Graph), how is Conflict Serializability verified?",
+          "options": [
+            "The schedule is conflict serializable if and only if the precedence graph contains NO directed cycles (is a DAG).",
+            "The schedule is serializable if the graph is strongly connected.",
+            "The graph must contain an even number of vertices.",
+            "The graph must be a complete bipartite graph."
+          ],
+          "correct_option": 0,
+          "explanation": "A schedule S is conflict serializable iff its precedence graph has no directed cycles. If acyclic, topological sort gives an equivalent serial execution order."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Precedence+Graphs+DBMS+Database+Management+Systems+GATE+lecture"
@@ -826,6 +958,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Retaining the original timestamp ensures the transaction ages and gains highest priority, preventing it from being repeatedly chosen as a victim."
+        },
+        {
+          "id": "dbms-dl-3",
+          "question": "In database concurrency, what is the Wait-Die deadlock prevention scheme?",
+          "options": [
+            "Non-preemptive scheme where an older transaction is allowed to wait for a younger one, but a younger transaction dies (rolls back) if it requests a data item held by an older one.",
+            "Preemptive scheme where older transactions always kill younger ones.",
+            "Both transactions die immediately upon conflict.",
+            "Transactions wait indefinitely until a timer fires."
+          ],
+          "correct_option": 0,
+          "explanation": "Wait-Die is a timestamp-based non-preemptive prevention policy: if Ti requests a lock held by Tj, Ti waits only if Timestamp(Ti) < Timestamp(Tj) (older waits for younger); otherwise Ti dies."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Deadlocks+in+Databases+DBMS+Database+Management+Systems+GATE+lecture"
@@ -875,6 +1019,18 @@ export const DBMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Because Ti never committed before the crash, its modifications must be undone (rolled back) to preserve atomicity."
+        },
+        {
+          "id": "dbms-rec-3",
+          "question": "In Write-Ahead Logging (WAL), what is the mandatory sequence of writing updates to log vs database storage?",
+          "options": [
+            "The log record must be flushed to non-volatile disk BEFORE the corresponding modified database page is written to disk.",
+            "Database pages are written first, and log entries are written asynchronously.",
+            "Logs are kept exclusively in volatile RAM.",
+            "The database buffer pool is flushed only upon server reboot."
+          ],
+          "correct_option": 0,
+          "explanation": "The WAL protocol dictates that log records describing an update must be forced to stable non-volatile storage before the actual database page containing that update can be written to disk, ensuring atomicity and durability on crash recovery."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Recovery+Techniques+DBMS+Database+Management+Systems+GATE+lecture"
@@ -960,7 +1116,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "cap-2",
-          "question": "According to Brewer\u2019s CAP Theorem, when a network partition (P) occurs in a distributed database cluster, what trade-off must be made?",
+          "question": "According to Brewer’s CAP Theorem, when a network partition (P) occurs in a distributed database cluster, what trade-off must be made?",
           "options": [
             "Choose between Consistency (rejecting updates to keep state identical) or Availability (accepting updates that may diverge)",
             "Choose between Relational normalization and NoSQL document storage",

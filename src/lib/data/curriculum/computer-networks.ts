@@ -110,6 +110,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Since C = B * log2(1 + SNR), as SNR -> infinity, capacity increases logarithmically with SNR."
+        },
+        {
+          "id": "cn-phys-3",
+          "question": "According to Shannon's Channel Capacity Theorem, what is the maximum theoretical bit rate C of a channel with bandwidth B and signal-to-noise ratio SNR?",
+          "options": [
+            "C = B * log2(1 + SNR)",
+            "C = 2 * B * log2(M)",
+            "C = B / SNR",
+            "C = 2 * B * SNR"
+          ],
+          "correct_option": 0,
+          "explanation": "Shannon's theorem gives the theoretical upper bound channel capacity in the presence of thermal Gaussian noise: C = B * log2(1 + SNR) in bits per second."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Physical+Layer+Fundamentals+Computer+Networks+CN+GATE+lecture"
@@ -158,6 +170,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Ethernet MAC addresses are 48 bits (6 octets) long, usually written in hexadecimal (e.g. AA:BB:CC:DD:EE:FF)."
+        },
+        {
+          "id": "cn-dll-3",
+          "question": "What is the primary role of the Data Link Layer (Layer 2) in the OSI model?",
+          "options": [
+            "Node-to-node hop-by-hop framing, physical addressing (MAC), and error detection across a single local link.",
+            "End-to-end reliable stream delivery across multiple networks.",
+            "Routing packets across the global internet.",
+            "Presenting formatted HTML data to applications."
+          ],
+          "correct_option": 0,
+          "explanation": "Layer 2 is responsible for node-to-node framing, hardware physical addressing (48-bit MAC), and hop-by-hop link error detection between adjacent network interfaces."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Data+Link+Layer+Computer+Networks+CN+GATE+lecture"
@@ -206,6 +230,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "To detect e errors, d_min >= e + 1. For e = 3 errors, d_min >= 3 + 1 = 4."
+        },
+        {
+          "id": "cn-frame-3",
+          "question": "In bit-oriented framing, how does 'Bit Stuffing' prevent data bytes from accidentally matching the flag sequence 01111110?",
+          "options": [
+            "The transmitter automatically inserts a '0' bit after every run of five consecutive '1' bits in the data stream.",
+            "The sender encodes all characters in ASCII.",
+            "The receiver drops any packet with five 1s.",
+            "A parity bit is added to every byte."
+          ],
+          "correct_option": 0,
+          "explanation": "Bit stuffing ensures the flag byte 01111110 (0 followed by six 1s and a 0) never appears inside payload data by inserting an extra '0' whenever five consecutive '1's are encountered; the receiver un-stuffs the '0'."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Framing+and+Error+Detection+Computer+Networks+CN+GATE+lecture"
@@ -254,6 +290,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "Modulo-2 subtraction and addition are equivalent to the bitwise XOR operation."
+        },
+        {
+          "id": "cn-crc-3",
+          "question": "In Cyclic Redundancy Check (CRC) error detection, if the generator polynomial G(x) is of degree k, how many zero bits are appended to the message before polynomial division?",
+          "options": [
+            "k bits",
+            "k + 1 bits",
+            "k - 1 bits",
+            "16 bits always"
+          ],
+          "correct_option": 0,
+          "explanation": "The sender appends k zeros (where k is the degree of generator polynomial G(x)) to the message bits before performing modulo-2 binary division, yielding a k-bit remainder CRC checksum."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=CRC+and+Checksum+Computer+Networks+CN+GATE+lecture"
@@ -302,6 +350,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "In GBN, receiver window is 1. Any out-of-order frames arriving after a dropped packet are discarded, and ACK for last in-order frame is retransmitted."
+        },
+        {
+          "id": "cn-flow-3",
+          "question": "What is the maximum sender window size in the Selective Repeat sliding window protocol with n-bit sequence numbers?",
+          "options": [
+            "2^(n - 1)",
+            "2^n - 1",
+            "2^n",
+            "1"
+          ],
+          "correct_option": 0,
+          "explanation": "To prevent overlap between the current sequence window and the next window (preventing duplicate acknowledgment confusion), the sender and receiver window sizes in Selective Repeat must be at most 2^(n - 1)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Flow+Control+and+Error+Control+Computer+Networks+CN+GATE+lecture"
@@ -351,6 +411,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Pure ALOHA reaches peak throughput S = G * e^(-2G) at G = 0.5, giving S_max = 1 / (2e) = 0.184 (18.4%)."
+        },
+        {
+          "id": "cn-mac-3",
+          "question": "Why does standard Ethernet (802.3) use CSMA/CD, while Wi-Fi (802.11) uses CSMA/CA instead?",
+          "options": [
+            "Wireless transceivers cannot transmit and listen for collisions simultaneously (Collision Detection is physically impractical due to high signal attenuation).",
+            "Wireless networks do not experience collisions.",
+            "CSMA/CD is proprietary to IBM.",
+            "CSMA/CA requires no hardware antennas."
+          ],
+          "correct_option": 0,
+          "explanation": "In wireless radio transmission, the transmitted signal power drowns out any incoming signals from other stations. Therefore, Wi-Fi cannot detect collisions while transmitting and must use Collision Avoidance (RTS/CTS and random backoff)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=MAC+Protocols+Computer+Networks+CN+GATE+lecture"
@@ -400,6 +472,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Switches passively learn by mapping the frame's source MAC address to the physical port on which the frame arrived."
+        },
+        {
+          "id": "cn-eth-3",
+          "question": "What mechanism does an Ethernet switch use to populate its MAC address forwarding table dynamically?",
+          "options": [
+            "Self-learning: Inspecting the Source MAC address of every arriving frame and recording the incoming port number.",
+            "Broadcasting DNS queries to all connected PCs.",
+            "Manual static configuration by network administrators only.",
+            "Running OSPF routing protocol across local ports."
+          ],
+          "correct_option": 0,
+          "explanation": "Ethernet switches use self-learning: whenever a frame arrives on a port, the switch reads the Source MAC address and binds it to that port with an aging timer."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Ethernet+and+Switching+Computer+Networks+CN+GATE+lecture"
@@ -507,6 +591,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 2,
           "explanation": "In IPv6, routers do not fragment; fragmentation is performed exclusively by source hosts via Path MTU Discovery."
+        },
+        {
+          "id": "cn-ip-3",
+          "question": "How many bits are in an IPv4 address versus an IPv6 address?",
+          "options": [
+            "32 bits in IPv4, 128 bits in IPv6",
+            "32 bits in IPv4, 64 bits in IPv6",
+            "48 bits in IPv4, 128 bits in IPv6",
+            "64 bits in IPv4, 256 bits in IPv6"
+          ],
+          "correct_option": 0,
+          "explanation": "IPv4 addresses are 32 bits long (4 octets, providing ~4.3 billion addresses), whereas IPv6 addresses are 128 bits long (16 bytes, providing 3.4 x 10^38 unique addresses)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=IPv4+and+IPv6+Computer+Networks+CN+GATE+lecture"
@@ -541,7 +637,7 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
             "Kruskal's Algorithm"
           ],
           "correct_option": 0,
-          "explanation": "OSPF is a link-state routing protocol where each router constructs a complete topological map of the autonomous system and executes Dijkstra\u2019s algorithm to calculate the lowest-cost paths."
+          "explanation": "OSPF is a link-state routing protocol where each router constructs a complete topological map of the autonomous system and executes Dijkstra’s algorithm to calculate the lowest-cost paths."
         },
         {
           "id": "rp-net-3",
@@ -614,6 +710,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "When an intermediate router decrements a packet's TTL to 0, it drops the packet and transmits an ICMP Time Exceeded (Type 11) message back."
+        },
+        {
+          "id": "cn-proto-3",
+          "question": "What protocol is used by diagnostic tools like 'ping' and 'traceroute' to send network control and error messages?",
+          "options": [
+            "ICMP (Internet Control Message Protocol)",
+            "IGMP",
+            "ARP",
+            "SNMP"
+          ],
+          "correct_option": 0,
+          "explanation": "Ping uses ICMP Echo Request / Reply messages, and traceroute exploits ICMP Time Exceeded (TTL expired in transit) messages to map intermediate router hops."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=ARP%2C+DHCP%2C+ICMP%2C+and+NAT+Computer+Networks+CN+GATE+lecture"
@@ -652,12 +760,12 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
         },
         {
           "id": "tcp-3",
-          "question": "What mechanism in TCP prevents a fast sender from overwhelming a slow receiver\u2019s buffer capacity?",
+          "question": "What mechanism in TCP prevents a fast sender from overwhelming a slow receiver’s buffer capacity?",
           "options": [
             "Flow Control (Sliding Window)",
             "Congestion Control (Slow Start)",
             "DNS Throttling",
-            "Nagle\u2019s Algorithm"
+            "Nagle’s Algorithm"
           ],
           "correct_option": 0,
           "explanation": "Flow Control uses the TCP Receive Window (rwnd) field advertised by the receiver to inform the sender how many bytes of buffer capacity remain available."
@@ -723,6 +831,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "In Slow Start, cwnd increases by 1 MSS for every acknowledged packet, effectively doubling cwnd each RTT."
+        },
+        {
+          "id": "cn-cong-3",
+          "question": "During TCP Slow Start, how does the Congestion Window (cwnd) grow upon receiving successful acknowledgments?",
+          "options": [
+            "Exponentially (cwnd doubles every Round-Trip Time RTT).",
+            "Linearly (cwnd increases by 1 MSS every RTT).",
+            "Logarithmically.",
+            "It remains fixed at initial window size."
+          ],
+          "correct_option": 0,
+          "explanation": "In TCP Slow Start, cwnd increases by 1 Maximum Segment Size (MSS) for each ACK received, which doubles the congestion window size every round-trip time (exponential growth)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Congestion+Control+and+Flow+Control+Computer+Networks+CN+GATE+lecture"
@@ -764,7 +884,7 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           "question": "During a TLS 1.3 handshake, how is the symmetric encryption session key established securely?",
           "options": [
             "Diffie-Hellman Key Exchange (ECDHE)",
-            "The client encrypts the key with the server\u2019s private key",
+            "The client encrypts the key with the server’s private key",
             "The server sends the secret key in plain text over HTTPS",
             "The certificate authority transmits the key via DNS"
           ],
@@ -890,6 +1010,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "Stateful firewalls maintain connection tables (e.g. TCP handshakes), automatically allowing legitimate incoming replies while blocking unsolicited traffic."
+        },
+        {
+          "id": "cn-sec-3",
+          "question": "In asymmetric public-key cryptography (e.g. RSA), which key is used to sign a digital certificate, and which is used to verify the signature?",
+          "options": [
+            "Signed with the sender's Private Key; verified using the sender's Public Key.",
+            "Signed with the sender's Public Key; verified using Private Key.",
+            "Signed with the receiver's Public Key; verified with receiver's Private Key.",
+            "Signed and verified with the same shared symmetric secret key."
+          ],
+          "correct_option": 0,
+          "explanation": "Digital signatures provide non-repudiation and authenticity by encrypting the document hash with the signer's Private Key. Anyone in possession of the signer's Public Key can decrypt and verify the signature."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Network+Security+Fundamentals+Computer+Networks+CN+GATE+lecture"
@@ -938,6 +1070,18 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 1,
           "explanation": "BDP measures the data volume that can simultaneously fill the communication link between sender and receiver."
+        },
+        {
+          "id": "cn-perf-3",
+          "question": "What is the Bandwidth-Delay Product (BDP) in high-speed computer networks?",
+          "options": [
+            "The product of link bandwidth (bits/sec) and round-trip propagation delay (seconds), representing the maximum amount of data in flight in the network pipe.",
+            "The queuing delay divided by packet transmission delay.",
+            "The maximum throughput of a 10Gbps fiber channel.",
+            "The packet loss percentage over wireless channels."
+          ],
+          "correct_option": 0,
+          "explanation": "Bandwidth-Delay Product (BDP = RTT * Bandwidth) measures the capacity of the network link pipe (the volume of data that can be transmitted before the first acknowledgment arrives)."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Performance%3A+Throughput%2C+Delay%2C+and+Bandwidth+Computer+Networks+CN+GATE+lecture"
