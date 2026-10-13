@@ -139,8 +139,8 @@ git push -u origin dev
 
 ## 📈 Roadmap & Build Phases
 
-- [x] **Phase 1 (Weeks 1–3):** Project scaffolding, Git/CI pipeline, Supabase schema with RLS, Auth (Google OAuth & Phone OTP), and Profile Dashboard.
-- [x] **Phase 2 (Weeks 4–7):** Aptitude + Core CS Subjects (Notes markdown engine, timed MCQ quiz engine, attempts & progress sync).
+- [x] **Phase 1 (Weeks 1–3):** Project scaffolding, Git/CI pipeline, Supabase schema with RLS, Auth (Google OAuth, Email/Password, and 1-Click Instant Demo Login), and Profile Dashboard.
+- [x] **Phase 2 (Weeks 4–7):** Aptitude + Core CS Subjects (221 modules, 668 verified MCQs, notes markdown engine, timed/practice quiz engine, YouTube video lecture links, attempts & progress sync).
 - [ ] **Phase 3 (Weeks 8–10):** DSA Hub (Curated roadmap, difficulty & pattern filters, external links to LeetCode/Striver/YouTube).
 - [ ] **Phase 4 (Weeks 11–14):** Resume ATS Checker (PDF/DOCX upload, Claude-powered scoring & keyword gap analysis, history).
 - [ ] **Phase 5 (Weeks 15–17):** Floating AI Chatbot Widget (Context-aware assistance based on active topic, per-user rate limiting).
