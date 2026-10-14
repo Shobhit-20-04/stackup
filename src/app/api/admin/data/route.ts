@@ -2,47 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { fetchLoginAudits, type LoginAuditEntry } from '@/lib/services/login-audit';
+import { verifyAdminRequest, getAdminPasscode } from '@/lib/security/admin-auth';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+import { verifyCsrfOrigin } from '@/lib/security/sanitize';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-let runtimeAdminPasscode: string | null = null;
-
 export function getActiveAdminPasscode(): string {
-  return runtimeAdminPasscode || 'stack2004up';
+  return getAdminPasscode();
 }
 
 export function setActiveAdminPasscode(key: string): void {
-  runtimeAdminPasscode = key;
-}
-
-function isAuthorized(req: NextRequest): boolean {
-  // Strictly accepted native key: ONLY stack2004up (or runtime key if updated during session)
-  const validKeys = ['stack2004up'];
-  if (runtimeAdminPasscode) {
-    validKeys.push(runtimeAdminPasscode);
-  }
-
-  const authHeader = req.headers.get('authorization') || '';
-  const adminKey = req.headers.get('x-admin-key') || '';
-  const queryKey = req.nextUrl.searchParams.get('key') || '';
-
-  if (validKeys.includes(adminKey) || validKeys.includes(queryKey)) {
-    return true;
-  }
-
-  if (authHeader.startsWith('Bearer ') && validKeys.includes(authHeader.slice(7))) {
-    return true;
-  }
-
-  return false;
+  process.env.ADMIN_PASSCODE = key;
 }
 
 export async function GET(req: NextRequest) {
   try {
-    const authorized = isAuthorized(req);
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`admin-data-${ip}`, 30, 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Rate limit exceeded. Please wait ${rateCheck.resetInSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
+    const authorized = verifyAdminRequest(req);
     if (!authorized) {
-      return NextResponse.json({ error: 'Unauthorized. Admin passcode required.' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized. Admin authorization required.' }, { status: 401 });
     }
 
     const supabase = await createClient();
@@ -411,13 +399,25 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    if (!isAuthorized(req)) {
+    if (!verifyCsrfOrigin(req)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
+    }
+
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`admin-delete-${ip}`, 15, 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
+    }
+
+    if (!verifyAdminRequest(req)) {
       return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
     }
 
-    const { id } = await req.json();
-    if (!id) {
-      return NextResponse.json({ error: 'Resume ID is required.' }, { status: 400 });
+    const body = await req.json().catch(() => ({}));
+    const id = typeof body?.id === 'string' ? body.id.trim() : '';
+    // UUID format check to prevent injection or invalid queries
+    if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+      return NextResponse.json({ error: 'Valid Resume UUID is required.' }, { status: 400 });
     }
 
     const supabase = await createClient();
@@ -436,7 +436,17 @@ export async function DELETE(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    if (!isAuthorized(req)) {
+    if (!verifyCsrfOrigin(req)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
+    }
+
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`admin-post-${ip}`, 15, 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
+    }
+
+    if (!verifyAdminRequest(req)) {
       return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
     }
 
@@ -445,9 +455,9 @@ export async function POST(req: NextRequest) {
 
     // Action 1: Change Admin Authentication Passcode Key
     if (action === 'change_passcode') {
-      if (!newPasscode || typeof newPasscode !== 'string' || newPasscode.trim().length < 6) {
+      if (!newPasscode || typeof newPasscode !== 'string' || newPasscode.trim().length < 8) {
         return NextResponse.json(
-          { error: 'The new admin passcode must be at least 6 characters long.' },
+          { error: 'The new admin passcode must be at least 8 characters long.' },
           { status: 400 }
         );
       }
@@ -457,8 +467,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        message: 'Admin authentication key updated successfully! Use your new key to unlock the portal.',
-        activeKey: cleanPasscode,
+        message: 'Admin authentication key updated in server process memory! For permanent persistence, set ADMIN_PASSCODE in your Vercel/hosting dashboard.',
       });
     }
 

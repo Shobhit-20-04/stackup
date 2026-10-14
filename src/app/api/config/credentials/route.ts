@@ -1,74 +1,133 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { verifyAdminRequest } from '@/lib/security/admin-auth';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+import { verifyCsrfOrigin } from '@/lib/security/sanitize';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const ENV_LOCAL_PATH = path.join(process.cwd(), '.env.local');
 
-export async function GET() {
+/**
+ * Validates a Supabase project URL to prevent SSRF against internal/cloud metadata services.
+ * Only allows valid https: URLs hosted on supabase.co.
+ */
+function isValidSupabaseUrl(urlString: string): boolean {
   try {
+    const parsed = new URL(urlString);
+    if (parsed.protocol !== 'https:') return false;
+    const hostname = parsed.hostname.toLowerCase();
+    // Allow *.supabase.co (e.g. iczaspwhfcgicytazppk.supabase.co)
+    return /^[a-z0-9_-]+\.supabase\.co$/.test(hostname);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * GET: Returns non-sensitive booleans indicating whether backend integrations are active.
+ * Excludes server file paths, URLs, and secrets from unauthenticated responses.
+ */
+export async function GET(req: NextRequest) {
+  try {
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`config-get-${ip}`, 30, 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
     const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
     const anthropicKey = process.env.ANTHROPIC_API_KEY || '';
 
-    const isSupabaseConfigured = 
-      Boolean(supabaseUrl && 
-      !supabaseUrl.includes('placeholder') && 
+    const isSupabaseConfigured = Boolean(
+      supabaseUrl &&
+      !supabaseUrl.includes('placeholder') &&
       supabaseUrl.startsWith('https://') &&
-      supabaseAnon && 
-      !supabaseAnon.includes('placeholder'));
+      supabaseAnon &&
+      !supabaseAnon.includes('placeholder')
+    );
 
     const isAnthropicConfigured = Boolean(anthropicKey && anthropicKey.startsWith('sk-ant-'));
 
     return NextResponse.json({
       supabaseConfigured: isSupabaseConfigured,
-      supabaseUrl: isSupabaseConfigured ? supabaseUrl : null,
       anthropicConfigured: isAnthropicConfigured,
-      envPath: ENV_LOCAL_PATH,
     });
   } catch (err: unknown) {
-    const error = err instanceof Error ? err.message : 'Failed to inspect credentials';
+    const error = err instanceof Error ? err.message : 'Failed to inspect configuration';
     return NextResponse.json({ error }, { status: 500 });
   }
 }
 
+/**
+ * POST: Updates server environment credentials.
+ * Strictly protected: Requires administrator authentication, CSRF check, and anti-SSRF validation.
+ */
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    if (!verifyCsrfOrigin(req)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
+    }
+
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`config-post-${ip}`, 5, 10 * 60 * 1000); // 5 attempts per 10 minutes
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Too many configuration attempts. Please retry in ${rateCheck.resetInSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
+    // Require verified admin authorization
+    if (!verifyAdminRequest(req)) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Administrator credentials required to update configuration.' },
+        { status: 401 }
+      );
+    }
+
+    // In cloud production (Vercel/Render/Fly), reject filesystem modifications
+    if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_RUNTIME_ENV_WRITE) {
+      return NextResponse.json(
+        {
+          error:
+            'Filesystem updates are disabled in production for security. Please set environment variables in your Vercel project dashboard.',
+        },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json().catch(() => ({}));
     const { supabaseUrl, supabaseAnonKey, supabaseServiceKey, anthropicApiKey } = body;
 
-    if (!supabaseUrl && !supabaseAnonKey && !anthropicApiKey) {
+    if (!supabaseUrl && !supabaseAnonKey && !anthropicApiKey && !supabaseServiceKey) {
       return NextResponse.json({ error: 'Please provide at least one credential to update.' }, { status: 400 });
     }
 
-    // 1. Test Supabase connection if provided
-    if (supabaseUrl && supabaseAnonKey) {
-      try {
-        const cleanUrl = supabaseUrl.trim().replace(/\/$/, '');
-        const pingUrl = `${cleanUrl}/rest/v1/`;
-        const testRes = await fetch(pingUrl, {
-          headers: {
-            apikey: supabaseAnonKey.trim(),
-            Authorization: `Bearer ${supabaseAnonKey.trim()}`,
-          },
-        });
-        
-        // Supabase REST endpoint returns 200 or 404 (on empty root) or 401 if invalid key
-        if (testRes.status === 401 || testRes.status === 403) {
-          return NextResponse.json({ 
-            error: 'Authentication failed. Please verify that your Supabase Anon Public Key is correct.' 
-          }, { status: 400 });
-        }
-      } catch {
-        return NextResponse.json({ 
-          error: `Could not connect to Supabase URL (${supabaseUrl}). Please check network connectivity or URL spelling.` 
-        }, { status: 400 });
+    // SSRF Prevention: Validate Supabase URL domain
+    if (supabaseUrl) {
+      if (!isValidSupabaseUrl(supabaseUrl.trim())) {
+        return NextResponse.json(
+          { error: 'Invalid Supabase project URL. Must be an https:// address ending in .supabase.co.' },
+          { status: 400 }
+        );
       }
     }
 
-    // 2. Read existing .env.local or create new
+    // Validate Anthropic API Key format
+    if (anthropicApiKey) {
+      if (typeof anthropicApiKey !== 'string' || !anthropicApiKey.trim().startsWith('sk-ant-')) {
+        return NextResponse.json(
+          { error: 'Invalid Anthropic API Key. Must start with sk-ant-.' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Read existing .env.local or initialize
     let envContent = '';
     if (fs.existsSync(ENV_LOCAL_PATH)) {
       envContent = fs.readFileSync(ENV_LOCAL_PATH, 'utf8');
@@ -83,23 +142,26 @@ export async function POST(req: NextRequest) {
     };
 
     if (supabaseUrl) {
-      envContent = updateEnvVar(envContent, 'NEXT_PUBLIC_SUPABASE_URL', supabaseUrl.trim());
-      process.env.NEXT_PUBLIC_SUPABASE_URL = supabaseUrl.trim();
+      const cleanUrl = supabaseUrl.trim().replace(/\/$/, '');
+      envContent = updateEnvVar(envContent, 'NEXT_PUBLIC_SUPABASE_URL', cleanUrl);
+      process.env.NEXT_PUBLIC_SUPABASE_URL = cleanUrl;
     }
     if (supabaseAnonKey) {
-      envContent = updateEnvVar(envContent, 'NEXT_PUBLIC_SUPABASE_ANON_KEY', supabaseAnonKey.trim());
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = supabaseAnonKey.trim();
+      const cleanKey = supabaseAnonKey.trim();
+      envContent = updateEnvVar(envContent, 'NEXT_PUBLIC_SUPABASE_ANON_KEY', cleanKey);
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = cleanKey;
     }
     if (supabaseServiceKey) {
-      envContent = updateEnvVar(envContent, 'SUPABASE_SERVICE_ROLE_KEY', supabaseServiceKey.trim());
-      process.env.SUPABASE_SERVICE_ROLE_KEY = supabaseServiceKey.trim();
+      const cleanService = supabaseServiceKey.trim();
+      envContent = updateEnvVar(envContent, 'SUPABASE_SERVICE_ROLE_KEY', cleanService);
+      process.env.SUPABASE_SERVICE_ROLE_KEY = cleanService;
     }
     if (anthropicApiKey) {
-      envContent = updateEnvVar(envContent, 'ANTHROPIC_API_KEY', anthropicApiKey.trim());
-      process.env.ANTHROPIC_API_KEY = anthropicApiKey.trim();
+      const cleanAnt = anthropicApiKey.trim();
+      envContent = updateEnvVar(envContent, 'ANTHROPIC_API_KEY', cleanAnt);
+      process.env.ANTHROPIC_API_KEY = cleanAnt;
     }
 
-    // Always ensure APP_URL is present
     if (!envContent.includes('NEXT_PUBLIC_APP_URL')) {
       envContent += '\nNEXT_PUBLIC_APP_URL=http://localhost:3000\n';
     }
@@ -107,14 +169,14 @@ export async function POST(req: NextRequest) {
     try {
       fs.writeFileSync(ENV_LOCAL_PATH, envContent.trim() + '\n', 'utf8');
     } catch {
-      // In serverless hosting (e.g. Vercel), filesystem is read-only. Environment variables are set via dashboard.
+      // In read-only environments
     }
 
     return NextResponse.json({
       success: true,
       message: 'Credentials updated and verified successfully!',
-      supabaseConfigured: Boolean(supabaseUrl && supabaseAnonKey),
-      anthropicConfigured: Boolean(anthropicApiKey),
+      supabaseConfigured: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+      anthropicConfigured: Boolean(process.env.ANTHROPIC_API_KEY),
     });
   } catch (err: unknown) {
     const error = err instanceof Error ? err.message : 'Failed to write credentials';

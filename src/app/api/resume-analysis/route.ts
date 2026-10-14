@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkRateLimit } from '@/lib/services/rate-limit';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { createClient } from '@/lib/supabase/server';
+import { sanitizeFilename, validateFileMagic, verifyCsrfOrigin } from '@/lib/security/sanitize';
 import type { Json } from '@/lib/types/database';
 import mammoth from 'mammoth';
 
@@ -301,9 +302,14 @@ export function analyzeResumeLocally(text: string, filename: string): AnalysisOu
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Rate limiting
-    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
-    const rateCheck = checkRateLimit(`resume-${ip}`, 20, 60 * 1000); // 20 requests/min
+    // 1. CSRF Protection
+    if (!verifyCsrfOrigin(req)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
+    }
+
+    // 2. Rate limiting (20 requests/min per IP)
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`resume-${ip}`, 20, 60 * 1000);
     if (!rateCheck.allowed) {
       return NextResponse.json(
         { error: `Rate limit exceeded. Please wait ${rateCheck.resetInSeconds} seconds before re-analyzing.` },
@@ -311,22 +317,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Authentication Check: User must be logged in to analyze and store resumes
+    // 3. Authentication Check: User must be authenticated to analyze and store resumes
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    const sessionCookie = req.cookies.get('stackup_session')?.value;
+    const demoCookie = req.cookies.get('sb-demo-user')?.value;
     let localUserId: string | null = null;
     let localUserEmail: string | null = null;
-    if (sessionCookie) {
+    if (demoCookie) {
       try {
-        const parsed = JSON.parse(decodeURIComponent(sessionCookie));
-        if (parsed?.id) {
+        const parsed = JSON.parse(decodeURIComponent(demoCookie));
+        if (parsed?.id && parsed?.email) {
           localUserId = parsed.id;
-          localUserEmail = parsed.email || null;
+          localUserEmail = parsed.email;
         }
       } catch {
-        // session parse ignored
+        // demo cookie parse error ignored
       }
     }
 
@@ -366,13 +372,20 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      filename = file.name;
+      filename = sanitizeFilename(file.name);
       fileSize = file.size;
       const lowerName = filename.toLowerCase();
+      const fileExt = lowerName.includes('.') ? lowerName.slice(lowerName.lastIndexOf('.') + 1) : '';
 
-      // Read file buffer once for both text extraction and persistent binary storage
+      // Read file buffer once for text extraction, binary storage, and magic byte validation
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       fileDataBase64 = fileBuffer.toString('base64');
+
+      // 4. Magic Byte Signature Validation (Defends against file upload bypass & malicious polyglots)
+      const magicCheck = validateFileMagic(fileBuffer, fileExt);
+      if (!magicCheck.valid) {
+        return NextResponse.json({ error: magicCheck.error || 'Invalid file format.' }, { status: 400 });
+      }
 
       if (lowerName.endsWith('.pdf')) {
         mimeType = file.type || 'application/pdf';

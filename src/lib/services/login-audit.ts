@@ -46,10 +46,9 @@ export async function recordLoginAudit(entry: {
   try {
     const supabase = await createClient();
 
-    // 1. Attempt standard user_login_logs table insert
-    let savedToTable = false;
+    // Attempt standard user_login_logs table insert
     try {
-      const { error: tblErr } = await (supabase.from('user_login_logs') as unknown as {
+      await (supabase.from('user_login_logs') as unknown as {
         insert: (data: Record<string, unknown>) => Promise<{ error: Error | null }>;
       }).insert({
         user_id: newEntry.user_id,
@@ -60,31 +59,8 @@ export async function recordLoginAudit(entry: {
         user_agent: newEntry.user_agent,
         created_at: newEntry.created_at,
       });
-      if (!tblErr) savedToTable = true;
     } catch {
-      savedToTable = false;
-    }
-
-    // 2. If user_login_logs table is missing or fails, persist into uploaded_resumes table
-    // (uploaded_resumes is verified and guaranteed readable/writable by anon client)
-    if (!savedToTable) {
-      await (supabase.from('uploaded_resumes') as unknown as {
-        insert: (data: Record<string, unknown>) => Promise<unknown>;
-      }).insert({
-        filename: `__system_login_${Date.now()}__`,
-        mime_type: 'application/x-audit-log',
-        user_email: newEntry.email,
-        user_id: newEntry.user_id,
-        ip_address: newEntry.ip_address,
-        resume_text: `User Login Event: ${newEntry.full_name || newEntry.email} authenticated via ${newEntry.auth_method}`,
-        ats_score: 0,
-        analysis: {
-          type: 'login_audit',
-          full_name: newEntry.full_name,
-          auth_method: newEntry.auth_method,
-          user_agent: newEntry.user_agent,
-        },
-      });
+      // Retained in inMemoryLogs fallback
     }
   } catch (err) {
     console.warn('Notice: recording login audit to Supabase returned:', err);

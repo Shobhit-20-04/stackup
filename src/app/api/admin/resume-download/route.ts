@@ -1,44 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getActiveAdminPasscode } from '@/app/api/admin/data/route';
+import { verifyAdminRequest } from '@/lib/security/admin-auth';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+import { sanitizeFilename } from '@/lib/security/sanitize';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function isAuthorized(req: NextRequest): boolean {
-  const activePasscode = getActiveAdminPasscode();
-  const validKeys = ['stack2004up'];
-  if (activePasscode && !validKeys.includes(activePasscode)) {
-    validKeys.push(activePasscode);
-  }
-
-  const authHeader = req.headers.get('authorization') || '';
-  const adminKey = req.headers.get('x-admin-key') || '';
-  const queryKey = req.nextUrl.searchParams.get('key') || '';
-
-  if (validKeys.includes(adminKey) || validKeys.includes(queryKey)) {
-    return true;
-  }
-
-  if (authHeader.startsWith('Bearer ') && validKeys.includes(authHeader.slice(7))) {
-    return true;
-  }
-
-  return false;
-}
-
 export async function GET(req: NextRequest) {
   try {
-    if (!isAuthorized(req)) {
-      return NextResponse.json({ error: 'Unauthorized. Valid administrator passcode required.' }, { status: 401 });
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`admin-download-${ip}`, 20, 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Download rate limit exceeded. Please wait ${rateCheck.resetInSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
+    if (!verifyAdminRequest(req)) {
+      return NextResponse.json({ error: 'Unauthorized. Valid administrator authorization required.' }, { status: 401 });
     }
 
     const { searchParams } = req.nextUrl;
     const id = searchParams.get('id');
     const format = searchParams.get('format');
 
-    if (!id) {
-      return NextResponse.json({ error: 'Resume ID parameter is required.' }, { status: 400 });
+    if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+      return NextResponse.json({ error: 'Valid Resume UUID parameter is required.' }, { status: 400 });
     }
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -62,7 +51,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Resume document not found.' }, { status: 404 });
     }
 
-    const originalFilename = resume.filename || 'Candidate_Resume.pdf';
+    const rawFilename = resume.filename || 'Candidate_Resume.pdf';
+    const originalFilename = sanitizeFilename(rawFilename);
     const cleanBasename = originalFilename.replace(/\.[^/.]+$/, '');
 
     // 1. Explicit text format requested

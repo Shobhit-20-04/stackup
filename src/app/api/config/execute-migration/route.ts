@@ -2,11 +2,31 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { createClient } from '@supabase/supabase-js';
+import { verifyAdminRequest } from '@/lib/security/admin-auth';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+import { verifyCsrfOrigin } from '@/lib/security/sanitize';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    if (!verifyCsrfOrigin(req)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
+    }
+
+    const ip = getClientIp(req);
+    const rateCheck = checkRateLimit(`migration-exec-${ip}`, 5, 15 * 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
+    }
+
+    if (!verifyAdminRequest(req)) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Administrator credentials required to execute schema migration.' },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const supabaseUrl = body.supabaseUrl || process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = body.serviceRoleKey || process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -42,7 +62,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Return the migration script so the user or runner can execute
+    // Return the migration script so the verified administrator can execute
     return NextResponse.json({
       success: true,
       message: 'Migration script ready. Please execute in Supabase SQL Editor.',

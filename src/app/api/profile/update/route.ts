@@ -1,43 +1,84 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { sanitizeText, sanitizeUrl, verifyCsrfOrigin } from '@/lib/security/sanitize';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { userId, fullName, phone, targetRole, college, gradYear, githubUrl, linkedinUrl } = body;
-
-    if (!userId) {
-      return NextResponse.json({ error: 'User identifier is required' }, { status: 400 });
+    // 1. CSRF Verification
+    if (!verifyCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
     }
+
+    // 2. Rate Limiting (15 updates per minute per IP)
+    const ip = getClientIp(request);
+    const rateCheck = checkRateLimit(`profile-update-${ip}`, 15, 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Too many profile updates. Please retry in ${rateCheck.resetInSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
+    const body = await request.json().catch(() => ({}));
+    const { userId: explicitUserId, fullName, phone, targetRole, college, gradYear, githubUrl, linkedinUrl } = body;
+
+    // 3. Authenticate User Server-Side (Defends against BOLA / IDOR)
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Enforce that user can only update their own profile
+    if (user && explicitUserId && user.id !== explicitUserId) {
+      return NextResponse.json(
+        { error: 'Forbidden: You are not authorized to update another user’s profile.' },
+        { status: 403 }
+      );
+    }
+
+    const effectiveUserId = user?.id || (typeof explicitUserId === 'string' ? explicitUserId.trim() : null);
+
+    if (!effectiveUserId) {
+      return NextResponse.json({ error: 'Authentication required to update profile.' }, { status: 401 });
+    }
+
+    // 4. Strict Input Sanitization (Defends against XSS and injection)
+    const cleanFullName = sanitizeText(fullName, 100);
+    const cleanPhone = sanitizeText(phone, 25);
+    const cleanTargetRole = sanitizeText(targetRole, 80);
+    const cleanCollege = sanitizeText(college, 120);
+    const cleanGradYear = sanitizeText(gradYear, 10);
+    const cleanGithubUrl = sanitizeUrl(githubUrl, ['github.com']);
+    const cleanLinkedinUrl = sanitizeUrl(linkedinUrl, ['linkedin.com']);
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const isLive = supabaseUrl && !supabaseUrl.includes('placeholder');
 
-    if (isLive) {
+    if (isLive && user) {
       try {
-        const supabase = await createClient();
         // Update user metadata in auth.users
         await supabase.auth.updateUser({
           data: {
-            full_name: fullName,
-            target_role: targetRole,
-            college,
-            grad_year: gradYear,
-            github_url: githubUrl,
-            linkedin_url: linkedinUrl,
+            full_name: cleanFullName,
+            target_role: cleanTargetRole,
+            college: cleanCollege,
+            grad_year: cleanGradYear,
+            github_url: cleanGithubUrl,
+            linkedin_url: cleanLinkedinUrl,
           },
         });
 
-        // Update public.profiles
+        // Update public.profiles table (parameterized via Supabase client, RLS enforced)
         await (supabase
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .from('profiles') as any)
           .update({
-            full_name: fullName || null,
-            phone: phone || null,
+            full_name: cleanFullName || null,
+            phone: cleanPhone || null,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', userId);
+          .eq('id', user.id);
       } catch (err) {
         console.warn('Supabase remote profile sync note:', err);
       }
@@ -46,18 +87,18 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       profile: {
-        id: userId,
-        full_name: fullName,
-        phone,
-        target_role: targetRole,
-        college,
-        grad_year: gradYear,
-        github_url: githubUrl,
-        linkedin_url: linkedinUrl,
+        id: effectiveUserId,
+        full_name: cleanFullName,
+        phone: cleanPhone,
+        target_role: cleanTargetRole,
+        college: cleanCollege,
+        grad_year: cleanGradYear,
+        github_url: cleanGithubUrl,
+        linkedin_url: cleanLinkedinUrl,
       },
     });
   } catch (error) {
-    console.error('Error in profile update handler:', error);
-    return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : 'Failed to update profile';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

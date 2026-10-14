@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkRateLimit } from '@/lib/services/rate-limit';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { createClient } from '@/lib/supabase/server';
+import { sanitizeText, verifyCsrfOrigin } from '@/lib/security/sanitize';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -79,7 +80,11 @@ Feel free to ask a specific concept question, ask for code in Python/C++/Java/Ty
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    if (!verifyCsrfOrigin(req)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
+    }
+
+    const ip = getClientIp(req);
     const rateCheck = checkRateLimit(`chat-${ip}`, 30, 60 * 1000); // 30 req/min
     if (!rateCheck.allowed) {
       return NextResponse.json(
@@ -88,22 +93,32 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const message = body.message as string;
-    const sectionContext = body.sectionContext as string | undefined;
-    const history = (body.history as ChatMessage[]) || [];
+    const body = await req.json().catch(() => ({}));
+    const rawMessage = typeof body?.message === 'string' ? body.message : '';
+    const message = sanitizeText(rawMessage, 2000);
+    const sectionContext = sanitizeText(body?.sectionContext, 100) || undefined;
+    const rawHistory = Array.isArray(body?.history) ? body.history : [];
 
     if (!message || message.trim().length === 0) {
       return NextResponse.json({ error: 'Message content cannot be empty.' }, { status: 400 });
     }
+
+    // Sanitize and constrain history
+    const history: ChatMessage[] = rawHistory.slice(-6).map((m: unknown) => {
+      const item = (typeof m === 'object' && m !== null ? m : {}) as Record<string, unknown>;
+      return {
+        role: item.role === 'assistant' ? 'assistant' : 'user',
+        content: sanitizeText(item.content, 1000),
+      };
+    });
 
     let reply = '';
     const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
 
     if (anthropicApiKey && anthropicApiKey.startsWith('sk-ant-')) {
       try {
-        const formattedMessages = history.slice(-6).map((m) => ({
-          role: m.role === 'assistant' ? 'assistant' : 'user',
+        const formattedMessages = history.map((m) => ({
+          role: m.role,
           content: m.content,
         }));
         formattedMessages.push({ role: 'user', content: message });

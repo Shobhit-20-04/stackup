@@ -6,12 +6,30 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  // Inject baseline security headers on every response
+  supabaseResponse.headers.set('X-Frame-Options', 'DENY');
+  supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff');
+  supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  supabaseResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  supabaseResponse.headers.set('X-XSS-Protection', '1; mode=block');
+
   const pathname = request.nextUrl.pathname;
   const isAuthPage = pathname.startsWith('/login');
   const isProtectedPath = pathname.startsWith('/profile');
 
+  // Verify demo cookie format safely
   const demoCookie = request.cookies.get('sb-demo-user');
-  let hasUser = !!demoCookie;
+  let hasUser = false;
+  if (demoCookie?.value) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(demoCookie.value));
+      if (parsed && typeof parsed.id === 'string' && typeof parsed.email === 'string') {
+        hasUser = true;
+      }
+    } catch {
+      hasUser = false;
+    }
+  }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -28,6 +46,13 @@ export async function updateSession(request: NextRequest) {
             supabaseResponse = NextResponse.next({
               request,
             });
+            // Re-apply security headers on updated response
+            supabaseResponse.headers.set('X-Frame-Options', 'DENY');
+            supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff');
+            supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+            supabaseResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+            supabaseResponse.headers.set('X-XSS-Protection', '1; mode=block');
+
             cookiesToSet.forEach(({ name, value, options }) =>
               supabaseResponse.cookies.set(name, value, options)
             );
@@ -43,7 +68,7 @@ export async function updateSession(request: NextRequest) {
         hasUser = true;
       }
     } catch {
-      // In case of network errors, rely on demoCookie or continue
+      // In case of network errors, continue safely
     }
   }
 

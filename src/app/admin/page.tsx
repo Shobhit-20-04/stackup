@@ -153,12 +153,7 @@ interface AdminData {
 }
 
 export default function AdminDashboardPage() {
-  const [passcode, setPasscode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '';
-    }
-    return '';
-  });
+  const [passcode, setPasscode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -189,28 +184,25 @@ export default function AdminDashboardPage() {
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
   const [readerViewMode, setReaderViewMode] = useState<'formatted' | 'raw' | 'diagnostics'>('formatted');
   const [copiedText, setCopiedText] = useState(false);
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
   const searchInputId = useId();
 
-  const fetchAdminData = useCallback(async (key: string) => {
+  const fetchAdminData = useCallback(async () => {
     try {
       setLoading(true);
       setErrorMsg('');
-      const res = await fetch(`/api/admin/data?key=${encodeURIComponent(key)}`, {
-        headers: { 'x-admin-key': key },
-      });
+      const res = await fetch('/api/admin/data');
 
       if (!res.ok) {
         if (res.status === 401) {
           setIsAuthenticated(false);
+          // Purge legacy storage items if any exist
           if (typeof window !== 'undefined') {
             sessionStorage.removeItem('stackup_admin_key');
             localStorage.removeItem('stackup_admin_key');
           }
-          setAuthError('Invalid administrator security key. Access denied.');
           return;
         }
         throw new Error('Failed to load administrator telemetry.');
@@ -219,10 +211,7 @@ export default function AdminDashboardPage() {
       const json = await res.json();
       setData(json);
       setIsAuthenticated(true);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('stackup_admin_key', key);
-        sessionStorage.setItem('stackup_admin_key', key);
-      }
+      setAuthError('');
 
       // Auto-select first resume if none selected
       if (json.resumes && json.resumes.length > 0) {
@@ -236,26 +225,48 @@ export default function AdminDashboardPage() {
     }
   }, []);
 
-  // Check stored admin key on mount (localStorage for trusted persistent device access)
+  // Check existing authenticated session on mount via secure HttpOnly cookie
   useEffect(() => {
-    if (!passcode) return;
     const timer = setTimeout(() => {
-      void fetchAdminData(passcode);
+      void fetchAdminData();
     }, 0);
     return () => clearTimeout(timer);
-  }, [fetchAdminData, passcode]);
+  }, [fetchAdminData]);
 
-  const handleUnlock = (e: React.FormEvent) => {
+  const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!passcode.trim()) {
       setAuthError('Please enter the security key.');
       return;
     }
     setAuthError('');
-    fetchAdminData(passcode.trim());
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passcode: passcode.trim() }),
+      });
+      const resJson = await res.json();
+      if (!res.ok) {
+        setAuthError(resJson.error || 'Invalid administrator security key.');
+        return;
+      }
+      setPasscode('');
+      await fetchAdminData();
+    } catch {
+      setAuthError('Network error verifying security key.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    try {
+      await fetch('/api/admin/auth', { method: 'DELETE' });
+    } catch {
+      // ignore
+    }
     if (typeof window !== 'undefined') {
       localStorage.removeItem('stackup_admin_key');
       sessionStorage.removeItem('stackup_admin_key');
@@ -271,13 +282,9 @@ export default function AdminDashboardPage() {
     }
     try {
       setDeletingId(id);
-      const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
       const res = await fetch('/api/admin/data', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-key': activeKey,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
       if (res.ok) {
@@ -286,7 +293,7 @@ export default function AdminDashboardPage() {
           setSelectedResumeId(remaining.length > 0 ? remaining[0].id : null);
           setMobileDetailOpen(false);
         }
-        fetchAdminData(activeKey);
+        await fetchAdminData();
       } else {
         alert('Failed to delete resume record.');
       }
@@ -300,17 +307,13 @@ export default function AdminDashboardPage() {
   const handlePurgeTestRecords = async () => {
     if (!confirm('Purge all mock and test seed resumes (@example.com, etc.) permanently?')) return;
     try {
-      const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
       const res = await fetch('/api/admin/data', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-key': activeKey,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'purge_test_records' }),
       });
       if (res.ok) {
-        fetchAdminData(activeKey);
+        await fetchAdminData();
       } else {
         alert('Failed to purge test records.');
       }
@@ -323,8 +326,8 @@ export default function AdminDashboardPage() {
     e.preventDefault();
     setChangeKeyErr('');
     setChangeKeyMsg('');
-    if (!newPasscode.trim() || newPasscode.length < 6) {
-      setChangeKeyErr('New security key must be at least 6 characters long.');
+    if (!newPasscode.trim() || newPasscode.length < 8) {
+      setChangeKeyErr('New security key must be at least 8 characters long.');
       return;
     }
     if (newPasscode !== confirmNewPasscode) {
@@ -333,13 +336,9 @@ export default function AdminDashboardPage() {
     }
     try {
       setChangeKeyLoading(true);
-      const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
       const res = await fetch('/api/admin/data', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-key': activeKey,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'change_passcode', newPasscode: newPasscode.trim() }),
       });
       const json = await res.json();
@@ -348,11 +347,6 @@ export default function AdminDashboardPage() {
         return;
       }
       setChangeKeyMsg('Master key updated successfully! Please save your new passcode.');
-      setPasscode(newPasscode.trim());
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('stackup_admin_key', newPasscode.trim());
-        sessionStorage.setItem('stackup_admin_key', newPasscode.trim());
-      }
       setNewPasscode('');
       setConfirmNewPasscode('');
       setTimeout(() => {
@@ -372,17 +366,8 @@ export default function AdminDashboardPage() {
     setTimeout(() => setCopiedText(false), 2000);
   };
 
-  const handleCopyKey = (keyVal: string) => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(keyVal);
-      setCopiedKey(keyVal);
-      setTimeout(() => setCopiedKey(null), 2000);
-    }
-  };
-
   const handleDownloadOriginalFile = (resume: ResumeRecord) => {
-    const activeKey = passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : '');
-    const downloadUrl = `/api/admin/resume-download?id=${encodeURIComponent(resume.id)}&key=${encodeURIComponent(activeKey)}`;
+    const downloadUrl = `/api/admin/resume-download?id=${encodeURIComponent(resume.id)}`;
     const link = document.createElement('a');
     link.href = downloadUrl;
     link.download = resume.filename;
@@ -612,7 +597,7 @@ export default function AdminDashboardPage() {
               </Link>
 
               <button
-                onClick={() => fetchAdminData(passcode || (typeof window !== 'undefined' ? localStorage.getItem('stackup_admin_key') || sessionStorage.getItem('stackup_admin_key') || '' : ''))}
+                onClick={() => fetchAdminData()}
                 disabled={loading}
                 className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-semibold text-slate-200 hover:bg-slate-700 hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
               >
@@ -1763,49 +1748,10 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Quick Access Active Keys */}
-            <div className="space-y-2.5 p-3.5 rounded-2xl bg-[#09090b]/90 border border-zinc-800">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
-                  Active Master Key
-                </span>
-                <span className="text-[10px] text-emerald-400 font-medium px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800/80">
-                  Ready to Use
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-normal">
-                Your portal natively accepts the PIN below. Your browser also remembers your session in local storage:
-              </p>
-              
-              <div className="space-y-2 pt-1">
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#121215] border border-zinc-800 text-xs">
-                  <div>
-                    <span className="text-[10px] text-blue-400 font-bold block uppercase tracking-wide">Native Master PIN</span>
-                    <code className="text-white font-mono font-bold text-xs">stack2004up</code>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleCopyKey('stack2004up')}
-                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 flex items-center space-x-1.5 cursor-pointer transition-colors"
-                  >
-                    {copiedKey === 'stack2004up' ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-emerald-400">Copied</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5 text-slate-400" />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-[#09090b]/60 border border-zinc-800 text-[11px] text-slate-400 leading-relaxed">
-              Want to set a custom key? Enter it below. To persist custom keys across server redeployments, you can also set <code className="text-indigo-400 bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in Vercel.
+            {/* Security Notice */}
+            <div className="p-3.5 rounded-2xl bg-[#09090b]/90 border border-zinc-800 text-xs text-slate-300 leading-relaxed">
+              <span className="font-bold text-white block mb-1">Server-Side Admin Security</span>
+              Your portal authenticates against <code className="text-indigo-400 bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> defined in your server environment variables. Entering a new passcode below updates the runtime server passcode. For permanent persistence across redeployments, update <code className="text-indigo-400 bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in your Vercel project settings.
             </div>
 
             {changeKeyErr && (

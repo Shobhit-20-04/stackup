@@ -1,15 +1,35 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { SECTION_TOTAL_ITEMS } from '@/lib/services/progress';
+import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+import { sanitizeText, verifyCsrfOrigin } from '@/lib/security/sanitize';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    // 1. CSRF Protection
+    if (!verifyCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
+    }
+
+    // 2. Rate Limiting (30 attempts/min per IP)
+    const ip = getClientIp(request);
+    const rateCheck = checkRateLimit(`quiz-attempt-${ip}`, 30, 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
+    }
+
+    const body = await request.json().catch(() => ({}));
     const { userId: explicitUserId, topicId, topicTitle, sectionSlug, score, total } = body;
 
-    if (!topicId || !sectionSlug || typeof score !== 'number' || typeof total !== 'number') {
-      return NextResponse.json({ error: 'Missing required quiz attempt attributes' }, { status: 400 });
+    if (!topicId || !sectionSlug || typeof score !== 'number' || typeof total !== 'number' || total <= 0 || score < 0 || score > total) {
+      return NextResponse.json({ error: 'Missing or invalid required quiz attempt attributes' }, { status: 400 });
     }
+
+    const cleanTopicId = sanitizeText(topicId, 100);
+    const cleanTopicTitle = sanitizeText(topicTitle, 150);
+    const cleanSectionSlug = sanitizeText(sectionSlug, 50);
 
     const percentage = Math.round((score / total) * 100);
     const attemptedAt = new Date().toISOString();
@@ -21,29 +41,35 @@ export async function POST(request: Request) {
       try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        const effectiveUserId = user?.id || explicitUserId;
+
+        // Enforce user ownership: If user is authenticated, only allow their own user.id
+        if (user && explicitUserId && user.id !== explicitUserId) {
+          return NextResponse.json({ error: 'Forbidden: Cannot submit attempt for another user.' }, { status: 403 });
+        }
+
+        const effectiveUserId = user?.id || (typeof explicitUserId === 'string' && /^[0-9a-f-]{1,64}$/i.test(explicitUserId) ? explicitUserId : null);
 
         if (effectiveUserId) {
           // 1. Resolve section ID from sections table if available
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { data: sectionData } = await (supabase.from('sections') as any)
             .select('id')
-            .eq('slug', sectionSlug)
+            .eq('slug', cleanSectionSlug)
             .maybeSingle();
 
           const sectionId = sectionData?.id;
 
           // 2. Resolve topic ID from topics table if available, or if topicId is already a UUID
           let dbTopicId: string | null = null;
-          const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(topicId);
+          const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanTopicId);
 
           if (isUUID) {
-            dbTopicId = topicId;
+            dbTopicId = cleanTopicId;
           } else if (sectionId) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { data: topicData } = await (supabase.from('topics') as any)
               .select('id')
-              .eq('slug', topicId)
+              .eq('slug', cleanTopicId)
               .eq('section_id', sectionId)
               .maybeSingle();
 
@@ -73,7 +99,7 @@ export async function POST(request: Request) {
               .eq('user_id', effectiveUserId);
 
             const uniqueAttempted = new Set((attempts || []).map((a: { topic_id: string }) => a.topic_id)).size;
-            const totalItems = SECTION_TOTAL_ITEMS[sectionSlug] || 10;
+            const totalItems = SECTION_TOTAL_ITEMS[cleanSectionSlug] || 10;
             const percentComplete = Math.min(100, Math.round((Math.max(1, uniqueAttempted) / totalItems) * 100));
 
             // Upsert user progress
@@ -97,9 +123,9 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       attempt: {
-        topicId,
-        topicTitle,
-        sectionSlug,
+        topicId: cleanTopicId,
+        topicTitle: cleanTopicTitle,
+        sectionSlug: cleanSectionSlug,
         score,
         total,
         percentage,
@@ -107,7 +133,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error('Error recording curriculum attempt:', error);
-    return NextResponse.json({ error: 'Failed to record attempt' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : 'Failed to record attempt';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

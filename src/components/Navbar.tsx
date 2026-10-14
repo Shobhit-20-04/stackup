@@ -138,18 +138,18 @@ export default function Navbar() {
     try {
       setSecretLoading(true);
       setSecretError('');
-      const res = await fetch(`/api/admin/data?key=${encodeURIComponent(secretPasscode.trim())}`, {
-        headers: { 'x-admin-key': secretPasscode.trim() }
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passcode: secretPasscode.trim() }),
       });
       if (res.ok) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('stackup_admin_key', secretPasscode.trim());
-          sessionStorage.setItem('stackup_admin_key', secretPasscode.trim());
-        }
         setShowSecretModal(false);
+        setSecretPasscode('');
         router.push('/admin');
       } else {
-        setSecretError('Invalid authorization key.');
+        const json = await res.json().catch(() => ({}));
+        setSecretError(json.error || 'Invalid authorization key.');
       }
     } catch {
       setSecretError('Failed to verify authorization.');

@@ -1,11 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { verifyAdminRequest } from '@/lib/security/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    if (!verifyAdminRequest(req)) {
+      return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
+
     const migrationPath = path.join(process.cwd(), 'supabase', 'migrations', '20260923000000_initial_schema.sql');
     if (fs.existsSync(migrationPath)) {
       const sqlContent = fs.readFileSync(migrationPath, 'utf8');
