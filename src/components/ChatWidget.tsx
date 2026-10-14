@@ -99,6 +99,17 @@ export default function ChatWidget() {
     }
   }, [messages, isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const handleSendMessage = async (textToSend?: string) => {
     const text = (textToSend || input).trim();
     if (!text || loading) return;
@@ -161,12 +172,12 @@ export default function ChatWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center space-x-2.5 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-xl shadow-blue-600/30 hover:scale-105 active:scale-95 transition-all duration-200 animate-float-gentle"
+          className="group relative flex items-center space-x-2.5 px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-xl shadow-indigo-600/30 hover:scale-105 active:scale-95 transition-all duration-200 animate-float-gentle cursor-pointer"
           aria-label="Open StackUp AI Chatbot"
         >
           <div className="relative">
             <Bot className="w-5 h-5 group-hover:rotate-6 transition-transform" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 border-2 border-blue-700 rounded-full animate-pulse" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 border-2 border-indigo-700 rounded-full animate-pulse" />
           </div>
           <span className="text-xs font-bold tracking-tight pr-1">Ask AI</span>
         </button>
@@ -176,23 +187,23 @@ export default function ChatWidget() {
       {isOpen && (
         <div className="w-[360px] sm:w-[420px] h-[550px] max-h-[85vh] bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           {/* Header */}
-          <div className="bg-blue-600 px-5 py-3.5 text-white flex items-center justify-between">
+          <div className="bg-indigo-600 px-5 py-3.5 text-white flex items-center justify-between">
             <div className="flex items-center space-x-2.5">
               <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
                 <h3 className="text-sm font-bold leading-tight">StackUp AI</h3>
-                <p className="text-[11px] text-blue-100 flex items-center space-x-1">
+                <p className="text-[11px] text-indigo-100 flex items-center space-x-1">
                   <span>Context:</span>
-                  <span className="font-semibold underline decoration-blue-300">{sectionContext}</span>
+                  <span className="font-semibold underline decoration-indigo-300">{sectionContext}</span>
                 </p>
               </div>
             </div>
 
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               aria-label="Close chat"
             >
               <X className="w-5 h-5" />
@@ -209,7 +220,7 @@ export default function ChatWidget() {
                 <div
                   className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs ${
                     m.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-none shadow-sm'
+                      ? 'bg-indigo-600 text-white rounded-br-none shadow-sm'
                       : 'bg-white dark:bg-zinc-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-zinc-800 rounded-bl-none shadow-sm'
                   }`}
                 >
@@ -228,7 +239,7 @@ export default function ChatWidget() {
 
             {loading && (
               <div className="flex items-center space-x-2 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-800 rounded-2xl px-3.5 py-2.5 text-xs text-slate-500 rounded-bl-none w-fit">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" />
                 <span>Thinking...</span>
               </div>
             )}
@@ -251,8 +262,8 @@ export default function ChatWidget() {
 
           {/* Input Box or Guest Lock Card */}
           {!currentUser && userPromptCount >= 1 ? (
-            <div className="p-3.5 border-t border-slate-200 dark:border-zinc-800 bg-blue-50/70 dark:bg-blue-950/40 text-center space-y-2">
-              <div className="flex items-center justify-center space-x-1.5 text-xs text-blue-700 dark:text-blue-300 font-semibold">
+            <div className="p-3.5 border-t border-slate-200 dark:border-zinc-800 bg-indigo-50/70 dark:bg-indigo-950/40 text-center space-y-2">
+              <div className="flex items-center justify-center space-x-1.5 text-xs text-indigo-700 dark:text-indigo-300 font-semibold">
                 <Lock className="w-3.5 h-3.5" />
                 <span>Free preview prompt used</span>
               </div>
@@ -261,7 +272,7 @@ export default function ChatWidget() {
               </p>
               <Link
                 href={`/login?redirect=${encodeURIComponent(pathname)}`}
-                className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm transition-all"
+                className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-sm transition-all"
               >
                 <span>Sign In to Continue</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -280,12 +291,12 @@ export default function ChatWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={`Ask about ${sectionContext}...`}
-                className="flex-1 px-3.5 py-2 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white placeholder:text-slate-400"
+                className="flex-1 px-3.5 py-2 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-white placeholder:text-slate-400"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || loading}
-                className="p-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white rounded-xl transition-all shadow-sm"
+                className="p-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-xl transition-all shadow-sm cursor-pointer"
                 aria-label="Send message"
               >
                 <Send className="w-4 h-4" />

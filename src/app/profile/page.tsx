@@ -132,10 +132,19 @@ export default function ProfilePage() {
       setEditGithubUrl(profile.github_url || '');
       setEditLinkedinUrl(profile.linkedin_url || '');
     }
-    setProfileSaveSuccess(false);
-    setProfileSaveError(null);
     setIsEditModalOpen(true);
   };
+
+  // Close Edit Profile modal with Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isEditModalOpen) {
+        setIsEditModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isEditModalOpen]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -252,7 +261,7 @@ export default function ProfilePage() {
             percent: aptMetrics.percent, 
             completed_items: aptMetrics.completed, 
             total_items: aptMetrics.total, 
-            color: 'bg-blue-600' 
+            color: 'bg-amber-500' 
           },
           { 
             section_name: 'Core CS (OS, DBMS, CN, OOPs)', 
@@ -260,7 +269,7 @@ export default function ProfilePage() {
             percent: csMetrics.percent, 
             completed_items: csMetrics.completed, 
             total_items: csMetrics.total, 
-            color: 'bg-sky-600' 
+            color: 'bg-indigo-600' 
           },
           { 
             section_name: 'DSA Curated Hub', 
@@ -457,7 +466,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
         <span className="text-sm text-slate-500 font-medium">Loading your real profile metrics...</span>
       </div>
     );
@@ -937,7 +946,12 @@ export default function ProfilePage() {
 
       {/* Edit Profile Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
+        <div 
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsEditModalOpen(false);
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200"
+        >
           <div className="relative w-full max-w-lg p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-zinc-800">
