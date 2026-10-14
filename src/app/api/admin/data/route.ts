@@ -17,6 +17,17 @@ export function setActiveAdminPasscode(key: string): void {
   process.env.ADMIN_PASSCODE = key;
 }
 
+async function getSupabaseAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (supabaseUrl && serviceRoleKey && !serviceRoleKey.includes('placeholder')) {
+    return createSupabaseAdmin(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+  }
+  return await createClient();
+}
+
 export async function GET(req: NextRequest) {
   try {
     const ip = getClientIp(req);
@@ -33,7 +44,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized. Admin authorization required.' }, { status: 401 });
     }
 
-    const supabase = await createClient();
+    const supabase = await getSupabaseAdminClient();
 
     // Fetch all telemetry datasets concurrently to minimize response latency
     const [
@@ -420,7 +431,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Valid Resume UUID is required.' }, { status: 400 });
     }
 
-    const supabase = await createClient();
+    const supabase = await getSupabaseAdminClient();
     const { error } = await supabase.from('uploaded_resumes').delete().eq('id', id);
 
     if (error) {
@@ -473,7 +484,7 @@ export async function POST(req: NextRequest) {
 
     // Action 2: Purge Legacy Testing & Seed Records
     if (action === 'purge_test_records') {
-      const supabase = await createClient();
+      const supabase = await getSupabaseAdminClient();
       await supabase.from('uploaded_resumes').delete().ilike('user_email', '%@example.com%');
       await supabase.from('uploaded_resumes').delete().ilike('filename', '%direct_test%');
       await supabase.from('uploaded_resumes').delete().ilike('filename', '%alex_smith%');

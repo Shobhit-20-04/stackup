@@ -469,6 +469,10 @@ export async function POST(req: NextRequest) {
       const emailMatch = resumeText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
       const detectedEmail = effectiveEmail || (emailMatch ? emailMatch[0] : null);
 
+      // Validate if effectiveUserId is a valid UUID format required by PostgreSQL uuid column
+      const isUUID = typeof effectiveUserId === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(effectiveUserId);
+      const dbUserId = isUUID ? effectiveUserId : null;
+
       // Store in uploaded_resumes table and resume_analyses concurrently
       const persistPromises: Promise<unknown>[] = [
         (supabase.from('uploaded_resumes') as unknown as {
@@ -480,7 +484,7 @@ export async function POST(req: NextRequest) {
           resume_text: resumeText,
           ats_score: analysis.ats_score,
           analysis: analysis as unknown as Json,
-          user_id: effectiveUserId,
+          user_id: dbUserId,
           user_email: detectedEmail,
           ip_address: ip,
           file_data: fileDataBase64,
@@ -488,12 +492,12 @@ export async function POST(req: NextRequest) {
       ];
 
       // Also record in resume_analyses table for user profile history concurrently
-      if (effectiveUserId) {
+      if (dbUserId) {
         persistPromises.push(
           (supabase.from('resume_analyses') as unknown as {
             insert: (data: Record<string, unknown>) => Promise<unknown>;
           }).insert({
-            user_id: effectiveUserId,
+            user_id: dbUserId,
             filename: analysis.filename,
             ats_score: analysis.ats_score,
             feedback: analysis as unknown as Json,

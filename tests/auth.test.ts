@@ -82,12 +82,12 @@ describe('StackUp Phase 1: Environment & Config Validation', () => {
     expect(parsed.githubUrl).toBe('https://github.com/alicedev');
   });
 
-  it('should verify admin gateway accepts native master key stack2004up', () => {
-    const MASTER_KEY = 'stack2004up';
-    const verifyPin = (entered: string) => entered.trim() === MASTER_KEY;
+  it('should verify admin gateway passcode validation logic', () => {
+    const activeKey = process.env.ADMIN_PASSCODE || 'stackup_admin_2026_secure';
+    const verifyPin = (entered: string) => entered.trim() === activeKey;
 
-    expect(verifyPin('stack2004up')).toBe(true);
-    expect(verifyPin('  stack2004up  ')).toBe(true);
+    expect(verifyPin(activeKey)).toBe(true);
+    expect(verifyPin(`  ${activeKey}  `)).toBe(true);
     expect(verifyPin('wrongpin')).toBe(false);
   });
 });

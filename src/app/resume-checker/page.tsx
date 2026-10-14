@@ -17,7 +17,8 @@ import {
   TrendingUp, 
   ChevronRight,
   BookmarkPlus,
-  Lock
+  Lock,
+  Copy
 } from 'lucide-react';
 import { getCurrentUser, type UserSession } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/client';
@@ -54,6 +55,7 @@ export default function ResumeCheckerPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [copiedReport, setCopiedReport] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -172,23 +174,26 @@ export default function ResumeCheckerPage() {
       list.unshift(newEntry);
       localStorage.setItem('stackup_local_resumes', JSON.stringify(list));
 
-      // 2. Try saving to Supabase if logged in
+      // 2. Try saving to Supabase if logged in with real UUID
       const user = await getCurrentUser();
       if (user) {
-        const supabase = createClient();
-        await (supabase.from('resume_analyses') as unknown as {
-          insert: (data: {
-            user_id: string;
-            filename: string;
-            ats_score: number;
-            feedback: unknown;
-          }) => Promise<unknown>;
-        }).insert({
-          user_id: user.id,
-          filename: result.filename,
-          ats_score: result.ats_score,
-          feedback: result,
-        });
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id);
+        if (isUUID) {
+          const supabase = createClient();
+          await (supabase.from('resume_analyses') as unknown as {
+            insert: (data: {
+              user_id: string;
+              filename: string;
+              ats_score: number;
+              feedback: unknown;
+            }) => Promise<unknown>;
+          }).insert({
+            user_id: user.id,
+            filename: result.filename,
+            ats_score: result.ats_score,
+            feedback: result,
+          });
+        }
       }
 
       setSavedSuccess(true);
@@ -197,11 +202,38 @@ export default function ResumeCheckerPage() {
     }
   };
 
+  const handleCopyReport = () => {
+    if (!result) return;
+    const reportText = `📄 StackUp ATS Resume Report: ${result.filename}
+🎯 Overall ATS Score: ${result.ats_score}/100 (Grade: ${result.grade})
+📊 Breakdown:
+  • Contact & Links: ${result.breakdown.contact_score}%
+  • Technical Skills: ${result.breakdown.skills_score}%
+  • Experience & Impact: ${result.breakdown.experience_score}%
+  • ATS Layout: ${result.breakdown.formatting_score}%
+
+✅ Matched Keywords (${result.matched_keywords.length}):
+${result.matched_keywords.join(', ') || 'None detected'}
+
+⚠️ Suggested Keywords to Add (${result.missing_keywords.length}):
+${result.missing_keywords.join(', ') || 'None needed'}
+
+⭐ STAR Bullet Rewrites:
+${result.bullet_rewrites.map((b, i) => `${i + 1}. Before: "${b.original}"\n   After: "${b.improved}"\n   Reason: ${b.reason}`).join('\n\n')}
+
+Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
+
+    navigator.clipboard.writeText(reportText);
+    setCopiedReport(true);
+    setTimeout(() => setCopiedReport(false), 2500);
+  };
+
   const handleReset = () => {
     setFile(null);
     setResult(null);
     setErrorMsg('');
     setSavedSuccess(false);
+    setCopiedReport(false);
   };
 
   return (
@@ -342,7 +374,7 @@ export default function ResumeCheckerPage() {
                   <button
                     onClick={handleAnalyzeUpload}
                     disabled={analyzing}
-                    className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-600/20 flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 transition-all cursor-pointer"
                   >
                     {analyzing ? (
                       <>
@@ -361,7 +393,7 @@ export default function ResumeCheckerPage() {
                 {analyzing && (
                   <div className="w-full max-w-xs mt-4 space-y-1.5 animate-in fade-in duration-200">
                     <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-600 animate-pulse w-full rounded-full" />
+                      <div className="h-full bg-indigo-600 animate-pulse w-full rounded-full" />
                     </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 text-center animate-pulse">
                       Parsing sections &amp; benchmarking skills against industry standards...
@@ -439,14 +471,31 @@ export default function ResumeCheckerPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:space-x-3">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:space-x-2">
+                  <button
+                    onClick={handleCopyReport}
+                    className="px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-xs border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 cursor-pointer"
+                  >
+                    {copiedReport ? (
+                      <>
+                        <Check className="w-4 h-4 text-emerald-500" />
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Report Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-indigo-500" />
+                        <span>Copy Report</span>
+                      </>
+                    )}
+                  </button>
+
                   <button
                     onClick={handleSaveToProfile}
                     disabled={savedSuccess}
-                    className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-sm ${
+                    className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer ${
                       savedSuccess
                         ? 'bg-emerald-600 text-white'
-                        : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white'
                     }`}
                   >
                     {savedSuccess ? (
@@ -464,7 +513,7 @@ export default function ResumeCheckerPage() {
 
                   <button
                     onClick={handleReset}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all"
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Scan Another</span>
@@ -485,7 +534,7 @@ export default function ResumeCheckerPage() {
                     <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.contact_score}%</span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-blue-500 h-full rounded-full" style={{ width: `${result.breakdown.contact_score}%` }} />
+                    <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${result.breakdown.contact_score}%` }} />
                   </div>
                 </div>
 
@@ -505,7 +554,7 @@ export default function ResumeCheckerPage() {
                     <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.experience_score}%</span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-blue-600 h-full rounded-full" style={{ width: `${result.breakdown.experience_score}%` }} />
+                    <div className="bg-indigo-600 h-full rounded-full" style={{ width: `${result.breakdown.experience_score}%` }} />
                   </div>
                 </div>
 
@@ -515,7 +564,7 @@ export default function ResumeCheckerPage() {
                     <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.formatting_score}%</span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-sky-500 h-full rounded-full" style={{ width: `${result.breakdown.formatting_score}%` }} />
+                    <div className="bg-teal-500 h-full rounded-full" style={{ width: `${result.breakdown.formatting_score}%` }} />
                   </div>
                 </div>
               </div>
@@ -523,7 +572,7 @@ export default function ResumeCheckerPage() {
 
             {/* Restricted Content Lock for Visitors */}
             {!currentUser ? (
-              <div className="rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#111827] p-8 text-center shadow-lg space-y-4">
+              <div className="rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] p-8 text-center shadow-lg space-y-4">
                 <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mx-auto mb-2">
                   <Lock className="w-7 h-7" />
                 </div>
@@ -613,7 +662,7 @@ export default function ResumeCheckerPage() {
             {result.bullet_rewrites && result.bullet_rewrites.length > 0 && (
               <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
                 <div className="flex items-center space-x-2 mb-2">
-                  <Sparkles className="w-5 h-5 text-blue-500" />
+                  <Sparkles className="w-5 h-5 text-indigo-500" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     STAR Bullet Point Rewrites
                   </h3>
@@ -643,7 +692,7 @@ export default function ResumeCheckerPage() {
                         </p>
                       </div>
 
-                      <p className="text-[11px] text-blue-600 dark:text-blue-400 italic pl-1">
+                      <p className="text-[11px] text-indigo-600 dark:text-indigo-400 italic pl-1">
                         Reason: {rewrite.reason}
                       </p>
                     </div>
@@ -666,7 +715,7 @@ export default function ResumeCheckerPage() {
                   <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
                     {result.section_suggestions.experience.map((s, i) => (
                       <li key={i} className="flex items-start space-x-1.5">
-                        <ChevronRight className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
                         <span>{s}</span>
                       </li>
                     ))}
@@ -694,7 +743,7 @@ export default function ResumeCheckerPage() {
                   <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
                     {result.section_suggestions.projects.map((s, i) => (
                       <li key={i} className="flex items-start space-x-1.5">
-                        <ChevronRight className="w-3.5 h-3.5 text-sky-500 shrink-0 mt-0.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
                         <span>{s}</span>
                       </li>
                     ))}
@@ -708,7 +757,7 @@ export default function ResumeCheckerPage() {
                   <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
                     {result.section_suggestions.contact.map((s, i) => (
                       <li key={i} className="flex items-start space-x-1.5">
-                        <ChevronRight className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
                         <span>{s}</span>
                       </li>
                     ))}
@@ -718,18 +767,18 @@ export default function ResumeCheckerPage() {
             </div>
 
             {/* Profile Navigation Footer */}
-            <div className="flex items-center justify-between bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 p-5 rounded-2xl">
+            <div className="flex items-center justify-between bg-slate-100 dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl">
               <div>
-                <h4 className="text-sm font-bold text-blue-900 dark:text-blue-200">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                   Track your score progression
                 </h4>
-                <p className="text-xs text-blue-700 dark:text-blue-400 mt-0.5">
+                <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
                   Saved resumes are stored in your profile dashboard alongside your quiz scores and streak tracker.
                 </p>
               </div>
               <Link
                 href="/profile"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all"
               >
                 <span>View Profile</span>
                 <ArrowRight className="w-3.5 h-3.5" />

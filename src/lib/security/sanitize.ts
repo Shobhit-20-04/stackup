@@ -36,7 +36,13 @@ export function sanitizeUrl(input: unknown, allowedHosts?: string[]): string | n
   if (!trimmed) return null;
 
   try {
-    const parsed = new URL(trimmed);
+    let toParse = trimmed;
+    // If no scheme is specified and not a pseudo-protocol, prepend https://
+    if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(toParse)) {
+      toParse = `https://${toParse}`;
+    }
+
+    const parsed = new URL(toParse);
     
     // Only permit secure HTTP/HTTPS protocols
     if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {

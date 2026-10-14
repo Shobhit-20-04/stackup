@@ -19,7 +19,7 @@ import {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || '/profile';
+  const redirectPath = searchParams.get('redirect') || searchParams.get('next') || '/profile';
   const urlError = searchParams.get('error');
 
   // Mode: Sign In vs Sign Up

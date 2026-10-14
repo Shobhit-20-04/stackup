@@ -52,6 +52,11 @@ describe('Security: URL Validation & Scheme Restricton', () => {
     expect(sanitizeUrl('https://github.com/shobhit', ['github.com'])).toBe('https://github.com/shobhit');
     expect(sanitizeUrl('https://evil-phishing.com/shobhit', ['github.com'])).toBeNull();
   });
+
+  it('normalizes valid URLs entered without explicit scheme', () => {
+    expect(sanitizeUrl('github.com/shobhit', ['github.com'])).toBe('https://github.com/shobhit');
+    expect(sanitizeUrl('linkedin.com/in/shobhit', ['linkedin.com'])).toBe('https://linkedin.com/in/shobhit');
+  });
 });
 
 describe('Security: Email & CRLF Header Injection Defense', () => {

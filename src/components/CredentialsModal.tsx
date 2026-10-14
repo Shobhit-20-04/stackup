@@ -79,7 +79,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
     } catch {
       // fallback
     }
-    const notice = `Run: D:\\stackup\\supabase\\migrations\\20260923000000_initial_schema.sql in your Supabase SQL Editor.`;
+    const notice = `Execute supabase/migrations/20261014000000_security_hardening.sql in your Supabase SQL Editor.`;
     navigator.clipboard.writeText(notice);
     setCopiedMigration(true);
     setTimeout(() => setCopiedMigration(false), 2500);

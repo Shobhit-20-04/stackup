@@ -12,11 +12,11 @@ export default function Footer() {
           {/* Col 1: Brand & Mission */}
           <div className="space-y-4 md:col-span-1">
             <Link href="/" className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/20">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/20">
                 <Layers className="w-4 h-4" />
               </div>
               <span className="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white">
-                Stack<span className="text-blue-600 dark:text-blue-400">Up</span>
+                Stack<span className="text-indigo-600 dark:text-indigo-400">Up</span>
               </span>
             </Link>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -35,19 +35,19 @@ export default function Footer() {
             </div>
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
               <li>
-                <Link href="/dsa" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center space-x-1.5">
-                  <Code2 className="w-3.5 h-3.5 text-blue-500" />
+                <Link href="/dsa" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center space-x-1.5">
+                  <Code2 className="w-3.5 h-3.5 text-emerald-500" />
                   <span>DSA Practice Hub (150+ Problems)</span>
                 </Link>
               </li>
               <li>
-                <Link href="/core-cs" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center space-x-1.5">
-                  <Cpu className="w-3.5 h-3.5 text-sky-500" />
-                  <span>Core CS (8 Subjects • 40 Modules)</span>
+                <Link href="/core-cs" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center space-x-1.5">
+                  <Cpu className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Core CS (15 Subjects • High-Yield Notes)</span>
                 </Link>
               </li>
               <li>
-                <Link href="/aptitude" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center space-x-1.5">
+                <Link href="/aptitude" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center space-x-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-amber-500" />
                   <span>Quantitative &amp; Logical Aptitude</span>
                 </Link>
@@ -62,18 +62,18 @@ export default function Footer() {
             </div>
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
               <li>
-                <Link href="/resume-checker" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center space-x-1.5">
-                  <FileCheck2 className="w-3.5 h-3.5 text-emerald-500" />
+                <Link href="/resume-checker" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center space-x-1.5">
+                  <FileCheck2 className="w-3.5 h-3.5 text-rose-500" />
                   <span>ATS Resume Evaluator</span>
                 </Link>
               </li>
               <li>
-                <Link href="/profile" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/profile" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   Candidate Analytics &amp; Scorecards
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/login" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   Account Sign In / Portal
                 </Link>
               </li>
@@ -100,13 +100,13 @@ export default function Footer() {
             <span>&copy; {new Date().getFullYear()} StackUp. All rights reserved.</span>
           </div>
           <div className="flex items-center space-x-5">
-            <Link href="/resume-checker" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <Link href="/resume-checker" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               ATS Scanner
             </Link>
-            <Link href="/dsa" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <Link href="/dsa" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               DSA Patterns
             </Link>
-            <Link href="/core-cs" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <Link href="/core-cs" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Cheat Sheets
             </Link>
           </div>
