@@ -416,7 +416,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
 
               <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 flex items-center justify-center mb-3">
+                <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3">
                   <TrendingUp className="w-5 h-5" />
                 </div>
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">Impact & Metrics</h4>
@@ -426,7 +426,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
 
               <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+                <div className="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-3">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">Line-by-Line Rewrites</h4>

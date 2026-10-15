@@ -598,7 +598,7 @@ export default function DsaHubPage() {
 
                   {/* Complete Output Expandable Body */}
                   {isExpanded && (
-                    <div className="border-t border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-[#0f172a]/90 rounded-b-2xl p-5 space-y-4">
+                    <div className="border-t border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-[#0c0d10] rounded-b-2xl p-5 space-y-4">
                       {/* Top Tabs */}
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-zinc-800 pb-3">
                         <div className="flex items-center space-x-1 bg-slate-200/70 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto max-w-full scrollbar-none">

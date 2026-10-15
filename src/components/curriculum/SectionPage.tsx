@@ -333,7 +333,9 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <h2 className="text-xl font-bold text-slate-900 dark:text-white">Section not found</h2>
-        <Link href="/" className="text-sm text-blue-600 underline mt-2 block">Back to home</Link>
+        <Link href="/" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline mt-2 inline-flex items-center space-x-1">
+          <span>← Back to home</span>
+        </Link>
       </div>
     );
   }
@@ -608,12 +610,12 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center space-x-2">
-              <Search className="w-4 h-4 text-blue-500" />
+              <Search className="w-4 h-4 text-indigo-500" />
               <span>Search Results for &quot;{searchQuery}&quot; ({searchResults.length})</span>
             </h2>
             <button
               onClick={() => setSearchQuery('')}
-              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
             >
               Clear Search
             </button>

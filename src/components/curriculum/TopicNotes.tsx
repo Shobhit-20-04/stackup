@@ -181,7 +181,7 @@ export default function TopicNotes({
     <div className="space-y-6">
       {/* Sticky Reading Progress Top Bar */}
       <div
-        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 z-50 transition-all duration-150"
+        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-indigo-500 via-violet-500 to-emerald-500 z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -270,7 +270,7 @@ export default function TopicNotes({
 
           <div className="flex items-center space-x-3 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
             <span className="flex items-center space-x-1">
-              <Clock className="w-3.5 h-3.5 text-blue-500" />
+              <Clock className="w-3.5 h-3.5 text-indigo-500" />
               <span>{topic.estimatedMinutes} min read</span>
             </span>
             <span>•</span>

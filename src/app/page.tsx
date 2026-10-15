@@ -20,21 +20,21 @@ export default function HomePage() {
   return (
     <div className="relative overflow-hidden min-h-screen bg-[#f8fafc] dark:bg-[#09090b] text-slate-900 dark:text-zinc-100 transition-colors">
       {/* Background Decorative Ambient Spotlight - Gentle Single-Family Ambient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[340px] bg-gradient-to-b from-indigo-500/10 via-zinc-500/5 to-transparent blur-3xl -z-10 pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[380px] bg-gradient-to-b from-indigo-500/15 via-violet-500/5 to-transparent blur-3xl -z-10 pointer-events-none" />
 
       {/* Hero Section - Clean, High Contrast & Human Designed */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-16 pb-8 text-center">
-        {/* Release Pill */}
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xs text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-5 shadow-xs">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-          <span>StackUp • Engineering Interview Prep Platform</span>
+        {/* Release Pill with Subtle Glow */}
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-indigo-200/60 dark:border-indigo-900/50 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-5 shadow-xs hover:border-indigo-400/60 transition-colors">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+          <span className="tracking-tight">StackUp • Engineering Interview Prep Platform</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-60 shrink-0" />
         </div>
 
         {/* Main Headline - High-Contrast Precision Typography */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white max-w-3xl mx-auto leading-[1.15]">
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white max-w-3xl mx-auto leading-[1.12]">
           Crack your engineering interviews with{' '}
-          <span className="text-indigo-600 dark:text-indigo-400">
+          <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 dark:from-indigo-400 dark:via-indigo-300 dark:to-violet-400 bg-clip-text text-transparent">
             structure &amp; speed
           </span>
         </h1>
@@ -45,17 +45,17 @@ export default function HomePage() {
         </p>
 
         {/* Primary Action Buttons */}
-        <div className="mt-5 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3.5 max-w-xs sm:max-w-md mx-auto w-full">
+        <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-3.5 max-w-xs sm:max-w-md mx-auto w-full">
           <Link
             href="/login"
-            className="w-full sm:w-auto px-6 py-3 rounded-2xl font-semibold text-sm text-white bg-indigo-600 hover:bg-indigo-500 hover:scale-[1.01] active:scale-[0.99] transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-sm"
+            className="w-full sm:w-auto px-6 py-3 rounded-2xl font-semibold text-sm text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-md shadow-indigo-600/25 hover:shadow-indigo-600/40"
           >
             <span>Start Free Prep</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/resume-checker"
-            className="w-full sm:w-auto px-5 py-3 rounded-2xl font-semibold text-sm text-slate-900 dark:text-white bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
+            className="w-full sm:w-auto px-5 py-3 rounded-2xl font-semibold text-sm text-slate-900 dark:text-white bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
           >
             <FileCheck2 className="w-4 h-4 text-indigo-500 shrink-0" />
             <span>Check Resume (ATS)</span>
@@ -64,11 +64,12 @@ export default function HomePage() {
 
         {/* Target Company Track Tags */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-1.5 text-[11px] font-medium text-slate-600 dark:text-zinc-400">
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">Google</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">Amazon</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">Microsoft</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">Meta</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">Top Tech Startups</span>
+          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-zinc-500 mr-1">Target Companies:</span>
+          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Google</span>
+          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Amazon</span>
+          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Microsoft</span>
+          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Meta</span>
+          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Top Tech Startups</span>
         </div>
       </section>
 
@@ -86,21 +87,21 @@ export default function HomePage() {
           {/* Card 1: DSA Practice Hub */}
           <Link
             href="/dsa"
-            className="p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-150 group flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer"
+            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
                   <Code2 className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60">
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                   15 Patterns
                 </span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                 DSA Practice Hub
               </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-normal">
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
                 150+ problems: Two Pointers, Trees, Graphs, DP with code solutions &amp; video walkthroughs.
               </p>
             </div>
@@ -113,22 +114,22 @@ export default function HomePage() {
           {/* Card 2: Core CS Subjects */}
           <Link
             href="/core-cs"
-            className="p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-150 group flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer"
+            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-indigo-500/40 dark:hover:border-indigo-500/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
                   <Cpu className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60">
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20">
                   15 Subjects
                 </span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                 Core CS Subjects
               </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-normal">
-                190+ topics with notes, MCQs &amp; YouTube lectures: OS, DBMS, Networks, COA, Compilers, TOC &amp; Math.
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
+                190+ topics with notes, MCQs &amp; YouTube lectures: OS, DBMS, Networks, COA, Compilers &amp; TOC.
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-100 dark:border-zinc-800/80 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-zinc-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
@@ -140,21 +141,21 @@ export default function HomePage() {
           {/* Card 3: Quantitative & Aptitude */}
           <Link
             href="/aptitude"
-            className="p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-150 group flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer"
+            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
                   <BookOpen className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60">
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
                   4 Categories
                 </span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                 Aptitude &amp; Logic
               </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-normal">
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
                 Quantitative, Logical Reasoning, Verbal Ability &amp; Spatial Aptitude with timed tests and video solutions.
               </p>
             </div>
@@ -167,21 +168,21 @@ export default function HomePage() {
           {/* Card 4: ATS Resume Evaluator */}
           <Link
             href="/resume-checker"
-            className="p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-150 group flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer"
+            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-rose-500/40 dark:hover:border-rose-500/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
           >
             <div>
               <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
                   <FileCheck2 className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60">
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
                   ATS Scoring
                 </span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
                 ATS Resume Checker
               </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-normal">
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
                 Scan your PDF resume, detect missing engineering keywords, and get instant bullet improvements.
               </p>
             </div>
@@ -195,18 +196,18 @@ export default function HomePage() {
 
       {/* COMPACT INTERACTIVE PREVIEW TABS */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl p-4 sm:p-6 shadow-xs">
+        <div className="bg-white dark:bg-[#121215] border border-slate-200/90 dark:border-zinc-800 rounded-3xl p-4 sm:p-6 shadow-xs">
           {/* Tab Selection Chips */}
-          <div className="flex items-center space-x-1.5 pb-3.5 border-b border-slate-100 dark:border-zinc-800 overflow-x-auto scrollbar-none">
+          <div className="flex items-center space-x-2 pb-3.5 border-b border-slate-100 dark:border-zinc-800/80 overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab('dsa')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer ${
                 activeTab === 'dsa'
                   ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                  : 'bg-slate-50 dark:bg-zinc-850 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-800'
+                  : 'bg-slate-50 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-800'
               }`}
             >
-              <Code2 className="w-3.5 h-3.5" />
+              <Code2 className="w-3.5 h-3.5 text-emerald-500" />
               <span>DSA Preview</span>
             </button>
             <button
@@ -214,10 +215,10 @@ export default function HomePage() {
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer ${
                 activeTab === 'resume'
                   ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                  : 'bg-slate-50 dark:bg-zinc-850 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-800'
+                  : 'bg-slate-50 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-800'
               }`}
             >
-              <FileCheck2 className="w-3.5 h-3.5" />
+              <FileCheck2 className="w-3.5 h-3.5 text-rose-500" />
               <span>ATS Resume Preview</span>
             </button>
             <button
@@ -225,10 +226,10 @@ export default function HomePage() {
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer ${
                 activeTab === 'quiz'
                   ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                  : 'bg-slate-50 dark:bg-zinc-850 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-800'
+                  : 'bg-slate-50 dark:bg-zinc-900 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-800'
               }`}
             >
-              <Cpu className="w-3.5 h-3.5" />
+              <Cpu className="w-3.5 h-3.5 text-indigo-500" />
               <span>Quiz Preview</span>
             </button>
           </div>
@@ -247,22 +248,33 @@ export default function HomePage() {
                     <span className="text-xs font-medium text-slate-600 dark:text-zinc-300 bg-slate-100 dark:bg-zinc-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-zinc-700 font-mono">
                       O(n) Time • O(n) Space
                     </span>
-                    <Link href="/dsa" className="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center space-x-1 cursor-pointer">
+                    <Link href="/dsa" className="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center space-x-1 cursor-pointer shadow-xs">
                       <span>Practice in Hub</span>
                       <ExternalLink className="w-3 h-3" />
                     </Link>
                   </div>
                 </div>
 
-                <pre className="text-[11px] sm:text-xs font-mono text-zinc-100 bg-[#0c0d10] p-3.5 sm:p-4 rounded-xl overflow-x-auto border border-zinc-800 scrollbar-none leading-relaxed">
-                  <code>{`def twoSum(nums: list[int], target: int) -> list[int]:
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-[#09090b]">
+                  <div className="flex items-center justify-between px-3.5 py-2 bg-[#121215] border-b border-zinc-800/80 text-[11px] text-zinc-400 font-mono">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+                      <span className="text-zinc-500 ml-2 text-[10px]">solution.py</span>
+                    </div>
+                    <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">Python 3</span>
+                  </div>
+                  <pre className="text-[11px] sm:text-xs font-mono text-zinc-100 p-3.5 sm:p-4 overflow-x-auto scrollbar-none leading-relaxed">
+                    <code>{`def twoSum(nums: list[int], target: int) -> list[int]:
     seen = {}
     for i, num in enumerate(nums):
         diff = target - num
         if diff in seen:
             return [seen[diff], i]
         seen[num] = i`}</code>
-                </pre>
+                  </pre>
+                </div>
               </div>
             )}
 
@@ -286,9 +298,19 @@ export default function HomePage() {
                     Try Resume Checker
                   </Link>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-850 border border-slate-200 dark:border-zinc-800 text-xs text-slate-800 dark:text-zinc-200">
-                  <span className="font-semibold text-indigo-600 dark:text-indigo-400">STAR Rewrite: </span>
-                  &quot;Architected RESTful services in Node.js &amp; TypeScript, reducing p95 latency by 44%.&quot;
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
+                  <div className="p-3 rounded-xl bg-rose-500/5 border border-rose-500/20 text-slate-700 dark:text-zinc-300">
+                    <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-1">
+                      <span>Before (Vague)</span>
+                    </div>
+                    &quot;Helped team build backend APIs and made services run faster.&quot;
+                  </div>
+                  <div className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-slate-800 dark:text-zinc-200">
+                    <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">
+                      <span>After (STAR Rewritten)</span>
+                    </div>
+                    &quot;Architected RESTful microservices in Node.js &amp; TypeScript, reducing p95 latency by 44%.&quot;
+                  </div>
                 </div>
               </div>
             )}
@@ -307,7 +329,7 @@ export default function HomePage() {
                   Which memory region is privately allocated for each thread within a shared process?
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700">A. Heap Memory</div>
+                  <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-zinc-850 text-slate-700 dark:text-zinc-400 border border-slate-200 dark:border-zinc-800">A. Heap Memory</div>
                   <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-semibold flex items-center justify-between">
                     <span>B. Stack &amp; Registers</span>
                     <span className="text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded font-bold">✓ Correct</span>
@@ -336,7 +358,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/login"
-            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all shrink-0 flex items-center space-x-1.5 cursor-pointer shadow-sm"
+            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white text-xs font-semibold transition-all shrink-0 flex items-center space-x-1.5 cursor-pointer shadow-md shadow-indigo-600/25"
           >
             <span>Start Learning Now</span>
             <ArrowRight className="w-3.5 h-3.5" />
