@@ -807,6 +807,7 @@ export default function AdminDashboardPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search candidate name, email, or skill..."
+                    aria-label="Search candidate records by name, email, or skill"
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-800 bg-[#09090b] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
@@ -815,6 +816,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={gradeFilter}
                     onChange={(e) => setGradeFilter(e.target.value)}
+                    aria-label="Filter by candidate ATS grade"
                     className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
                   >
                     <option value="ALL">All Grades</option>
@@ -828,6 +830,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'date' | 'score')}
+                    aria-label="Sort candidates by date or score"
                     className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
                   >
                     <option value="date">Sort: Latest First</option>

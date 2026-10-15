@@ -26,15 +26,16 @@ import {
   X,
   CheckCircle2
 } from 'lucide-react';
-import { 
-  ResponsiveContainer, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  CartesianGrid, 
-  Area, 
-  AreaChart 
-} from 'recharts';
+import dynamic from 'next/dynamic';
+
+const QuizScoreChart = dynamic(() => import('@/components/profile/QuizScoreChart'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-64 w-full flex items-center justify-center bg-slate-50 dark:bg-[#18181b] rounded-2xl border border-slate-100 dark:border-zinc-800 animate-pulse">
+      <span className="text-xs text-slate-400 dark:text-zinc-500 font-medium">Loading performance chart...</span>
+    </div>
+  ),
+});
 
 interface ProfileData {
   id: string;
@@ -786,45 +787,7 @@ export default function ProfilePage() {
         </div>
 
         {quizHistory.length > 0 ? (
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={quizHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" opacity={0.6} />
-                <XAxis dataKey="date" stroke="#71717a" fontSize={12} tickLine={false} />
-                <YAxis domain={[0, 100]} stroke="#71717a" fontSize={12} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#121215',
-                    borderColor: '#27272a',
-                    borderRadius: '0.75rem',
-                    color: '#f4f4f5',
-                    fontSize: '0.75rem',
-                  }}
-                  formatter={(value: unknown) => [`${value}%`, 'Score']}
-                  labelFormatter={(_label, payload) => {
-                    if (payload && payload[0]) {
-                      return `${payload[0].payload.topic} (${payload[0].payload.date})`;
-                    }
-                    return '';
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="percentage"
-                  stroke="#6366f1"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#scoreGradient)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <QuizScoreChart quizHistory={quizHistory} />
         ) : (
           <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">

@@ -133,7 +133,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : 'Failed to record attempt';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Failed to record attempt:', error);
+    return NextResponse.json({ error: 'Failed to record quiz attempt due to an unexpected server error.' }, { status: 500 });
   }
 }

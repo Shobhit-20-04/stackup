@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, logId: recorded.id });
   } catch (err: unknown) {
-    const error = err instanceof Error ? err.message : 'Failed to record login audit';
-    return NextResponse.json({ error }, { status: 500 });
+    console.error('Failed to record login audit:', err);
+    return NextResponse.json({ error: 'Failed to record login audit due to an unexpected server error.' }, { status: 500 });
   }
 }

@@ -403,8 +403,8 @@ export async function GET(req: NextRequest) {
       quizzes: quizList,
     });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Failed to fetch admin data';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Failed to fetch admin data:', err);
+    return NextResponse.json({ error: 'Failed to fetch admin data due to an unexpected server error.' }, { status: 500 });
   }
 }
 
@@ -435,13 +435,14 @@ export async function DELETE(req: NextRequest) {
     const { error } = await supabase.from('uploaded_resumes').delete().eq('id', id);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error('Failed to delete resume database record:', error);
+      return NextResponse.json({ error: 'Failed to delete resume record.' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, message: 'Resume deleted successfully.' });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Failed to delete resume';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Failed to delete resume:', err);
+    return NextResponse.json({ error: 'Failed to delete resume due to an unexpected server error.' }, { status: 500 });
   }
 }
 
@@ -494,7 +495,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ error: 'Unknown action requested.' }, { status: 400 });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Failed to process admin action';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Failed to process admin action:', err);
+    return NextResponse.json({ error: 'Failed to process admin action due to an unexpected server error.' }, { status: 500 });
   }
 }

@@ -513,7 +513,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(analysis);
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : 'Internal Server Error';
-    return NextResponse.json({ error: errorMsg }, { status: 500 });
+    console.error('Resume analysis failed with unexpected error:', err);
+    return NextResponse.json(
+      { error: 'An unexpected error occurred while analyzing the resume. Please try again later.' },
+      { status: 500 }
+    );
   }
 }

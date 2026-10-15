@@ -249,6 +249,7 @@ export default function Navbar() {
                   <button
                     onClick={handleSignOut}
                     title="Sign out"
+                    aria-label="Sign out"
                     className="p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
@@ -389,12 +390,13 @@ export default function Navbar() {
 
             <form onSubmit={handleSecretSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                <label htmlFor="master-security-key" className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
                   Master Security Key
                 </label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
+                    id="master-security-key"
                     type="password"
                     value={secretPasscode}
                     onChange={(e) => setSecretPasscode(e.target.value)}

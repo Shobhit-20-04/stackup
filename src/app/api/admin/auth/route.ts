@@ -65,8 +65,8 @@ export async function POST(req: NextRequest) {
     setAdminSessionCookie(res);
     return res;
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Authentication failed';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Admin authentication error:', err);
+    return NextResponse.json({ error: 'Authentication failed due to an unexpected server error.' }, { status: 500 });
   }
 }
 

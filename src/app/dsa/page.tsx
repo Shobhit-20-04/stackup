@@ -307,6 +307,7 @@ export default function DsaHubPage() {
               <input 
                 type="text"
                 placeholder="Search problem name, company (e.g. Google), or pattern..."
+                aria-label="Search problems by name, company, or pattern"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-9 py-2 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white placeholder:text-slate-400"
@@ -350,6 +351,7 @@ export default function DsaHubPage() {
             {solvedCount > 0 && (
               <button
                 onClick={handleResetProgress}
+                aria-label="Reset solved DSA progress"
                 className="inline-flex items-center space-x-1 text-xs text-slate-500 hover:text-rose-600 transition-colors"
                 title="Reset progress"
               >
@@ -428,6 +430,7 @@ export default function DsaHubPage() {
                 <span>Per page:</span>
                 <select
                   value={pageSize}
+                  aria-label="Number of problems per page"
                   onChange={(e) => {
                     setPageSize(Number(e.target.value));
                     setCurrentPage(1);

@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error generating resume download';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Error generating resume download:', err);
+    return NextResponse.json({ error: 'Failed to process resume download due to an unexpected server error.' }, { status: 500 });
   }
 }

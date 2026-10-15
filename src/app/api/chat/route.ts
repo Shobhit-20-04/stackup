@@ -170,7 +170,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ reply });
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : 'Chat error';
-    return NextResponse.json({ error: errorMsg }, { status: 500 });
+    console.error('Chat endpoint failed with unexpected error:', err);
+    return NextResponse.json(
+      { error: 'An unexpected error occurred while processing your message. Please try again later.' },
+      { status: 500 }
+    );
   }
 }

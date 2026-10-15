@@ -351,6 +351,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                     <button 
                       onClick={() => setFile(null)} 
                       className="p-1 text-slate-400 hover:text-rose-500 cursor-pointer"
+                      aria-label="Remove selected resume file"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -362,6 +363,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                       accept=".pdf,.docx,.txt" 
                       onChange={handleFileSelect} 
                       className="hidden" 
+                      aria-label="Upload resume file (PDF, DOCX, TXT)"
                     />
                     <span className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center space-x-2 transition-all cursor-pointer">
                       <FileText className="w-4 h-4" />

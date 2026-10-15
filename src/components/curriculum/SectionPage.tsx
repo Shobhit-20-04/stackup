@@ -446,6 +446,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label={`Search all ${section.name} topics`}
             placeholder={`Search all ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP 3-Way, Normalization, Probability)...`}
             className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-[#121215] text-sm font-medium text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xs"
           />
@@ -456,6 +457,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           ) : searchQuery ? (
             <button
               onClick={() => setSearchQuery('')}
+              aria-label="Clear search query"
               className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 cursor-pointer"
             >
               <X className="w-4 h-4" />
@@ -1022,6 +1024,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
               <button
                 onClick={() => setIsCheatsheetOpen(false)}
+                aria-label="Close revision cheatsheet"
                 className="w-8 h-8 rounded-xl bg-slate-200/70 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
               >
                 <X className="w-4 h-4" />
@@ -1068,12 +1071,14 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       type="text"
                       value={cheatsheetSearch}
                       onChange={(e) => setCheatsheetSearch(e.target.value)}
+                      aria-label="Filter formulas or concepts"
                       placeholder="Filter formulas or concepts (e.g. Virtual Memory, Deadlock, Work Rate, ACID)..."
                       className="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-[#18181b] text-xs font-medium text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                     {cheatsheetSearch && (
                       <button
                         onClick={() => setCheatsheetSearch('')}
+                        aria-label="Clear cheatsheet filter"
                         className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />

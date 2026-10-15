@@ -98,7 +98,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : 'Failed to update profile';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Failed to update profile:', error);
+    return NextResponse.json({ error: 'Failed to update profile due to an unexpected server error.' }, { status: 500 });
   }
 }
