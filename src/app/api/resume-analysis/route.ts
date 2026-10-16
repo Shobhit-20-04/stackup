@@ -275,8 +275,8 @@ export function analyzeResumeLocally(text: string, filename: string): AnalysisOu
         ? 'Your experience bullets demonstrate impressive measurable impact and business outcomes.'
         : 'To maximize interview callback rates, quantify more bullets with concrete metrics (e.g., % latency reduction, daily active users, or throughput gains).'
     }`,
-    matched_keywords: matchedKeywords.slice(0, 18),
-    missing_keywords: missingKeywords.slice(0, 8),
+    matched_keywords: matchedKeywords.slice(0, 40),
+    missing_keywords: missingKeywords.slice(0, 10),
     formatting_issues: formattingIssues.length > 0 ? formattingIssues : ['No critical formatting blockers detected. Clean ATS-friendly layout!'],
     section_suggestions: {
       contact: hasLinkedIn && hasGitHub 

@@ -14,7 +14,7 @@ import {
   Lock,
   ArrowRight
 } from 'lucide-react';
-import { getCurrentUser, type UserSession } from '@/lib/auth/session';
+import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
 
 interface Message {
   id: string;
@@ -27,7 +27,7 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
   const [userPromptCount, setUserPromptCount] = useState(0);
 
   useEffect(() => {

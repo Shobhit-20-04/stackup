@@ -75,6 +75,7 @@ interface ResumeAnalysisItem {
   filename: string;
   ats_score: number;
   created_at: string;
+  rawDate: string;
   status: 'Reviewed' | 'Action Required' | 'Good Match';
 }
 
@@ -343,6 +344,7 @@ export default function ProfilePage() {
                   filename: r.filename,
                   ats_score: r.ats_score,
                   created_at: new Date(r.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+                  rawDate: r.created_at,
                   status: (r.ats_score >= 80 ? 'Good Match' : r.ats_score >= 60 ? 'Reviewed' : 'Action Required') as ResumeAnalysisItem['status'],
                 }));
               }
@@ -366,6 +368,7 @@ export default function ProfilePage() {
               filename: a.filename,
               ats_score: a.ats_score,
               created_at: new Date(a.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+              rawDate: a.created_at,
               status: (a.ats_score >= 80 ? 'Good Match' : a.ats_score >= 60 ? 'Reviewed' : 'Action Required') as ResumeAnalysisItem['status'],
             }));
 
@@ -403,7 +406,7 @@ export default function ProfilePage() {
     });
 
     resumeHistory.forEach((r) => {
-      const d = new Date(r.created_at);
+      const d = new Date(r.rawDate || r.created_at);
       if (!isNaN(d.getTime())) {
         activityDateSet.add(d.toISOString().slice(0, 10));
       }
