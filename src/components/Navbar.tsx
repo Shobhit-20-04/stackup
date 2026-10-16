@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { getCurrentUser, signOutUser } from '@/lib/auth/session';
+import { getCurrentUser, getFastCachedUser, signOutUser } from '@/lib/auth/session';
 import { 
   BookOpen, 
   Cpu, 
@@ -26,8 +26,17 @@ import ThemeSwitcher from '@/components/ThemeSwitcher';
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<{ id: string; email?: string; full_name?: string; avatar_url?: string | null } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<{ id: string; email?: string; full_name?: string; avatar_url?: string | null } | null>(() => {
+    const cached = getFastCachedUser();
+    if (!cached) return null;
+    return {
+      id: cached.id,
+      email: cached.email,
+      full_name: cached.full_name,
+      avatar_url: cached.avatar_url,
+    };
+  });
+  const [loading, setLoading] = useState(() => (typeof window !== 'undefined' ? !getFastCachedUser() : true));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Secret Admin Access Gateway State

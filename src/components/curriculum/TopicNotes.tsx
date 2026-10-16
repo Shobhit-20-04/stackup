@@ -21,7 +21,7 @@ import {
   Video
 } from 'lucide-react';
 import type { Topic } from '@/lib/data/curriculum';
-import { getCurrentUser, type UserSession } from '@/lib/auth/session';
+import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
 import { getReadTopicIds, toggleTopicReadStatus } from '@/lib/services/progress';
 
 interface TopicNotesProps {
@@ -130,7 +130,7 @@ export default function TopicNotes({
   nextTopic,
   onSelectTopic
 }: TopicNotesProps) {
-  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
   const [completedOverrides, setCompletedOverrides] = useState<Record<string, boolean>>({});
   const [scrollProgress, setScrollProgress] = useState(0);
 

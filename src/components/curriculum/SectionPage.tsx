@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { CURRICULUM_DATA, type Topic, type SectionCategory } from '@/lib/data/curriculum';
 import { getSectionMetrics, getReadTopicIds, getLocalQuizAttempts } from '@/lib/services/progress';
-import { getCurrentUser, type UserSession } from '@/lib/auth/session';
+import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
 // Lazy-load Markdown parser and Quiz Engine to reduce initial bundle and accelerate FCP
 const TopicNotes = dynamic(() => import('./TopicNotes'), {
   ssr: false,
@@ -110,7 +110,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   }, [sectionKey, metricsRefresh, activeView]);
 
   // Authentication state for gating interactive quizzes
-  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
 
   useEffect(() => {

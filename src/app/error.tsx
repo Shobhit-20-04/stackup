@@ -17,7 +17,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[#f8fafc] dark:bg-[#0B1020] text-slate-900 dark:text-zinc-100 transition-colors">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[var(--background)] text-[var(--foreground)] transition-colors">
       <div className="max-w-xl w-full text-center space-y-8">
         {/* Error Visual Pill */}
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 text-xs font-semibold text-rose-600 dark:text-rose-400 shadow-xs">

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { getFastCachedUser } from '../src/lib/auth/session';
 
 describe('StackUp Phase 1: Environment & Config Validation', () => {
   it('should load default application configuration', () => {
@@ -90,4 +91,10 @@ describe('StackUp Phase 1: Environment & Config Validation', () => {
     expect(verifyPin(`  ${activeKey}  `)).toBe(true);
     expect(verifyPin('wrongpin')).toBe(false);
   });
+
+  it('should return null from getFastCachedUser when in server environment or empty', () => {
+    // In node/server test environment without window/localStorage, getFastCachedUser returns null safely
+    expect(getFastCachedUser()).toBeNull();
+  });
 });
+

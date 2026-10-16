@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
-import { getCurrentUser, type UserSession } from '@/lib/auth/session';
+import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
 
 function getPageNumbers(current: number, total: number): (number | '...')[] {
   if (total <= 7) {
@@ -69,7 +69,7 @@ export default function DsaHubPage() {
   const [expandedPatterns, setExpandedPatterns] = useState<Record<string, boolean>>({});
 
   // Authentication state for feature gating
-  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
   const [authPromptReason, setAuthPromptReason] = useState('');
 

@@ -31,13 +31,32 @@ export const DEFAULT_DEMO_USER: UserSession = {
   isDemo: true,
 };
 
+export function getFastCachedUser(): UserSession | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const stored = localStorage.getItem(DEMO_STORAGE_KEY);
+    if (stored) {
+      const parsed: UserSession = JSON.parse(stored);
+      if (parsed.isDemo || parsed.id === 'student-demo' || parsed.email === 'guest@stackup.xyz') {
+        localStorage.removeItem(DEMO_STORAGE_KEY);
+        document.cookie = `${COOKIE_KEY}=; path=/; max-age=0; SameSite=Lax`;
+        return null;
+      }
+      return parsed;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 export async function getCurrentUser(): Promise<UserSession | null> {
   // 1. Try real Supabase auth if configured
   try {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      return {
+      const sessionUser: UserSession = {
         id: user.id,
         email: user.email || 'user@stackup.xyz',
         full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'StackUp Student',
@@ -50,6 +69,10 @@ export async function getCurrentUser(): Promise<UserSession | null> {
         linkedin_url: user.user_metadata?.linkedin_url || null,
         isDemo: false,
       };
+      if (typeof window !== 'undefined') {
+        setDemoUserSession(sessionUser);
+      }
+      return sessionUser;
     }
   } catch (err) {
     console.debug('Supabase auth check bypassed:', err);
@@ -57,6 +80,7 @@ export async function getCurrentUser(): Promise<UserSession | null> {
 
   // 2. Fall back to authenticated session from localStorage or cookie
   if (typeof window !== 'undefined') {
+
     try {
       const stored = localStorage.getItem(DEMO_STORAGE_KEY);
       if (stored) {

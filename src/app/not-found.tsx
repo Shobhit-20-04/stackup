@@ -14,7 +14,7 @@ import {
 
 export default function NotFound() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[#f8fafc] dark:bg-[#0B1020] text-slate-900 dark:text-zinc-100 transition-colors">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[var(--background)] text-[var(--foreground)] transition-colors">
       <div className="max-w-2xl w-full text-center space-y-8">
         {/* 404 Visual Pill */}
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xs text-xs font-semibold text-slate-700 dark:text-zinc-300 shadow-xs">

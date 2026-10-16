@@ -31,4 +31,25 @@ describe('DSA Hub Dataset', () => {
     expect(patterns.has('Graphs')).toBe(true);
     expect(patterns.has('Dynamic Programming')).toBe(true);
   });
+
+  it('validates each problem has descriptions, examples, constraints, complexities, and code solutions', () => {
+    for (const problem of DSA_PROBLEMS) {
+      expect(problem.description.trim().length).toBeGreaterThan(10);
+      expect(problem.examples.length).toBeGreaterThanOrEqual(1);
+      for (const ex of problem.examples) {
+        expect(ex.input).toBeDefined();
+        expect(ex.output).toBeDefined();
+      }
+      expect(problem.constraints.length).toBeGreaterThanOrEqual(1);
+      expect(problem.approach.trim().length).toBeGreaterThan(10);
+      expect(problem.timeComplexity.trim().length).toBeGreaterThan(1);
+      expect(problem.spaceComplexity.trim().length).toBeGreaterThan(1);
+      expect(problem.solutions).toBeDefined();
+      expect(problem.solutions.python.trim().length).toBeGreaterThan(10);
+      expect(problem.solutions.cpp.trim().length).toBeGreaterThan(10);
+      expect(problem.solutions.java.trim().length).toBeGreaterThan(10);
+      expect(problem.solutions.typescript.trim().length).toBeGreaterThan(10);
+    }
+  });
 });
+

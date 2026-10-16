@@ -20,7 +20,7 @@ import {
   Lock,
   Copy
 } from 'lucide-react';
-import { getCurrentUser, type UserSession } from '@/lib/auth/session';
+import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/client';
 
 interface AnalysisResult {
@@ -57,8 +57,8 @@ export default function ResumeCheckerPage() {
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [copiedReport, setCopiedReport] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
+  const [authLoading, setAuthLoading] = useState(() => (typeof window !== 'undefined' ? !getFastCachedUser() : true));
 
   React.useEffect(() => {
     getCurrentUser()
