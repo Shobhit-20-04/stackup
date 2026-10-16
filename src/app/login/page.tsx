@@ -292,7 +292,7 @@ function LoginForm() {
         </div>
 
         {/* Card */}
-        <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xl shadow-slate-200/50 dark:shadow-none">
+        <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xl shadow-slate-200/50 dark:shadow-none">
           {/* Notifications */}
           {errorMsg && (
             <div className="mb-5 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-sm text-rose-700 dark:text-rose-300 flex items-start space-x-2.5">
@@ -350,7 +350,7 @@ function LoginForm() {
           {/* Divider */}
           <div className="relative flex items-center justify-center mb-5">
             <div className="border-t border-slate-200 dark:border-zinc-800 w-full" />
-            <span className="bg-white dark:bg-[#121215] px-3 text-[11px] uppercase tracking-wider text-slate-400 dark:text-zinc-500 font-semibold absolute">
+            <span className="bg-white dark:bg-[#151D35] px-3 text-[11px] uppercase tracking-wider text-slate-400 dark:text-zinc-500 font-semibold absolute">
               or sign in with email
             </span>
           </div>

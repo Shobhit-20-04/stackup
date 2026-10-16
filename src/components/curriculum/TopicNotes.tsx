@@ -70,7 +70,7 @@ function FormulaBlock({ formula }: { formula: string }) {
   };
 
   return (
-    <div className="my-5 p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 shadow-xs relative group">
+    <div className="my-5 p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 shadow-xs relative group">
       <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200 dark:border-zinc-800">
         <div className="flex items-center space-x-1.5 text-[11px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
           <Zap className="w-3.5 h-3.5" />
@@ -102,8 +102,8 @@ function CodeBlockWithCopy({ children, ...props }: React.ComponentPropsWithoutRe
   };
 
   return (
-    <div className="relative group my-4 rounded-2xl overflow-hidden border border-slate-800 bg-[#09090b]">
-      <div className="flex items-center justify-between px-4 py-1.5 bg-[#121215] border-b border-zinc-800 text-[11px] font-mono text-zinc-400">
+    <div className="relative group my-4 rounded-2xl overflow-hidden border border-slate-800 bg-[#0B1020]">
+      <div className="flex items-center justify-between px-4 py-1.5 bg-[#151D35] border-b border-zinc-800 text-[11px] font-mono text-zinc-400">
         <span>Code Snippet</span>
         <button
           onClick={handleCopyCode}
@@ -189,7 +189,7 @@ export default function TopicNotes({
       <div className="flex items-center justify-between gap-3">
         <button
           onClick={onBack}
-          className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:text-indigo-600 dark:hover:text-white bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
+          className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:text-indigo-600 dark:hover:text-white bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Back to {categoryTitle || 'Syllabus'}</span>
@@ -201,7 +201,7 @@ export default function TopicNotes({
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs ${
             isCompleted
               ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-              : 'bg-white dark:bg-[#121215] text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:border-emerald-500'
+              : 'bg-white dark:bg-[#151D35] text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:border-emerald-500'
           }`}
         >
           {isCompleted ? (
@@ -219,7 +219,7 @@ export default function TopicNotes({
       </div>
 
       {/* Topic Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700/80">
@@ -306,7 +306,7 @@ export default function TopicNotes({
 
       {/* Key Takeaways & Cheat Formulas Banner */}
       {topic.keyTakeaways && topic.keyTakeaways.length > 0 && (
-        <div className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs space-y-3">
+        <div className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-3">
           <div className="flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
             <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
             <span>High-Yield Placement Takeaways &amp; Core Principles</span>
@@ -323,7 +323,7 @@ export default function TopicNotes({
       )}
 
       {/* Markdown Content Container */}
-      <div className="p-6 sm:p-10 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs relative overflow-hidden">
+      <div className="p-6 sm:p-10 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs relative overflow-hidden">
         <article className="prose dark:prose-invert max-w-none text-slate-800 dark:text-zinc-200 leading-relaxed text-sm sm:text-base">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -395,7 +395,7 @@ export default function TopicNotes({
         {/* Restricted Content Lock Overlay for Unauthenticated Visitors */}
         {isLocked ? (
           <div className="pt-8">
-            <div className="relative rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] p-6 sm:p-8 text-center shadow-lg space-y-4">
+            <div className="relative rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] p-6 sm:p-8 text-center shadow-lg space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mx-auto mb-2">
                 <Lock className="w-6 h-6" />
               </div>

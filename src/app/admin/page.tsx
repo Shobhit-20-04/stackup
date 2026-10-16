@@ -456,12 +456,12 @@ export default function AdminDashboardPage() {
   // If not authenticated, render the secured admin access portal
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex flex-col justify-center items-center px-4 py-8 sm:py-12">
+      <div className="min-h-screen bg-[#0B1020] flex flex-col justify-center items-center px-4 py-8 sm:py-12">
         {/* Prominent Back Link for Mobile & Desktop */}
         <div className="w-full max-w-md mb-3 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-300 hover:text-white bg-[#121215] hover:bg-zinc-850 border border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-300 hover:text-white bg-[#151D35] hover:bg-zinc-850 border border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-sm"
           >
             <ChevronLeft className="w-4 h-4 text-slate-400" />
             <span>&larr; Back to StackUp Website</span>
@@ -469,7 +469,7 @@ export default function AdminDashboardPage() {
           <span className="text-[11px] text-slate-500 font-medium">Admin Authorization</span>
         </div>
 
-        <div className="max-w-md w-full bg-[#121215] border border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+        <div className="max-w-md w-full bg-[#151D35] border border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
           <div className="flex items-center space-x-3.5">
             <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-6 h-6" />
@@ -563,9 +563,9 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] text-slate-900 dark:text-slate-100 flex flex-col">
       {/* Top Admin Header Bar - Fully Responsive for Mobile & Tablet */}
-      <header className="bg-white dark:bg-[#121215] border-b border-slate-200 dark:border-zinc-800 sticky top-0 z-30 shadow-xs">
+      <header className="bg-white dark:bg-[#151D35] border-b border-slate-200 dark:border-zinc-800 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center justify-between">
@@ -661,7 +661,7 @@ export default function AdminDashboardPage() {
 
         {/* Real Metrics Summary Grid - Fluid responsive for phones & tablets */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
-          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+          <div className="bg-[#151D35] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Candidate Resumes</span>
               <FileText className="w-3.5 h-3.5 text-indigo-400" />
@@ -674,7 +674,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+          <div className="bg-[#151D35] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Avg ATS Score</span>
               <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
@@ -688,7 +688,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+          <div className="bg-[#151D35] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Student Profiles</span>
               <Users className="w-3.5 h-3.5 text-indigo-400" />
@@ -701,7 +701,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
+          <div className="bg-[#151D35] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Quiz Attempts</span>
               <Award className="w-3.5 h-3.5 text-amber-400" />
@@ -714,7 +714,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-[#121215] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs col-span-2 sm:col-span-1">
+          <div className="bg-[#151D35] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs col-span-2 sm:col-span-1">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Audited Logins</span>
               <LogIn className="w-3.5 h-3.5 text-sky-400" />
@@ -799,7 +799,7 @@ export default function AdminDashboardPage() {
             {/* Left Column: Candidate List Selector */}
             <div className={`lg:col-span-5 space-y-3 ${mobileDetailOpen ? 'hidden lg:block' : 'block'}`}>
               {/* Search & Sort Controls */}
-              <div className="bg-[#121215] p-3.5 rounded-2xl border border-zinc-800 space-y-2.5">
+              <div className="bg-[#151D35] p-3.5 rounded-2xl border border-zinc-800 space-y-2.5">
                 <div className="relative">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                   <input
@@ -808,7 +808,7 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search candidate name, email, or skill..."
                     aria-label="Search candidate records by name, email, or skill"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-800 bg-[#09090b] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
 
@@ -817,7 +817,7 @@ export default function AdminDashboardPage() {
                     value={gradeFilter}
                     onChange={(e) => setGradeFilter(e.target.value)}
                     aria-label="Filter by candidate ATS grade"
-                    className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
+                    className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
                   >
                     <option value="ALL">All Grades</option>
                     <option value="A+">Grade A+ (88-100)</option>
@@ -831,7 +831,7 @@ export default function AdminDashboardPage() {
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'date' | 'score')}
                     aria-label="Sort candidates by date or score"
-                    className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
+                    className="px-2.5 py-1.5 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs font-medium text-slate-200 focus:outline-none cursor-pointer"
                   >
                     <option value="date">Sort: Latest First</option>
                     <option value="score">Sort: Highest Score</option>
@@ -842,7 +842,7 @@ export default function AdminDashboardPage() {
               {/* Candidate Cards List */}
               <div className="space-y-2 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
                 {filteredResumes.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400 bg-[#121215] rounded-2xl border border-zinc-800 text-xs">
+                  <div className="p-8 text-center text-slate-400 bg-[#151D35] rounded-2xl border border-zinc-800 text-xs">
                     No uploaded resumes match the selected search filters.
                   </div>
                 ) : (
@@ -859,7 +859,7 @@ export default function AdminDashboardPage() {
                         className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                           isSelected
                             ? 'bg-indigo-950/50 border-indigo-500 shadow-sm'
-                            : 'bg-[#121215] border-zinc-800 hover:border-zinc-700 hover:bg-slate-850/60'
+                            : 'bg-[#151D35] border-zinc-800 hover:border-zinc-700 hover:bg-slate-850/60'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -907,9 +907,9 @@ export default function AdminDashboardPage() {
             {/* Right Column: Dedicated Space to View Uploaded Resume Document */}
             <div className={`lg:col-span-7 ${mobileDetailOpen ? 'block' : 'hidden lg:block'}`}>
               {currentResume ? (
-                <div className="bg-[#121215] rounded-3xl border border-zinc-800 shadow-sm overflow-hidden flex flex-col">
+                <div className="bg-[#151D35] rounded-3xl border border-zinc-800 shadow-sm overflow-hidden flex flex-col">
                   {/* Mobile Back Button */}
-                  <div className="p-3 bg-[#121215] border-b border-zinc-800 lg:hidden flex items-center justify-between">
+                  <div className="p-3 bg-[#151D35] border-b border-zinc-800 lg:hidden flex items-center justify-between">
                     <button
                       onClick={() => setMobileDetailOpen(false)}
                       className="inline-flex items-center space-x-1 text-xs font-bold text-indigo-400 cursor-pointer"
@@ -923,7 +923,7 @@ export default function AdminDashboardPage() {
                   </div>
 
                   {/* Header Dossier Strip - Clean Matte Slate Surface */}
-                  <div className="p-5 sm:p-6 border-b border-zinc-800 bg-[#121215]/95">
+                  <div className="p-5 sm:p-6 border-b border-zinc-800 bg-[#151D35]/95">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center space-x-2 mb-1.5">
@@ -965,7 +965,7 @@ export default function AdminDashboardPage() {
                     {/* Action Bar */}
                     <div className="flex flex-wrap items-center justify-between gap-2.5 mt-5 pt-4 border-t border-zinc-800">
                       {/* Reader View Mode Switcher */}
-                      <div className="inline-flex items-center bg-[#09090b] p-1 rounded-xl text-xs font-semibold border border-zinc-800">
+                      <div className="inline-flex items-center bg-[#0B1020] p-1 rounded-xl text-xs font-semibold border border-zinc-800">
                         <button
                           onClick={() => setReaderViewMode('formatted')}
                           className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
@@ -1106,7 +1106,7 @@ export default function AdminDashboardPage() {
                             <span>Extracted Resume Content (Document Flow)</span>
                             <span className="text-[10px] text-slate-500 font-mono">Clean Text Stream</span>
                           </h3>
-                          <div className="p-5 sm:p-6 rounded-2xl bg-[#09090b] border border-zinc-800 text-xs leading-relaxed font-sans text-slate-100 whitespace-pre-wrap selection:bg-indigo-600 selection:text-white shadow-inner">
+                          <div className="p-5 sm:p-6 rounded-2xl bg-[#0B1020] border border-zinc-800 text-xs leading-relaxed font-sans text-slate-100 whitespace-pre-wrap selection:bg-indigo-600 selection:text-white shadow-inner">
                             {currentResume.resume_text || 'No readable text content found in document.'}
                           </div>
                         </div>
@@ -1120,7 +1120,7 @@ export default function AdminDashboardPage() {
                             </h3>
                             <div className="space-y-3">
                               {currentResume.analysis.bullet_rewrites.map((b, idx) => (
-                                <div key={idx} className="p-4 rounded-2xl border border-zinc-800 bg-[#09090b]/70 text-xs space-y-2">
+                                <div key={idx} className="p-4 rounded-2xl border border-zinc-800 bg-[#0B1020]/70 text-xs space-y-2">
                                   <div className="text-rose-400">
                                     <span className="font-bold">Original: </span>
                                     {b.original}
@@ -1149,7 +1149,7 @@ export default function AdminDashboardPage() {
                             {currentResume.resume_text ? `${currentResume.resume_text.split(/\s+/).length} words • ${currentResume.resume_text.length} characters` : '0 words'}
                           </span>
                         </div>
-                        <div className="p-4 sm:p-5 rounded-2xl bg-[#09090b] text-slate-100 font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-zinc-800">
+                        <div className="p-4 sm:p-5 rounded-2xl bg-[#0B1020] text-slate-100 font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-zinc-800">
                           {currentResume.resume_text || 'No raw text stream available.'}
                         </div>
                       </div>
@@ -1161,19 +1161,19 @@ export default function AdminDashboardPage() {
                         {/* 4 Category Breakdown Progress Bars */}
                         {currentResume.analysis?.breakdown && (
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
+                            <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Contact &amp; Links</span>
                               <span className="text-lg font-black text-indigo-400">{currentResume.analysis.breakdown.contact_score}%</span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
+                            <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Skills Match</span>
                               <span className="text-lg font-black text-emerald-400">{currentResume.analysis.breakdown.skills_score}%</span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
+                            <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Impact &amp; STAR</span>
                               <span className="text-lg font-black text-indigo-400">{currentResume.analysis.breakdown.experience_score}%</span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-[#09090b] border border-zinc-800">
+                            <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">ATS Formatting</span>
                               <span className="text-lg font-black text-sky-400">{currentResume.analysis.breakdown.formatting_score}%</span>
                             </div>
@@ -1217,7 +1217,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white dark:bg-[#121215] rounded-3xl border border-slate-200 dark:border-zinc-800 p-12 text-center text-slate-400">
+                <div className="bg-white dark:bg-[#151D35] rounded-3xl border border-slate-200 dark:border-zinc-800 p-12 text-center text-slate-400">
                   <FileText className="w-12 h-12 mx-auto mb-3 opacity-40" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     No Resume Selected
@@ -1237,7 +1237,7 @@ export default function AdminDashboardPage() {
         {activeTab === 'table' && (
           <div className="space-y-4">
             {/* Search and Filters Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#121215] p-4 rounded-2xl border border-zinc-800">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#151D35] p-4 rounded-2xl border border-zinc-800">
               <div className="relative w-full sm:w-96">
                 <label htmlFor={searchInputId} className="sr-only">Search resumes</label>
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
@@ -1247,7 +1247,7 @@ export default function AdminDashboardPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search candidate, email, filename, or skill..."
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-800 bg-[#09090b] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
@@ -1256,7 +1256,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={gradeFilter}
                   onChange={(e) => setGradeFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl border border-zinc-800 bg-[#09090b] text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer"
+                  className="px-3 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer"
                 >
                   <option value="ALL">All Grades</option>
                   <option value="A+">Grade A+ (88-100)</option>
@@ -1269,10 +1269,10 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Table */}
-            <div className="bg-[#121215] rounded-2xl border border-zinc-800 overflow-hidden shadow-xs">
+            <div className="bg-[#151D35] rounded-2xl border border-zinc-800 overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#09090b] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
+                  <thead className="bg-[#0B1020] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
                     <tr>
                       <th className="py-3.5 px-4">Candidate / Document</th>
                       <th className="py-3.5 px-4">ATS Score</th>
@@ -1398,7 +1398,7 @@ export default function AdminDashboardPage() {
         {/* TAB 3: REGISTERED USERS                                                   */}
         {/* ========================================================================= */}
         {activeTab === 'users' && (
-          <div className="bg-[#121215] rounded-2xl border border-zinc-800 p-6 space-y-4">
+          <div className="bg-[#151D35] rounded-2xl border border-zinc-800 p-6 space-y-4">
             <div>
               <h2 className="text-base font-bold text-white">
                 Registered Student Accounts ({data?.profiles.length ?? 0})
@@ -1422,7 +1422,7 @@ export default function AdminDashboardPage() {
 
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#09090b] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
+                <thead className="bg-[#0B1020] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
                   <tr>
                     <th className="py-3 px-4">Candidate Profile</th>
                     <th className="py-3 px-4">User ID</th>
@@ -1510,7 +1510,7 @@ export default function AdminDashboardPage() {
         {/* TAB 4: SKILL TRENDS                                                       */}
         {/* ========================================================================= */}
         {activeTab === 'skills' && (
-          <div className="bg-[#121215] rounded-2xl border border-zinc-800 p-6 space-y-6">
+          <div className="bg-[#151D35] rounded-2xl border border-zinc-800 p-6 space-y-6">
             <div>
               <h2 className="text-base font-bold text-white">
                 Technical Skills Detected Across Uploaded Resumes
@@ -1522,7 +1522,7 @@ export default function AdminDashboardPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {(data?.topSkills || []).map((item, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-[#09090b] border border-zinc-800 flex items-center justify-between">
+                <div key={idx} className="p-4 rounded-xl bg-[#0B1020] border border-zinc-800 flex items-center justify-between">
                   <div className="font-bold text-sm text-slate-100">
                     {item.skill}
                   </div>
@@ -1539,7 +1539,7 @@ export default function AdminDashboardPage() {
         {/* TAB 5: LOGIN & ACCESS AUDIT (REAL DATA ONLY)                             */}
         {/* ========================================================================= */}
         {activeTab === 'logins' && (
-          <div className="bg-[#121215] rounded-2xl border border-zinc-800 p-6 space-y-5">
+          <div className="bg-[#151D35] rounded-2xl border border-zinc-800 p-6 space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center space-x-2">
@@ -1564,14 +1564,14 @@ export default function AdminDashboardPage() {
                     value={loginSearchQuery}
                     onChange={(e) => setLoginSearchQuery(e.target.value)}
                     placeholder="Search by email, name, or IP..."
-                    className="pl-8 pr-3 py-1.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-56"
+                    className="pl-8 pr-3 py-1.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-56"
                   />
                 </div>
 
                 <select
                   value={authMethodFilter}
                   onChange={(e) => setAuthMethodFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
                 >
                   <option value="ALL">All Auth Methods</option>
                   <option value="google">Google OAuth</option>
@@ -1585,7 +1585,7 @@ export default function AdminDashboardPage() {
             {/* Audit Table */}
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#09090b] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
+                <thead className="bg-[#0B1020] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
                   <tr>
                     <th className="py-3 px-4">User / Account</th>
                     <th className="py-3 px-4">How They Logged In</th>
@@ -1722,7 +1722,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Privacy & Credentials Notice */}
-            <div className="p-3.5 rounded-xl bg-[#09090b]/70 border border-zinc-800 text-[11px] text-slate-400 flex items-center space-x-2">
+            <div className="p-3.5 rounded-xl bg-[#0B1020]/70 border border-zinc-800 text-[11px] text-slate-400 flex items-center space-x-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>
                 <strong>End-User Privacy Guarantee:</strong> Passwords are encrypted cryptographically with salt and never stored or visible in plaintext. Only authentication methods and access telemetry are audited.
@@ -1746,7 +1746,7 @@ export default function AdminDashboardPage() {
           }}
           className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
         >
-          <div className="max-w-md w-full bg-[#121215] border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
+          <div className="max-w-md w-full bg-[#151D35] border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
             <button
               onClick={() => {
                 setChangeKeyModalOpen(false);
@@ -1773,7 +1773,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Security Notice */}
-            <div className="p-3.5 rounded-2xl bg-[#09090b]/90 border border-zinc-800 text-xs text-slate-300 leading-relaxed">
+            <div className="p-3.5 rounded-2xl bg-[#0B1020]/90 border border-zinc-800 text-xs text-slate-300 leading-relaxed">
               <span className="font-bold text-white block mb-1">Server-Side Admin Security</span>
               Your portal authenticates against <code className="text-indigo-400 bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> defined in your server environment variables. Entering a new passcode below updates the runtime server passcode. For permanent persistence across redeployments, update <code className="text-indigo-400 bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in your Vercel project settings.
             </div>
@@ -1811,7 +1811,7 @@ export default function AdminDashboardPage() {
                     autoCapitalize="off"
                     spellCheck={false}
                     data-lpignore="true"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>
@@ -1834,7 +1834,7 @@ export default function AdminDashboardPage() {
                     autoCapitalize="off"
                     spellCheck={false}
                     data-lpignore="true"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#09090b] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>

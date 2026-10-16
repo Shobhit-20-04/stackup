@@ -36,8 +36,8 @@ const TopicNotes = dynamic(() => import('./TopicNotes'), {
   ssr: false,
   loading: () => (
     <div className="max-w-4xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
-      <div className="h-28 bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
-      <div className="h-64 bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
+      <div className="h-28 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
+      <div className="h-64 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
     </div>
   ),
 });
@@ -46,8 +46,8 @@ const QuizEngine = dynamic(() => import('./QuizEngine'), {
   ssr: false,
   loading: () => (
     <div className="max-w-3xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
-      <div className="h-20 bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
-      <div className="h-72 bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
+      <div className="h-20 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
+      <div className="h-72 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
     </div>
   ),
 });
@@ -158,7 +158,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <Cpu className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-indigo-500/10 border-indigo-500/20',
         };
@@ -166,7 +166,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-emerald-500/10 border-emerald-500/20',
         };
@@ -174,7 +174,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <Network className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-cyan-500/10 border-cyan-500/20',
         };
@@ -182,7 +182,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <Code2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-amber-500/10 border-amber-500/20',
         };
@@ -190,7 +190,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <Server className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-indigo-500/10 border-indigo-500/20',
         };
@@ -198,7 +198,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <GitBranch className="w-5 h-5 text-rose-600 dark:text-rose-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-rose-500/10 border-rose-500/20',
         };
@@ -206,7 +206,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <Terminal className="w-5 h-5 text-violet-600 dark:text-violet-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-violet-500/10 border-violet-500/20',
         };
@@ -214,7 +214,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <Layers className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-teal-500/10 border-teal-500/20',
         };
@@ -222,7 +222,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         return {
           icon: <BookOpen className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
           border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#121215]',
+          bg: 'bg-white dark:bg-[#151D35]',
           badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
           iconBg: 'bg-indigo-500/10 border-indigo-500/20',
         };
@@ -391,7 +391,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
       {/* Header Banner */}
-      <div className="p-5 sm:p-7 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+      <div className="p-5 sm:p-7 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="space-y-2 max-w-2xl">
           <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold border ${accentBadgeClasses}`}>
             <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
@@ -448,7 +448,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label={`Search all ${section.name} topics`}
             placeholder={`Search all ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP 3-Way, Normalization, Probability)...`}
-            className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-[#121215] text-sm font-medium text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xs"
+            className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-[#151D35] text-sm font-medium text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xs"
           />
           {isSearchPending ? (
             <div className="absolute right-3.5 top-3.5">
@@ -567,7 +567,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       </div>
 
       {/* Sticky Subject Chip Switcher */}
-      <div className="sticky top-16 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-slate-50/95 dark:bg-[#09090b]/95 backdrop-blur-md border-y sm:border-y-0 sm:rounded-2xl border-slate-200 dark:border-zinc-800">
+      <div className="sticky top-16 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-slate-50/95 dark:bg-[#0B1020]/95 backdrop-blur-md border-y sm:border-y-0 sm:rounded-2xl border-slate-200 dark:border-zinc-800">
         <div className="flex items-center space-x-2 overflow-x-auto scrollbar-none pb-1 pt-0.5">
           <button
             onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
@@ -624,7 +624,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           </div>
 
           {searchResults.length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#121215] rounded-3xl border border-slate-200 dark:border-zinc-800 space-y-2">
+            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-3xl border border-slate-200 dark:border-zinc-800 space-y-2">
               <p className="text-sm font-bold text-slate-900 dark:text-white">No topics matching your criteria</p>
               <p className="text-xs text-slate-500 dark:text-zinc-400">Try adjusting your filters or keywords like &quot;Deadlock&quot;, &quot;TCP&quot;, &quot;Normal Form&quot;, or &quot;Probability&quot;.</p>
             </div>
@@ -636,7 +636,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   <div
                     key={topic.id}
                     onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
-                    className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-slate-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between cursor-pointer group"
+                    className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between cursor-pointer group"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
@@ -734,7 +734,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                     subjectCluster === tab.id
                       ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-white dark:bg-[#121215] text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-850'
+                      : 'bg-white dark:bg-[#151D35] text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-850'
                   }`}
                 >
                   {tab.label} ({tab.count})
@@ -753,7 +753,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 <div
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
+                  className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3.5">
@@ -820,7 +820,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-zinc-800">
             <button
               onClick={() => setSelectedCategory('all')}
-              className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:text-indigo-600 dark:hover:text-white bg-white dark:bg-[#121215] border border-slate-300 dark:border-zinc-800 px-3 py-2 rounded-xl transition-all shadow-xs cursor-pointer self-start"
+              className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:text-indigo-600 dark:hover:text-white bg-white dark:bg-[#151D35] border border-slate-300 dark:border-zinc-800 px-3 py-2 rounded-xl transition-all shadow-xs cursor-pointer self-start"
             >
               <ChevronLeft className="w-4 h-4" />
               <span>← All Subjects Dashboard</span>
@@ -849,7 +849,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           </div>
 
           {/* Active Subject Banner */}
-          <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#121215] text-slate-900 dark:text-white border border-slate-200 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#151D35] text-slate-900 dark:text-white border border-slate-200 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                 Active Subject Study Track
@@ -873,7 +873,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
           {/* Topic Modules List */}
           {filteredActiveTopics.length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#121215] rounded-3xl border border-slate-200 dark:border-zinc-800 space-y-2">
+            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-3xl border border-slate-200 dark:border-zinc-800 space-y-2">
               <p className="text-sm font-bold text-slate-900 dark:text-white">No modules match your current filter</p>
               <p className="text-xs text-slate-500 dark:text-zinc-400">Try changing difficulty or status filters to view modules.</p>
               <button
@@ -898,7 +898,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer group shadow-xs hover:shadow-sm ${
                       isCompleted
                         ? 'border-emerald-500/20 bg-emerald-500/5'
-                        : 'border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-slate-300 dark:hover:border-zinc-700'
+                        : 'border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-zinc-700'
                     }`}
                   >
                     <div className="flex items-start space-x-3.5 min-w-0">
@@ -1006,7 +1006,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {/* QUICK REVISION CHEATSHEET MODAL */}
       {isCheatsheetOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+          <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             {/* Modal Header */}
             <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-zinc-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-[#18181b]/50">
               <div className="space-y-1">
@@ -1033,7 +1033,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
             {/* Cheatsheet Body */}
             {!currentUser ? (
-              <div className="flex-1 p-8 sm:p-14 text-center flex flex-col items-center justify-center space-y-4 my-auto bg-slate-50/50 dark:bg-[#121215]/50">
+              <div className="flex-1 p-8 sm:p-14 text-center flex flex-col items-center justify-center space-y-4 my-auto bg-slate-50/50 dark:bg-[#151D35]/50">
                 <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/10">
                   <Lock className="w-7 h-7" />
                 </div>
@@ -1064,7 +1064,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             ) : (
               <>
                 {/* Cheatsheet Controls */}
-                <div className="p-4 border-b border-slate-200 dark:border-zinc-800 space-y-3 bg-white dark:bg-[#121215]">
+                <div className="p-4 border-b border-slate-200 dark:border-zinc-800 space-y-3 bg-white dark:bg-[#151D35]">
                   <div className="relative">
                     <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                     <input
@@ -1124,7 +1124,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     cheatsheetTopics.map(({ topic, category }) => (
                       <div
                         key={topic.id}
-                        className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-3 shadow-xs"
+                        className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] space-y-3 shadow-xs"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center space-x-2">
@@ -1215,7 +1215,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {/* Auth Prompt Modal */}
       {authPromptOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+          <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mb-1">
               <Lock className="w-6 h-6" />
             </div>

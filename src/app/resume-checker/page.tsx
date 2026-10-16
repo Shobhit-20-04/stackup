@@ -237,9 +237,9 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-[#09090b] pb-20">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-[#0B1020] pb-20">
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#121215] border-b border-slate-200 dark:border-zinc-800">
+      <div className="bg-white dark:bg-[#151D35] border-b border-slate-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
@@ -277,13 +277,13 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
         )}
 
         {authLoading ? (
-          <div className="p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#121215] shadow-xs flex flex-col items-center justify-center space-y-3">
+          <div className="p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#151D35] shadow-xs flex flex-col items-center justify-center space-y-3">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
             <p className="text-xs text-slate-500 dark:text-zinc-400">Checking student session...</p>
           </div>
         ) : !currentUser ? (
           /* Locked State for Unauthenticated Visitors */
-          <div className="p-8 sm:p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#121215] shadow-xs space-y-6">
+          <div className="p-8 sm:p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#151D35] shadow-xs space-y-6">
             <div className="max-w-md mx-auto flex flex-col items-center">
               <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 shadow-xs border border-indigo-100 dark:border-indigo-900/50">
                 <Lock className="w-8 h-8" />
@@ -321,7 +321,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleFileDrop}
-              className={`p-10 border-2 border-dashed rounded-3xl text-center transition-all bg-white dark:bg-[#121215] ${
+              className={`p-10 border-2 border-dashed rounded-3xl text-center transition-all bg-white dark:bg-[#151D35] ${
                 isDragging 
                   ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 scale-[1.01]' 
                   : 'border-slate-300 dark:border-zinc-800 hover:border-slate-400 dark:hover:border-zinc-700'
@@ -407,7 +407,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* Feature Highlights Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
+              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
                 <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center mb-3">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
@@ -417,7 +417,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 </p>
               </div>
 
-              <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
+              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
                 <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3">
                   <TrendingUp className="w-5 h-5" />
                 </div>
@@ -427,7 +427,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 </p>
               </div>
 
-              <div className="bg-white dark:bg-[#121215] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
+              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
                 <div className="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-3">
                   <Sparkles className="w-5 h-5" />
                 </div>
@@ -442,7 +442,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
           /* Scorecard Result View */
           <div className="space-y-6">
             {/* Top Score Summary Banner */}
-            <div className="bg-white dark:bg-[#121215] rounded-3xl border border-slate-200 dark:border-zinc-800 p-5 sm:p-8 shadow-sm">
+            <div className="bg-white dark:bg-[#151D35] rounded-3xl border border-slate-200 dark:border-zinc-800 p-5 sm:p-8 shadow-sm">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-zinc-800">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:space-x-5">
                   {/* Big Circular Score */}
@@ -574,7 +574,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* Restricted Content Lock for Visitors */}
             {!currentUser ? (
-              <div className="rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] p-8 text-center shadow-lg space-y-4">
+              <div className="rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] p-8 text-center shadow-lg space-y-4">
                 <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mx-auto mb-2">
                   <Lock className="w-7 h-7" />
                 </div>
@@ -606,7 +606,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             {/* Keyword Analysis Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Matched Keywords */}
-              <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
+              <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
                 <div className="flex items-center space-x-2 mb-3">
                   <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -633,7 +633,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
 
               {/* Missing Recommended Keywords */}
-              <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
+              <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
                 <div className="flex items-center space-x-2 mb-3">
                   <AlertCircle className="w-5 h-5 text-amber-500" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -662,7 +662,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* AI Bullet Point Optimization */}
             {result.bullet_rewrites && result.bullet_rewrites.length > 0 && (
-              <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
+              <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
                 <div className="flex items-center space-x-2 mb-2">
                   <Sparkles className="w-5 h-5 text-indigo-500" />
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -704,7 +704,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             )}
 
             {/* Actionable Suggestions Checklist */}
-            <div className="bg-white dark:bg-[#121215] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
+            <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
               <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4">
                 Section-by-Section Recommendations
               </h3>
@@ -769,7 +769,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             </div>
 
             {/* Profile Navigation Footer */}
-            <div className="flex items-center justify-between bg-slate-100 dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl">
+            <div className="flex items-center justify-between bg-slate-100 dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl">
               <div>
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                   Track your score progression

@@ -14,7 +14,7 @@ import {
 
 export default function NotFound() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[#f8fafc] dark:bg-[#09090b] text-slate-900 dark:text-zinc-100 transition-colors">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[#f8fafc] dark:bg-[#0B1020] text-slate-900 dark:text-zinc-100 transition-colors">
       <div className="max-w-2xl w-full text-center space-y-8">
         {/* 404 Visual Pill */}
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xs text-xs font-semibold text-slate-700 dark:text-zinc-300 shadow-xs">
@@ -36,7 +36,7 @@ export default function NotFound() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left max-w-xl mx-auto">
           <Link
             href="/dsa"
-            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-emerald-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
+            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-emerald-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <Code2 className="w-5 h-5" />
@@ -51,7 +51,7 @@ export default function NotFound() {
 
           <Link
             href="/core-cs"
-            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-indigo-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
+            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-indigo-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
               <Cpu className="w-5 h-5" />
@@ -66,7 +66,7 @@ export default function NotFound() {
 
           <Link
             href="/aptitude"
-            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-amber-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
+            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-amber-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
               <BookOpen className="w-5 h-5" />
@@ -81,7 +81,7 @@ export default function NotFound() {
 
           <Link
             href="/resume-checker"
-            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:border-rose-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
+            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-rose-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
               <FileCheck2 className="w-5 h-5" />

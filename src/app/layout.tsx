@@ -30,9 +30,31 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-theme="cosmic"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="font-sans min-h-full flex flex-col bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-zinc-100 selection:bg-indigo-600 selection:text-white">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('stackup-theme') || 'cosmic';
+                  document.documentElement.setAttribute('data-theme', saved);
+                  if (saved === 'lavender') {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.classList.add('light');
+                  } else {
+                    document.documentElement.classList.remove('light');
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="font-sans min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] selection:bg-[#8B5CF6] selection:text-white transition-colors duration-150">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

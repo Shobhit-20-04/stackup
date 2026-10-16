@@ -17,7 +17,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[#f8fafc] dark:bg-[#09090b] text-slate-900 dark:text-zinc-100 transition-colors">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[#f8fafc] dark:bg-[#0B1020] text-slate-900 dark:text-zinc-100 transition-colors">
       <div className="max-w-xl w-full text-center space-y-8">
         {/* Error Visual Pill */}
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 text-xs font-semibold text-rose-600 dark:text-rose-400 shadow-xs">
@@ -53,7 +53,7 @@ export default function GlobalError({
           </button>
           <Link
             href="/"
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-2xl font-bold text-xs text-slate-700 dark:text-zinc-300 bg-white dark:bg-[#121215] border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 shadow-xs transition-all cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-2xl font-bold text-xs text-slate-700 dark:text-zinc-300 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 shadow-xs transition-all cursor-pointer"
           >
             <Home className="w-4 h-4" />
             <span>Return to Homepage</span>
