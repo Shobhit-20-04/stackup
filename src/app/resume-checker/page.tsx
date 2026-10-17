@@ -237,28 +237,28 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-[#0B1020] pb-20">
+    <div className="min-h-screen bg-[var(--background)] pb-20">
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#151D35] border-b border-slate-200 dark:border-zinc-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="bg-[var(--surface-card)] border-b border-[var(--border-subtle)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/80 mb-3">
-                <FileCheck2 className="w-3.5 h-3.5" />
-                <span>AI-Powered ATS Evaluator</span>
+              <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] mb-3">
+                <FileCheck2 className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+                <span>ATS Technical Diagnostic</span>
               </div>
-              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                Resume ATS Checker
+              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--foreground)] tracking-tight">
+                Resume ATS Evaluator
               </h1>
-              <p className="mt-2 text-slate-600 dark:text-zinc-400 max-w-2xl text-sm leading-relaxed">
-                Scan your software engineering resume against standard Applicant Tracking Systems. Uncover missing tech keywords, detect formatting red flags, and get instant line-by-line STAR rewrites.
+              <p className="mt-2 text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
+                Parse and benchmark your software engineering resume against modern applicant tracking systems. Detect missing technical keywords, formatting obstacles, and weak action bullet points.
               </p>
             </div>
 
-            {/* Mandatory Upload Info Tag */}
-            <div className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs font-semibold text-slate-700 dark:text-zinc-300">
-              <UploadCloud className="w-4 h-4 text-indigo-500" />
-              <span>Resume Upload Mandatory • PDF, DOCX, TXT</span>
+            {/* Upload Specs Tag */}
+            <div className="flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] shrink-0 self-start md:self-auto">
+              <UploadCloud className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>Formats: PDF, DOCX, TXT • Max 5MB</span>
             </div>
           </div>
         </div>
@@ -267,49 +267,49 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Error notification */}
         {errorMsg && (
-          <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 flex items-start space-x-3 text-rose-700 dark:text-rose-400 text-sm">
+          <div className="mb-6 p-4 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-start space-x-3 text-rose-500 text-sm">
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold">Upload notice: </span>
+              <span className="font-semibold">Notice: </span>
               {errorMsg}
             </div>
           </div>
         )}
 
         {authLoading ? (
-          <div className="p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#151D35] shadow-xs flex flex-col items-center justify-center space-y-3">
-            <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-            <p className="text-xs text-slate-500 dark:text-zinc-400">Checking student session...</p>
+          <div className="p-12 border border-[var(--border-subtle)] rounded-xl text-center bg-[var(--surface-card)] shadow-xs flex flex-col items-center justify-center space-y-3">
+            <Loader2 className="w-7 h-7 animate-spin text-[var(--brand-primary)]" />
+            <p className="text-xs text-[var(--foreground-muted)]">Verifying student session...</p>
           </div>
         ) : !currentUser ? (
           /* Locked State for Unauthenticated Visitors */
-          <div className="p-8 sm:p-12 border border-slate-200 dark:border-zinc-800 rounded-3xl text-center bg-white dark:bg-[#151D35] shadow-xs space-y-6">
+          <div className="p-8 sm:p-12 border border-[var(--border-subtle)] rounded-xl text-center bg-[var(--surface-card)] shadow-xs space-y-6">
             <div className="max-w-md mx-auto flex flex-col items-center">
-              <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 shadow-xs border border-indigo-100 dark:border-indigo-900/50">
-                <Lock className="w-8 h-8" />
+              <div className="w-12 h-12 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] flex items-center justify-center mb-3 border border-[var(--border-subtle)]">
+                <Lock className="w-6 h-6" />
               </div>
-              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900 mb-3">
-                <span>Account Required</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-                Sign in to upload &amp; evaluate your resume
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20 mb-2">
+                Authentication Required
+              </span>
+              <h3 className="text-xl font-bold text-[var(--foreground)]">
+                Sign in to analyze and store your resume
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 mt-2 mb-6 leading-relaxed">
-                Resume scanning, keyword matching, and AI bullet rewrites require an active student account. Sign in to analyze your resume and securely store your progress.
+              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-1.5 mb-6 leading-relaxed">
+                Resume scanning, keyword matching, and line-by-line STAR rewrites require an active student account to save scores to your preparation profile.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <Link
                   href="/login?next=/resume-checker"
-                  className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-2.5 bg-[var(--brand-primary)] hover:opacity-95 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-xs inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
                 >
-                  <span>Sign In to Upload Resume</span>
+                  <span>Sign In to Continue</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/login?next=/resume-checker"
-                  className="w-full sm:w-auto px-6 py-3 border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-750 text-slate-800 dark:text-zinc-200 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-2.5 border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground)] text-xs sm:text-sm font-medium rounded-lg transition-all cursor-pointer"
                 >
-                  <span>Create Free Account</span>
+                  <span>Create Account</span>
                 </Link>
               </div>
             </div>
@@ -321,39 +321,39 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleFileDrop}
-              className={`p-10 border-2 border-dashed rounded-3xl text-center transition-all bg-white dark:bg-[#151D35] ${
+              className={`p-8 sm:p-10 border-2 border-dashed rounded-xl text-center transition-all bg-[var(--surface-card)] ${
                 isDragging 
-                  ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 scale-[1.01]' 
-                  : 'border-slate-300 dark:border-zinc-800 hover:border-slate-400 dark:hover:border-zinc-700'
+                  ? 'border-[var(--brand-primary)] bg-[var(--surface-sunken)]' 
+                  : 'border-[var(--border-subtle)] hover:border-[var(--foreground-muted)]'
               }`}
             >
               <div className="max-w-md mx-auto flex flex-col items-center">
-                <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 shadow-xs border border-indigo-100 dark:border-indigo-900/40">
-                  <UploadCloud className="w-8 h-8" />
+                <div className="w-12 h-12 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] flex items-center justify-center mb-3 border border-[var(--border-subtle)]">
+                  <UploadCloud className="w-6 h-6" />
                 </div>
                 
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                  Drop your resume here
+                <h3 className="text-base font-semibold text-[var(--foreground)]">
+                  Select or drag resume document
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-6">
-                  Supports PDF (.pdf) and Word (.docx) files up to 5MB.
+                <p className="text-xs text-[var(--foreground-muted)] mt-1 mb-5">
+                  Accepts PDF (.pdf), Word (.docx), or plain text (.txt) up to 5MB.
                 </p>
 
                 {file ? (
-                  <div className="flex items-center space-x-3 bg-slate-100 dark:bg-zinc-800 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-700 mb-6">
-                    <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    <span className="text-sm font-semibold text-slate-800 dark:text-zinc-200 truncate max-w-xs">
+                  <div className="flex items-center space-x-3 bg-[var(--surface-sunken)] px-3.5 py-2 rounded-lg border border-[var(--border-subtle)] mb-5">
+                    <FileText className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+                    <span className="text-xs font-medium text-[var(--foreground)] truncate max-w-xs">
                       {file.name}
                     </span>
-                    <span className="text-xs text-slate-400 dark:text-zinc-500">
+                    <span className="text-[11px] text-[var(--foreground-muted)] shrink-0">
                       ({(file.size / (1024 * 1024)).toFixed(2)} MB)
                     </span>
                     <button 
                       onClick={() => setFile(null)} 
-                      className="p-1 text-slate-400 hover:text-rose-500 cursor-pointer"
+                      className="p-1 text-[var(--foreground-muted)] hover:text-rose-500 cursor-pointer"
                       aria-label="Remove selected resume file"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ) : (
@@ -365,9 +365,9 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                       className="hidden" 
                       aria-label="Upload resume file (PDF, DOCX, TXT)"
                     />
-                    <span className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-md shadow-indigo-600/20 inline-flex items-center space-x-2 transition-all cursor-pointer">
-                      <FileText className="w-4 h-4" />
-                      <span>Browse Files</span>
+                    <span className="px-4 py-2 bg-[var(--brand-primary)] hover:opacity-95 text-white text-xs font-medium rounded-lg shadow-xs inline-flex items-center space-x-2 transition-all cursor-pointer">
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Choose File</span>
                     </span>
                   </label>
                 )}
@@ -376,65 +376,99 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                   <button
                     onClick={handleAnalyzeUpload}
                     disabled={analyzing}
-                    className="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-2.5 bg-[var(--brand-primary)] hover:opacity-95 disabled:opacity-50 text-white text-xs font-semibold rounded-lg shadow-xs flex items-center justify-center space-x-2 transition-all cursor-pointer"
                   >
                     {analyzing ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Analyzing with ATS Scanner...</span>
+                        <span>Parsing and Benchmarking...</span>
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4" />
-                        <span>Run Full ATS Diagnostic</span>
+                        <span>Analyze Resume</span>
                       </>
                     )}
                   </button>
                 )}
 
                 {analyzing && (
-                  <div className="w-full max-w-xs mt-4 space-y-1.5 animate-in fade-in duration-200">
-                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-indigo-600 animate-pulse w-full rounded-full" />
+                  <div className="w-full max-w-xs mt-4 space-y-2 animate-in fade-in duration-200">
+                    <div className="h-1.5 w-full bg-[var(--surface-sunken)] rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                      <div className="h-full bg-[var(--brand-primary)] animate-pulse w-full rounded-full" />
                     </div>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 text-center animate-pulse">
-                      Parsing sections &amp; benchmarking skills against industry standards...
+                    <p className="text-[11px] text-[var(--foreground-muted)] text-center">
+                      Parsing document sections, keywords, and metrics...
                     </p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Feature Highlights Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center mb-3">
-                  <CheckCircle2 className="w-5 h-5" />
+            {/* ATS Diagnostic Evaluation Rubric */}
+            <div className="border border-[var(--border-subtle)] bg-[var(--surface-card)] rounded-xl p-5">
+              <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-subtle)]">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
+                    Diagnostic Evaluation Rubric
+                  </h4>
+                  <p className="text-[11px] text-[var(--foreground-muted)] mt-0.5">
+                    What our parser benchmarks against when evaluating engineering resumes
+                  </p>
                 </div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">Keyword Matching</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Cross-references against 30+ top technical skills required in modern SWE recruiting pipelines.
-                </p>
+                <span className="text-[10px] font-mono text-[var(--foreground-muted)] uppercase">
+                  4 Rubric Criteria
+                </span>
               </div>
 
-              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
-                <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3">
-                  <TrendingUp className="w-5 h-5" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
+                    01 • CONTACT &amp; IDENTITY
+                  </div>
+                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
+                    Links &amp; Header Parsing
+                  </div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
+                    Evaluates clean placement of email, phone, GitHub profile, and LinkedIn URL without nested header tables.
+                  </p>
                 </div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">Impact & Metrics</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Evaluates quantified business results, latency gains, and STAR structure in your bullet points.
-                </p>
-              </div>
 
-              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800">
-                <div className="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-3">
-                  <Sparkles className="w-5 h-5" />
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
+                    02 • TECH VOCABULARY
+                  </div>
+                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
+                    Skill Keyword Extraction
+                  </div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
+                    Scans against 30+ canonical SWE skills across languages, frameworks, cloud infrastructure, and databases.
+                  </p>
                 </div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">Line-by-Line Rewrites</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Provides actionable before-and-after bullet rewrites with strong action verbs.
-                </p>
+
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
+                    03 • QUANTIFIED IMPACT
+                  </div>
+                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
+                    STAR Bullet Quality
+                  </div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
+                    Flags passive wording and measures quantified metrics, latency improvements, user scale, and cost reductions.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
+                    04 • ATS READABILITY
+                  </div>
+                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
+                    Format &amp; Layout Safety
+                  </div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
+                    Checks single-column reading hierarchy, standard section names, and avoids unparseable graphic columns.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -442,50 +476,50 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
           /* Scorecard Result View */
           <div className="space-y-6">
             {/* Top Score Summary Banner */}
-            <div className="bg-white dark:bg-[#151D35] rounded-3xl border border-slate-200 dark:border-zinc-800 p-5 sm:p-8 shadow-sm">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-zinc-800">
+            <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xs">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:space-x-5">
-                  {/* Big Circular Score */}
-                  <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex flex-col items-center justify-center text-white shadow-md shrink-0 ${
+                  {/* Clean High-Contrast Score Badge */}
+                  <div className={`w-20 h-20 sm:w-22 sm:h-22 rounded-xl flex flex-col items-center justify-center text-white shrink-0 ${
                     result.ats_score >= 80 
-                      ? 'bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-emerald-500/20' 
+                      ? 'bg-emerald-600 border border-emerald-500/50' 
                       : result.ats_score >= 65
-                      ? 'bg-gradient-to-tr from-amber-500 to-orange-500 shadow-amber-500/20'
-                      : 'bg-gradient-to-tr from-rose-600 to-rose-500 shadow-rose-500/20'
+                      ? 'bg-amber-600 border border-amber-500/50'
+                      : 'bg-rose-600 border border-rose-500/50'
                   }`}>
-                    <span className="text-2xl sm:text-3xl font-black">{result.ats_score}</span>
-                    <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider opacity-90">/ 100 ATS</span>
+                    <span className="text-2xl sm:text-3xl font-bold font-mono tracking-tight">{result.ats_score}</span>
+                    <span className="text-[10px] font-mono uppercase tracking-wider opacity-90">/ 100 ATS</span>
                   </div>
 
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                      <h2 className="text-lg sm:text-xl font-bold text-[var(--foreground)]">
                         {result.ats_score >= 80 ? 'Strong Match' : result.ats_score >= 65 ? 'Competitive Profile' : 'Needs Optimization'}
                       </h2>
-                      <span className="px-2 py-0.5 rounded text-xs font-black bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-slate-200">
+                      <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-[var(--surface-sunken)] text-[var(--foreground)] border border-[var(--border-subtle)]">
                         Grade {result.grade}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 break-all">
-                      File: <span className="font-mono font-medium text-slate-700 dark:text-slate-300">{result.filename}</span>
+                    <p className="text-xs text-[var(--foreground-muted)] mt-1 break-all">
+                      File: <span className="font-mono text-[var(--foreground)]">{result.filename}</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:space-x-2">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
                   <button
                     onClick={handleCopyReport}
-                    className="px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-xs border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 cursor-pointer"
+                    className="px-3.5 py-2 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground)] cursor-pointer"
                   >
                     {copiedReport ? (
                       <>
                         <Check className="w-4 h-4 text-emerald-500" />
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Report Copied!</span>
+                        <span className="text-emerald-500 font-semibold">Report Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3.5 h-3.5 text-indigo-500" />
+                        <Copy className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
                         <span>Copy Report</span>
                       </>
                     )}
@@ -494,16 +528,16 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                   <button
                     onClick={handleSaveToProfile}
                     disabled={savedSuccess}
-                    className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer ${
+                    className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer ${
                       savedSuccess
                         ? 'bg-emerald-600 text-white'
-                        : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                        : 'bg-[var(--brand-primary)] hover:opacity-95 text-white'
                     }`}
                   >
                     {savedSuccess ? (
                       <>
                         <Check className="w-4 h-4" />
-                        <span>Saved to Profile!</span>
+                        <span>Saved to Profile</span>
                       </>
                     ) : (
                       <>
@@ -515,7 +549,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
                   <button
                     onClick={handleReset}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer"
+                    className="px-3.5 py-2 bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border-subtle)] rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Scan Another</span>
@@ -524,48 +558,48 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
 
               {/* Summary text */}
-              <p className="mt-5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="mt-4 text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
                 {result.summary}
               </p>
 
               {/* 4-Part Category Breakdown */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100 dark:border-zinc-800">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5 pt-5 border-t border-[var(--border-subtle)]">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-slate-500 font-medium">Contact & Links</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.contact_score}%</span>
+                    <span className="text-[var(--foreground-muted)] font-medium">Contact &amp; Links</span>
+                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.contact_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${result.breakdown.contact_score}%` }} />
+                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                    <div className="bg-[var(--brand-primary)] h-full rounded-full" style={{ width: `${result.breakdown.contact_score}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-slate-500 font-medium">Tech Skills</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.skills_score}%</span>
+                    <span className="text-[var(--foreground-muted)] font-medium">Tech Skills</span>
+                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.skills_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
                     <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${result.breakdown.skills_score}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-slate-500 font-medium">Experience & Impact</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.experience_score}%</span>
+                    <span className="text-[var(--foreground-muted)] font-medium">Experience &amp; Impact</span>
+                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.experience_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-indigo-600 h-full rounded-full" style={{ width: `${result.breakdown.experience_score}%` }} />
+                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                    <div className="bg-[var(--brand-primary)] h-full rounded-full" style={{ width: `${result.breakdown.experience_score}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-slate-500 font-medium">ATS Layout</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{result.breakdown.formatting_score}%</span>
+                    <span className="text-[var(--foreground-muted)] font-medium">ATS Layout</span>
+                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.formatting_score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
                     <div className="bg-teal-500 h-full rounded-full" style={{ width: `${result.breakdown.formatting_score}%` }} />
                   </div>
                 </div>
@@ -574,28 +608,28 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* Restricted Content Lock for Visitors */}
             {!currentUser ? (
-              <div className="rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] p-8 text-center shadow-lg space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mx-auto mb-2">
-                  <Lock className="w-7 h-7" />
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-8 text-center shadow-xs space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] border border-[var(--border-subtle)] flex items-center justify-center mx-auto mb-2">
+                  <Lock className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-[var(--foreground)]">
                   Detailed Keyword Gap Audit &amp; STAR Bullet Rewrites Locked
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto leading-relaxed font-normal">
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] max-w-xl mx-auto leading-relaxed">
                   Sign in or create a free account to unlock your complete keyword gap analysis, custom section recommendations, line-by-line STAR bullet rewrites, and save your resume to your personal dashboard.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                   <Link
                     href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center space-x-2"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center space-x-2"
                   >
                     <span>Sign In to Unlock Full Report</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                   <Link
                     href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-slate-800 dark:text-slate-200 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] font-medium text-xs sm:text-sm hover:bg-[var(--surface-card)] transition-colors"
                   >
                     Create Free Account
                   </Link>
@@ -604,26 +638,26 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             ) : (
               <>
             {/* Keyword Analysis Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Matched Keywords */}
-              <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
-                <div className="flex items-center space-x-2 mb-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+                <div className="flex items-center space-x-2 mb-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <h3 className="text-sm font-semibold text-[var(--foreground)]">
                     Matched Tech Keywords ({result.matched_keywords.length})
                   </h3>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
-                  These verified skills were successfully extracted by the ATS scanner:
+                <p className="text-xs text-[var(--foreground-muted)] mb-3.5">
+                  Verified technical skills successfully identified in document:
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {result.matched_keywords.length === 0 ? (
-                    <span className="text-xs text-slate-400">No tech keywords identified.</span>
+                    <span className="text-xs text-[var(--foreground-muted)]">No technical keywords detected.</span>
                   ) : (
                     result.matched_keywords.map((kw) => (
                       <span 
                         key={kw}
-                        className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                        className="px-2 py-0.5 rounded text-xs font-mono font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
                       >
                         ✓ {kw}
                       </span>
@@ -633,24 +667,24 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
 
               {/* Missing Recommended Keywords */}
-              <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
-                <div className="flex items-center space-x-2 mb-3">
-                  <AlertCircle className="w-5 h-5 text-amber-500" />
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+                <div className="flex items-center space-x-2 mb-2">
+                  <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+                  <h3 className="text-sm font-semibold text-[var(--foreground)]">
                     Suggested Keywords to Add ({result.missing_keywords.length})
                   </h3>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
+                <p className="text-xs text-[var(--foreground-muted)] mb-3.5">
                   High-frequency SWE recruiter terms not found in your resume:
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {result.missing_keywords.length === 0 ? (
-                    <span className="text-xs text-slate-400">Comprehensive keyword coverage!</span>
+                    <span className="text-xs text-[var(--foreground-muted)]">Comprehensive keyword coverage.</span>
                   ) : (
                     result.missing_keywords.map((kw) => (
                       <span 
                         key={kw}
-                        className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+                        className="px-2 py-0.5 rounded text-xs font-mono font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20"
                       >
                         + {kw}
                       </span>
@@ -660,42 +694,42 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
             </div>
 
-            {/* AI Bullet Point Optimization */}
+            {/* Bullet Point Optimization */}
             {result.bullet_rewrites && result.bullet_rewrites.length > 0 && (
-              <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Sparkles className="w-5 h-5 text-indigo-500" />
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+                <div className="flex items-center space-x-2 mb-1.5">
+                  <Sparkles className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+                  <h3 className="text-sm font-semibold text-[var(--foreground)]">
                     STAR Bullet Point Rewrites
                   </h3>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
+                <p className="text-xs text-[var(--foreground-muted)] mb-4">
                   Compare generic descriptions with high-impact, quantified engineering bullets:
                 </p>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {result.bullet_rewrites.map((rewrite, idx) => (
-                    <div key={idx} className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800 space-y-2.5">
+                    <div key={idx} className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-2">
                       <div className="flex items-start space-x-2">
-                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-400 shrink-0 mt-0.5">
-                          Before
+                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-500 border border-rose-500/20 shrink-0 mt-0.5">
+                          Original
                         </span>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 line-through">
+                        <p className="text-xs text-[var(--foreground-muted)] line-through">
                           {rewrite.original}
                         </p>
                       </div>
 
                       <div className="flex items-start space-x-2">
-                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 shrink-0 mt-0.5">
-                          After (STAR)
+                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0 mt-0.5">
+                          STAR Rewrite
                         </span>
-                        <p className="text-xs font-medium text-slate-900 dark:text-slate-100">
+                        <p className="text-xs font-medium text-[var(--foreground)]">
                           {rewrite.improved}
                         </p>
                       </div>
 
-                      <p className="text-[11px] text-indigo-600 dark:text-indigo-400 italic pl-1">
-                        Reason: {rewrite.reason}
+                      <p className="text-[11px] text-[var(--brand-primary)] font-mono pl-1">
+                        Rationale: {rewrite.reason}
                       </p>
                     </div>
                   ))}
@@ -704,31 +738,31 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             )}
 
             {/* Actionable Suggestions Checklist */}
-            <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200 dark:border-zinc-800 p-6">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4">
+            <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+              <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3.5">
                 Section-by-Section Recommendations
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <h4 className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground)] mb-2">
                     Work Experience
                   </h4>
-                  <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+                  <ul className="space-y-1.5 text-xs text-[var(--foreground-muted)]">
                     {result.section_suggestions.experience.map((s, i) => (
                       <li key={i} className="flex items-start space-x-1.5">
-                        <ChevronRight className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0 mt-0.5" />
                         <span>{s}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                    Technical Skills & Tools
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <h4 className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground)] mb-2">
+                    Technical Skills &amp; Tools
                   </h4>
-                  <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+                  <ul className="space-y-1.5 text-xs text-[var(--foreground-muted)]">
                     {result.section_suggestions.skills.map((s, i) => (
                       <li key={i} className="flex items-start space-x-1.5">
                         <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
@@ -738,11 +772,11 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <h4 className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground)] mb-2">
                     Personal Projects
                   </h4>
-                  <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+                  <ul className="space-y-1.5 text-xs text-[var(--foreground-muted)]">
                     {result.section_suggestions.projects.map((s, i) => (
                       <li key={i} className="flex items-start space-x-1.5">
                         <ChevronRight className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
@@ -752,14 +786,14 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-100 dark:border-zinc-800">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                    Contact & Links
+                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <h4 className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground)] mb-2">
+                    Contact &amp; Links
                   </h4>
-                  <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+                  <ul className="space-y-1.5 text-xs text-[var(--foreground-muted)]">
                     {result.section_suggestions.contact.map((s, i) => (
                       <li key={i} className="flex items-start space-x-1.5">
-                        <ChevronRight className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0 mt-0.5" />
                         <span>{s}</span>
                       </li>
                     ))}
@@ -769,18 +803,18 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             </div>
 
             {/* Profile Navigation Footer */}
-            <div className="flex items-center justify-between bg-slate-100 dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4 sm:p-5 rounded-xl">
               <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                <h4 className="text-xs sm:text-sm font-semibold text-[var(--foreground)]">
                   Track your score progression
                 </h4>
-                <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
+                <p className="text-xs text-[var(--foreground-muted)] mt-0.5">
                   Saved resumes are stored in your profile dashboard alongside your quiz scores and streak tracker.
                 </p>
               </div>
               <Link
                 href="/profile"
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all"
+                className="px-3.5 py-2 bg-[var(--brand-primary)] hover:opacity-95 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 transition-all shrink-0 self-start sm:self-auto"
               >
                 <span>View Profile</span>
                 <ArrowRight className="w-3.5 h-3.5" />

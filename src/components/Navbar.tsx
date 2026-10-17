@@ -190,17 +190,17 @@ export default function Navbar() {
           <Link
             href="/"
             onClick={handleLogoClick}
-            className="flex items-center space-x-2.5 group select-none"
+            className="flex items-center space-x-2.5 select-none"
             title="StackUp"
           >
-            <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr from-[#8B5CF6] to-[#22D3EE] hover:from-[#7C3AED] hover:to-[#06B6D4] flex items-center justify-center text-white shadow-md shadow-[#8B5CF6]/25 group-hover:scale-105 transition-transform duration-200 ${
-              logoTapCount >= 3 ? 'ring-2 ring-[#22D3EE] animate-pulse' : ''
+            <div className={`w-8 h-8 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-xs transition-colors ${
+              logoTapCount >= 3 ? 'ring-2 ring-[var(--brand-secondary)]' : ''
             }`}>
-              <Layers className="w-5 h-5" />
+              <Layers className="w-4 h-4" />
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-[#E8EEFF] flex items-center">
-                Stack<span className="text-[#8B5CF6] dark:text-[#22D3EE]">Up</span>
+              <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-[#E8EEFF]">
+                Stack<span className="text-[var(--brand-primary)]">Up</span>
               </span>
             </div>
           </Link>
@@ -214,13 +214,13 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-sm transition-all ${
+                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors ${
                     isActive
-                      ? 'text-slate-900 dark:text-[#E8EEFF] bg-slate-100 dark:bg-[#151D35] font-semibold shadow-xs'
-                      : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF] hover:bg-slate-100 dark:hover:bg-[#151D35]/60 font-medium'
+                      ? 'text-slate-900 dark:text-[#E8EEFF] bg-slate-100 dark:bg-[#151D35] font-semibold border border-slate-200/80 dark:border-[#1E2B4D]'
+                      : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF] hover:bg-slate-100/70 dark:hover:bg-[#151D35]/60 font-medium'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5" />
                   <span>{item.name}</span>
                 </Link>
               );
@@ -231,18 +231,18 @@ export default function Navbar() {
           <div className="flex items-center space-x-2 sm:space-x-3">
             <ThemeSwitcher />
 
-            <div className="hidden md:flex items-center space-x-3">
+            <div className="hidden md:flex items-center space-x-2">
               {!loading && user ? (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <Link
                     href="/profile"
-                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-full border transition-all ${
+                    className={`flex items-center space-x-2 px-2.5 py-1 rounded-lg border transition-colors ${
                       pathname === '/profile'
-                        ? 'border-[#8B5CF6] bg-[#8B5CF6]/10 text-[#8B5CF6] dark:text-[#22D3EE]'
-                        : 'border-slate-200 dark:border-[#1E2B4D] hover:border-slate-300 dark:hover:border-[#2D3D6E] text-slate-700 dark:text-zinc-300'
+                        ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)]/10 text-slate-900 dark:text-[#E8EEFF]'
+                        : 'border-slate-200 dark:border-[#1E2B4D] hover:border-slate-300 dark:hover:border-[#2D3D6E] text-slate-700 dark:text-[#8E9FC8]'
                     }`}
                   >
-                    <div className="w-7 h-7 rounded-full bg-[#8B5CF6] flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden shadow-xs">
+                    <div className="w-6 h-6 rounded-md bg-[var(--brand-primary)] flex items-center justify-center text-white text-[11px] font-bold uppercase overflow-hidden">
                       {user.avatar_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -254,7 +254,7 @@ export default function Navbar() {
                         user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'
                       )}
                     </div>
-                    <span className="text-sm font-medium max-w-[120px] truncate text-slate-900 dark:text-[#E8EEFF]">
+                    <span className="text-xs font-medium max-w-[120px] truncate text-slate-900 dark:text-[#E8EEFF]">
                       {user.full_name || user.email?.split('@')[0] || 'Profile'}
                     </span>
                   </Link>
@@ -262,22 +262,22 @@ export default function Navbar() {
                     onClick={handleSignOut}
                     title="Sign out"
                     aria-label="Sign out"
-                    className="p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-slate-100 dark:hover:bg-[#151D35]/60 transition-colors"
+                    className="p-1.5 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 rounded-lg hover:bg-slate-100 dark:hover:bg-[#151D35]/60 transition-colors"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ) : !loading ? (
                 <div className="flex items-center space-x-2">
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-[#8B5CF6] hover:bg-[#7C3AED] rounded-xl shadow-xs transition-all cursor-pointer"
+                    className="inline-flex items-center justify-center px-3.5 py-1.5 text-xs font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] rounded-lg shadow-xs transition-colors cursor-pointer"
                   >
                     Sign In
                   </Link>
                 </div>
               ) : (
-                <div className="w-20 h-8 bg-slate-200 dark:bg-[#151D35] rounded-lg animate-pulse" />
+                <div className="w-16 h-7 bg-slate-200 dark:bg-[#151D35] rounded-md animate-pulse" />
               )}
             </div>
           </div>
@@ -306,18 +306,18 @@ export default function Navbar() {
                 key={item.name}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-base transition-all ${
+                className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
                   isActive
-                    ? 'text-slate-900 dark:text-[#E8EEFF] bg-slate-100 dark:bg-[#151D35] font-semibold'
+                    ? 'text-slate-900 dark:text-[#E8EEFF] bg-slate-100 dark:bg-[#151D35] font-semibold border border-slate-200/80 dark:border-[#1E2B4D]'
                     : 'text-slate-700 dark:text-[#8E9FC8] hover:bg-slate-100 dark:hover:bg-[#151D35]/60 font-medium'
                 }`}
               >
-                <Icon className="w-5 h-5 text-[#8B5CF6] dark:text-[#22D3EE]" />
+                <Icon className="w-4 h-4 text-[var(--brand-primary)]" />
                 <span>{item.name}</span>
               </Link>
             );
           })}
-          <div className="pt-3 border-t border-slate-200 dark:border-[#1E2B4D] space-y-2">
+          <div className="pt-2.5 border-t border-slate-200 dark:border-[#1E2B4D] space-y-1.5">
             <div className="px-1 flex items-center justify-between py-1">
               <span className="text-xs font-semibold text-slate-500 dark:text-[#8E9FC8]">Color Theme</span>
               <ThemeSwitcher />
@@ -328,9 +328,9 @@ export default function Navbar() {
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-700 dark:text-[#E8EEFF] hover:bg-slate-100 dark:hover:bg-[#151D35]/60"
+                  className="flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-[#E8EEFF] hover:bg-slate-100 dark:hover:bg-[#151D35]/60"
                 >
-                  <UserIcon className="w-5 h-5 text-[#8B5CF6] dark:text-[#22D3EE]" />
+                  <UserIcon className="w-4 h-4 text-[var(--brand-primary)]" />
                   <span>Profile Dashboard</span>
                 </Link>
                 <button
@@ -338,9 +338,9 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                     handleSignOut();
                   }}
-                  className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
+                  className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
                 >
-                  <LogOut className="w-5 h-5" />
+                  <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
                 </button>
               </div>

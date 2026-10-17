@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { 
   BookOpen, 
@@ -8,359 +8,345 @@ import {
   Code2, 
   FileCheck2, 
   ArrowRight, 
-  ChevronRight, 
-  Zap, 
-  ShieldCheck, 
-  ExternalLink 
+  ExternalLink,
+  Layers,
+  FileText
 } from 'lucide-react';
+import { CURRICULUM_DATA } from '@/lib/data/curriculum';
+
+const CORE_SUBJECTS = CURRICULUM_DATA['core-cs'].categories.map((c) => ({
+  id: c.id,
+  title: c.title,
+  topicCount: c.topics.length,
+  questionCount: c.topics.reduce((acc, t) => acc + t.questions.length, 0),
+  description: c.description,
+}));
+
+const DSA_PATTERNS_PREVIEW = [
+  {
+    name: 'Two Pointers & Sliding Window',
+    problems: 'Two Sum II, 3Sum, Trapping Rain Water, Min Window Substring',
+    complexity: 'O(n) time • O(1) space',
+    category: 'Two Pointers',
+  },
+  {
+    name: 'Binary Search on Answer',
+    problems: 'Search in Rotated Sorted Array, Koko Eating Bananas, Median of Arrays',
+    complexity: 'O(log n) time • O(1) space',
+    category: 'Binary Search',
+  },
+  {
+    name: 'Tree Traversal & Lowest Common Ancestor',
+    problems: 'Max Depth, Level Order Traversal, Validate BST, Lowest Common Ancestor',
+    complexity: 'O(n) time • O(h) space',
+    category: 'Trees',
+  },
+  {
+    name: 'Graph Search & Topological Sort',
+    problems: 'Number of Islands, Course Schedule, Clone Graph, Word Ladder',
+    complexity: 'O(V + E) time • O(V) space',
+    category: 'Graphs',
+  },
+  {
+    name: 'Dynamic Programming & Memoization',
+    problems: 'Climbing Stairs, Coin Change, Longest Increasing Subsequence, 0/1 Knapsack',
+    complexity: 'O(n) - O(n²) time',
+    category: 'Dynamic Programming',
+  },
+];
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<'dsa' | 'resume' | 'quiz'>('dsa');
-
   return (
-    <div className="relative overflow-hidden min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors">
-      {/* Background Decorative Ambient Spotlight - Cosmic Glow (#8B5CF6 & #22D3EE) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[380px] bg-gradient-to-b from-[#8B5CF6]/15 via-[#22D3EE]/10 to-transparent blur-3xl -z-10 pointer-events-none" />
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors">
+      {/* Hero Section - Content-first, authentic developer aesthetic */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-10">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-[#8E9FC8] mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)]" />
+            <span>Technical Interview &amp; GATE Preparation Platform</span>
+          </div>
 
-      {/* Hero Section - Clean, High Contrast & Human Designed */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-16 pb-8 text-center">
-        {/* Release Pill with Subtle Glow */}
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-slate-200/60 dark:border-[#1E2B4D]/80 bg-white/90 dark:bg-[#151D35]/90 backdrop-blur-md text-xs font-semibold text-slate-700 dark:text-[#E8EEFF] mb-5 shadow-xs hover:border-[#8B5CF6]/60 transition-colors">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-          <span className="tracking-tight">StackUp • Engineering Interview Prep Platform</span>
-          <ChevronRight className="w-3.5 h-3.5 opacity-60 shrink-0" />
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-[#E8EEFF] leading-[1.14]">
+            Structured preparation for software engineering interviews.
+          </h1>
+
+          <p className="mt-4 text-sm sm:text-base font-normal text-slate-600 dark:text-[#8E9FC8] leading-relaxed max-w-2xl">
+            A comprehensive, distraction-free curriculum: 150+ curated DSA patterns with optimal solutions, 15 core computer science subjects with revision notes and timed MCQs, aptitude drills, and an ATS resume scanner.
+          </p>
+
+          {/* Action Row */}
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link
+              href="/dsa"
+              className="px-4 py-2.5 rounded-lg text-xs font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+            >
+              <span>Explore DSA Hub</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            <Link
+              href="/core-cs"
+              className="px-4 py-2.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-[#E8EEFF] bg-white dark:bg-[#151D35] hover:bg-slate-50 dark:hover:bg-[#1B2442] border border-slate-200 dark:border-[#1E2B4D] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+            >
+              <Cpu className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+              <span>Core CS Subjects</span>
+            </Link>
+            <Link
+              href="/resume-checker"
+              className="px-4 py-2.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-[#E8EEFF] bg-white dark:bg-[#151D35] hover:bg-slate-50 dark:hover:bg-[#1B2442] border border-slate-200 dark:border-[#1E2B4D] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+            >
+              <FileCheck2 className="w-3.5 h-3.5 text-rose-500" />
+              <span>Scan Resume (ATS)</span>
+            </Link>
+          </div>
         </div>
 
-        {/* Main Headline - High-Contrast Precision Typography */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-[#E8EEFF] max-w-3xl mx-auto leading-[1.12]">
-          Crack your engineering interviews with{' '}
-          <span className="bg-gradient-to-r from-[#8B5CF6] via-[#A78BFA] to-[#22D3EE] bg-clip-text text-transparent">
-            structure &amp; speed
-          </span>
-        </h1>
-
-        {/* Subtitle - High Readability */}
-        <p className="mt-3.5 sm:mt-5 text-sm sm:text-base font-normal text-slate-600 dark:text-[#8E9FC8] max-w-xl mx-auto leading-relaxed px-1">
-          Everything in one fast portal: 150+ curated DSA patterns, 15 Core CS subjects, Aptitude modules with YouTube video walkthroughs, and an ATS resume evaluator.
-        </p>
-
-        {/* Primary Action Buttons */}
-        <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-3.5 max-w-xs sm:max-w-md mx-auto w-full">
-          <Link
-            href="/login"
-            className="w-full sm:w-auto px-6 py-3 rounded-2xl font-semibold text-sm text-white bg-[#8B5CF6] hover:bg-[#7C3AED] active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-md shadow-[#8B5CF6]/25 hover:shadow-[#8B5CF6]/40"
-          >
-            <span>Start Free Prep</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/resume-checker"
-            className="w-full sm:w-auto px-5 py-3 rounded-2xl font-semibold text-sm text-slate-900 dark:text-[#E8EEFF] bg-white dark:bg-[#151D35] hover:bg-slate-50 dark:hover:bg-[#1B2442] border border-slate-200 dark:border-[#1E2B4D] active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
-          >
-            <FileCheck2 className="w-4 h-4 text-[#8B5CF6] dark:text-[#22D3EE] shrink-0" />
-            <span>Check Resume (ATS)</span>
-          </Link>
-        </div>
-
-        {/* Target Company Track Tags */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-1.5 text-[11px] font-medium text-slate-600 dark:text-zinc-400">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-zinc-500 mr-1">Target Companies:</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Google</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Amazon</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Microsoft</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Meta</span>
-          <span className="px-2.5 py-0.5 rounded-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">Top Tech Startups</span>
+        {/* Structured Quantitative Metrics Bar */}
+        <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+          <div>
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">150+</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">DSA Problems Mapped</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">LeetCode &amp; Striver SDE sheet</div>
+          </div>
+          <div>
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">15</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Core CS Subjects</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">OS, DBMS, CN, System Design</div>
+          </div>
+          <div>
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">500+</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Practice MCQs</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Timed tests with explanations</div>
+          </div>
+          <div>
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">ATS Scanner</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Resume Parser Audit</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Keyword match &amp; STAR rewrites</div>
+          </div>
         </div>
       </section>
 
-      {/* QUICK-ACCESS DIRECTORY: THE 4 PILLARS */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div className="flex items-center justify-between mb-3.5 px-1">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center space-x-1.5">
-            <Zap className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Curated Preparation Pillars</span>
-          </h2>
-          <span className="text-[11px] font-medium text-slate-500 dark:text-zinc-400">Tap to start</span>
+      {/* SECTION 1: CURRICULUM TRACKS (Content-Rich Split Layout) */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#8E9FC8]">
+              Curriculum Tracks
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Three pillars organized for technical screening rounds and coding interviews.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          {/* Card 1: DSA Practice Hub */}
-          <Link
-            href="/dsa"
-            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
-          >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Track 1: DSA Practice Hub */}
+          <div className="p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
-                  <Code2 className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                  15 Patterns
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-[#8E9FC8] mb-3">
+                <span className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400">
+                  <Code2 className="w-4 h-4" />
+                  <span>Algorithms &amp; Data Structures</span>
                 </span>
+                <span className="text-[11px] font-mono text-slate-400">15 Patterns</span>
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF] group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+              <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF]">
                 DSA Practice Hub
               </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed font-normal">
-                150+ problems: Two Pointers, Trees, Graphs, DP with code solutions &amp; video walkthroughs.
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed">
+                Hand-curated roadmap covering Arrays, Two Pointers, Trees, Graphs, and DP with problem statements, multi-language solutions (Python, C++, Java, TS), and LeetCode direct links.
               </p>
             </div>
-            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-[#1E2B4D]/80 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-[#8E9FC8] group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-              <span>Open DSA Roadmap</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-[#1E2B4D] flex items-center justify-between">
+              <span className="text-[11px] text-slate-500 font-mono">150 Problems</span>
+              <Link
+                href="/dsa"
+                className="text-xs font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+              >
+                <span>Open Roadmap</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
-          </Link>
-
-          {/* Card 2: Core CS Subjects */}
-          <Link
-            href="/core-cs"
-            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] hover:border-[#8B5CF6]/40 dark:hover:border-[#8B5CF6]/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 text-[#8B5CF6] dark:text-[#22D3EE] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
-                  <Cpu className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-[#8B5CF6]/10 text-[#8B5CF6] dark:text-[#22D3EE] border border-[#8B5CF6]/20">
-                  15 Subjects
-                </span>
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF] group-hover:text-[#8B5CF6] dark:group-hover:text-[#22D3EE] transition-colors">
-                Core CS Subjects
-              </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed font-normal">
-                190+ topics with notes, MCQs &amp; YouTube lectures: OS, DBMS, Networks, COA, Compilers &amp; TOC.
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-[#1E2B4D]/80 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-[#8E9FC8] group-hover:text-[#8B5CF6] dark:group-hover:text-[#22D3EE] transition-colors">
-              <span>Explore Core CS</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-          {/* Card 3: Quantitative & Aptitude */}
-          <Link
-            href="/aptitude"
-            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
-                  <BookOpen className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
-                  4 Categories
-                </span>
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF] group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                Aptitude &amp; Logic
-              </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed font-normal">
-                Quantitative, Logical Reasoning, Verbal Ability &amp; Spatial Aptitude with timed tests and video solutions.
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-[#1E2B4D]/80 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-[#8E9FC8] group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-              <span>Start Aptitude Notes</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-          {/* Card 4: ATS Resume Evaluator */}
-          <Link
-            href="/resume-checker"
-            className="card-hover-lift p-5 rounded-2xl border border-slate-200/90 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] hover:border-rose-500/40 dark:hover:border-rose-500/40 transition-all duration-200 group flex flex-col justify-between shadow-xs cursor-pointer"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-3.5">
-                <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
-                  <FileCheck2 className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
-                  ATS Scoring
-                </span>
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF] group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
-                ATS Resume Checker
-              </h3>
-              <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed font-normal">
-                Scan your PDF resume, detect missing engineering keywords, and get instant bullet improvements.
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-[#1E2B4D]/80 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-[#8E9FC8] group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
-              <span>Scan Your Resume</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* COMPACT INTERACTIVE PREVIEW TABS */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white dark:bg-[#151D35] border border-slate-200/90 dark:border-[#1E2B4D] rounded-3xl p-4 sm:p-6 shadow-xs">
-          {/* Tab Selection Chips */}
-          <div className="flex items-center space-x-2 pb-3.5 border-b border-slate-100 dark:border-[#1E2B4D]/80 overflow-x-auto scrollbar-none">
-            <button
-              onClick={() => setActiveTab('dsa')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer ${
-                activeTab === 'dsa'
-                  ? 'bg-[#8B5CF6] text-white shadow-xs'
-                  : 'bg-slate-50 dark:bg-[#0B1020] text-slate-600 dark:text-[#8E9FC8] border border-slate-200 dark:border-[#1E2B4D] hover:bg-slate-100 dark:hover:bg-[#1B2442]'
-              }`}
-            >
-              <Code2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>DSA Preview</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('resume')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer ${
-                activeTab === 'resume'
-                  ? 'bg-[#8B5CF6] text-white shadow-xs'
-                  : 'bg-slate-50 dark:bg-[#0B1020] text-slate-600 dark:text-[#8E9FC8] border border-slate-200 dark:border-[#1E2B4D] hover:bg-slate-100 dark:hover:bg-[#1B2442]'
-              }`}
-            >
-              <FileCheck2 className="w-3.5 h-3.5 text-rose-400" />
-              <span>ATS Resume Preview</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('quiz')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer ${
-                activeTab === 'quiz'
-                  ? 'bg-[#8B5CF6] text-white shadow-xs'
-                  : 'bg-slate-50 dark:bg-[#0B1020] text-slate-600 dark:text-[#8E9FC8] border border-slate-200 dark:border-[#1E2B4D] hover:bg-slate-100 dark:hover:bg-[#1B2442]'
-              }`}
-            >
-              <Cpu className="w-3.5 h-3.5 text-[#22D3EE]" />
-              <span>Quiz Preview</span>
-            </button>
           </div>
 
-          {/* Active Preview Content */}
-          <div className="pt-4">
-            {activeTab === 'dsa' && (
-              <div className="space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                  <div className="flex items-center space-x-2.5">
-                    <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#E8EEFF]">Two Sum</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">Easy</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 dark:bg-[#1B2442] text-slate-700 dark:text-[#E8EEFF]">Arrays &amp; Hash Map</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-medium text-slate-600 dark:text-[#E8EEFF] bg-slate-100 dark:bg-[#0B1020] px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#1E2B4D] font-mono">
-                      O(n) Time • O(n) Space
-                    </span>
-                    <Link href="/dsa" className="px-3 py-1 rounded-lg bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-xs font-semibold flex items-center space-x-1 cursor-pointer shadow-xs">
-                      <span>Practice in Hub</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </Link>
-                  </div>
-                </div>
-
-                <div className="code-terminal-dark rounded-xl overflow-hidden border border-slate-700/60 dark:border-[#1E2B4D] shadow-md">
-                  <div className="code-terminal-header flex items-center justify-between px-3.5 py-2 border-b text-[11px] font-mono">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-                      <span className="text-[#8E9FC8] ml-2 text-[10px]">solution.py</span>
-                    </div>
-                    <span className="code-terminal-badge text-[10px] font-semibold uppercase px-2 py-0.5 rounded">Python 3</span>
-                  </div>
-                  <pre className="text-[11px] sm:text-xs font-mono p-3.5 sm:p-4 overflow-x-auto scrollbar-none leading-relaxed">
-                    <code>{`def twoSum(nums: list[int], target: int) -> list[int]:
-    seen = {}
-    for i, num in enumerate(nums):
-        diff = target - num
-        if diff in seen:
-            return [seen[diff], i]
-        seen[num] = i`}</code>
-                  </pre>
-                </div>
+          {/* Track 2: Core Computer Science */}
+          <div className="p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-[#8E9FC8] mb-3">
+                <span className="flex items-center space-x-1.5 text-[var(--brand-primary)]">
+                  <Cpu className="w-4 h-4" />
+                  <span>Engineering Subjects</span>
+                </span>
+                <span className="text-[11px] font-mono text-slate-400">15 Subjects</span>
               </div>
-            )}
+              <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF]">
+                Core Computer Science
+              </h3>
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed">
+                Comprehensive lecture notes and MCQ tests for Operating Systems, DBMS, Computer Networks, System Design, Compiler Design, and Theory of Computation.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-[#1E2B4D] flex items-center justify-between">
+              <span className="text-[11px] text-slate-500 font-mono">190+ Topics</span>
+              <Link
+                href="/core-cs"
+                className="text-xs font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+              >
+                <span>View Subjects</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
 
-            {activeTab === 'resume' && (
-              <div className="space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-xl bg-slate-900 dark:bg-[#1B2442] border border-slate-700/80 dark:border-[#2D3D6E] text-white flex flex-col items-center justify-center font-bold shrink-0 shadow-xs">
-                      <span className="text-lg">88</span>
-                      <span className="text-[7px] uppercase tracking-wider text-slate-400 dark:text-[#8E9FC8]">ATS</span>
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm font-bold text-slate-900 dark:text-[#E8EEFF]">Software Engineer Resume</span>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">Grade A</span>
-                      </div>
-                      <p className="text-xs text-slate-600 dark:text-[#8E9FC8] mt-0.5">16 Technical Skills Verified • 0 Formatting Issues</p>
-                    </div>
-                  </div>
-                  <Link href="/resume-checker" className="px-3.5 py-1.5 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-xs font-semibold rounded-xl transition-all self-start sm:self-center shadow-xs">
-                    Try Resume Checker
-                  </Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
-                  <div className="p-3 rounded-xl bg-rose-500/5 border border-rose-500/20 text-slate-700 dark:text-zinc-300">
-                    <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-1">
-                      <span>Before (Vague)</span>
-                    </div>
-                    &quot;Helped team build backend APIs and made services run faster.&quot;
-                  </div>
-                  <div className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-slate-800 dark:text-zinc-200">
-                    <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">
-                      <span>After (STAR Rewritten)</span>
-                    </div>
-                    &quot;Architected RESTful microservices in Node.js &amp; TypeScript, reducing p95 latency by 44%.&quot;
-                  </div>
-                </div>
+          {/* Track 3: Quantitative & Logical Aptitude */}
+          <div className="p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-[#8E9FC8] mb-3">
+                <span className="flex items-center space-x-1.5 text-amber-600 dark:text-amber-400">
+                  <BookOpen className="w-4 h-4" />
+                  <span>Screening Aptitude</span>
+                </span>
+                <span className="text-[11px] font-mono text-slate-400">4 Categories</span>
               </div>
-            )}
-
-            {activeTab === 'quiz' && (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-[#1B2442] text-slate-700 dark:text-[#E8EEFF] border border-slate-200 dark:border-[#1E2B4D]">
-                    Operating Systems • Timed Drill
-                  </span>
-                  <Link href="/core-cs" className="text-xs font-semibold text-[#8B5CF6] dark:text-[#22D3EE] hover:underline">
-                    View All Quizzes →
-                  </Link>
-                </div>
-                <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-[#E8EEFF]">
-                  Which memory region is privately allocated for each thread within a shared process?
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-[#0B1020] text-slate-700 dark:text-[#8E9FC8] border border-slate-200 dark:border-[#1E2B4D]">A. Heap Memory</div>
-                  <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-semibold flex items-center justify-between">
-                    <span>B. Stack &amp; Registers</span>
-                    <span className="text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded font-bold">✓ Correct</span>
-                  </div>
-                </div>
-              </div>
-            )}
+              <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF]">
+                Aptitude &amp; Reasoning
+              </h3>
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed">
+                Quantitative formulas, Logical Reasoning patterns, Verbal Ability, and Spatial Aptitude designed for campus placements and online technical assessment rounds.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-[#1E2B4D] flex items-center justify-between">
+              <span className="text-[11px] text-slate-500 font-mono">Timed MCQs</span>
+              <Link
+                href="/aptitude"
+                className="text-xs font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+              >
+                <span>Start Aptitude</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* COMPACT PLACEMENT STANDARDS BANNER */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-12">
-        <div className="p-5 sm:p-7 rounded-3xl bg-slate-900 dark:bg-[#151D35] text-white border border-slate-800 dark:border-[#1E2B4D] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-[#8B5CF6] dark:text-[#22D3EE]">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Placement Ready Standards</span>
-            </div>
-            <h3 className="text-base sm:text-lg font-bold text-white dark:text-[#E8EEFF]">
-              Built for Google, Amazon, Microsoft &amp; Top Tech Interviews
-            </h3>
-            <p className="text-xs text-slate-400 dark:text-[#8E9FC8]">
-              Zero clutter, direct access to essential problem patterns, notes, and ATS metrics.
+      {/* SECTION 2: CORE CS SUBJECT DIRECTORY (Immediate Learning Utility) */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#8E9FC8]">
+              Core CS Subjects Directory
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              15 undergraduate computer science disciplines with revision notes and topic quizzes.
             </p>
           </div>
           <Link
-            href="/login"
-            className="px-5 py-2.5 rounded-xl bg-[#8B5CF6] hover:bg-[#7C3AED] active:scale-[0.98] text-white text-xs font-semibold transition-all shrink-0 flex items-center space-x-1.5 cursor-pointer shadow-md shadow-[#8B5CF6]/25"
+            href="/core-cs"
+            className="text-xs font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
           >
-            <span>Start Learning Now</span>
+            <span>Open Full Core CS Dashboard</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {CORE_SUBJECTS.map((subject) => (
+            <Link
+              key={subject.id}
+              href="/core-cs"
+              className="p-3.5 rounded-lg border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-[#2D3D6E] transition-colors flex items-start justify-between group"
+            >
+              <div className="min-w-0 pr-3">
+                <div className="text-xs font-bold text-slate-900 dark:text-[#E8EEFF] group-hover:text-[var(--brand-primary)] transition-colors truncate">
+                  {subject.title}
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-[#8E9FC8] mt-0.5 line-clamp-1">
+                  {subject.description}
+                </div>
+                <div className="flex items-center space-x-2 mt-2 text-[10px] text-slate-400 font-mono">
+                  <span>{subject.topicCount} Topics</span>
+                  <span>•</span>
+                  <span>{subject.questionCount} MCQs</span>
+                </div>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform shrink-0 mt-0.5" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 3: HIGH-FREQUENCY DSA PATTERNS INDEX */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#8E9FC8]">
+              High-Frequency Algorithmic Patterns
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Focus on fundamental patterns rather than memorizing isolated questions.
+            </p>
+          </div>
+          <Link
+            href="/dsa"
+            className="text-xs font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+          >
+            <span>Practice 150+ Problems in Hub</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="border border-slate-200 dark:border-[#1E2B4D] rounded-xl bg-white dark:bg-[#151D35] overflow-hidden">
+          <div className="divide-y divide-slate-100 dark:divide-[#1E2B4D]">
+            {DSA_PATTERNS_PREVIEW.map((item, idx) => (
+              <div
+                key={idx}
+                className="p-4 sm:px-5 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/60 dark:hover:bg-[#1B2442]/40 transition-colors"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-bold text-slate-900 dark:text-[#E8EEFF]">
+                      {item.name}
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-[#0B1020] text-slate-600 dark:text-[#8E9FC8] border border-slate-200 dark:border-[#1E2B4D]">
+                      {item.complexity}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-[#8E9FC8] mt-1">
+                    Classic Problems: <span className="font-mono">{item.problems}</span>
+                  </div>
+                </div>
+                <Link
+                  href="/dsa"
+                  className="text-xs font-medium text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1 shrink-0 self-start sm:self-center"
+                >
+                  <span>Practice Pattern</span>
+                  <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4: RESUME ATS SCANNER & AUDIT CALLOUT */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
+        <div className="p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="max-w-xl space-y-1.5">
+            <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">
+              <FileCheck2 className="w-4 h-4" />
+              <span>ATS Resume Evaluator</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-[#E8EEFF]">
+              Test your engineering resume against standard applicant tracking parsers.
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#8E9FC8] leading-relaxed">
+              Upload your PDF or DOCX resume to detect missing technical keywords, highlight formatting red flags, and receive STAR-method rewritten bullet points.
+            </p>
+          </div>
+          <Link
+            href="/resume-checker"
+            className="px-4 py-2.5 rounded-lg bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-xs font-semibold transition-colors shrink-0 inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+          >
+            <span>Scan Your Resume</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

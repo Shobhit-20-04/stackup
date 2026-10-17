@@ -486,11 +486,11 @@ export default function ProfilePage() {
     : profile?.email?.charAt(0).toUpperCase() || 'U';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* User Header Profile Card */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-6 sm:p-7 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center space-x-5">
-          <div className="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-2xl font-extrabold uppercase shadow-lg shadow-indigo-600/20 overflow-hidden shrink-0">
+          <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl bg-[var(--brand-primary)] flex items-center justify-center text-white text-xl sm:text-2xl font-bold uppercase overflow-hidden shrink-0 shadow-xs">
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -503,28 +503,28 @@ export default function ProfilePage() {
             )}
           </div>
           <div>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] tracking-tight">
                 {profile?.full_name || 'StackUp Student'}
               </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+              <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                 Verified Student
               </span>
               {profile?.target_role && (
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800 flex items-center gap-1.5">
-                  <Briefcase className="w-3 h-3 text-indigo-500" />
+                <span className="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] flex items-center gap-1.5">
+                  <Briefcase className="w-3 h-3 text-[var(--brand-primary)]" />
                   <span>{profile.target_role}</span>
                 </span>
               )}
             </div>
-            <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1">
+            <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-1">
               {profile?.email || profile?.phone || 'Connected Session'}
             </p>
             {(profile?.college || profile?.github_url || profile?.linkedin_url) && (
-              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-600 dark:text-zinc-300">
+              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-[var(--foreground-muted)]">
                 {profile.college && (
-                  <span className="flex items-center space-x-1 font-medium">
-                    <GraduationCap className="w-3.5 h-3.5 text-indigo-500" />
+                  <span className="flex items-center space-x-1 font-medium text-[var(--foreground)]">
+                    <GraduationCap className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
                     <span>
                       {profile.college}
                       {profile.grad_year ? ` ('${profile.grad_year.slice(-2)})` : ''}
@@ -536,7 +536,7 @@ export default function ProfilePage() {
                     href={profile.github_url.startsWith('http') ? profile.github_url : `https://${profile.github_url}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-1 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                    className="flex items-center space-x-1 hover:text-[var(--brand-primary)] transition-colors"
                   >
                     <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                       <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
@@ -549,7 +549,7 @@ export default function ProfilePage() {
                     href={profile.linkedin_url.startsWith('http') ? profile.linkedin_url : `https://${profile.linkedin_url}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-1 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                    className="flex items-center space-x-1 hover:text-[var(--brand-primary)] transition-colors"
                   >
                     <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46v-8.37M7.86 6.5a1.63 1.63 0 0 0-1.63 1.63c0 .9.73 1.63 1.63 1.63a1.63 1.63 0 0 0 1.63-1.63c0-.9-.73-1.63-1.63-1.63Z" />
@@ -559,7 +559,7 @@ export default function ProfilePage() {
                 )}
               </div>
             )}
-            <div className="flex items-center space-x-4 mt-2 text-xs text-slate-400 dark:text-zinc-500">
+            <div className="flex items-center space-x-4 mt-2 text-xs text-[var(--foreground-muted)]">
               <span className="flex items-center space-x-1">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>
@@ -575,108 +575,108 @@ export default function ProfilePage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <button
             onClick={openEditModal}
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-sm font-medium text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-3.5 py-2 rounded-lg border border-[var(--border-subtle)] text-xs font-medium text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
           >
-            <Edit3 className="w-4 h-4 text-indigo-500" />
+            <Edit3 className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
             <span>Edit Profile</span>
           </button>
           <Link
             href="/dsa"
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors shadow-sm shadow-indigo-600/20 cursor-pointer"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-3.5 py-2 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white text-xs font-semibold transition-opacity shadow-xs cursor-pointer"
           >
-            <Code2 className="w-4 h-4" />
+            <Code2 className="w-3.5 h-3.5" />
             <span>Practice DSA</span>
           </Link>
           <button
             onClick={handleSignOut}
-            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+            className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-3.5 py-2 rounded-lg border border-rose-500/20 text-xs font-medium text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
           </button>
         </div>
       </div>
 
       {/* Grid: Real Streak Tracker & Real Performance Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Streak Tracker Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
                 Daily Study Streak
               </span>
-              <div className={`p-2 rounded-xl ${streakCount > 0 ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400' : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500'}`}>
-                <Flame className={`w-5 h-5 ${streakCount > 0 ? 'animate-bounce' : ''}`} />
+              <div className={`p-1.5 rounded-lg ${streakCount > 0 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]'}`}>
+                <Flame className="w-4 h-4" />
               </div>
             </div>
-            <div className="mt-4 flex items-baseline space-x-2">
-              <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
+            <div className="mt-3 flex items-baseline space-x-2">
+              <span className="text-3xl font-bold font-mono text-[var(--foreground)] tracking-tight">
                 {streakCount}
               </span>
-              <span className="text-sm font-semibold text-slate-500 dark:text-zinc-400">
+              <span className="text-xs font-medium text-[var(--foreground-muted)]">
                 {streakCount === 1 ? 'Day Active' : 'Days Active'}
               </span>
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-[var(--foreground-muted)]">
               {streakCount > 0 
-                ? 'Great consistency! Keep solving daily quizzes to build your habit.'
-                : 'Solve a quiz or scan your resume today to start your study streak!'}
+                ? 'Consistent activity recorded across recent daily sessions.'
+                : 'Solve a quiz or evaluate a resume today to log your study streak.'}
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between">
+          <div className="mt-5 pt-3.5 border-t border-[var(--border-subtle)] flex items-center justify-between">
             {streakDays.map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center space-y-1.5">
+              <div key={idx} className="flex flex-col items-center space-y-1">
                 <div
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
+                  className={`w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-mono font-semibold ${
                     item.active
-                      ? 'bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-sm shadow-orange-500/30'
-                      : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500'
+                      ? 'bg-amber-500 text-white'
+                      : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]'
                   }`}
                   title={`${item.day}: ${item.active ? 'Activity recorded' : 'No activity'}`}
                 >
                   {item.active ? '✓' : '·'}
                 </div>
-                <span className="text-[10px] text-slate-400 dark:text-zinc-500">{item.day}</span>
+                <span className="text-[10px] text-[var(--foreground-muted)] font-mono">{item.day}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Quizzes Taken Stat Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
                 Quizzes Attempted
               </span>
-              <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
-                <TrendingUp className="w-5 h-5" />
+              <div className="p-1.5 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] border border-[var(--border-subtle)]">
+                <TrendingUp className="w-4 h-4" />
               </div>
             </div>
-            <div className="mt-4 flex items-baseline space-x-2">
-              <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
+            <div className="mt-3 flex items-baseline space-x-2">
+              <span className="text-3xl font-bold font-mono text-[var(--foreground)] tracking-tight">
                 {quizHistory.length}
               </span>
               {averageQuizScore !== null ? (
-                <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="text-xs font-semibold text-emerald-500 font-mono">
                   {averageQuizScore}% Avg. Score
                 </span>
               ) : (
-                <span className="text-sm font-semibold text-slate-400 dark:text-zinc-500">
+                <span className="text-xs font-medium text-[var(--foreground-muted)]">
                   0 Attempts Yet
                 </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-[var(--foreground-muted)]">
               Scored quizzes across Aptitude and Core CS topics.
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800 text-xs text-slate-400 dark:text-zinc-500 flex items-center space-x-1">
+          <div className="mt-5 pt-3.5 border-t border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] flex items-center space-x-1.5">
             <Clock className="w-3.5 h-3.5" />
             <span>
               Latest attempt:{' '}
@@ -686,35 +686,35 @@ export default function ProfilePage() {
         </div>
 
         {/* ATS Score Benchmark Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
                 Latest ATS Benchmark
               </span>
-              <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400">
-                <FileCheck2 className="w-5 h-5" />
+              <div className="p-1.5 rounded-lg bg-[var(--surface-sunken)] text-amber-500 border border-[var(--border-subtle)]">
+                <FileCheck2 className="w-4 h-4" />
               </div>
             </div>
-            <div className="mt-4 flex items-baseline space-x-2">
+            <div className="mt-3 flex items-baseline space-x-2">
               {resumeHistory.length > 0 ? (
                 <>
-                  <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
+                  <span className="text-3xl font-bold font-mono text-[var(--foreground)] tracking-tight">
                     {resumeHistory[0].ats_score}
                   </span>
-                  <span className="text-sm font-semibold text-slate-500 dark:text-zinc-400">/ 100</span>
+                  <span className="text-xs font-mono font-medium text-[var(--foreground-muted)]">/ 100</span>
                 </>
               ) : (
-                <span className="text-3xl font-extrabold text-slate-400 dark:text-zinc-500">
+                <span className="text-2xl font-bold font-mono text-[var(--foreground-muted)]">
                   Not Scanned
                 </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-[var(--foreground-muted)]">
               Target &gt;80 score for Tier-1 ATS system passing rate.
             </p>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800 text-xs text-slate-400 dark:text-zinc-500 truncate">
+          <div className="mt-5 pt-3.5 border-t border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] truncate">
             <span>
               {resumeHistory.length > 0 
                 ? `File: ${resumeHistory[0].filename}` 
@@ -725,43 +725,43 @@ export default function ProfilePage() {
       </div>
 
       {/* Per-Section Real Progress Bars */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-6">
+      <div className="p-6 sm:p-7 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs space-y-5">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight">
             Curriculum Completion Progress
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
-            Real-time track of topics tested in quizzes and algorithms solved.
+          <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-0.5">
+            Real-time tracking of curriculum modules, quizzes, and solved algorithmic patterns.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {progressList.map((item) => (
             <Link
               key={item.slug}
               href={`/${item.slug}`}
-              className="p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60 hover:border-indigo-500/40 transition-all space-y-3 group cursor-pointer"
+              className="p-4 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:border-[var(--brand-primary)]/40 transition-all space-y-2.5 group cursor-pointer"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-slate-800 dark:text-zinc-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                <span className="text-xs sm:text-sm font-semibold text-[var(--foreground)] truncate group-hover:text-[var(--brand-primary)] transition-colors">
                   {item.section_name}
                 </span>
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 ml-2">
+                <span className="text-xs font-mono font-bold text-[var(--brand-primary)] ml-2">
                   {item.percent}%
                 </span>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
+              <div className="w-full h-1.5 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden">
                 <div
                   className={`h-full rounded-full ${item.color} transition-all duration-500`}
                   style={{ width: `${item.percent}%` }}
                 />
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-400">
+              <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)]">
                 <span>{item.completed_items} of {item.total_items} complete</span>
-                <span className="capitalize text-indigo-600 dark:text-indigo-400 flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
+                <span className="capitalize text-[var(--brand-primary)] flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
                   <span>Practice</span>
                   <ArrowRight className="w-3 h-3 ml-0.5" />
                 </span>
@@ -772,18 +772,18 @@ export default function ProfilePage() {
       </div>
 
       {/* Quiz Score History Chart (Recharts) */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-6">
+      <div className="p-6 sm:p-7 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight">
               Quiz Score Performance History
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
+            <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-0.5">
               Score trajectory across your completed timed quiz attempts (%)
             </p>
           </div>
           {quizHistory.length > 0 && (
-            <div className="text-xs font-medium text-slate-500 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg self-start sm:self-auto">
+            <div className="text-xs font-mono text-[var(--foreground-muted)] bg-[var(--surface-sunken)] px-2.5 py-1 rounded-md border border-[var(--border-subtle)] self-start sm:self-auto">
               Last {quizHistory.length} Attempts
             </div>
           )}
@@ -792,29 +792,29 @@ export default function ProfilePage() {
         {quizHistory.length > 0 ? (
           <QuizScoreChart quizHistory={quizHistory} />
         ) : (
-          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
-              <TrendingUp className="w-6 h-6" />
+          <div className="p-8 rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-center space-y-4">
+            <div className="w-10 h-10 rounded-lg bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--brand-primary)] flex items-center justify-center mx-auto">
+              <TrendingUp className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+              <h3 className="text-sm font-semibold text-[var(--foreground)]">
                 No Quizzes Attempted Yet
               </h3>
-              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-sm mx-auto">
+              <p className="text-xs text-[var(--foreground-muted)] max-w-sm mx-auto">
                 Take timed MCQ quizzes in Quantitative Aptitude or Core CS to view your historical score trajectory and accuracy curves here.
               </p>
             </div>
-            <div className="flex items-center justify-center gap-3 pt-2">
+            <div className="flex items-center justify-center gap-2.5 pt-1">
               <Link
                 href="/aptitude"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm cursor-pointer"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-[var(--brand-primary)] text-white hover:opacity-95 transition-opacity shadow-xs cursor-pointer"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>Practice Aptitude</span>
               </Link>
               <Link
                 href="/core-cs"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-medium border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
               >
                 <Cpu className="w-3.5 h-3.5" />
                 <span>Practice Core CS</span>
@@ -825,56 +825,56 @@ export default function ProfilePage() {
       </div>
 
       {/* Resume Analysis History */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-6">
+      <div className="p-6 sm:p-7 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight">
               Resume Analysis History
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
+            <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-0.5">
               Past resumes processed through the ATS Diagnostic Engine
             </p>
           </div>
           <Link
             href="/resume-checker"
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors self-start sm:self-auto cursor-pointer"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors self-start sm:self-auto cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
             <span>Scan New Resume</span>
           </Link>
         </div>
 
         {resumeHistory.length > 0 ? (
-          <div className="divide-y divide-slate-100 dark:divide-zinc-800">
+          <div className="divide-y divide-[var(--border-subtle)]">
             {resumeHistory.map((item) => (
               <div
                 key={item.id}
-                className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                className="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
-                <div className="flex items-center space-x-3.5">
-                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">
-                    <FileCheck2 className="w-5 h-5 text-indigo-500" />
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground-muted)]">
+                    <FileCheck2 className="w-4 h-4 text-[var(--brand-primary)]" />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                    <div className="text-xs sm:text-sm font-semibold text-[var(--foreground)]">
                       {item.filename}
                     </div>
-                    <div className="text-xs text-slate-400 dark:text-zinc-500">
+                    <div className="text-[11px] text-[var(--foreground-muted)]">
                       Scored on {item.created_at}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3 self-end sm:self-auto">
                   <div className="text-right">
-                    <div className="text-sm font-bold text-slate-900 dark:text-white">
+                    <div className="text-xs sm:text-sm font-bold font-mono text-[var(--foreground)]">
                       {item.ats_score}/100
                     </div>
                     <span
-                      className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                      className={`inline-block text-[10px] font-mono font-medium px-2 py-0.5 rounded ${
                         item.ats_score >= 80
-                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
-                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                          ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
                       }`}
                     >
                       {item.status}
@@ -885,22 +885,22 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
-              <FileCheck2 className="w-6 h-6" />
+          <div className="p-8 rounded-xl border border-dashed border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-center space-y-4">
+            <div className="w-10 h-10 rounded-lg bg-[var(--surface-card)] border border-[var(--border-subtle)] text-amber-500 flex items-center justify-center mx-auto">
+              <FileCheck2 className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+              <h3 className="text-sm font-semibold text-[var(--foreground)]">
                 No Resumes Analyzed Yet
               </h3>
-              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-sm mx-auto">
+              <p className="text-xs text-[var(--foreground-muted)] max-w-sm mx-auto">
                 Upload your PDF or Word document to get instant ATS scoring, keyword detection, and section-by-section bullet rewrites.
               </p>
             </div>
-            <div className="pt-2">
+            <div className="pt-1">
               <Link
                 href="/resume-checker"
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-sm cursor-pointer"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-[var(--brand-primary)] text-white hover:opacity-95 transition-opacity shadow-xs cursor-pointer"
               >
                 <FileCheck2 className="w-3.5 h-3.5" />
                 <span>Upload Resume in ATS Checker</span>
@@ -916,46 +916,46 @@ export default function ProfilePage() {
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsEditModalOpen(false);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
         >
-          <div className="relative w-full max-w-lg p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-lg p-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xl space-y-5 max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-zinc-800">
+            <div className="flex items-center justify-between pb-3.5 border-b border-[var(--border-subtle)]">
               <div className="flex items-center space-x-2.5">
-                <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
-                  <Edit3 className="w-5 h-5" />
+                <div className="p-2 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--brand-primary)]">
+                  <Edit3 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">Edit Student Profile</h2>
-                  <p className="text-xs text-slate-500 dark:text-zinc-400">Update your career goals and placement details</p>
+                  <h2 className="text-base font-bold text-[var(--foreground)]">Edit Student Profile</h2>
+                  <p className="text-xs text-[var(--foreground-muted)]">Update career goals and profile links</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {profileSaveError && (
-              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/80 text-xs text-rose-600 dark:text-rose-400">
+              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-500">
                 {profileSaveError}
               </div>
             )}
 
             {profileSaveSuccess && (
-              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-xs text-emerald-600 dark:text-emerald-400 flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Profile updated successfully!</span>
+              <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-500 flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Profile updated successfully</span>
               </div>
             )}
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
+                <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                   Full Name
                 </label>
                 <input
@@ -964,13 +964,13 @@ export default function ProfilePage() {
                   onChange={(e) => setEditFullName(e.target.value)}
                   placeholder="e.g. Alex Johnson"
                   required
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] placeholder-[var(--foreground-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
                 />
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
+                <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                   Phone Number
                 </label>
                 <input
@@ -978,13 +978,13 @@ export default function ProfilePage() {
                   value={editPhone}
                   onChange={(e) => setEditPhone(e.target.value)}
                   placeholder="+91 9876543210"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] placeholder-[var(--foreground-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
                 />
               </div>
 
               {/* Target Role & Quick Chips */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
+                <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                   Target Role
                 </label>
                 <input
@@ -992,7 +992,7 @@ export default function ProfilePage() {
                   value={editTargetRole}
                   onChange={(e) => setEditTargetRole(e.target.value)}
                   placeholder="e.g. SDE-1 (Full Stack)"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] placeholder-[var(--foreground-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
                 />
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {['SDE-1', 'Frontend Engineer', 'Backend Engineer', 'Full Stack Dev', 'Data Analyst'].map((chip) => (
@@ -1000,10 +1000,10 @@ export default function ProfilePage() {
                       key={chip}
                       type="button"
                       onClick={() => setEditTargetRole(chip)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors cursor-pointer ${
+                      className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors cursor-pointer ${
                         editTargetRole === chip
-                          ? 'bg-indigo-600 text-white shadow-xs'
-                          : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
+                          ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                          : 'bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
                       }`}
                     >
                       {chip}
@@ -1015,7 +1015,7 @@ export default function ProfilePage() {
               {/* College & Grad Year */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
+                  <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                     College / University
                   </label>
                   <input
@@ -1023,11 +1023,11 @@ export default function ProfilePage() {
                     value={editCollege}
                     onChange={(e) => setEditCollege(e.target.value)}
                     placeholder="e.g. IIT Bombay / State Tech"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] placeholder-[var(--foreground-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
+                  <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                     Grad Year
                   </label>
                   <input
@@ -1035,7 +1035,7 @@ export default function ProfilePage() {
                     value={editGradYear}
                     onChange={(e) => setEditGradYear(e.target.value)}
                     placeholder="2026"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] placeholder-[var(--foreground-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
                   />
                 </div>
               </div>
@@ -1043,7 +1043,7 @@ export default function ProfilePage() {
               {/* GitHub & LinkedIn URLs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
+                  <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                     GitHub Profile URL
                   </label>
                   <input
@@ -1051,11 +1051,11 @@ export default function ProfilePage() {
                     value={editGithubUrl}
                     onChange={(e) => setEditGithubUrl(e.target.value)}
                     placeholder="https://github.com/username"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] placeholder-[var(--foreground-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
+                  <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                     LinkedIn Profile URL
                   </label>
                   <input
@@ -1063,28 +1063,28 @@ export default function ProfilePage() {
                     value={editLinkedinUrl}
                     onChange={(e) => setEditLinkedinUrl(e.target.value)}
                     placeholder="https://linkedin.com/in/username"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] placeholder-[var(--foreground-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
                   />
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100 dark:border-zinc-800">
+              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-[var(--border-subtle)]">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   disabled={isSavingProfile}
-                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-semibold text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                  className="px-3.5 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-xs font-medium text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingProfile}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold transition-colors shadow-sm shadow-indigo-600/20 cursor-pointer"
+                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 disabled:opacity-50 text-white text-xs font-semibold transition-opacity shadow-xs cursor-pointer"
                 >
                   {isSavingProfile && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{isSavingProfile ? 'Saving...' : 'Save Profile'}</span>
+                  <span>{isSavingProfile ? 'Saving...' : 'Save Changes'}</span>
                 </button>
               </div>
             </form>

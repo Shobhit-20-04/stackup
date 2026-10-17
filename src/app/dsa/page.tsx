@@ -244,52 +244,51 @@ export default function DsaHubPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] pb-20">
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#151D35] border-b border-slate-200 dark:border-zinc-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="bg-white dark:bg-[#151D35] border-b border-slate-200 dark:border-[#1E2B4D]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 mb-3">
-                <Code2 className="w-3.5 h-3.5" />
-                <span>Curated Industry Roadmap</span>
+              <div className="text-xs font-semibold text-slate-500 dark:text-[#8E9FC8] mb-1.5 uppercase tracking-wider">
+                Algorithms &amp; Data Structures Roadmap
               </div>
-              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-[#E8EEFF] tracking-tight">
                 DSA Practice Hub
               </h1>
-              <p className="mt-2 text-slate-600 dark:text-slate-400 max-w-2xl text-sm leading-relaxed">
+              <p className="mt-2 text-slate-600 dark:text-[#8E9FC8] max-w-2xl text-xs sm:text-sm leading-relaxed">
                 A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, Striver&apos;s SDE Sheet, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
               </p>
             </div>
 
             {/* Quick Progress Badge */}
-            <div className="bg-slate-50 dark:bg-zinc-800 p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 min-w-[280px]">
+            <div className="bg-slate-50 dark:bg-[#151D35] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] min-w-[280px]">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Overall Completion
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#8E9FC8]">
+                  Completion Status
                 </span>
                 <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                   {solvedCount} / {totalCount} ({progressPercent}%)
                 </span>
               </div>
-              <div className="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden mb-4">
+              <div className="w-full bg-slate-200 dark:bg-[#0B1020] h-2 rounded-full overflow-hidden mb-3 border border-slate-300/30 dark:border-white/5">
                 <div 
-                  className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                  className="bg-emerald-500 h-full rounded-full transition-all duration-300" 
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
 
               {/* Sub-breakdown */}
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="bg-emerald-50 dark:bg-emerald-950/30 p-2 rounded-lg border border-emerald-100 dark:border-emerald-900/40">
-                  <span className="block text-emerald-700 dark:text-emerald-400 font-bold">{easySolved}/{easyTotal}</span>
-                  <span className="text-slate-500 dark:text-slate-400 text-[10px]">Easy</span>
+                <div className="bg-white dark:bg-[#0B1020] p-2 rounded-lg border border-slate-200 dark:border-[#1E2B4D]">
+                  <span className="block text-emerald-600 dark:text-emerald-400 font-bold">{easySolved}/{easyTotal}</span>
+                  <span className="text-slate-500 dark:text-[#8E9FC8] text-[10px]">Easy</span>
                 </div>
-                <div className="bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-100 dark:border-amber-900/40">
-                  <span className="block text-amber-700 dark:text-amber-400 font-bold">{mediumSolved}/{mediumTotal}</span>
-                  <span className="text-slate-500 dark:text-slate-400 text-[10px]">Medium</span>
+                <div className="bg-white dark:bg-[#0B1020] p-2 rounded-lg border border-slate-200 dark:border-[#1E2B4D]">
+                  <span className="block text-amber-600 dark:text-amber-400 font-bold">{mediumSolved}/{mediumTotal}</span>
+                  <span className="text-slate-500 dark:text-[#8E9FC8] text-[10px]">Medium</span>
                 </div>
-                <div className="bg-rose-50 dark:bg-rose-950/30 p-2 rounded-lg border border-rose-100 dark:border-rose-900/40">
-                  <span className="block text-rose-700 dark:text-rose-400 font-bold">{hardSolved}/{hardTotal}</span>
-                  <span className="text-slate-500 dark:text-slate-400 text-[10px]">Hard</span>
+                <div className="bg-white dark:bg-[#0B1020] p-2 rounded-lg border border-slate-200 dark:border-[#1E2B4D]">
+                  <span className="block text-rose-600 dark:text-rose-400 font-bold">{hardSolved}/{hardTotal}</span>
+                  <span className="text-slate-500 dark:text-[#8E9FC8] text-[10px]">Hard</span>
                 </div>
               </div>
             </div>
@@ -297,10 +296,10 @@ export default function DsaHubPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
         {/* Controls: Search, Filters */}
-        <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm space-y-4 mb-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-[#151D35] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] shadow-xs space-y-3.5 mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
             {/* Search Input */}
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -310,25 +309,25 @@ export default function DsaHubPage() {
                 aria-label="Search problems by name, company, or pattern"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-9 py-2 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white placeholder:text-slate-400"
+                className="w-full pl-10 pr-9 py-2 bg-slate-50 dark:bg-[#0B1020] border border-slate-200 dark:border-[#1E2B4D] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] text-slate-900 dark:text-[#E8EEFF] placeholder:text-slate-400"
               />
               {showSearchSpinner && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <div className="w-3.5 h-3.5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-[var(--brand-primary)] border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
             </div>
 
             {/* Difficulty Toggle Buttons */}
-            <div className="flex flex-wrap items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+            <div className="flex flex-wrap items-center gap-1 bg-slate-100 dark:bg-[#0B1020] border border-slate-200/80 dark:border-[#1E2B4D] p-1 rounded-lg">
               {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
                 <button
                   key={diff}
                   onClick={() => setSelectedDifficulty(diff)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-3 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                     selectedDifficulty === diff
-                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
+                      : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                   }`}
                 >
                   {diff}
@@ -337,12 +336,12 @@ export default function DsaHubPage() {
             </div>
 
             {/* Toggle Unsolved */}
-            <label className="flex items-center space-x-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+            <label className="flex items-center space-x-2 text-xs font-medium text-slate-600 dark:text-[#8E9FC8] cursor-pointer select-none">
               <input 
                 type="checkbox"
                 checked={showOnlyUnsolved}
                 onChange={(e) => setShowOnlyUnsolved(e.target.checked)}
-                className="rounded border-slate-300 dark:border-zinc-700 text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                className="rounded border-slate-300 dark:border-[#1E2B4D] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)] w-4 h-4"
               />
               <span>Unsolved only</span>
             </label>
@@ -362,7 +361,7 @@ export default function DsaHubPage() {
           </div>
 
           {/* Pattern / Category Pills - Scrollable Horizontally on Mobile */}
-          <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-zinc-800 overflow-x-auto pb-1.5 scrollbar-none">
+          <div className="flex items-center gap-1.5 pt-2.5 border-t border-slate-100 dark:border-[#1E2B4D] overflow-x-auto pb-1 scrollbar-none">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider pl-1 mr-1 shrink-0">
               Pattern:
             </span>
@@ -370,10 +369,10 @@ export default function DsaHubPage() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                className={`px-3 py-1 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                   selectedCategory === cat
-                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/20'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-zinc-700'
+                    ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-[#1B2442] text-slate-700 dark:text-[#8E9FC8] hover:bg-slate-200 dark:hover:bg-[#223055]'
                 }`}
               >
                 {cat}
@@ -475,20 +474,20 @@ export default function DsaHubPage() {
                 return (
                 <div 
                   key={problem.id}
-                  className={`bg-white dark:bg-[#151D35] rounded-2xl border transition-all duration-200 shadow-sm ${
+                  className={`bg-white dark:bg-[#151D35] rounded-xl border transition-colors shadow-xs ${
                     isSolved 
-                      ? 'border-emerald-200 dark:border-emerald-950/60 bg-emerald-50/20 dark:bg-emerald-950/10' 
-                      : 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-slate-700'
+                      ? 'border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/20 dark:bg-emerald-950/10' 
+                      : 'border-slate-200 dark:border-[#1E2B4D] hover:border-slate-300 dark:hover:border-[#2D3D6E]'
                   }`}
                 >
-                  <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="p-4 sm:p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     {/* Left: Checkbox + Title + Badges */}
-                    <div className="flex items-start space-x-3.5 flex-1 min-w-0">
+                    <div className="flex items-start space-x-3 flex-1 min-w-0">
                       <button
                         onClick={() => toggleSolved(problem.id)}
-                        className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                        className={`mt-0.5 w-5 h-5 rounded-md flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
                           isSolved
-                            ? 'bg-emerald-500 text-white shadow-sm'
+                            ? 'bg-emerald-500 text-white shadow-xs'
                             : 'border-2 border-slate-300 dark:border-slate-600 hover:border-emerald-500 text-transparent'
                         }`}
                         title={isSolved ? 'Mark as Unsolved' : 'Mark as Solved'}
@@ -497,11 +496,11 @@ export default function DsaHubPage() {
                       </button>
 
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
-                          <h3 className={`text-base font-semibold transition-all ${
+                        <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                          <h3 className={`text-sm sm:text-base font-semibold transition-colors ${
                             isSolved 
                               ? 'line-through text-slate-400 dark:text-slate-500' 
-                              : 'text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400'
+                              : 'text-slate-900 dark:text-[#E8EEFF] hover:text-[var(--brand-primary)]'
                           }`}>
                             {problem.title}
                           </h3>
@@ -557,7 +556,7 @@ export default function DsaHubPage() {
                         href={problem.striver_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center space-x-1.5 transition-colors border border-indigo-200/50 dark:border-indigo-900/40"
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-[#1B2442] dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] flex items-center space-x-1.5 transition-colors border border-slate-200 dark:border-[#1E2B4D]"
                         title="Open Striver's SDE Sheet guide"
                       >
                         <span>Striver</span>
@@ -585,15 +584,15 @@ export default function DsaHubPage() {
                             setActiveTab('problem');
                           }
                         }}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-colors cursor-pointer border ${
                           isExpanded
-                            ? 'bg-slate-800 dark:bg-slate-700 text-white shadow-sm'
-                            : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-slate-200'
+                            ? 'bg-slate-900 dark:bg-[#1B2442] text-white border-slate-800 dark:border-[#2D3D6E] shadow-xs'
+                            : 'bg-slate-100 dark:bg-[#1B2442] hover:bg-slate-200 dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] border-slate-200 dark:border-[#1E2B4D]'
                         }`}
                         title="View complete problem output, approach, and code solutions"
                       >
-                        <Terminal className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
-                        <span>{isExpanded ? 'Hide Output' : 'Complete Output'}</span>
+                        <Terminal className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+                        <span>{isExpanded ? 'Hide Solution' : 'Solution & Notes'}</span>
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                       </button>
                     </div>
@@ -601,47 +600,44 @@ export default function DsaHubPage() {
 
                   {/* Complete Output Expandable Body */}
                   {isExpanded && (
-                    <div className="border-t border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-[#0c0d10] rounded-b-2xl p-5 space-y-4">
+                    <div className="border-t border-slate-200 dark:border-[#1E2B4D] bg-slate-50/50 dark:bg-[#0B1020]/80 rounded-b-xl p-4 sm:p-5 space-y-4">
                       {/* Top Tabs */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-zinc-800 pb-3">
-                        <div className="flex items-center space-x-1 bg-slate-200/70 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto max-w-full scrollbar-none">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-[#1E2B4D] pb-3">
+                        <div className="flex items-center space-x-1 bg-slate-200/80 dark:bg-[#151D35] p-1 rounded-lg border border-slate-200/80 dark:border-[#1E2B4D] overflow-x-auto max-w-full scrollbar-none">
                           <button
                             onClick={() => setActiveTab('problem')}
-                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                               activeTab === 'problem'
-                                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-semibold'
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
+                                : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                             }`}
                           >
-                            <FileText className="w-3.5 h-3.5 text-indigo-500" />
-                            <span>Problem</span>
-                            <span className="hidden sm:inline">&nbsp;&amp; Examples</span>
+                            <FileText className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+                            <span>Problem &amp; Examples</span>
                           </button>
 
                           <button
                             onClick={() => setActiveTab('approach')}
-                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                               activeTab === 'approach'
-                                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-semibold'
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
+                                : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                             }`}
                           >
                             <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-                            <span>Approach</span>
-                            <span className="hidden sm:inline">&nbsp;&amp; Complexity</span>
+                            <span>Approach &amp; Complexity</span>
                           </button>
 
                           <button
                             onClick={() => setActiveTab('code')}
-                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                               activeTab === 'code'
-                                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm font-semibold'
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
+                                : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                             }`}
                           >
                             <Code2 className="w-3.5 h-3.5 text-emerald-500" />
-                            <span>Code</span>
-                            <span className="hidden sm:inline">&nbsp;Solutions</span>
+                            <span>Code Solutions</span>
                           </button>
                         </div>
 
@@ -877,8 +873,8 @@ export default function DsaHubPage() {
                           </div>
 
                           {/* Code Display */}
-                          <div className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 text-slate-100 font-mono text-xs shadow-inner">
-                            <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 border-b border-slate-800/80 text-[11px] text-slate-400">
+                          <div className="code-terminal-dark relative rounded-xl overflow-hidden border border-slate-700/60 dark:border-[#1E2B4D] font-mono text-xs shadow-inner">
+                            <div className="code-terminal-header flex items-center justify-between px-4 py-2 border-b text-[11px]">
                               <span>Solution • {activeLang.toUpperCase()}</span>
                               <span>Verified on LeetCode</span>
                             </div>

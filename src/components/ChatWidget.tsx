@@ -38,7 +38,7 @@ export default function ChatWidget() {
     {
       id: 'welcome',
       role: 'assistant',
-      content: 'Hi there! I am your **StackUp AI Assistant**. Need a quick DSA intuition hint, Core CS concept clarification, or resume advice? Ask me anything!',
+      content: 'Welcome to **StackUp Assistant**. Need algorithmic intuition, core CS concept clarification, or ATS resume advice? Type a query or select a topic below.',
     },
   ]);
 
@@ -172,56 +172,53 @@ export default function ChatWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center space-x-2.5 px-4 py-3 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-full shadow-xl shadow-[#8B5CF6]/30 hover:scale-105 active:scale-95 transition-all duration-200 animate-float-gentle cursor-pointer"
-          aria-label="Open StackUp AI Chatbot"
+          className="group flex items-center space-x-2 px-3.5 py-2.5 bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] text-[var(--foreground)] border border-[var(--border-subtle)] rounded-lg shadow-md transition-colors cursor-pointer"
+          aria-label="Open StackUp Assistant"
         >
-          <div className="relative">
-            <Bot className="w-5 h-5 group-hover:rotate-6 transition-transform" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#22D3EE] border-2 border-[#8B5CF6] rounded-full animate-pulse" />
-          </div>
-          <span className="text-xs font-bold tracking-tight pr-1">Ask AI</span>
+          <Bot className="w-4 h-4 text-[var(--brand-primary)]" />
+          <span className="text-xs font-medium">Assistant</span>
         </button>
       )}
 
       {/* Floating Chat Modal */}
       {isOpen && (
-        <div className="w-[360px] sm:w-[420px] h-[550px] max-h-[85vh] bg-white dark:bg-[#151D35] border border-slate-200 dark:border-[#1E2B4D] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="w-[360px] sm:w-[420px] h-[520px] max-h-[85vh] bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in duration-150">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] px-5 py-3.5 text-white flex items-center justify-between">
+          <div className="bg-[var(--surface-card)] px-4 py-3 border-b border-[var(--border-subtle)] text-[var(--foreground)] flex items-center justify-between">
             <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-[#22D3EE]" />
+              <div className="w-7 h-7 rounded-md bg-[var(--surface-sunken)] border border-[var(--border-subtle)] flex items-center justify-center">
+                <Bot className="w-4 h-4 text-[var(--brand-primary)]" />
               </div>
               <div>
-                <h3 className="text-sm font-bold leading-tight">StackUp AI</h3>
-                <p className="text-[11px] text-[#E8EEFF]/80 flex items-center space-x-1">
+                <h3 className="text-xs font-semibold leading-tight text-[var(--foreground)]">StackUp Assistant</h3>
+                <p className="text-[10px] font-mono text-[var(--foreground-muted)] flex items-center space-x-1 mt-0.5">
                   <span>Context:</span>
-                  <span className="font-semibold underline decoration-[#22D3EE]">{sectionContext}</span>
+                  <span className="text-[var(--brand-primary)] truncate max-w-[200px]">{sectionContext}</span>
                 </p>
               </div>
             </div>
 
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-1 rounded-md text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
               aria-label="Close chat"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3.5 bg-slate-50/50 dark:bg-[#0B1020]/90">
+          <div className="flex-1 p-3.5 overflow-y-auto space-y-3 bg-[var(--background)]">
             {messages.map((m) => (
               <div
                 key={m.id}
                 className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs ${
+                  className={`max-w-[88%] rounded-lg px-3 py-2 text-xs leading-relaxed ${
                     m.role === 'user'
-                      ? 'bg-[#8B5CF6] text-white rounded-br-none shadow-sm'
-                      : 'bg-white dark:bg-[#1B2442] text-slate-800 dark:text-[#E8EEFF] border border-slate-200 dark:border-[#1E2B4D] rounded-bl-none shadow-sm'
+                      ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                      : 'bg-[var(--surface-card)] text-[var(--foreground)] border border-[var(--border-subtle)] shadow-xs'
                   }`}
                 >
                   {m.role === 'user' ? (
@@ -238,22 +235,22 @@ export default function ChatWidget() {
             ))}
 
             {loading && (
-              <div className="flex items-center space-x-2 bg-white dark:bg-[#1B2442] border border-slate-200 dark:border-[#1E2B4D] rounded-2xl px-3.5 py-2.5 text-xs text-slate-500 rounded-bl-none w-fit">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#8B5CF6] dark:text-[#22D3EE]" />
-                <span className="dark:text-[#8E9FC8]">Thinking...</span>
+              <div className="flex items-center space-x-2 bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs text-[var(--foreground-muted)] w-fit">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--brand-primary)]" />
+                <span className="font-mono text-[11px]">Processing...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
           {/* Suggestion Chips */}
-          <div className="px-4 py-2 border-t border-slate-100 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] flex items-center space-x-1.5 overflow-x-auto scrollbar-none">
+          <div className="px-3.5 py-2 border-t border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center space-x-1.5 overflow-x-auto scrollbar-none">
             {suggestionChips.map((chip, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSendMessage(chip)}
                 disabled={loading}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 hover:bg-slate-200 dark:bg-[#1B2442] dark:hover:bg-[#263560] text-slate-700 dark:text-[#E8EEFF] transition-colors"
+                className="whitespace-nowrap px-2.5 py-1 rounded-md text-[11px] font-mono bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
               >
                 {chip}
               </button>
@@ -262,17 +259,17 @@ export default function ChatWidget() {
 
           {/* Input Box or Guest Lock Card */}
           {!currentUser && userPromptCount >= 1 ? (
-            <div className="p-3.5 border-t border-slate-200 dark:border-[#1E2B4D] bg-indigo-50/70 dark:bg-[#1B2442]/50 text-center space-y-2">
-              <div className="flex items-center justify-center space-x-1.5 text-xs text-[#8B5CF6] dark:text-[#22D3EE] font-semibold">
+            <div className="p-3.5 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-center space-y-2">
+              <div className="flex items-center justify-center space-x-1.5 text-xs text-[var(--brand-primary)] font-semibold">
                 <Lock className="w-3.5 h-3.5" />
-                <span>Free preview prompt used</span>
+                <span>Preview query limit reached</span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-[#8E9FC8]">
-                Sign in to continue unlimited AI interview prep with StackUp Assistant.
+              <p className="text-[11px] text-[var(--foreground-muted)]">
+                Sign in to continue unlimited practice with the StackUp assistant.
               </p>
               <Link
                 href={`/login?redirect=${encodeURIComponent(pathname)}`}
-                className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-lg bg-[#8B5CF6] hover:bg-[#7C3AED] text-white font-semibold text-xs shadow-sm transition-all"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs shadow-xs transition-opacity"
               >
                 <span>Sign In to Continue</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -284,7 +281,7 @@ export default function ChatWidget() {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="p-3 border-t border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] flex items-center space-x-2"
+              className="p-3 border-t border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center space-x-2"
             >
               <input
                 type="text"
@@ -292,15 +289,15 @@ export default function ChatWidget() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={`Ask about ${sectionContext}...`}
                 aria-label={`Ask about ${sectionContext}`}
-                className="flex-1 px-3.5 py-2 bg-slate-50 dark:bg-[#0B1020] border border-slate-200 dark:border-[#1E2B4D] rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] text-slate-900 dark:text-[#E8EEFF] placeholder:text-slate-400"
+                className="flex-1 px-3 py-1.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-lg text-xs focus:outline-none focus:border-[var(--brand-primary)] text-[var(--foreground)] placeholder:[var(--foreground-muted)]"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || loading}
-                className="p-2 bg-[#8B5CF6] hover:bg-[#7C3AED] disabled:opacity-40 text-white rounded-xl transition-all shadow-sm cursor-pointer"
+                className="p-2 bg-[var(--brand-primary)] hover:opacity-95 disabled:opacity-40 text-white rounded-lg transition-opacity shadow-xs cursor-pointer"
                 aria-label="Send message"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5" />
               </button>
             </form>
           )}

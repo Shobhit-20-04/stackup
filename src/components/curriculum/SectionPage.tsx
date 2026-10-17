@@ -391,74 +391,74 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
       {/* Header Banner */}
-      <div className="p-5 sm:p-7 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+      <div className="p-5 sm:p-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="space-y-2 max-w-2xl">
-          <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold border ${accentBadgeClasses}`}>
-            <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
-            <span>Placement Interview Curriculum • Structured Modules</span>
+          <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]">
+            <BookOpen className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+            <span>Curriculum Syllabus</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] tracking-tight">
             {section.name}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
+          <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
             {section.description}
           </p>
 
           <div className="pt-1">
             <button
               onClick={() => setIsCheatsheetOpen(true)}
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-slate-900 dark:bg-zinc-800 hover:bg-slate-800 dark:hover:bg-zinc-750 text-white font-semibold text-xs border border-slate-700/80 dark:border-zinc-700 shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white font-medium text-xs shadow-xs transition-opacity cursor-pointer"
             >
               {currentUser ? (
-                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                <Zap className="w-3.5 h-3.5 text-amber-300" />
               ) : (
-                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <Lock className="w-3.5 h-3.5 text-amber-300" />
               )}
-              <span>⚡ Quick Revision Cheatsheet {!currentUser && '(Sign In to Unlock)'}</span>
+              <span>Revision Cheatsheet {!currentUser && '(Sign in to unlock)'}</span>
             </button>
           </div>
         </div>
 
         {/* Progress Metric */}
-        <div className="p-4 rounded-2xl border border-slate-200 dark:border-[#1E2B4D] bg-slate-50 dark:bg-[#151D35] w-full md:w-64 space-y-2.5 shrink-0">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-slate-600 dark:text-[var(--text-muted)] uppercase tracking-wider text-[11px]">Syllabus Progress</span>
-            <span className={`font-extrabold ${accentTextClasses}`}>{metrics.percent}%</span>
+        <div className="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] w-full md:w-64 space-y-2.5 shrink-0">
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--foreground-muted)]">Syllabus Progress</span>
+            <span className="font-mono font-bold text-[var(--brand-primary)]">{metrics.percent}%</span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-[#1E2B4D] border border-slate-300/30 dark:border-white/5 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${accentProgressBg}`}
+              className="h-full rounded-full bg-[var(--brand-primary)] transition-all duration-500"
               style={{ width: `${metrics.percent}%` }}
             />
           </div>
-          <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-zinc-400">
-            <span>{metrics.completed} of {metrics.total} topics completed</span>
+          <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono">
+            <span>{metrics.completed} of {metrics.total} topics</span>
             <span>{section.categories.reduce((acc, c) => acc + c.topics.reduce((q, t) => q + t.questions.length, 0), 0)} MCQs</span>
           </div>
         </div>
       </div>
 
       {/* Search & Multi-Filter Bar */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+          <Search className="w-4 h-4 text-[var(--foreground-muted)] absolute left-3 top-3" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label={`Search all ${section.name} topics`}
             placeholder={`Search all ${section.name.toLowerCase()} topics (e.g. Deadlocks, TCP 3-Way, Normalization, Probability)...`}
-            className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-[#151D35] text-sm font-medium text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xs"
+            className="w-full pl-9 pr-9 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-xs font-medium text-[var(--foreground)] placeholder:[var(--foreground-muted)] focus:outline-none focus:border-[var(--brand-primary)] shadow-xs"
           />
           {isSearchPending ? (
-            <div className="absolute right-3.5 top-3.5">
-              <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+            <div className="absolute right-3 top-2.5">
+              <div className="w-4 h-4 border-2 border-[var(--brand-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : searchQuery ? (
             <button
               onClick={() => setSearchQuery('')}
               aria-label="Clear search query"
-              className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 cursor-pointer"
+              className="absolute right-3 top-2.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)] cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -466,51 +466,51 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         </div>
 
         {/* Filter Chips Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-0.5">
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-500 dark:text-zinc-400 mr-1">
+            <div className="flex items-center space-x-1.5 text-xs text-[var(--foreground-muted)] mr-1">
               <SlidersHorizontal className="w-3.5 h-3.5" />
               <span>Filters:</span>
             </div>
 
             {/* Difficulty Filter */}
-            <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 text-xs font-semibold">
+            <div className="inline-flex rounded-lg p-0.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs font-medium">
               <button
                 onClick={() => setSelectedDifficulty('all')}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-all cursor-pointer ${
                   selectedDifficulty === 'all'
-                    ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
+                    ? 'bg-[var(--surface-card)] text-[var(--foreground)] border border-[var(--border-subtle)] font-semibold shadow-xs'
+                    : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
                 }`}
               >
                 All Difficulty
               </button>
               <button
                 onClick={() => setSelectedDifficulty('Easy')}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-all cursor-pointer ${
                   selectedDifficulty === 'Easy'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400'
+                    ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-semibold shadow-xs'
+                    : 'text-[var(--foreground-muted)] hover:text-emerald-500'
                 }`}
               >
                 Easy
               </button>
               <button
                 onClick={() => setSelectedDifficulty('Medium')}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-all cursor-pointer ${
                   selectedDifficulty === 'Medium'
-                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400'
+                    ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20 font-semibold shadow-xs'
+                    : 'text-[var(--foreground-muted)] hover:text-amber-500'
                 }`}
               >
                 Medium
               </button>
               <button
                 onClick={() => setSelectedDifficulty('Hard')}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-all cursor-pointer ${
                   selectedDifficulty === 'Hard'
-                    ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400'
+                    ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20 font-semibold shadow-xs'
+                    : 'text-[var(--foreground-muted)] hover:text-rose-500'
                 }`}
               >
                 Hard
@@ -518,33 +518,33 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             </div>
 
             {/* Status Filter */}
-            <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 text-xs font-semibold">
+            <div className="inline-flex rounded-lg p-0.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs font-medium">
               <button
                 onClick={() => setSelectedStatus('all')}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-all cursor-pointer ${
                   selectedStatus === 'all'
-                    ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
+                    ? 'bg-[var(--surface-card)] text-[var(--foreground)] border border-[var(--border-subtle)] font-semibold shadow-xs'
+                    : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
                 }`}
               >
                 All Status
               </button>
               <button
                 onClick={() => setSelectedStatus('completed')}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-all cursor-pointer ${
                   selectedStatus === 'completed'
-                    ? 'bg-white dark:bg-zinc-800 text-emerald-600 dark:text-emerald-400 shadow-xs font-bold border border-emerald-500/20'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
+                    ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-semibold shadow-xs'
+                    : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
                 }`}
               >
                 ✓ Completed
               </button>
               <button
                 onClick={() => setSelectedStatus('incomplete')}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-all cursor-pointer ${
                   selectedStatus === 'incomplete'
-                    ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
+                    ? 'bg-[var(--surface-card)] text-[var(--foreground)] border border-[var(--border-subtle)] font-semibold shadow-xs'
+                    : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
                 }`}
               >
                 ○ Incomplete
@@ -558,7 +558,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 setSelectedDifficulty('all');
                 setSelectedStatus('all');
               }}
-              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+              className="text-xs font-medium text-[var(--brand-primary)] hover:underline cursor-pointer"
             >
               Reset Filters
             </button>
@@ -567,18 +567,18 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       </div>
 
       {/* Sticky Subject Chip Switcher */}
-      <div className="sticky top-16 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-slate-50/95 dark:bg-[#0B1020]/95 backdrop-blur-md border-y sm:border-y-0 sm:rounded-2xl border-slate-200 dark:border-zinc-800">
-        <div className="flex items-center space-x-2 overflow-x-auto scrollbar-none pb-1 pt-0.5">
+      <div className="sticky top-16 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border-subtle)]">
+        <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none pb-1 pt-0.5">
           <button
             onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
               selectedCategory === 'all' && !searchQuery
-                ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                : 'bg-white dark:bg-zinc-900/90 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-[#1B2442] hover:text-slate-900 dark:hover:text-white'
+                ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)]'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>Subject Dashboard ({section.categories.length})</span>
+            <span>All Subjects ({section.categories.length})</span>
           </button>
 
           {section.categories.map((cat) => {
@@ -587,17 +587,17 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               <button
                 key={cat.id}
                 onClick={() => { setSelectedCategory(cat.id); setSearchQuery(''); }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
                   isSelected
-                    ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                    : 'bg-white dark:bg-zinc-900/90 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-[#1B2442] hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                    : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)]'
                 }`}
               >
                 <span>{cat.title}</span>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
                   isSelected 
-                    ? 'bg-white/20 dark:bg-zinc-900/15 text-white dark:text-zinc-950' 
-                    : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
+                    ? 'bg-white/20 text-white' 
+                    : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)]'
                 }`}>
                   {cat.topics.length}
                 </span>
@@ -1005,19 +1005,19 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
       {/* QUICK REVISION CHEATSHEET MODAL */}
       {isCheatsheetOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             {/* Modal Header */}
-            <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-zinc-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-[#18181b]/50">
+            <div className="p-4 sm:p-5 border-b border-[var(--border-subtle)] flex items-start justify-between gap-4 bg-[var(--surface-card)]">
               <div className="space-y-1">
-                <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60">
+                <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20">
                   <Zap className="w-3.5 h-3.5" />
-                  <span>Rapid Placement Cheatsheet</span>
+                  <span>Rapid Revision Cheatsheet</span>
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
-                  ⚡ High-Yield Principles &amp; Key Takeaways
+                <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)]">
+                  High-Yield Principles &amp; Key Takeaways
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-zinc-400">
+                <p className="text-xs text-[var(--foreground-muted)]">
                   Formula cards and core interview concepts compiled across {section.name}.
                 </p>
               </div>
@@ -1025,7 +1025,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               <button
                 onClick={() => setIsCheatsheetOpen(false)}
                 aria-label="Close revision cheatsheet"
-                className="w-8 h-8 rounded-xl bg-slate-200/70 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                className="w-7 h-7 rounded-md bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] flex items-center justify-center transition-colors cursor-pointer shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1033,29 +1033,29 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
             {/* Cheatsheet Body */}
             {!currentUser ? (
-              <div className="flex-1 p-8 sm:p-14 text-center flex flex-col items-center justify-center space-y-4 my-auto bg-slate-50/50 dark:bg-[#151D35]/50">
-                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/10">
-                  <Lock className="w-7 h-7" />
+              <div className="flex-1 p-8 sm:p-12 text-center flex flex-col items-center justify-center space-y-4 my-auto bg-[var(--surface-sunken)]">
+                <div className="w-12 h-12 rounded-lg bg-[var(--surface-card)] border border-[var(--border-subtle)] text-amber-500 flex items-center justify-center shadow-xs">
+                  <Lock className="w-6 h-6" />
                 </div>
-                <div className="max-w-md space-y-2">
-                  <h4 className="text-xl font-black text-slate-900 dark:text-white">
-                    Sign In Required for Revision Cheatsheet
+                <div className="max-w-md space-y-1.5">
+                  <h4 className="text-base sm:text-lg font-bold text-[var(--foreground)]">
+                    Sign in to unlock revision cheatsheet
                   </h4>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 leading-relaxed">
-                    Quick Revision Cheatsheets provide high-yield formula cards, algorithmic complexities, and rapid interview takeaways compiled across all {section.name} modules. Sign in to your StackUp account to unlock full access.
+                  <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                    Quick Revision Cheatsheets provide high-yield formula cards, algorithmic complexities, and rapid interview takeaways compiled across all {section.name} modules.
                   </p>
                 </div>
-                <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                <div className="pt-2 flex flex-col sm:flex-row items-center gap-2.5">
                   <Link
                     href={`/login?redirect=${encodeURIComponent(`/${sectionKey}`)}`}
-                    className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs shadow-xs transition-opacity flex items-center justify-center space-x-2 cursor-pointer"
                   >
-                    <span>Sign In to Unlock Cheatsheet</span>
+                    <span>Sign In to Unlock</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                   <button
                     onClick={() => setIsCheatsheetOpen(false)}
-                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--foreground)] text-xs font-medium hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                   >
                     Dismiss
                   </button>
@@ -1064,22 +1064,22 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             ) : (
               <>
                 {/* Cheatsheet Controls */}
-                <div className="p-4 border-b border-slate-200 dark:border-zinc-800 space-y-3 bg-white dark:bg-[#151D35]">
+                <div className="p-3.5 border-b border-[var(--border-subtle)] space-y-2.5 bg-[var(--surface-card)]">
                   <div className="relative">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <Search className="w-4 h-4 text-[var(--foreground-muted)] absolute left-3 top-2.5" />
                     <input
                       type="text"
                       value={cheatsheetSearch}
                       onChange={(e) => setCheatsheetSearch(e.target.value)}
                       aria-label="Filter formulas or concepts"
                       placeholder="Filter formulas or concepts (e.g. Virtual Memory, Deadlock, Work Rate, ACID)..."
-                      className="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-[#18181b] text-xs font-medium text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full pl-9 pr-9 py-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-xs font-medium text-[var(--foreground)] placeholder:[var(--foreground-muted)] focus:outline-none focus:border-[var(--brand-primary)]"
                     />
                     {cheatsheetSearch && (
                       <button
                         onClick={() => setCheatsheetSearch('')}
                         aria-label="Clear cheatsheet filter"
-                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 cursor-pointer"
+                        className="absolute right-3 top-2 text-[var(--foreground-muted)] hover:text-[var(--foreground)] cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -1087,13 +1087,13 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   </div>
 
                   {/* Cheatsheet Subject Tabs */}
-                  <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none pb-0.5">
+                  <div className="flex items-center space-x-1 overflow-x-auto scrollbar-none pb-0.5">
                     <button
                       onClick={() => setCheatsheetCategory('all')}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-medium transition-all whitespace-nowrap cursor-pointer ${
                         cheatsheetCategory === 'all'
-                          ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                          : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
+                          ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                          : 'bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
                       }`}
                     >
                       All ({section.categories.length})
@@ -1102,10 +1102,10 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       <button
                         key={cat.id}
                         onClick={() => setCheatsheetCategory(cat.id)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-medium transition-all whitespace-nowrap cursor-pointer ${
                           cheatsheetCategory === cat.id
-                            ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                            : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
+                            ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                            : 'bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
                         }`}
                       >
                         {cat.title}
@@ -1115,34 +1115,34 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 </div>
 
                 {/* Cheatsheet Content List */}
-                <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5 bg-[var(--background)]">
                   {cheatsheetTopics.length === 0 ? (
-                    <div className="p-8 text-center text-slate-500 dark:text-zinc-500 text-xs">
+                    <div className="p-8 text-center text-[var(--foreground-muted)] text-xs">
                       No revision topics match your search query.
                     </div>
                   ) : (
                     cheatsheetTopics.map(({ topic, category }) => (
                       <div
                         key={topic.id}
-                        className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] space-y-3 shadow-xs"
+                        className="p-4 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-2.5 shadow-xs"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center space-x-2">
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]">
                               {category.title}
                             </span>
-                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                            <h4 className="text-xs sm:text-sm font-semibold text-[var(--foreground)]">
                               {topic.title}
                             </h4>
                           </div>
 
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1.5">
                             {topic.youtube_url && (
                               <a
                                 href={topic.youtube_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 transition-colors inline-flex items-center"
+                                className="p-1 rounded-md text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 transition-colors inline-flex items-center"
                                 title="Study topic on YouTube"
                               >
                                 <Video className="w-3.5 h-3.5" />
@@ -1154,7 +1154,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                                 setSelectedTopic(topic);
                                 setActiveView('notes');
                               }}
-                              className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-zinc-800 text-[11px] font-bold text-slate-700 dark:text-zinc-200 hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                              className="px-2.5 py-1 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[11px] font-medium text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors cursor-pointer"
                             >
                               Notes →
                             </button>
@@ -1164,7 +1164,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                                   setIsCheatsheetOpen(false);
                                   handleStartQuiz(topic);
                                 }}
-                                className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer flex items-center space-x-1"
+                                className="px-2.5 py-1 rounded-md bg-[var(--brand-primary)] hover:opacity-95 text-white text-[11px] font-medium shadow-xs transition-opacity cursor-pointer flex items-center space-x-1"
                               >
                                 <Play className="w-2.5 h-2.5 fill-white" />
                                 <span>Quiz ({topic.questions.length})</span>
@@ -1175,19 +1175,19 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
                         {/* Key Takeaways */}
                         {topic.keyTakeaways && topic.keyTakeaways.length > 0 ? (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
                             {topic.keyTakeaways.map((takeaway, idx) => (
                               <div
                                 key={idx}
-                                className="p-2.5 rounded-xl bg-white dark:bg-[#18181b] border border-slate-200/80 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-200 flex items-start space-x-2"
+                                className="p-2 rounded-md bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--foreground)] flex items-start space-x-2"
                               >
-                                <Check className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 shrink-0 mt-0.5" />
-                                <span className="leading-snug font-medium">{takeaway}</span>
+                                <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                                <span className="leading-snug">{takeaway}</span>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-xs text-slate-500 dark:text-zinc-500 italic">
+                          <p className="text-xs text-[var(--foreground-muted)] italic">
                             {topic.description}
                           </p>
                         )}
@@ -1199,13 +1199,13 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             )}
 
             {/* Modal Footer */}
-            <div className="p-3 sm:p-4 border-t border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#18181b] flex items-center justify-between text-xs text-slate-500 dark:text-zinc-400">
-              <span>Showing {cheatsheetTopics.length} high-yield revision modules</span>
+            <div className="p-3 border-t border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-between text-xs text-[var(--foreground-muted)]">
+              <span className="font-mono text-[11px]">Showing {cheatsheetTopics.length} revision modules</span>
               <button
                 onClick={() => setIsCheatsheetOpen(false)}
-                className="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-zinc-800 font-bold text-slate-700 dark:text-zinc-200 hover:bg-slate-300 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                className="px-3 py-1 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-xs font-medium text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors cursor-pointer"
               >
-                Close Cheatsheet
+                Close
               </button>
             </div>
           </div>
@@ -1214,30 +1214,30 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
       {/* Auth Prompt Modal */}
       {authPromptOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center mb-1">
-              <Lock className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+            <div className="w-10 h-10 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] border border-[var(--border-subtle)] flex items-center justify-center mb-1">
+              <Lock className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Sign In Required
+              <h3 className="text-base font-bold text-[var(--foreground)]">
+                Authentication Required
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 mt-1.5 leading-relaxed font-normal">
+              <p className="text-xs text-[var(--foreground-muted)] mt-1 leading-relaxed">
                 Sign in to take interactive timed quizzes, unlock rapid placement revision cheatsheets, and sync your diagnostics with your student profile.
               </p>
             </div>
-            <div className="flex items-center space-x-2.5 pt-2">
+            <div className="flex items-center space-x-2 pt-1">
               <Link
                 href={`/login?redirect=${encodeURIComponent(`/${sectionKey}`)}`}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs text-center shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white font-medium text-xs text-center shadow-xs transition-opacity flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <span>Sign In</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <button
                 onClick={() => setAuthPromptOpen(false)}
-                className="py-2.5 px-4 rounded-xl border border-slate-300 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold transition-colors cursor-pointer"
+                className="py-2 px-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] hover:bg-[var(--surface-card)] text-xs font-medium transition-colors cursor-pointer"
               >
                 Cancel
               </button>
