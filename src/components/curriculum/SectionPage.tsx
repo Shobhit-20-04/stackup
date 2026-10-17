@@ -420,12 +420,12 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         </div>
 
         {/* Progress Metric */}
-        <div className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#18181b] w-full md:w-64 space-y-2.5 shrink-0">
+        <div className="p-4 rounded-2xl border border-slate-200 dark:border-[#1E2B4D] bg-slate-50 dark:bg-[#151D35] w-full md:w-64 space-y-2.5 shrink-0">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-slate-600 dark:text-zinc-400 uppercase tracking-wider text-[11px]">Syllabus Progress</span>
+            <span className="text-slate-600 dark:text-[var(--text-muted)] uppercase tracking-wider text-[11px]">Syllabus Progress</span>
             <span className={`font-extrabold ${accentTextClasses}`}>{metrics.percent}%</span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
+          <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-[#1E2B4D] border border-slate-300/30 dark:border-white/5 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${accentProgressBg}`}
               style={{ width: `${metrics.percent}%` }}
@@ -574,7 +574,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
               selectedCategory === 'all' && !searchQuery
                 ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                : 'bg-white dark:bg-zinc-900/90 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-850 hover:text-slate-900 dark:hover:text-white'
+                : 'bg-white dark:bg-zinc-900/90 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-[#1B2442] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -590,7 +590,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-1.5 cursor-pointer ${
                   isSelected
                     ? 'bg-slate-900 dark:bg-zinc-100 text-white dark:text-zinc-950 shadow-xs'
-                    : 'bg-white dark:bg-zinc-900/90 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-850 hover:text-slate-900 dark:hover:text-white'
+                    : 'bg-white dark:bg-zinc-900/90 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-[#1B2442] hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <span>{cat.title}</span>
@@ -733,8 +733,8 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   onClick={() => setSubjectCluster(tab.id as 'all' | 'systems' | 'algo-theory' | 'math' | 'software')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                     subjectCluster === tab.id
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-white dark:bg-[#151D35] text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-850'
+                      ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                      : 'bg-white dark:bg-[#151D35] text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-[#1B2442]'
                   }`}
                 >
                   {tab.label} ({tab.count})
@@ -778,7 +778,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       </div>
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-[var(--brand-primary)] transition-colors">
                       {cat.title}
                     </h3>
                     <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
@@ -786,25 +786,25 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     </p>
 
                     {/* Progress indicator */}
-                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-zinc-800/80">
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-[#1E2B4D]/80">
                       <div className="flex items-center justify-between text-[11px] font-semibold mb-1.5">
-                        <span className="text-slate-500 dark:text-zinc-400">Subject Progress</span>
-                        <span className="text-slate-900 dark:text-zinc-100 font-bold">
+                        <span className="text-slate-600 dark:text-[var(--text-muted)] font-medium">Subject Progress</span>
+                        <span className="text-slate-900 dark:text-[var(--foreground)] font-bold">
                           {completedCount} / {cat.topics.length} ({catPercent}%)
                         </span>
                       </div>
-                      <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
+                      <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-[#1E2B4D] border border-slate-300/30 dark:border-white/5 overflow-hidden">
                         <div
-                          className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all"
+                          className="h-full bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-full transition-all"
                           style={{ width: `${catPercent}%` }}
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-zinc-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  <div className="mt-5 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
                     <span>Study Syllabus ({cat.topics.length} Modules)</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-[var(--brand-primary)]" />
                   </div>
                 </div>
               );
@@ -831,7 +831,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               {prevCategory && (
                 <button
                   onClick={() => setSelectedCategory(prevCategory.id)}
-                  className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-100 dark:bg-zinc-850 text-[11px] font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-slate-100 dark:bg-[#1B2442] text-[11px] font-bold text-slate-700 dark:text-[#E8EEFF] hover:bg-slate-200 dark:hover:bg-[#223055] transition-colors cursor-pointer"
                 >
                   ← {prevCategory.title}
                 </button>
@@ -978,7 +978,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                           setSelectedTopic(topic);
                           setActiveView('notes');
                         }}
-                        className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-center shadow-xs"
+                        className="flex-1 md:flex-initial px-3.5 py-2 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#1B2442] text-xs font-semibold text-slate-700 dark:text-[#E8EEFF] hover:bg-slate-50 dark:hover:bg-[#223055] transition-colors cursor-pointer text-center shadow-xs"
                       >
                         Read Notes
                       </button>
@@ -988,7 +988,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                             e.stopPropagation();
                             handleStartQuiz(topic);
                           }}
-                          className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
+                          className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
                         >
                           <Play className="w-3 h-3 fill-white" />
                           <span>Start Quiz</span>

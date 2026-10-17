@@ -102,8 +102,8 @@ function CodeBlockWithCopy({ children, ...props }: React.ComponentPropsWithoutRe
   };
 
   return (
-    <div className="relative group my-4 rounded-2xl overflow-hidden border border-slate-800 bg-[#0B1020]">
-      <div className="flex items-center justify-between px-4 py-1.5 bg-[#151D35] border-b border-zinc-800 text-[11px] font-mono text-zinc-400">
+    <div className="code-terminal-dark relative group my-4 rounded-2xl overflow-hidden border border-slate-800 shadow-md">
+      <div className="code-terminal-header flex items-center justify-between px-4 py-1.5 border-b text-[11px] font-mono text-zinc-400">
         <span>Code Snippet</span>
         <button
           onClick={handleCopyCode}
@@ -113,7 +113,7 @@ function CodeBlockWithCopy({ children, ...props }: React.ComponentPropsWithoutRe
           <span>{copied ? 'Copied' : 'Copy'}</span>
         </button>
       </div>
-      <pre className="p-4 overflow-x-auto text-xs sm:text-sm font-mono text-zinc-100" {...props}>
+      <pre className="p-4 overflow-x-auto text-xs sm:text-sm font-mono" {...props}>
         {children}
       </pre>
     </div>
@@ -313,7 +313,7 @@ export default function TopicNotes({
           </div>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-zinc-300">
             {topic.keyTakeaways.map((takeaway, idx) => (
-              <li key={idx} className="flex items-start space-x-2 bg-slate-50 dark:bg-zinc-850/80 p-2.5 rounded-xl border border-slate-200/80 dark:border-zinc-800">
+              <li key={idx} className="flex items-start space-x-2 bg-slate-50 dark:bg-[#151D35] p-2.5 rounded-xl border border-slate-200/80 dark:border-[#1E2B4D]">
                 <Check className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 shrink-0 mt-0.5" />
                 <span className="leading-relaxed">{takeaway}</span>
               </li>
@@ -425,15 +425,15 @@ export default function TopicNotes({
           </div>
         ) : (
           /* Bottom Sequential Navigation Bar */
-          <div className="mt-10 pt-6 border-t border-slate-200 dark:border-zinc-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {prevTopic ? (
               <button
                 onClick={() => onSelectTopic?.(prevTopic)}
-                className="flex items-center space-x-2 p-3 rounded-2xl border border-slate-200 dark:border-zinc-800 hover:border-indigo-500 bg-slate-50 dark:bg-zinc-850 text-left transition-all cursor-pointer group"
+                className="flex items-center space-x-2 p-3 rounded-2xl border border-slate-200 dark:border-[#1E2B4D] hover:border-[var(--brand-primary)] bg-slate-50 dark:bg-[#151D35] text-left transition-all cursor-pointer group"
               >
-                <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 shrink-0" />
+                <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-[var(--brand-primary)] shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[10px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-wider">Previous Module</div>
+                  <div className="text-[10px] font-bold text-slate-500 dark:text-[var(--text-muted)] uppercase tracking-wider">Previous Module</div>
                   <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{prevTopic.title}</div>
                 </div>
               </button>
@@ -457,13 +457,13 @@ export default function TopicNotes({
             {nextTopic ? (
               <button
                 onClick={() => onSelectTopic?.(nextTopic)}
-                className="flex items-center justify-end space-x-2 p-3 rounded-2xl border border-slate-200 dark:border-zinc-800 hover:border-indigo-500 bg-slate-50 dark:bg-zinc-850 text-right transition-all cursor-pointer group"
+                className="flex items-center justify-end space-x-2 p-3 rounded-2xl border border-slate-200 dark:border-[#1E2B4D] hover:border-[var(--brand-primary)] bg-slate-50 dark:bg-[#151D35] text-right transition-all cursor-pointer group"
               >
                 <div className="min-w-0">
-                  <div className="text-[10px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-wider">Next Module</div>
+                  <div className="text-[10px] font-bold text-slate-500 dark:text-[var(--text-muted)] uppercase tracking-wider">Next Module</div>
                   <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{nextTopic.title}</div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 shrink-0" />
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[var(--brand-primary)] shrink-0" />
               </button>
             ) : (
               <div />

@@ -617,10 +617,10 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             const isCurrent = currentIndex === qIdx;
             const flagged = Boolean(flaggedIndices[qIdx]);
 
-            let btnClasses = 'bg-slate-100 dark:bg-zinc-850 text-slate-600 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-transparent dark:border-zinc-800';
+            let btnClasses = 'bg-slate-100 dark:bg-[#1B2442] text-slate-600 dark:text-[#E8EEFF]/80 hover:bg-slate-200 dark:hover:bg-[#223055] border border-transparent dark:border-[#1E2B4D]';
 
             if (isCurrent) {
-              btnClasses = 'ring-2 ring-indigo-500 bg-indigo-600 text-white font-extrabold shadow-xs';
+              btnClasses = 'ring-2 ring-[var(--brand-primary)] bg-[var(--brand-primary)] text-white font-extrabold shadow-xs';
             } else if (flagged) {
               btnClasses = 'bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-400/80 font-bold';
             } else if (answered) {

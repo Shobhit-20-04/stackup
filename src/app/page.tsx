@@ -255,17 +255,17 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-[#1E2B4D] bg-[#0B1020]">
-                  <div className="flex items-center justify-between px-3.5 py-2 bg-[#151D35] border-b border-[#1E2B4D] text-[11px] text-[#8E9FC8] font-mono">
+                <div className="code-terminal-dark rounded-xl overflow-hidden border border-slate-700/60 dark:border-[#1E2B4D] shadow-md">
+                  <div className="code-terminal-header flex items-center justify-between px-3.5 py-2 border-b text-[11px] font-mono">
                     <div className="flex items-center space-x-1.5">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
                       <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
                       <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
                       <span className="text-[#8E9FC8] ml-2 text-[10px]">solution.py</span>
                     </div>
-                    <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-[#1B2442] text-[#E8EEFF]">Python 3</span>
+                    <span className="code-terminal-badge text-[10px] font-semibold uppercase px-2 py-0.5 rounded">Python 3</span>
                   </div>
-                  <pre className="text-[11px] sm:text-xs font-mono text-[#E8EEFF] p-3.5 sm:p-4 overflow-x-auto scrollbar-none leading-relaxed">
+                  <pre className="text-[11px] sm:text-xs font-mono p-3.5 sm:p-4 overflow-x-auto scrollbar-none leading-relaxed">
                     <code>{`def twoSum(nums: list[int], target: int) -> list[int]:
     seen = {}
     for i, num in enumerate(nums):

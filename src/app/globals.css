@@ -96,6 +96,7 @@ html[data-theme="obsidian"] {
   --font-mono: var(--font-geist-mono);
   --color-slate-850: var(--surface-card);
   --color-slate-925: var(--background);
+  --color-zinc-850: var(--surface-card-elevated);
 }
 
 /* Automatic remap for dark hex tokens across codebase */
@@ -142,6 +143,34 @@ html[data-theme="obsidian"] {
 [data-theme] .border-\[\#1E2B4D\],
 [data-theme] .dark\:border-\[\#1E2B4D\] {
   border-color: var(--border-subtle) !important;
+}
+
+/* Maintain authentic high-contrast dark IDE terminal styling for code blocks across all themes */
+.code-terminal-dark,
+[data-theme] .code-terminal-dark,
+.code-terminal-dark.bg-\[\#0B1020\],
+[data-theme] .code-terminal-dark.bg-\[\#0B1020\],
+.code-terminal-dark pre,
+[data-theme] .code-terminal-dark pre,
+.code-terminal-dark code,
+[data-theme] .code-terminal-dark code {
+  background-color: #0b1020 !important;
+  color: #e8eeff !important;
+}
+
+.code-terminal-dark .code-terminal-header,
+[data-theme] .code-terminal-dark .code-terminal-header,
+.code-terminal-dark .code-terminal-header.bg-\[\#151D35\],
+[data-theme] .code-terminal-dark .code-terminal-header.bg-\[\#151D35\] {
+  background-color: #151d35 !important;
+  border-color: #1e2b4d !important;
+  color: #8e9fc8 !important;
+}
+
+.code-terminal-dark .code-terminal-badge,
+[data-theme] .code-terminal-dark .code-terminal-badge {
+  background-color: #1b2442 !important;
+  color: #e8eeff !important;
 }
 
 body {
