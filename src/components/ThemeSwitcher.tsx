@@ -52,7 +52,16 @@ export function applyTheme(themeId: ThemeId) {
   } catch {
     // ignore
   }
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('stackup-theme-change', {
+        detail: { themeId, isDark: themeId !== 'lavender' },
+      })
+    );
+  }
 }
+
+export { default as ThemeToggle } from '@/components/ThemeToggle';
 
 export default function ThemeSwitcher() {
   const [currentTheme, setCurrentTheme] = useState<ThemeId>('cosmic');

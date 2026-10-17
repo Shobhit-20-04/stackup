@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Layers, Code2, BookOpen, Cpu, FileCheck2, ShieldCheck } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Footer() {
   return (
@@ -92,8 +93,13 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#1E2B4D]/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-[#8E9FC8]">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <span>&copy; {new Date().getFullYear()} StackUp.</span>
+            <span className="text-slate-300 dark:text-[#1E2B4D]">|</span>
+            <div className="flex items-center space-x-2">
+              <span className="text-[11px] text-slate-400 dark:text-[#8E9FC8]">Theme:</span>
+              <ThemeToggle variant="button" showLabel />
+            </div>
           </div>
           <div className="flex items-center space-x-5">
             <Link href="/resume-checker" className="hover:text-[var(--brand-primary)] transition-colors">

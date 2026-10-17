@@ -21,7 +21,7 @@ import {
   AlertCircle,
   RefreshCw
 } from 'lucide-react';
-import ThemeSwitcher from '@/components/ThemeSwitcher';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -227,9 +227,9 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Right Action: User Profile / Auth Action / Theme Switcher */}
+          {/* Right Action: User Profile / Auth Action / Theme Toggle */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <ThemeSwitcher />
+            <ThemeToggle />
 
             <div className="hidden md:flex items-center space-x-2">
               {!loading && user ? (
@@ -319,8 +319,8 @@ export default function Navbar() {
           })}
           <div className="pt-2.5 border-t border-slate-200 dark:border-[#1E2B4D] space-y-1.5">
             <div className="px-1 flex items-center justify-between py-1">
-              <span className="text-xs font-semibold text-slate-500 dark:text-[#8E9FC8]">Color Theme</span>
-              <ThemeSwitcher />
+              <span className="text-xs font-semibold text-slate-500 dark:text-[#8E9FC8]">Appearance</span>
+              <ThemeToggle showLabel />
             </div>
 
             {user ? (
