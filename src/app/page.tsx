@@ -108,14 +108,14 @@ export default function HomePage() {
             <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">LeetCode &amp; Striver SDE sheet</div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">15</div>
-            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Core CS Subjects</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">OS, DBMS, CN, System Design</div>
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">19</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Core CS &amp; Aptitude</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">15 CS Subjects + 4 Aptitude Tracks</div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">500+</div>
-            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Practice MCQs</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Timed tests with explanations</div>
+            <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">668</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Verified Practice MCQs</div>
+            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Timed tests with detailed solutions</div>
           </div>
           <div>
             <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">ATS Scanner</div>

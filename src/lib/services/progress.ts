@@ -205,18 +205,23 @@ export function getSectionMetrics(sectionSlug: string): SectionMetrics {
   }
 
   try {
+    const validTopicIds = new Set(
+      CURRICULUM_DATA[sectionSlug as 'aptitude' | 'core-cs']?.categories.flatMap((c) => c.topics.map((t) => t.id)) || []
+    );
+    const dynamicTotal = validTopicIds.size > 0 ? validTopicIds.size : total;
+
     const attempts = getLocalQuizAttempts();
-    const sectionAttempts = attempts.filter((a) => a.sectionSlug === sectionSlug);
+    const sectionAttempts = attempts.filter((a) => a.sectionSlug === sectionSlug || validTopicIds.has(a.topicId));
     const readTopicIds = getReadTopicIds();
     
-    // Total unique completed topics (either attempted quiz or marked as read)
+    // Total unique completed topics strictly belonging to this section
     const uniqueTopics = new Set([
-      ...sectionAttempts.map((a) => a.topicId),
-      ...readTopicIds
+      ...sectionAttempts.map((a) => a.topicId).filter((id) => validTopicIds.has(id)),
+      ...readTopicIds.filter((id) => validTopicIds.has(id))
     ]);
     const completed = uniqueTopics.size;
-    const percent = Math.min(100, Math.round((completed / total) * 100));
-    return { percent, completed, total };
+    const percent = dynamicTotal > 0 ? Math.min(100, Math.round((completed / dynamicTotal) * 100)) : 0;
+    return { percent, completed, total: dynamicTotal };
   } catch {
     return { percent: 0, completed: 0, total };
   }
