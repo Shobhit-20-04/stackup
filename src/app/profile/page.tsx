@@ -256,6 +256,20 @@ export default function ProfilePage() {
         const dsaMetrics = getSectionMetrics('dsa');
         setSolvedDsaCount(dsaMetrics.completed);
 
+        let striverSolved = 0;
+        try {
+          const solvedRaw = localStorage.getItem('stackup_solved_dsa');
+          if (solvedRaw) {
+            const solved = JSON.parse(solvedRaw);
+            if (Array.isArray(solved)) {
+              striverSolved = solved.length;
+            }
+          }
+        } catch {
+          // ignore
+        }
+        const striverPercent = Math.min(100, Math.round((striverSolved / 150) * 100));
+
         setProgressList([
           { 
             section_name: 'Quantitative & Logical Aptitude', 
@@ -280,6 +294,14 @@ export default function ProfilePage() {
             completed_items: dsaMetrics.completed, 
             total_items: dsaMetrics.total, 
             color: 'bg-emerald-600' 
+          },
+          { 
+            section_name: "Striver's SDE Sheet", 
+            slug: 'striver', 
+            percent: striverPercent, 
+            completed_items: striverSolved, 
+            total_items: 150, 
+            color: 'bg-orange-500' 
           },
         ]);
 
@@ -735,7 +757,7 @@ export default function ProfilePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {progressList.map((item) => (
             <Link
               key={item.slug}
