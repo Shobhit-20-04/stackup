@@ -31,13 +31,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Cross-site request rejected.' }, { status: 403 });
     }
 
-    // 2. Brute-Force Rate Limiting
+    // 2. Brute-Force Rate Limiting (10 attempts per 5 minutes per IP)
     const ip = getClientIp(req);
-    const rateCheck = checkRateLimit(`admin-login-${ip}`, 5, 15 * 60 * 1000); // 5 attempts per 15 min
+    const rateCheck = checkRateLimit(`admin-login-${ip}`, 10, 5 * 60 * 1000);
     if (!rateCheck.allowed) {
       return NextResponse.json(
         {
-          error: `Too many login attempts. Access temporarily locked for security. Please retry in ${rateCheck.resetInSeconds} seconds.`,
+          error: `Too many failed attempts. Access temporarily locked for security. Please try again in ${rateCheck.resetInSeconds} seconds.`,
+          code: 'RATE_LIMITED',
+          resetInSeconds: rateCheck.resetInSeconds,
         },
         { status: 429 }
       );
@@ -47,14 +49,24 @@ export async function POST(req: NextRequest) {
     const passcode = typeof body?.passcode === 'string' ? body.passcode.trim() : '';
 
     if (!passcode) {
-      return NextResponse.json({ error: 'Admin passkey is required.' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Please enter the security key.', code: 'EMPTY_CREDENTIALS' },
+        { status: 400 }
+      );
     }
 
     const activePasscode = getAdminPasscode();
     const isValid = timingSafeCompare(passcode, activePasscode);
 
     if (!isValid) {
-      return NextResponse.json({ error: 'Invalid admin authorization passkey.' }, { status: 401 });
+      return NextResponse.json(
+        { 
+          error: 'Invalid security key. Please try again.',
+          code: 'INVALID_CREDENTIALS',
+          attemptsRemaining: rateCheck.remaining
+        }, 
+        { status: 401 }
+      );
     }
 
     const res = NextResponse.json({

@@ -4,11 +4,28 @@ import crypto from 'crypto';
 export const ADMIN_COOKIE_NAME = 'stackup_admin_session';
 
 /**
+ * Verified Administrative Account Email
+ * Strictly restricts password recovery and privileged administration.
+ */
+export const VERIFIED_ADMIN_EMAIL = 'shobhitagrawal2004@gmail.com';
+
+export function getAdminEmail(): string {
+  return process.env.ADMIN_EMAIL || VERIFIED_ADMIN_EMAIL;
+}
+
+/**
  * Returns the active admin passcode from environment variable,
  * with a fallback for local development.
  */
 export function getAdminPasscode(): string {
   return process.env.ADMIN_PASSCODE || 'stack2004up';
+}
+
+/**
+ * Updates the active in-memory admin passcode.
+ */
+export function setActiveAdminPasscode(newPasscode: string): void {
+  process.env.ADMIN_PASSCODE = newPasscode;
 }
 
 /**

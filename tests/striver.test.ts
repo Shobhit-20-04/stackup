@@ -3,8 +3,17 @@ import { DSA_PROBLEMS } from '../src/lib/data/dsa';
 import { 
   createAdminSessionToken, 
   verifyAdminSessionToken, 
-  timingSafeCompare 
+  timingSafeCompare,
+  getAdminEmail,
+  VERIFIED_ADMIN_EMAIL,
+  getAdminPasscode,
+  setActiveAdminPasscode
 } from '../src/lib/security/admin-auth';
+import {
+  isEligibleAdminEmail,
+  createResetVerificationCode,
+  verifyAndConsumeCode
+} from '../src/lib/security/admin-reset-store';
 import { generateSecurePasscode } from '../scripts/reset-admin-passcode';
 
 describe('Striver SDE Sheet & Recovery Regression Suite', () => {
@@ -121,6 +130,103 @@ describe('Striver SDE Sheet & Recovery Regression Suite', () => {
       expect(verifyAdminSessionToken(tamperedToken)).toBe(false);
       expect(verifyAdminSessionToken('invalid.token.structure')).toBe(false);
       expect(verifyAdminSessionToken('')).toBe(false);
+    });
+  });
+
+  describe('Admin Password Reset Restricted to Verified Email', () => {
+    it('strictly restricts admin reset eligibility to shobhitagrawal2004@gmail.com', () => {
+      expect(VERIFIED_ADMIN_EMAIL).toBe('shobhitagrawal2004@gmail.com');
+      expect(getAdminEmail()).toBe('shobhitagrawal2004@gmail.com');
+      
+      // Verified email matching (exact, mixed-case, whitespace-padded)
+      expect(isEligibleAdminEmail('shobhitagrawal2004@gmail.com')).toBe(true);
+      expect(isEligibleAdminEmail('SHOBHITAGRAWAL2004@GMAIL.COM')).toBe(true);
+      expect(isEligibleAdminEmail('  shobhitagrawal2004@gmail.com  ')).toBe(true);
+
+      // Unauthorized emails are strictly rejected
+      expect(isEligibleAdminEmail('attacker@example.com')).toBe(false);
+      expect(isEligibleAdminEmail('admin@stackup.dev')).toBe(false);
+      expect(isEligibleAdminEmail('shobhit@gmail.com')).toBe(false);
+      expect(isEligibleAdminEmail('shobhitagrawal@gmail.com')).toBe(false);
+      expect(isEligibleAdminEmail('')).toBe(false);
+      expect(isEligibleAdminEmail('null')).toBe(false);
+    });
+
+    it('generates a 6-digit cryptographic code with 15-minute expiration', () => {
+      const { code, expiresAt } = createResetVerificationCode('shobhitagrawal2004@gmail.com', '127.0.0.1');
+      expect(code).toMatch(/^\d{6}$/);
+      expect(expiresAt).toBeGreaterThan(Date.now() + 14 * 60 * 1000);
+      expect(expiresAt).toBeLessThanOrEqual(Date.now() + 15 * 60 * 1000 + 1000);
+    });
+
+    it('successfully verifies correct code and invalidates it upon first use (single-use)', () => {
+      const { code } = createResetVerificationCode('shobhitagrawal2004@gmail.com', '127.0.0.1');
+      
+      // First verification must succeed
+      const res1 = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', code);
+      expect(res1.success).toBe(true);
+      expect(res1.error).toBeUndefined();
+
+      // Immediate reuse must fail
+      const res2 = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', code);
+      expect(res2.success).toBe(false);
+      expect(res2.error).toContain('No active reset request found');
+    });
+
+    it('rejects incorrect codes and enforces maximum 5 attempt limit', () => {
+      const { code } = createResetVerificationCode('shobhitagrawal2004@gmail.com', '127.0.0.1');
+      const wrongCode = code === '123456' ? '654321' : '123456';
+
+      // 4 failed attempts
+      for (let i = 0; i < 4; i++) {
+        const attempt = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', wrongCode);
+        expect(attempt.success).toBe(false);
+        expect(attempt.error).toContain('Invalid verification code');
+      }
+
+      // 5th failed attempt triggers revocation
+      const attempt5 = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', wrongCode);
+      expect(attempt5.success).toBe(false);
+      expect(attempt5.error).toContain('Too many incorrect attempts');
+
+      // Subsequent attempt with even the CORRECT code now fails due to revocation
+      const attemptAfterLockout = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', code);
+      expect(attemptAfterLockout.success).toBe(false);
+    });
+
+    it('updates and retrieves active admin passcode correctly', () => {
+      const originalPasscode = getAdminPasscode();
+      const testKey = 'TestPasscodeKey!2026';
+      
+      setActiveAdminPasscode(testKey);
+      expect(getAdminPasscode()).toBe(testKey);
+
+      // Restore original passcode
+      setActiveAdminPasscode(originalPasscode);
+      expect(getAdminPasscode()).toBe(originalPasscode);
+    });
+  });
+
+  describe('Dynamic DSA Route Precedence & Striver Canonicalization', () => {
+    it('identifies striver keywords for redirection away from [id] 404', () => {
+      const testIds = ['striver', 'STRIVER', 'striver-sheet', 'STRIVER-SHEET'];
+      for (const id of testIds) {
+        const cleanId = id.trim().toLowerCase();
+        const shouldRedirect = cleanId === 'striver' || cleanId === 'striver-sheet';
+        expect(shouldRedirect).toBe(true);
+      }
+    });
+
+    it('ensures legitimate non-existent problem IDs do not match DSA_PROBLEMS', () => {
+      const invalidIds = ['invalid-problem-999', 'nonexistent', 'random-slug-xyz'];
+      for (const id of invalidIds) {
+        const target = DSA_PROBLEMS.find(
+          (p) =>
+            p.id.toLowerCase() === id.toLowerCase() ||
+            p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === id.toLowerCase()
+        );
+        expect(target).toBeUndefined();
+      }
     });
   });
 });

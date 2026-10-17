@@ -15,11 +15,7 @@ import {
   Layers, 
   Menu, 
   X,
-  ShieldCheck,
-  Lock,
   ArrowRight,
-  AlertCircle,
-  RefreshCw,
   Sparkles
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -41,10 +37,6 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Secret Admin Access Gateway State
-  const [showSecretModal, setShowSecretModal] = useState(false);
-  const [secretPasscode, setSecretPasscode] = useState('');
-  const [secretError, setSecretError] = useState('');
-  const [secretLoading, setSecretLoading] = useState(false);
   const [logoTapCount, setLogoTapCount] = useState(0);
 
   useEffect(() => {
@@ -86,15 +78,13 @@ export default function Navbar() {
     }
   }, []);
 
-  // Multi-tap logo interaction: 5 taps/clicks opens secret portal gateway
+  // Multi-tap logo interaction: 5 taps/clicks navigates directly to unified /admin portal
   const handleLogoClick = (e: React.MouseEvent) => {
     const nextCount = logoTapCount + 1;
     if (nextCount >= 5) {
       e.preventDefault();
       setLogoTapCount(0);
-      setShowSecretModal(true);
-      setSecretPasscode('');
-      setSecretError('');
+      router.push('/admin');
       return;
     }
     setLogoTapCount(nextCount);
@@ -109,65 +99,28 @@ export default function Navbar() {
     }
   }, [logoTapCount]);
 
-  // Secret shortcuts: Ctrl+Shift+A or double-tap backtick (`)
+  // Secret shortcuts: Ctrl+Shift+A or double-tap backtick (`) routes to canonical /admin
   useEffect(() => {
     let lastTildeTime = 0;
     const handleKeyDown = (e: KeyboardEvent) => {
       // 1. Ctrl+Shift+A / Cmd+Shift+A
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
-        setShowSecretModal(true);
-        setSecretPasscode('');
-        setSecretError('');
+        router.push('/admin');
       }
       // 2. Double-tap backtick (`) outside inputs
       if (e.key === '`' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
         const now = Date.now();
         if (now - lastTildeTime < 450) {
           e.preventDefault();
-          setShowSecretModal(true);
+          router.push('/admin');
           lastTildeTime = now;
         }
-      }
-      // 3. Escape key closes modal
-      if (e.key === 'Escape') {
-        setShowSecretModal(false);
-        setSecretPasscode('');
-        setSecretError('');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const handleSecretSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!secretPasscode.trim()) {
-      setSecretError('Please enter the authorization passkey.');
-      return;
-    }
-    try {
-      setSecretLoading(true);
-      setSecretError('');
-      const res = await fetch('/api/admin/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passcode: secretPasscode.trim() }),
-      });
-      if (res.ok) {
-        setShowSecretModal(false);
-        setSecretPasscode('');
-        router.push('/admin');
-      } else {
-        const json = await res.json().catch(() => ({}));
-        setSecretError(json.error || 'Invalid authorization key.');
-      }
-    } catch {
-      setSecretError('Failed to verify authorization.');
-    } finally {
-      setSecretLoading(false);
-    }
-  };
+  }, [router]);
 
   const handleSignOut = async () => {
     await signOutUser();
@@ -355,114 +308,6 @@ export default function Navbar() {
                 Sign In
               </Link>
             )}
-          </div>
-        </div>
-      )}
-      {/* Secret Admin Gateway Modal */}
-      {showSecretModal && (
-        <div 
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setShowSecretModal(false);
-              setSecretPasscode('');
-              setSecretError('');
-            }
-          }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in"
-        >
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl space-y-5 text-white">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-sm text-white">
-                    Staff Authorization Gateway
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Restricted administrative access
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setShowSecretModal(false);
-                  setSecretPasscode('');
-                  setSecretError('');
-                }}
-                aria-label="Close dialog"
-                className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {secretError && (
-              <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{secretError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSecretSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="master-security-key" className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                  Master Security Key
-                </label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                  <input
-                    id="master-security-key"
-                    type="password"
-                    value={secretPasscode}
-                    onChange={(e) => setSecretPasscode(e.target.value)}
-                    placeholder="Enter security key..."
-                    autoFocus
-                    autoComplete="new-password"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck={false}
-                    data-lpignore="true"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowSecretModal(false);
-                    setSecretPasscode('');
-                    setSecretError('');
-                  }}
-                  className="flex-1 py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-750 text-xs font-semibold text-slate-300 transition-colors cursor-pointer"
-                >
-                  Cancel &amp; Return
-                </button>
-
-                <button
-                  type="submit"
-                  disabled={secretLoading}
-                  className="flex-1 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
-                >
-                  {secretLoading ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Verifying...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Enter Admin</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

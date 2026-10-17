@@ -5,6 +5,7 @@ import { fetchLoginAudits, type LoginAuditEntry } from '@/lib/services/login-aud
 import { verifyAdminRequest, getAdminPasscode } from '@/lib/security/admin-auth';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { verifyCsrfOrigin } from '@/lib/security/sanitize';
+import { persistAdminPasscodeToEnv } from '@/lib/security/admin-reset-store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -14,7 +15,7 @@ export function getActiveAdminPasscode(): string {
 }
 
 export function setActiveAdminPasscode(key: string): void {
-  process.env.ADMIN_PASSCODE = key;
+  persistAdminPasscodeToEnv(key);
 }
 
 async function getSupabaseAdminClient() {

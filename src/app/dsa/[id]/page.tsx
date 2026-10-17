@@ -11,6 +11,11 @@ export default async function ProblemDeepLinkPage({ params }: ProblemPageProps) 
 
   const cleanId = id.trim().toLowerCase();
   
+  // Canonical redirect for Striver's SDE sheet subroute
+  if (cleanId === 'striver' || cleanId === 'striver-sheet') {
+    redirect('/striver');
+  }
+
   // Find by exact id ('dsa-1'), numeric id ('1'), or slug ('two-sum')
   const problem = DSA_PROBLEMS.find((p) => {
     if (p.id.toLowerCase() === cleanId) return true;

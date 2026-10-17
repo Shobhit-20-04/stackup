@@ -183,14 +183,22 @@ function StriverSheetContent() {
       <div className="border-b border-slate-200 dark:border-[#1E2B4D] bg-white/60 dark:bg-[#0B1020]/60 backdrop-blur-md sticky top-16 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between text-xs">
           <div className="flex items-center space-x-2">
-            <Link 
-              href="/dashboard"
-              className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors inline-flex items-center space-x-1"
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  window.location.href = '/dsa';
+                }
+              }}
+              className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors inline-flex items-center space-x-1 cursor-pointer font-medium"
+              title="Return to previous page"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Dashboard</span>
-            </Link>
-            <span className="text-slate-300 dark:text-zinc-700">/</span>
+              <span>Back</span>
+            </button>
+            <span className="text-slate-300 dark:text-zinc-700">|</span>
             <Link 
               href="/dsa"
               className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"

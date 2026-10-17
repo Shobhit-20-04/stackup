@@ -17,6 +17,8 @@ import {
   ArrowRight,
   AlertCircle,
   Eye,
+  EyeOff,
+  CheckCircle2,
   Sparkles,
   Download,
   Mail,
@@ -160,6 +162,18 @@ export default function AdminDashboardPage() {
   const [data, setData] = useState<AdminData | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Unified Admin Authentication & Recovery State
+  const [authView, setAuthView] = useState<'login' | 'reset-request' | 'reset-verify'>('login');
+  const [showPasscode, setShowPasscode] = useState(false);
+  const [resetEmail, setResetEmail] = useState('shobhitagrawal2004@gmail.com');
+  const [resetCode, setResetCode] = useState('');
+  const [resetNewPasscode, setResetNewPasscode] = useState('');
+  const [resetConfirmPasscode, setResetConfirmPasscode] = useState('');
+  const [showResetNewPass, setShowResetNewPass] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState('');
+  const [resetSuccess, setResetSuccess] = useState('');
+
   // Primary tab view: 'workspace', 'table', 'users', 'skills', 'logins'
   const [activeTab, setActiveTab] = useState<'workspace' | 'table' | 'users' | 'skills' | 'logins'>('workspace');
 
@@ -259,17 +273,94 @@ export default function AdminDashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passcode: passcode.trim() }),
       });
-      const resJson = await res.json();
+      const resJson = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setAuthError(resJson.error || 'Invalid administrator security key.');
+        setAuthError(resJson.error || 'Invalid security key. Please try again.');
         return;
       }
       setPasscode('');
       await fetchAdminData();
     } catch {
-      setAuthError('Network error verifying security key.');
+      setAuthError('Network error. Unable to connect to server. Please check your connection and try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResetRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail.trim()) {
+      setResetError('Please enter your administrator email address.');
+      return;
+    }
+    setResetError('');
+    setResetSuccess('');
+    setResetLoading(true);
+    try {
+      const res = await fetch('/api/admin/reset-password/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resetEmail.trim() }),
+      });
+      const resJson = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setResetError(resJson.error || 'Unable to process reset request.');
+        return;
+      }
+      setResetSuccess(resJson.message || 'Verification code dispatched to your administrator email.');
+      setAuthView('reset-verify');
+    } catch {
+      setResetError('Network error. Unable to connect to reset service.');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const handleResetVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetCode.trim()) {
+      setResetError('Please enter the 6-digit verification code.');
+      return;
+    }
+    if (!resetNewPasscode.trim() || resetNewPasscode.length < 8) {
+      setResetError('New security key must be at least 8 characters long.');
+      return;
+    }
+    if (resetNewPasscode !== resetConfirmPasscode) {
+      setResetError('Security key confirmation does not match.');
+      return;
+    }
+    setResetError('');
+    setResetSuccess('');
+    setResetLoading(true);
+    try {
+      const res = await fetch('/api/admin/reset-password/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: resetEmail.trim(),
+          code: resetCode.trim(),
+          newPassword: resetNewPasscode.trim(),
+          confirmPassword: resetConfirmPasscode.trim(),
+        }),
+      });
+      const resJson = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setResetError(resJson.error || 'Verification failed. Please check the code.');
+        return;
+      }
+      setResetSuccess('Security key updated successfully! Entering admin portal...');
+      setTimeout(async () => {
+        setAuthView('login');
+        setResetCode('');
+        setResetNewPasscode('');
+        setResetConfirmPasscode('');
+        await fetchAdminData();
+      }, 700);
+    } catch {
+      setResetError('Network error. Unable to verify reset code.');
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -454,6 +545,7 @@ export default function AdminDashboardPage() {
   }, [resumes, selectedResumeId]);
 
   // If not authenticated, render the secured admin access portal
+  // If not authenticated, render the secured admin access portal
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#0B1020] flex flex-col justify-center items-center px-4 py-8 sm:py-12">
@@ -470,93 +562,371 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="max-w-md w-full bg-[#151D35] border border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+          {/* Header Section */}
           <div className="flex items-center space-x-3.5">
             <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-6 h-6" />
+              {authView === 'login' ? (
+                <ShieldCheck className="w-6 h-6" />
+              ) : authView === 'reset-request' ? (
+                <KeyRound className="w-6 h-6" />
+              ) : (
+                <Lock className="w-6 h-6" />
+              )}
             </div>
             <div>
               <h1 className="text-xl font-extrabold text-white tracking-tight">
-                Staff Authorization Gateway
+                {authView === 'login' && 'Staff Authorization Gateway'}
+                {authView === 'reset-request' && 'Admin Security Recovery'}
+                {authView === 'reset-verify' && 'Complete Security Reset'}
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
-                Restricted to authorized personnel
+                {authView === 'login' && 'Restricted to authorized personnel'}
+                {authView === 'reset-request' && 'Identity verification & recovery'}
+                {authView === 'reset-verify' && 'Verification code & password update'}
               </p>
             </div>
           </div>
 
-          {authError && (
-            <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2.5">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{authError}</span>
-            </div>
+          {/* VIEW 1: Standard Key Login */}
+          {authView === 'login' && (
+            <>
+              {authError && (
+                <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span className="leading-relaxed">{authError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleUnlock} className="space-y-4">
+                <div>
+                  <div className="mb-2">
+                    <label htmlFor="admin-passcode" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                      Master Security Key
+                    </label>
+                  </div>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      id="admin-passcode"
+                      type={showPasscode ? 'text' : 'password'}
+                      value={passcode}
+                      onChange={(e) => {
+                        setPasscode(e.target.value);
+                        if (authError) setAuthError('');
+                      }}
+                      placeholder="Enter administrator access key..."
+                      autoFocus
+                      autoComplete="current-password"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck={false}
+                      data-lpignore="true"
+                      className="w-full pl-10 pr-11 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-text"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasscode(!showPasscode)}
+                      className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-200 transition-colors"
+                      title={showPasscode ? 'Hide security key' : 'Show security key'}
+                      aria-label={showPasscode ? 'Hide security key' : 'Show security key'}
+                    >
+                      {showPasscode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-slate-400 leading-normal">
+                    Restricted gateway. Enter your master administrator authorization key to continue.
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2.5 pt-1">
+                  <Link
+                    href="/"
+                    className="flex-1 py-3 px-3 rounded-2xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-slate-200 text-xs font-bold text-center transition-colors flex items-center justify-center space-x-1 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Go Back</span>
+                  </Link>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 py-3 px-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-2xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+                  >
+                    {loading ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Verifying...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Enter Portal</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              <div className="pt-2 text-center border-t border-zinc-800/80 flex flex-col items-center space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthView('reset-request');
+                    setAuthError('');
+                    setResetError('');
+                    setResetSuccess('');
+                  }}
+                  className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold inline-flex items-center space-x-1.5 transition-colors cursor-pointer"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                  <span>Forgot security key? Reset password via email</span>
+                </button>
+                <Link
+                  href="/"
+                  className="text-xs text-slate-500 hover:text-slate-400 transition-colors inline-flex items-center space-x-1 font-medium"
+                >
+                  <span>&larr; Return to main student portal</span>
+                </Link>
+              </div>
+            </>
           )}
 
-          <form onSubmit={handleUnlock} className="space-y-4">
-            <div>
-              <div className="mb-2">
-                <label htmlFor="admin-passcode" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                  Master Security Key
-                </label>
+          {/* VIEW 2: Reset Request (Dispatches 6-Digit Code) */}
+          {authView === 'reset-request' && (
+            <>
+              <div className="p-3.5 rounded-2xl bg-indigo-950/40 border border-indigo-900/60 text-indigo-200 text-xs space-y-1.5">
+                <div className="flex items-center space-x-2 font-semibold text-indigo-300">
+                  <ShieldCheck className="w-4 h-4 shrink-0 text-indigo-400" />
+                  <span>Restricted Administrator Recovery</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Password recovery is strictly restricted to the verified administrator account:
+                  <strong className="text-white font-mono block mt-0.5">shobhitagrawal2004@gmail.com</strong>
+                </p>
               </div>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                <input
-                  id="admin-passcode"
-                  type="password"
-                  value={passcode}
-                  onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter administrator access key..."
-                  autoFocus
-                  autoComplete="new-password"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck={false}
-                  data-lpignore="true"
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-text"
-                />
+
+              {resetError && (
+                <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span className="leading-relaxed">{resetError}</span>
+                </div>
+              )}
+
+              {resetSuccess && (
+                <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-900 text-emerald-300 text-xs flex items-center space-x-2.5">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span className="leading-relaxed">{resetSuccess}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleResetRequest} className="space-y-4">
+                <div>
+                  <label htmlFor="reset-email" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                    Verified Administrator Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      id="reset-email"
+                      type="email"
+                      value={resetEmail}
+                      onChange={(e) => {
+                        setResetEmail(e.target.value);
+                        if (resetError) setResetError('');
+                      }}
+                      placeholder="shobhitagrawal2004@gmail.com"
+                      autoFocus
+                      autoComplete="email"
+                      required
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+                    />
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-slate-400 leading-normal">
+                    A single-use 6-digit cryptographic verification code will be dispatched to this address.
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthView('login');
+                      setResetError('');
+                      setResetSuccess('');
+                    }}
+                    className="flex-1 py-3 px-3 rounded-2xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors flex items-center justify-center space-x-1 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Back to Login</span>
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={resetLoading}
+                    className="flex-1 py-3 px-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-2xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+                  >
+                    {resetLoading ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Sending Code...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Send Reset Code</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+
+          {/* VIEW 3: Reset Verification & Password Update */}
+          {authView === 'reset-verify' && (
+            <>
+              <div className="p-3.5 rounded-2xl bg-indigo-950/40 border border-indigo-900/60 text-indigo-200 text-xs space-y-1">
+                <div className="flex items-center space-x-2 font-semibold text-indigo-300">
+                  <Key className="w-4 h-4 shrink-0 text-indigo-400" />
+                  <span>Verification Code Dispatched</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Enter the 6-digit code dispatched to <span className="font-mono text-white font-medium">{resetEmail}</span> and establish your new security key.
+                </p>
               </div>
-              <p className="mt-1.5 text-[11px] text-slate-400 leading-normal">
-                Restricted gateway. Enter the master administrator authorization key to continue.
-              </p>
-            </div>
 
-            <div className="flex items-center space-x-2.5 pt-1">
-              <Link
-                href="/"
-                className="flex-1 py-3 px-3 rounded-2xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-slate-200 text-xs font-bold text-center transition-colors flex items-center justify-center space-x-1 cursor-pointer"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Go Back</span>
-              </Link>
+              {resetError && (
+                <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span className="leading-relaxed">{resetError}</span>
+                </div>
+              )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 py-3 px-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-2xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
-              >
-                {loading ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Verifying...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Enter Portal</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
+              {resetSuccess && (
+                <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-900 text-emerald-300 text-xs flex items-center space-x-2.5">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span className="leading-relaxed">{resetSuccess}</span>
+                </div>
+              )}
 
-          <div className="pt-2 text-center border-t border-zinc-800">
-            <Link
-              href="/"
-              className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center space-x-1 font-semibold"
-            >
-              <span>&larr; Return to main student portal</span>
-            </Link>
-          </div>
+              <form onSubmit={handleResetVerify} className="space-y-4">
+                <div>
+                  <label htmlFor="reset-code" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                    6-Digit Verification Code
+                  </label>
+                  <input
+                    id="reset-code"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
+                    value={resetCode}
+                    onChange={(e) => {
+                      setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                      if (resetError) setResetError('');
+                    }}
+                    placeholder="000000"
+                    autoFocus
+                    autoComplete="one-time-code"
+                    required
+                    className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    Single-use code. Valid for 15 minutes.
+                  </p>
+                </div>
+
+                <div>
+                  <label htmlFor="reset-new-key" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                    New Master Security Key
+                  </label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      id="reset-new-key"
+                      type={showResetNewPass ? 'text' : 'password'}
+                      value={resetNewPasscode}
+                      onChange={(e) => {
+                        setResetNewPasscode(e.target.value);
+                        if (resetError) setResetError('');
+                      }}
+                      placeholder="Minimum 8 characters..."
+                      autoComplete="new-password"
+                      required
+                      className="w-full pl-10 pr-11 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowResetNewPass(!showResetNewPass)}
+                      className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-200 transition-colors"
+                      title={showResetNewPass ? 'Hide password' : 'Show password'}
+                      aria-label={showResetNewPass ? 'Hide password' : 'Show password'}
+                    >
+                      {showResetNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    Must be at least 8 characters long.
+                  </p>
+                </div>
+
+                <div>
+                  <label htmlFor="reset-confirm-key" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+                    Confirm New Security Key
+                  </label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      id="reset-confirm-key"
+                      type={showResetNewPass ? 'text' : 'password'}
+                      value={resetConfirmPasscode}
+                      onChange={(e) => {
+                        setResetConfirmPasscode(e.target.value);
+                        if (resetError) setResetError('');
+                      }}
+                      placeholder="Re-enter new security key..."
+                      autoComplete="new-password"
+                      required
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-zinc-700 bg-zinc-800/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthView('reset-request');
+                      setResetError('');
+                      setResetSuccess('');
+                    }}
+                    className="flex-1 py-3 px-3 rounded-2xl border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors flex items-center justify-center space-x-1 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Back</span>
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={resetLoading}
+                    className="flex-1 py-3 px-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-2xl flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 cursor-pointer"
+                  >
+                    {resetLoading ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Updating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Verify & Update Key</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
     );
