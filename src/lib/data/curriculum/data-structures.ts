@@ -296,15 +296,15 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         },
         {
           "id": "ds-tree-3",
-          "question": "What is the maximum number of nodes in a binary tree of height 'h' (where height of single-node tree is 0)?",
+          "question": "What defines a 'Complete Binary Tree', and why is this property critical for array-based implementations such as Binary Heaps?",
           "options": [
-            "2^(h + 1) - 1",
-            "2^h - 1",
-            "2^h",
-            "2^(h - 1) + 1"
+            "All levels are completely filled except possibly the last, which is filled strictly from left to right; allowing parent and child indices to be computed mathematically without pointer overhead.",
+            "Every non-leaf node must have exactly two children.",
+            "All leaves must reside at strictly the exact same depth level.",
+            "The height difference between left and right subtrees of every node must be at most 1."
           ],
           "correct_option": 0,
-          "explanation": "At level 0 there is 1 node (2^0), level 1 has 2 (2^1)... up to level h with 2^h nodes. Sum = 2^0 + 2^1 + ... + 2^h = 2^(h+1) - 1."
+          "explanation": "A complete binary tree fills all levels completely except possibly the last level, which is filled sequentially from left to right. This guarantees contiguous placement in an array where for index i, left child is 2i + 1 and right child is 2i + 2 with zero wasted space or pointer overhead."
         }
       ]
     },
@@ -356,15 +356,15 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         },
         {
           "id": "ds-bst-3",
-          "question": "Which tree traversal of a Binary Search Tree (BST) produces nodes in ascending sorted numerical order?",
+          "question": "When deleting a node that possesses two children in a Binary Search Tree, which replacement node preserves the BST invariant?",
           "options": [
-            "Inorder traversal (Left, Root, Right)",
-            "Preorder traversal (Root, Left, Right)",
-            "Postorder traversal (Left, Right, Root)",
-            "Level-order traversal (BFS)"
+            "The in-order successor (minimum node in the right subtree) or in-order predecessor (maximum node in the left subtree)",
+            "The root node of the entire BST",
+            "Any immediate leaf node in the left subtree",
+            "The deepest node currently residing in the tree"
           ],
           "correct_option": 0,
-          "explanation": "Because the BST invariant dictates that all left descendants < root < all right descendants, an Inorder traversal visits keys in strictly non-decreasing sorted order."
+          "explanation": "To maintain the BST ordering property when a node has two children, it must be replaced by either the next larger key (in-order successor, smallest key in right subtree) or next smaller key (in-order predecessor). That chosen node is guaranteed to have at most one child, making its subsequent removal from the subtree trivial."
         }
       ]
     },
@@ -536,15 +536,15 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         },
         {
           "id": "ds-heap-3",
-          "question": "What is the time complexity to build a binary heap from an unordered array of N elements using bottom-up heapify (sift-down)?",
+          "question": "In a Max-Heap array implementation, how is the extractMax() operation performed in O(log N) time?",
           "options": [
-            "O(N) linear time",
-            "O(N log N)",
-            "O(log N)",
-            "O(N^2)"
+            "Swap the root with the last leaf element, decrement heap size, and invoke sift-down (max-heapify) on the new root.",
+            "Remove the root and shift every remaining array element left by 1 index.",
+            "Promote the left child to root and recursively delete the right child.",
+            "Reconstruct the entire heap from scratch using bottom-up build."
           ],
           "correct_option": 0,
-          "explanation": "Although inserting N elements one by one takes O(N log N), bottom-up heapify runs in linear O(N) time because the majority of nodes are near the leaves and require very few sift-down swaps."
+          "explanation": "extractMax() achieves O(log N) time by swapping the maximum root element with the last array element (O(1)), discarding the last element, and restoring the heap invariant by sifting down the new root along the path of maximum children (at most tree height = log N swaps)."
         }
       ]
     },
@@ -716,15 +716,15 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         },
         {
           "id": "ds-dsu-3",
-          "question": "With both Union by Rank and Path Compression optimizations, what is the amortized time complexity per operation in Disjoint Set Union (DSU)?",
+          "question": "In Disjoint Set Union (DSU), what does Path Compression accomplish during a find(x) operation?",
           "options": [
-            "O(alpha(N)) where alpha is the inverse Ackermann function",
-            "O(log N)",
-            "O(1) strict worst-case",
-            "O(N)"
+            "It points every visited node along the search traversal directly to the representative root, flattening the tree.",
+            "It performs AVL tree rotations to balance the partition tree.",
+            "It removes disconnected nodes from the partition.",
+            "It sorts elements inside each disjoint set."
           ],
           "correct_option": 0,
-          "explanation": "Combining union by rank and path compression achieves O(alpha(N)) per operation, where alpha(N) is the inverse Ackermann function, which is practically <= 4 for all realistic inputs."
+          "explanation": "Path compression recursively traverses up to the root and re-assigns the parent pointer of every traversed node directly to the root (parent[x] = find(parent[x])). This flattens tree depth so that subsequent find operations execute in nearly O(1) time."
         }
       ]
     },
@@ -777,15 +777,15 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         },
         {
           "id": "ds-app-3",
-          "question": "Which data structure is optimal for implementing an LRU (Least Recently Used) cache with O(1) get and put operations?",
+          "question": "What is a critical operational guarantee provided by a Bloom Filter in high-throughput distributed systems (such as Cassandra or Redis)?",
           "options": [
-            "Hash Map combined with a Doubly Linked List",
-            "Binary Search Tree with an array",
-            "Stack combined with a Queue",
-            "Min-Heap with a singly linked list"
+            "It guarantees zero false negatives (if it reports an element is absent, it is definitively absent), although false positives are possible.",
+            "It guarantees zero false positives and zero false negatives with exact certainty.",
+            "It allows arbitrary single-item deletion without needing to reconstruct the bit array.",
+            "It stores the full plaintext value of keys in a compressed contiguous vector."
           ],
           "correct_option": 0,
-          "explanation": "A Hash Map provides O(1) key lookup, while a Doubly Linked List allows O(1) removal and insertion of accessed nodes to the front/back, making LRU cache operations O(1)."
+          "explanation": "A Bloom filter tests set membership using k independent hash functions over an m-bit array. If any hashed bit is 0, the element is guaranteed not to exist (0% false negatives). If all k bits are 1, the element probably exists (false positives occur due to bit overlaps)."
         }
       ]
     }

@@ -776,15 +776,15 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
         },
         {
           "id": "git-3",
-          "question": "What is the key difference between \"git merge\" and \"git rebase\"?",
+          "question": "If a developer accidentally executes \"git reset --hard HEAD~1\" and loses unpushed commits, which Git tool allows them to find the discarded commit hash and restore it?",
           "options": [
-            "git merge creates a new merge commit preserving branching history; git rebase rewrites commit history linearly by replaying commits onto the target base",
-            "git merge deletes the feature branch while rebase preserves it",
-            "git rebase is non-destructive and cannot cause conflicts",
-            "git merge only works on remote repositories"
+            "git reflog",
+            "git log --stat",
+            "git status -v",
+            "git revert HEAD"
           ],
           "correct_option": 0,
-          "explanation": "git merge creates a 3-way merge commit that preserves exact historical branching context. git rebase reapplies feature commits one by one on top of the base branch, producing a clean, linear commit history."
+          "explanation": "git reflog tracks every update made to the local HEAD pointer across checkouts, merges, resets, and commits. Even after a hard reset, the previous commit's SHA is logged in the reflog and can be restored using git checkout or git cherry-pick."
         }
       ],
       "difficulty": "Medium",

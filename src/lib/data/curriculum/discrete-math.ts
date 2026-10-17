@@ -87,7 +87,7 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         "Surjective (onto) if range equals codomain; Bijective if both Injective and Surjective."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Sets+Relations+Functions+Injective+Surjective+Bijective+Discrete+Mathematics+gate+lecture",
-      "notesMarkdown": "# Sets, Relations, and Functions\n\n---\n\n## 1. Sets and Power Sets\nIf $|A| = n$:\n- Number of subsets (size of power set $\\mathcal{P}(A)$) = $2^n$.\n- Number of binary relations on $A$ (subsets of $A \\times A$) = $2^{n^2}$.\n\n---\n\n## 2. Function Mapping Properties\nFor $f: A \\to B$ where $|A| = m, |B| = n$:\n- **Injective (One-to-One):** Each element in $A$ maps to a distinct element in $B$. Requires $m \\le n$.\n- **Surjective (Onto):** Every element in $B$ has at least one pre-image in $A$. Requires $m \\ge n$.\n- **Bijective (Invertible):** Both one-to-one and onto. Requires $m = n$.\n",
+      "notesMarkdown": "# Sets, Relations, and Functions\n\nSets, relations, and functions constitute the foundational language of discrete mathematics, formal logic, relational databases, and computational complexity theory.\n\n---\n\n## 1. Set Theory & Combinatorics of Subsets\n\nLet $A$ and $B$ be finite sets with $|A| = m$ and $|B| = n$:\n\n| Set Operation | Formal Definition | Cardinality / Formula |\n| :--- | :--- | :--- |\n| **Power Set $\\mathcal{P}(A)$** | Set of all subsets of $A$: $\\{S \\mid S \\subseteq A\\}$ | $|\\mathcal{P}(A)| = 2^m$ |\n| **Cartesian Product $A \\times B$** | Set of ordered pairs: $\\{(a, b) \\mid a \\in A, b \\in B\\}$ | $|A \\times B| = m \\times n$ |\n| **Binary Relations on $A$** | Any subset $R \\subseteq A \\times A$ | Total relations $= 2^{m^2}$ |\n| **Relations from $A$ to $B$** | Any subset $R \\subseteq A \\times B$ | Total relations $= 2^{m \\times n}$ |\n| **Inclusion-Exclusion Principle** | $|A \\cup B| = |A| + |B| - |A \\cap B|$ | Generalized: $|A \\cup B \\cup C| = \\sum |A| - \\sum |A \\cap B| + |A \\cap B \\cap C|$ |\n\n---\n\n## 2. Properties of Binary Relations on a Set $A$\n\nFor a relation $R \\subseteq A \\times A$ where $|A| = n$:\n\n1. **Reflexive:** $\\forall a \\in A, (a, a) \\in R$. Total reflexive relations $= 2^{n(n-1)}$.\n2. **Irreflexive:** $\\forall a \\in A, (a, a) \\notin R$. Total irreflexive relations $= 2^{n(n-1)}$.\n3. **Symmetric:** $\\forall a, b \\in A, (a, b) \\in R \\implies (b, a) \\in R$. Total symmetric relations $= 2^{\\frac{n(n+1)}{2}}$.\n4. **Antisymmetric:** $\\forall a, b \\in A, ((a, b) \\in R \\land (b, a) \\in R) \\implies a = b$. Total antisymmetric relations $= 2^n \\times 3^{\\frac{n(n-1)}{2}}$.\n5. **Transitive:** $\\forall a, b, c \\in A, ((a, b) \\in R \\land (b, c) \\in R) \\implies (a, c) \\in R$.\n\n---\n\n## 3. Function Classifications & Counting Formulas\n\nA function $f: A \\to B$ maps every element $a \\in A$ to exactly one element $b \\in B$. Let $|A| = m$ (domain) and $|B| = n$ (codomain):\n\n```\n    Injective (1-to-1)         Surjective (Onto)            Bijective (Both)\n       A        B                 A        B                  A        B\n     ( 1 )--->( a )             ( 1 )--->( a )              ( 1 )--->( a )\n     ( 2 )--->( b )             ( 2 )---\\                   ( 2 )--->( b )\n              ( c )             ( 3 )--->( b )              ( 3 )--->( c )\n  [Every a -> distinct b]     [Every b has preimage]       [Exact 1-to-1 match]\n```\n\n### A. Injective (One-to-One) Functions\n- **Condition:** $f(a_1) = f(a_2) \\implies a_1 = a_2$.\n- **Pigeonhole Principle:** Injections require $m \\le n$. If $m > n$, no injection can exist.\n- **Count:** $P(n, m) = \\frac{n!}{(n - m)!}$ if $m \\le n$; else $0$.\n\n### B. Surjective (Onto) Functions\n- **Condition:** $\\forall b \\in B, \\exists a \\in A$ such that $f(a) = b$ (Range $=$ Codomain).\n- **Prerequisite:** Requires $m \\ge n$. If $m < n$, no surjection can exist.\n- **Count (via Stirling Numbers of the Second Kind):**\n  $$\\text{Surjections} = n! \\times S(m, n) = \\sum_{k=0}^n (-1)^{n-k} \\binom{n}{k} k^m$$\n\n### C. Bijective (One-to-One and Onto) Functions\n- **Condition:** Both injective and surjective.\n- **Prerequisite:** Strictly requires $m = n$.\n- **Count:** $n! = n \\times (n - 1) \\times \\dots \\times 1$.\n- **Inverse:** A function $f$ has an inverse $f^{-1}: B \\to A$ if and only if $f$ is bijective.\n\n---\n\n## 4. Function Composition & Invertibility\n- **Associativity:** $(f \\circ g) \\circ h = f \\circ (g \\circ h)$ holds for all compatible functions.\n- **Non-Commutative:** In general, $f \\circ g \\ne g \\circ f$.\n- If $f: A \\to B$ and $g: B \\to C$ are both bijective, then $(g \\circ f)^{-1} = f^{-1} \\circ g^{-1}$.\n",
       "questions": [
         {
           "id": "dm-srf-1",
@@ -235,15 +235,15 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         },
         {
           "id": "dm-ind-3",
-          "question": "Which foundational axiom of the natural numbers is logically equivalent to the Principle of Mathematical Induction?",
+          "question": "In Strong Induction (Complete Induction), what is the induction hypothesis when establishing the inductive step for k + 1?",
           "options": [
-            "The Well-Ordering Principle (every non-empty subset of positive integers has a least element)",
-            "The Archimedean property",
-            "The Continuum Hypothesis",
-            "Fermat's Last Theorem"
+            "Assume P(i) is true for all integers i from the base case up to k",
+            "Assume P(k) is true only for the single preceding integer k",
+            "Assume P(k + 1) is true and deduce P(k)",
+            "Assume P(1) and P(2) hold for all positive integers"
           ],
           "correct_option": 0,
-          "explanation": "The Well-Ordering Principle of natural numbers states that every non-empty set of positive integers has a least element, which is logically equivalent to mathematical induction."
+          "explanation": "In strong mathematical induction, the inductive hypothesis assumes that P(i) holds for all integers i in the range base_case <= i <= k (i.e. P(1) and P(2) and ... and P(k)), which is then used to deduce P(k + 1)."
         }
       ]
     },
@@ -475,15 +475,15 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         },
         {
           "id": "dm-rec-3",
-          "question": "What is the characteristic equation of the Fibonacci recurrence a_n = a_{n-1} + a_{n-2}?",
+          "question": "What is the closed-form solution to the recurrence relation a_n = 2a_{n-1} with initial condition a_0 = 3?",
           "options": [
-            "r^2 - r - 1 = 0",
-            "r^2 + r + 1 = 0",
-            "r^2 - 2r + 1 = 0",
-            "r^2 - r = 0"
+            "a_n = 3 * 2^n",
+            "a_n = 2 * 3^n",
+            "a_n = 3 + 2n",
+            "a_n = 2^n + 3"
           ],
           "correct_option": 0,
-          "explanation": "Substituting a_n = r^n yields r^n = r^(n-1) + r^(n-2). Dividing by r^(n-2) gives r^2 - r - 1 = 0, whose roots are the golden ratio phi = (1 +- sqrt(5)) / 2."
+          "explanation": "This is a first-order linear homogeneous recurrence with common ratio r = 2. Unrolling gives a_1 = 3 * 2, a_2 = 3 * 2^2, ..., a_n = a_0 * 2^n = 3 * 2^n."
         }
       ]
     },

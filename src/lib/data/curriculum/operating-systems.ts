@@ -100,15 +100,15 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "pt-3",
-          "question": "Which of the following resources is NOT shared between multiple threads belonging to the same process?",
+          "question": "In a pure User-Level Threading (Many-to-One) model, what occurs when a single user thread makes a blocking system call (such as synchronous disk I/O)?",
           "options": [
-            "Call stack & registers",
-            "Heap memory",
-            "Global variables",
-            "Open file descriptors"
+            "The entire process and all of its peer user threads are blocked by the OS kernel",
+            "Only the executing user thread blocks while the kernel schedules other user threads",
+            "The OS kernel automatically spawns a new kernel thread to handle the blocked call",
+            "The thread raises an asynchronous hardware exception"
           ],
           "correct_option": 0,
-          "explanation": "Each thread executes its own sequence of function calls and requires an independent call stack and set of CPU registers. Heap, global variables, and open file descriptors are shared across the process."
+          "explanation": "In the Many-to-One (User-Level Threads) model, the kernel maps all user threads to a single kernel execution context. Because the kernel is unaware of individual user threads, if one thread makes a blocking system call, the whole process is put to sleep."
         },
         {
           "id": "pt-4",
@@ -399,15 +399,15 @@ export const OPERATING_SYSTEMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "ipc-2",
-          "question": "What is the key functional difference between a Binary Semaphore and a Mutex?",
+          "question": "A counting semaphore S is initialized to 10. Then 6 wait (P) operations and 4 signal (V) operations are executed on S. What is the resulting value of S?",
           "options": [
-            "A Mutex has ownership semantics (only the thread that locked it can unlock it); a Semaphore can be signaled by any thread",
-            "A Mutex can take integer values up to N; a Semaphore can only take 0 and 1",
-            "A Semaphore cannot be used for inter-process synchronization",
-            "A Mutex is implemented purely in user space without kernel support"
+            "8",
+            "10",
+            "4",
+            "12"
           ],
           "correct_option": 0,
-          "explanation": "A mutex enforces ownership: only the thread that acquired the mutex is permitted to release it. Semaphores are signaling primitives where one thread can signal (V/post) a semaphore that was locked (P/wait) by another."
+          "explanation": "Each wait (P) operation decrements the semaphore counter by 1, and each signal (V) operation increments it by 1. Therefore, resulting value = 10 - 6 + 4 = 8."
         },
         {
           "id": "ipc-3",

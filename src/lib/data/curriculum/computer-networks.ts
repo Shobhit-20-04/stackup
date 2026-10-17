@@ -475,15 +475,15 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
         },
         {
           "id": "cn-eth-3",
-          "question": "What mechanism does an Ethernet switch use to populate its MAC address forwarding table dynamically?",
+          "question": "What does a Layer 2 Ethernet switch do when it receives a unicast frame whose destination MAC address is not present in its CAM table?",
           "options": [
-            "Self-learning: Inspecting the Source MAC address of every arriving frame and recording the incoming port number.",
-            "Broadcasting DNS queries to all connected PCs.",
-            "Manual static configuration by network administrators only.",
-            "Running OSPF routing protocol across local ports."
+            "It floods the frame out of all active ports in the VLAN except the port on which it was received",
+            "It immediately discards the frame and emits an ICMP Destination Unreachable packet",
+            "It sends an ARP request to query the destination host's MAC address",
+            "It buffers the frame until an incoming frame from the destination host is observed"
           ],
           "correct_option": 0,
-          "explanation": "Ethernet switches use self-learning: whenever a frame arrives on a port, the switch reads the Source MAC address and binds it to that port with an aging timer."
+          "explanation": "When the destination MAC address is not found in the CAM table, the switch executes unknown unicast flooding, transmitting copies out of all other ports in that broadcast domain/VLAN."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Ethernet+and+Switching+Computer+Networks+CN+GATE+lecture"
@@ -510,15 +510,15 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
         },
         {
           "id": "sub-2",
-          "question": "How many usable host IP addresses are available in an IPv4 subnet with CIDR notation /28?",
+          "question": "What is the standard IPv4 subnet mask corresponding to the CIDR notation /27?",
           "options": [
-            "14",
-            "16",
-            "30",
-            "12"
+            "255.255.255.224",
+            "255.255.255.192",
+            "255.255.255.240",
+            "255.255.255.128"
           ],
           "correct_option": 0,
-          "explanation": "Host bits = 32 - 28 = 4. Total IP addresses = 2^4 = 16. Subtract 2 for the Network address and Broadcast address = 16 - 2 = 14 usable hosts."
+          "explanation": "A /27 subnet has 27 bits set to 1 and 5 bits set to 0. In binary, the last octet is 11100000_2 = 128 + 64 + 32 = 224. Hence, the subnet mask is 255.255.255.224."
         },
         {
           "id": "sub-3",
@@ -616,16 +616,16 @@ export const COMPUTER_NETWORKS_CATEGORY: SectionCategory = {
       "notesMarkdown": "# Routing Protocols: Interior & Exterior Gateway\n\nRouters direct packets across complex network topologies using routing algorithms.\n\n---\n\n## 1. Distance Vector vs Link State\n| Feature | Distance Vector (RIP) | Link State (OSPF) |\n| :--- | :--- | :--- |\n| **Algorithm** | Bellman-Ford | Dijkstra's Shortest Path First (SPF) |\n| **Knowledge** | Knows distance/direction to neighbors | Knows entire network topology graph |\n| **Convergence** | Slow, prone to count-to-infinity | Very fast convergence |\n| **Metric** | Hop count (max 15 in RIP) | Cost based on bandwidth |\n\n## 2. BGP (Border Gateway Protocol)\n- BGP is the **Path Vector** protocol that connects the entire global Internet across Autonomous Systems (AS).\n- Handles routing decisions based on network policies, path vectors, and peering agreements rather than pure technical link speed.\n",
       "questions": [
         {
-          "id": "rp-1",
-          "question": "Which algorithm is used by OSPF (Open Shortest Path First) to calculate the shortest path to all destinations?",
+          "id": "cn-rp-1",
+          "question": "In Distance Vector Routing protocols (such as RIP), what mechanism is primarily employed to prevent routing loops and mitigate the 'Count-to-Infinity' problem?",
           "options": [
-            "Bellman-Ford Algorithm",
-            "Dijkstra's Algorithm",
-            "Floyd-Warshall Algorithm",
-            "Kruskal's Algorithm"
+            "Split Horizon with Poison Reverse",
+            "Dijkstra's Shortest Path First calculation",
+            "Virtual Circuit Switching",
+            "Selective Repeat ARQ"
           ],
-          "correct_option": 1,
-          "explanation": "OSPF is a link-state routing protocol that maintains a complete topological database and runs Dijkstra's algorithm to compute the shortest-path tree."
+          "correct_option": 0,
+          "explanation": "Split Horizon prevents a router from advertising a route back out the same interface through which it learned it, and Poison Reverse sets the metric to infinity (e.g. 16 in RIP) to immediately invalidate dead routes."
         },
         {
           "id": "rp-net-2",

@@ -147,7 +147,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Special values: E = 255 with M = 0 is Infinity; E = 255 with M != 0 is NaN (Not a Number)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=IEEE+754+Floating+Point+Representation+Single+Double+Precision+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Fixed-Point and Floating-Point Representation\n\n---\n\n## 1. IEEE 754 Single Precision (32-Bit)\n- **Sign ($S$):** 1 bit (0 for positive, 1 for negative)\n- **Exponent ($E$):** 8 bits (Bias = $127$)\n- **Mantissa ($M$):** 23 bits (normalized implicit leading $1$)\n\n$$\\text{Value} = (-1)^S \\times (1.M)_2 \\times 2^{E - 127}$$\n\n---\n\n## 2. Special Encodings\n- **Zero ($+0, -0$):** $E = 0, M = 0$\n- **Denormalized numbers:** $E = 0, M \\ne 0$ (Value $= (-1)^S \\times 0.M \\times 2^{-126}$)\n- **Infinity ($+\\infty, -\\infty$):** $E = 255, M = 0$\n- **NaN (Not a Number):** $E = 255, M \\ne 0$\n",
+      "notesMarkdown": "# Fixed-Point and Floating-Point Computer Arithmetic\n\nComputer hardware represents real numbers using either fixed-point notation (where the binary radix point is located at a predetermined bit position) or floating-point notation (where the radix point floats dynamically, scaled by an exponent). Modern general-purpose processors standardize floating-point arithmetic according to the **IEEE 754 Standard**.\n\n---\n\n## 1. Fixed-Point vs. Floating-Point Representation\n\n| Attribute | Fixed-Point Representation | Floating-Point (IEEE 754) |\n| :--- | :--- | :--- |\n| **Radix Point Position** | Static / predetermined (e.g. $Q_{m.n}$ format with $m$ integer bits and $n$ fraction bits). | Dynamic / scaled via an explicit biased exponent field. |\n| **Dynamic Range** | Very limited ($[-(2^{m-1}), 2^{m-1} - 2^{-n}]$). | Enormous ($10^{-38}$ to $10^{38}$ for 32-bit single precision). |\n| **Hardware Complexity** | Simple integer ALU operations (addition, shift, subtract). | Dedicated Floating-Point Unit (FPU) with barrel shifters and normalization logic. |\n| **Typical Use Cases** | Low-power DSPs, microcontrollers, embedded audio processing, financial ledger systems. | Scientific computing, 3D graphics (GPUs), AI/ML matrix calculations, general-purpose computing. |\n\n---\n\n## 2. IEEE 754 Binary Formats\n\nThe IEEE 754 standard defines standard precisions:\n\n| Format | Total Bits | Sign ($S$) | Exponent ($E$) | Bias | Mantissa / Fraction ($M$) | Precision |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n| **Single Precision (binary32)** | 32 | 1 bit | 8 bits | 127 | 23 bits (24 effective) | $\\approx 7$ decimal digits |\n| **Double Precision (binary64)** | 64 | 1 bit | 11 bits | 1023 | 52 bits (53 effective) | $\\approx 15-17$ decimal digits |\n\n### Mathematical Formula for Normalized Numbers\n$$\\text{Value} = (-1)^S \\times (1.M)_2 \\times 2^{E - \\text{Bias}}$$\n- **Implicit Leading 1:** Because normalized binary numbers always begin with a non-zero bit (`1.xxxxx`), the leading `1` is not physically stored, granting 1 bonus bit of precision (24 bits effective precision from 23 physical bits).\n\n---\n\n## 3. Special Value Encodings (Case Analysis)\n\nIn IEEE 754 Single Precision ($E \\in [0, 255]$):\n\n| Exponent ($E$) | Fraction ($M$) | Mathematical Classification | Description & Behavior |\n| :--- | :--- | :--- | :--- |\n| **$E = 0$** | $M = 0$ | **Signed Zero ($+0$ and $-0$)** | Distinguishes directional limits (e.g., $1 / +0 = +\\infty$, $1 / -0 = -\\infty$). |\n| **$E = 0$** | $M \\ne 0$ | **Subnormal (Denormalized)** | Value $= (-1)^S \\times (0.M)_2 \\times 2^{-126}$. Provides gradual underflow near zero without implicit leading 1. |\n| **$1 \\le E \\le 254$** | Any | **Normalized Numbers** | Standard floating-point values: $(-1)^S \\times (1.M)_2 \\times 2^{E - 127}$. |\n| **$E = 255$** | $M = 0$ | **Infinity ($+\\infty$ and $-\\infty$)** | Results from division by zero or arithmetic overflow. |\n| **$E = 255$** | $M \\ne 0$ | **NaN (Not a Number)** | Results from invalid operations (e.g. $0/0$, $\\sqrt{-1}$, $\\infty - \\infty$). Categorized into Signaling (sNaN) and Quiet (qNaN). |\n\n---\n\n## 4. Converting a Real Number to IEEE 754 (Step-by-Step)\n\nExample: Convert decimal $-13.625$ to 32-bit IEEE 754:\n1. **Sign bit:** Number is negative $\\implies S = 1$.\n2. **Convert to binary:**\n   - Integer part: $13_{10} = 1101_2$\n   - Fractional part: $0.625_{10} = 0.5 + 0.125 = \\frac{1}{2} + \\frac{1}{8} = 0.101_2$\n   - Combined: $13.625_{10} = 1101.101_2$\n3. **Normalize:**\n   $$1101.101_2 = 1.101101_2 \\times 2^3$$\n4. **Compute Biased Exponent:**\n   $$E = \\text{Exponent} + \\text{Bias} = 3 + 127 = 130_{10} = 10000010_2$$\n5. **Compute Mantissa:**\n   Remove the leading implicit `1`: Mantissa $= 10110100000000000000000_2$ (padded to 23 bits).\n6. **Final 32-bit Hex representation:**\n   `1 10000010 10110100000000000000000` $\\implies$ `0xC15A0000`.\n",
       "questions": [
         {
           "id": "dld-fp-1",
@@ -295,15 +295,15 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         },
         {
           "id": "dld-gates-3",
-          "question": "What is the minimum number of 2-input NAND gates required to implement a 2-input XOR gate?",
+          "question": "In static CMOS digital logic, how are the transistors arranged to implement a 2-input NAND gate?",
           "options": [
-            "4",
-            "3",
-            "5",
-            "6"
+            "2 PMOS transistors in parallel in the pull-up network, and 2 NMOS transistors in series in the pull-down network",
+            "2 NMOS transistors in parallel in the pull-up network, and 2 PMOS transistors in series in the pull-down network",
+            "Both PMOS and NMOS connected strictly in parallel",
+            "Both PMOS and NMOS connected strictly in series"
           ],
           "correct_option": 0,
-          "explanation": "An XOR gate A xor B can be synthesized using exactly 4 two-input NAND gates: one at the input, two in the middle stage, and one output NAND gate."
+          "explanation": "In static CMOS logic, an n-input NAND gate is constructed with n PMOS transistors in parallel between V_DD and output (Pull-Up Network) and n NMOS transistors in series between output and GND (Pull-Down Network)."
         }
       ]
     },
@@ -596,15 +596,15 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         },
         {
           "id": "dld-mux-3",
-          "question": "How many select lines are required for a 16-to-1 Multiplexer?",
+          "question": "How many 2-to-1 multiplexers are required to construct an 8-to-1 multiplexer without any additional logic gates?",
           "options": [
-            "4 select lines",
-            "3 select lines",
-            "8 select lines",
-            "16 select lines"
+            "7",
+            "8",
+            "4",
+            "3"
           ],
           "correct_option": 0,
-          "explanation": "For a 2^n to 1 MUX, n select lines are required. Since 16 = 2^4, exactly 4 select lines are needed."
+          "explanation": "To build an 8-to-1 MUX using a tree of 2-to-1 MUXes: First stage requires 4 MUXes (8 inputs to 4), second stage requires 2 MUXes (4 inputs to 2), and final stage requires 1 MUX (2 inputs to 1). Total = 4 + 2 + 1 = 7."
         }
       ]
     },

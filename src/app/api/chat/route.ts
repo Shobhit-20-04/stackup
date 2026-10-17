@@ -11,7 +11,7 @@ interface ChatMessage {
   content: string;
 }
 
-function generateLocalAiResponse(query: string, context?: string): string {
+export function generateLocalAiResponse(query: string, context?: string): string {
   const q = query.toLowerCase();
 
   if (q.includes('two sum') || q.includes('two pointer') || q.includes('pointer')) {
@@ -53,6 +53,61 @@ Structure your experience bullets using:
 - *ATS-Optimized:* "Architected RESTful microservices in Node.js & TypeScript, indexing PostgreSQL tables to cut p95 latency by 44% across 250,000 daily requests."
 
 *Key Rule:* Avoid 2-column tables or non-standard fonts that confuse older ATS parsers!`;
+  }
+
+  if (q.includes('dynamic programming') || q.includes(' dp') || q.includes('memoiz') || q.includes('tabulat') || q.includes('knapsack')) {
+    return `### Dynamic Programming (DP) Interview Framework
+DP solves problems exhibiting **Overlapping Subproblems** and **Optimal Substructure**:
+
+1. **Top-Down with Memoization:**
+   - Write natural recursive formulation; cache state in a hash table or array.
+   - *Pros:* Only computes states that are actually reached.
+2. **Bottom-Up with Tabulation:**
+   - Iteratively fill a DP table from base cases up to the target answer.
+   - *Pros:* Eliminates recursion call stack overhead; enables **Space Optimization** (e.g. keeping only previous row or previous 2 variables).
+
+**Standard DP Patterns to Master:**
+- **0/1 Knapsack & Subset Sum:** Pick vs Skip choice.
+- **Longest Common Subsequence (LCS):** 2-string character matching matrix.
+- **Coin Change / Unbounded Knapsack:** Reusing items with unbounded counts.
+- **Interval DP / Matrix Chain:** Splitting ranges at index \`k\`.`;
+  }
+
+  if (q.includes('graph') || q.includes('bfs') || q.includes('dfs') || q.includes('dijkstra') || q.includes('tree')) {
+    return `### Graph & Tree Traversal Cheat-Sheet
+- **Breadth-First Search (BFS):**
+  - Uses a **Queue (FIFO)**. Traverses level by level.
+  - Guaranteed to find the **Shortest Path** in unweighted graphs. Time: \`O(V + E)\`, Space: \`O(V)\`.
+- **Depth-First Search (DFS):**
+  - Uses a **Stack (LIFO)** or recursion. Explores deeply before backtracking.
+  - Ideal for: Cycle detection, Topological Sorting, Path finding, Connected components.
+- **Dijkstra's Shortest Path:**
+  - Uses a **Min-Heap (Priority Queue)**. Greedy relaxation of edges.
+  - Runs in \`O((V + E) log V)\`. **Requirement:** Edge weights must be non-negative! (Use Bellman-Ford if negative weights exist).
+- **BST In-Order Traversal:**
+  - Left -> Root -> Right yields elements in **strictly sorted ascending order**.`;
+  }
+
+  if (q.includes('solid') || q.includes('oop') || q.includes('polymorphism') || q.includes('inheritance')) {
+    return `### SOLID Principles & OOP Fundamentals
+1. **Single Responsibility (SRP):** A class should have only one reason to change.
+2. **Open/Closed (OCP):** Software entities should be open for extension, but closed for modification.
+3. **Liskov Substitution (LSP):** Subtypes must be substitutable for their base types without breaking program correctness.
+4. **Interface Segregation (ISP):** Clients should not be forced to depend on interfaces they do not use (prefer small, role-specific interfaces).
+5. **Dependency Inversion (DIP):** Depend on abstractions (interfaces), not on concrete implementations.
+
+**The 4 Pillars of OOP:** Encapsulation (data hiding), Abstraction (hiding complexity), Inheritance (code reuse), Polymorphism (compile-time overloading & runtime overriding).`;
+  }
+
+  if (q.includes('join') || q.includes('inner join') || q.includes('left join') || q.includes('sql query')) {
+    return `### SQL Joins Visual Summary
+- **INNER JOIN:** Returns records that have matching values in both tables.
+- **LEFT (OUTER) JOIN:** Returns all rows from the left table, and matching rows from the right table (NULL when no match exists).
+- **RIGHT (OUTER) JOIN:** Returns all rows from the right table, and matching rows from the left table.
+- **FULL OUTER JOIN:** Returns all records when there is a match in either left or right table.
+- **CROSS JOIN:** Cartesian product of all rows from table A and table B (Size = $|A| \\times |B|$).
+
+*Performance Pro-Tip:* Ensure foreign key columns used in \`ON a.id = b.a_id\` have database indexes to avoid full table sequential scans!`;
   }
 
   if (q.includes('tcp') || q.includes('udp') || q.includes('handshake') || q.includes('osi') || q.includes('dns')) {

@@ -115,15 +115,15 @@ export const TOC_CATEGORY: SectionCategory = {
         },
         {
           "id": "toc-re-3",
-          "question": "According to Arden's Theorem, what is the unique solution to the equation R = Q + RP when epsilon is not in P?",
+          "question": "Which of the following regular expression algebraic identities is FALSE in general?",
           "options": [
-            "R = QP*",
-            "R = P*Q",
-            "R = (P + Q)*",
-            "R = P* + Q*"
+            "(R + S)* = R* + S*",
+            "(R*)* = R*",
+            "(RS)* R = R(SR)*",
+            "R(S + T) = RS + RT"
           ],
           "correct_option": 0,
-          "explanation": "Arden's Theorem states that for regular expressions P and Q, if epsilon is not in P, the equation R = Q + RP has the unique solution R = QP*."
+          "explanation": "The identity (R + S)* = R* + S* is false because (R + S)* allows arbitrary interleaved combinations of strings from R and S (e.g. 'rs'), whereas R* + S* only permits strings composed entirely of R or entirely of S."
         }
       ]
     },

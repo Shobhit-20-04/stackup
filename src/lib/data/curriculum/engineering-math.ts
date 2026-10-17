@@ -55,15 +55,15 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         },
         {
           "id": "em-mat-3",
-          "question": "If A is a 3 x 3 square matrix with det(A) = 4, what is the value of det(2A)?",
+          "question": "For an invertible n x n matrix A, what is the determinant of its adjugate matrix adj(A)?",
           "options": [
-            "32",
-            "8",
-            "16",
-            "24"
+            "(det(A))^(n - 1)",
+            "(det(A))^n",
+            "n * det(A)",
+            "1 / det(A)"
           ],
           "correct_option": 0,
-          "explanation": "For an n x n matrix, det(k * A) = k^n * det(A). Here n = 3 and k = 2, so det(2A) = 2^3 * det(A) = 8 * 4 = 32."
+          "explanation": "Since A * adj(A) = det(A) * I_n, taking determinants gives det(A) * det(adj(A)) = (det(A))^n. Dividing by det(A) yields det(adj(A)) = (det(A))^(n - 1)."
         }
       ]
     },
@@ -176,15 +176,15 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         },
         {
           "id": "em-eig-3",
-          "question": "What is the relationship between the trace and determinant of a matrix and its eigenvalues lambda_i?",
+          "question": "What is a defining mathematical property of the eigenvalues of any Real Symmetric matrix?",
           "options": [
-            "Trace = Sum of eigenvalues, Determinant = Product of eigenvalues",
-            "Trace = Product of eigenvalues, Determinant = Sum of eigenvalues",
-            "Trace = Max eigenvalue, Determinant = Min eigenvalue",
-            "Trace = Sum of squares of eigenvalues, Determinant = 0"
+            "All eigenvalues are strictly real numbers",
+            "All eigenvalues are purely imaginary numbers",
+            "The sum of all eigenvalues is always zero",
+            "All eigenvalues must be distinct positive integers"
           ],
           "correct_option": 0,
-          "explanation": "For any square matrix, the sum of its eigenvalues equals the trace (sum of diagonal entries), and the product of its eigenvalues equals its determinant."
+          "explanation": "By the Spectral Theorem, all eigenvalues of a real symmetric matrix (A = A^T) are guaranteed to be real, and eigenvectors corresponding to distinct eigenvalues are mutually orthogonal."
         }
       ]
     },
@@ -536,15 +536,15 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         },
         {
           "id": "em-prob-3",
-          "question": "If P(A) = 0.4, P(B) = 0.5, and events A and B are independent, what is P(A or B)?",
+          "question": "If P(A) = 0.6, P(B) = 0.4, and P(A | B) = 0.3, what is the joint probability P(A n B)?",
           "options": [
-            "0.70",
-            "0.90",
-            "0.20",
-            "0.60"
+            "0.12",
+            "0.24",
+            "0.18",
+            "0.70"
           ],
           "correct_option": 0,
-          "explanation": "For independent events: P(A and B) = P(A) * P(B) = 0.4 * 0.5 = 0.20. By addition rule: P(A or B) = P(A) + P(B) - P(A and B) = 0.4 + 0.5 - 0.20 = 0.70."
+          "explanation": "By the multiplication rule of conditional probability: P(A n B) = P(A | B) * P(B) = 0.3 * 0.4 = 0.12."
         }
       ]
     },
@@ -568,7 +568,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "CDF F(x) = P(X <= x); F'(x) = f(x) for continuous random variables."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Random+Variables+PMF+PDF+CDF+Engineering+Mathematics+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Random Variables\n\nA random variable $X$ is a function that assigns a real number to each outcome in a sample space.\n\n---\n\n## 1. Discrete vs Continuous\n\n| Property | Discrete Random Variable | Continuous Random Variable |\n| :--- | :--- | :--- |\n| **Probability Function** | PMF: $P(X = x) = p(x)$ | PDF: $f(x)$ where $P(a \\le X \\le b) = \\int_a^b f(x) dx$ |\n| **Normalization** | $\\sum_{x} p(x) = 1$ | $\\int_{-\\infty}^{\\infty} f(x) \\, dx = 1$ |\n| **Point Probability** | $P(X = x)$ can be $> 0$ | $P(X = c) = 0$ for any exact point $c$! |\n| **CDF $F(x)$** | $\\sum_{t \\le x} p(t)$ | $\\int_{-\\infty}^{x} f(t) \\, dt$ |\n",
+      "notesMarkdown": "# Random Variables, Probability Distributions & Expectations\n\nA **Random Variable (RV)** $X$ is a measurable mathematical function $X: \\Omega \\to \\mathbb{R}$ that maps each experimental outcome $\\omega$ in a sample space $\\Omega$ to a real number. Random variables form the probabilistic core of machine learning, statistical inference, randomized algorithms, and queueing models.\n\n---\n\n## 1. Discrete vs. Continuous Random Variables\n\n| Property | Discrete Random Variable | Continuous Random Variable |\n| :--- | :--- | :--- |\n| **Values / Support** | Countable set $\\{x_1, x_2, \\dots\\}$ (finite or countably infinite). | Uncountable continuum of real numbers (intervals $[a, b]$). |\n| **Probability Function** | **Probability Mass Function (PMF):** $p_X(x) = P(X = x)$ | **Probability Density Function (PDF):** $f_X(x)$ |\n| **Axiom of Normalization** | $\\sum_{x} p_X(x) = 1$ | $\\int_{-\\infty}^{\\infty} f_X(x) \\, dx = 1$ |\n| **Interval Probability** | $P(a \\le X \\le b) = \\sum_{x = a}^b p(x)$ | $P(a \\le X \\le b) = \\int_a^b f(x) \\, dx$ |\n| **Point Probability Paradox** | $P(X = x)$ can be positive ($> 0$). | **$P(X = c) = 0$ for every single exact point $c$!** Probabilities only exist over non-zero intervals $\\int_{c-\\epsilon}^{c+\\epsilon} f(x) dx$. |\n| **Cumulative Distribution** | $F_X(x) = P(X \\le x) = \\sum_{t \\le x} p_X(t)$ | $F_X(x) = P(X \\le x) = \\int_{-\\infty}^x f_X(t) \\, dt$ |\n\n---\n\n## 2. Properties of the Cumulative Distribution Function (CDF)\n\nFor any random variable $X$, the CDF $F(x) = P(X \\le x)$ satisfies:\n1. **Bounds:** $0 \\le F(x) \\le 1$ with $\\lim_{x \\to -\\infty} F(x) = 0$ and $\\lim_{x \\to +\\infty} F(x) = 1$.\n2. **Monotonicity:** Non-decreasing: if $x_1 < x_2$, then $F(x_1) \\le F(x_2)$.\n3. **Right-Continuity:** $F(x)$ is continuous from the right: $\\lim_{h \\to 0^+} F(x + h) = F(x)$.\n4. **Relationship to PDF:** For continuous variables:\n   $$f_X(x) = \\frac{d}{dx} F_X(x)$$\n\n---\n\n## 3. Mathematical Expectation, Variance, and Moments\n\n### Expected Value (Mean $\\mu = E[X]$)\n- Discrete: $E[X] = \\sum x \\cdot p(x)$\n- Continuous: $E[X] = \\int_{-\\infty}^{\\infty} x \\cdot f(x) \\, dx$\n- **Linearity of Expectation (holds always, even if $X$ and $Y$ are dependent):**\n  $$E[aX + bY + c] = aE[X] + bE[Y] + c$$\n\n### Variance ($\\sigma^2 = \\text{Var}(X)$)\nMeasures the dispersion of $X$ around its mean:\n$$\\text{Var}(X) = E[(X - \\mu)^2] = E[X^2] - (E[X])^2$$\n- Properties:\n  - $\\text{Var}(aX + b) = a^2 \\text{Var}(X)$ (constants drop, scale factor squares).\n  - If $X$ and $Y$ are **independent**: $\\text{Var}(X + Y) = \\text{Var}(X) + \\text{Var}(Y)$.\n\n---\n\n## 4. Landmark Probability Distributions (GATE & Placement Cheat-Sheet)\n\n| Distribution | Type | PMF / PDF | Mean $E[X]$ | Variance $\\text{Var}(X)$ | Key Property |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n| **Bernoulli($p$)** | Discrete | $P(1) = p, P(0) = 1 - p$ | $p$ | $p(1 - p)$ | Single trial outcome. |\n| **Binomial($n, p$)** | Discrete | $\\binom{n}{k} p^k (1-p)^{n-k}$ | $np$ | $np(1 - p)$ | Number of successes in $n$ independent trials. |\n| **Poisson($\\lambda$)** | Discrete | $\\frac{e^{-\\lambda} \\lambda^k}{k!}$ | $\\lambda$ | $\\lambda$ | **Mean equals Variance!** Models rare events over time/space. |\n| **Uniform($a, b$)** | Continuous | $\\frac{1}{b - a}$ for $a \\le x \\le b$ | $\\frac{a + b}{2}$ | $\\frac{(b - a)^2}{12}$ | Equal probability density across interval. |\n| **Exponential($\\lambda$)** | Continuous| $\\lambda e^{-\\lambda x}$ ($x \\ge 0$) | $\\frac{1}{\\lambda}$ | $\\frac{1}{\\lambda^2}$ | **Memoryless Property:** $P(X > s + t \\mid X > s) = P(X > t)$. |\n| **Normal / Gaussian** | Continuous | $\\frac{1}{\\sigma \\sqrt{2\\pi}} e^{-\\frac{(x - \\mu)^2}{2\\sigma^2}}$ | $\\mu$ | $\\sigma^2$ | Symmetric bell curve; Central Limit Theorem limit. |\n",
       "questions": [
         {
           "id": "em-rv-1",
@@ -808,7 +808,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Simpson's 1/3 Rule approximates with parabolas; requires even number of intervals; error O(h^4)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Numerical+Methods+Newton+Raphson+Trapezoidal+Simpsons+Rule+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Numerical Methods Basics\n\nNumerical methods compute approximate solutions to equations and integrals.\n\n---\n\n## 1. Root-Finding: Newton-Raphson Method\n$$x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$$\n- **Order of Convergence:** $p = 2$ (Quadratic convergence).\n- Fails if $f'(x_n) \\approx 0$ (horizontal tangent).\n\n---\n\n## 2. Numerical Integration\n- **Trapezoidal Rule:**\n  $$\\int_a^b f(x) \\, dx \\approx \\frac{h}{2} [ (y_0 + y_n) + 2(y_1 + y_2 + \\dots + y_{n-1}) ]$$\n- **Simpson's 1/3 Rule (requires even $n$):**\n  $$\\int_a^b f(x) \\, dx \\approx \\frac{h}{3} [ (y_0 + y_n) + 4(\\text{odd}) + 2(\\text{even}) ]$$\n",
+      "notesMarkdown": "# Numerical Methods & Computational Mathematics\n\nNumerical methods provide computational algorithms to approximate solutions to non-linear transcendental equations, compute definite integrals without closed-form antiderivatives, and integrate ordinary differential equations (ODEs).\n\n---\n\n## 1. Root-Finding Algorithms\n\nGiven a continuous function $f(x) = 0$:\n\n| Method | Iteration Formula | Order of Convergence ($p$) | Conditions & Caveats |\n| :--- | :--- | :--- | :--- |\n| **Bisection Method** | $c = \\frac{a + b}{2}$ where $f(a) \\cdot f(b) < 0$ | $p = 1$ (Linear) | Guaranteed to converge (by Intermediate Value Theorem); error halves every step: $\\epsilon_{n+1} = 0.5 \\epsilon_n$. |\n| **Regula-Falsi (False Position)** | $c = \\frac{a f(b) - b f(a)}{f(b) - f(a)}$ | $p = 1$ (Linear) | Brackets root like Bisection, but converges faster than Bisection in practice; one endpoint can remain stagnant. |\n| **Secant Method** | $x_{n+1} = x_n - f(x_n) \\frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})}$ | $p = \\frac{1 + \\sqrt{5}}{2} \\approx 1.618$ (Superlinear) | Does not require evaluation of analytical derivative $f'(x)$; does not guarantee bracket retention. |\n| **Newton-Raphson Method** | $x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$ | $p = 2$ (Quadratic) | Very fast: digits of accuracy double each iteration. **Fails if $f'(x_n) \\approx 0$** (division by zero / horizontal tangent). |\n\n> [!WARNING]\n> For Newton-Raphson: Quadratic convergence holds strictly for **simple roots** ($f'(r) \\ne 0$). If the root has multiplicity $m > 1$, Newton-Raphson degenerates to **linear convergence** ($p = 1$), unless modified to $x_{n+1} = x_n - m \\frac{f(x_n)}{f'(x_n)}$.\n\n---\n\n## 2. Numerical Integration (Newton-Cotes Formulas)\n\nTo compute $\\int_a^b f(x) \\, dx$ with step size $h = \\frac{b - a}{n}$ and nodes $x_i = a + i \\cdot h$:\n\n### A. Trapezoidal Rule ($n \\ge 1$, linear polynomials)\n$$\\int_a^b f(x) \\, dx \\approx \\frac{h}{2} \\Big[ (y_0 + y_n) + 2 \\sum_{i=1}^{n-1} y_i \\Big]$$\n- **Global Truncation Error:** $O(h^2) = -\\frac{(b - a) h^2}{12} f''(\\xi)$. Exact for polynomials up to degree 1.\n\n### B. Simpson's 1/3rd Rule ($n$ MUST be even, parabolic polynomials)\n$$\\int_a^b f(x) \\, dx \\approx \\frac{h}{3} \\Big[ (y_0 + y_n) + 4 \\sum_{\\text{odd } i} y_i + 2 \\sum_{\\text{even } i} y_i \\Big]$$\n- **Global Truncation Error:** $O(h^4) = -\\frac{(b - a) h^4}{180} f^{(4)}(\\xi)$. Exact for polynomials up to degree 3!\n- **Constraint:** Requires the total number of subintervals $n$ to be an **even number** (i.e. an odd number of sample points).\n\n### C. Simpson's 3/8th Rule ($n$ MUST be a multiple of 3, cubic polynomials)\n$$\\int_a^b f(x) \\, dx \\approx \\frac{3h}{8} \\Big[ (y_0 + y_n) + 3(y_1 + y_2 + y_4 + y_5 + \\dots) + 2(y_3 + y_6 + \\dots) \\Big]$$\n- **Global Truncation Error:** $O(h^4)$. Exact for polynomials up to degree 3.\n\n---\n\n## 3. Numerical Solutions of First-Order ODEs ($\\frac{dy}{dx} = f(x, y)$)\n\n### Euler's Method\n$$y_{n+1} = y_n + h \\cdot f(x_n, y_n)$$\n- Local error $O(h^2)$, global error $O(h)$ (First-order method).\n\n### Runge-Kutta 4th Order (RK4)\nComputes four slope estimates per step ($k_1, k_2, k_3, k_4$):\n$$y_{n+1} = y_n + \\frac{h}{6} (k_1 + 2k_2 + 2k_3 + k_4)$$\n- Global error $O(h^4)$ (Fourth-order method; gold standard for numerical simulation).\n",
       "questions": [
         {
           "id": "em-nm-1",
@@ -836,15 +836,15 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         },
         {
           "id": "em-num-3",
-          "question": "What is the order of convergence of the Newton-Raphson method for finding simple roots?",
+          "question": "What is the order of convergence of the Secant Method for finding numerical root approximations?",
           "options": [
-            "Quadratic (Order 2)",
-            "Linear (Order 1)",
-            "Cubic (Order 3)",
-            "Superlinear (Order 1.618)"
+            "Superlinear (Order approximately 1.618, Golden Ratio)",
+            "Linear (Order 1.0)",
+            "Quadratic (Order 2.0)",
+            "Cubic (Order 3.0)"
           ],
           "correct_option": 0,
-          "explanation": "Newton-Raphson has quadratic convergence (order 2) near a simple root, meaning the number of correct decimal places approximately doubles each iteration."
+          "explanation": "The Secant Method approximates derivatives with finite differences, achieving a superlinear order of convergence equal to the golden ratio phi = (1 + sqrt(5)) / 2 approx 1.618."
         }
       ]
     }

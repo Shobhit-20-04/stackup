@@ -388,10 +388,15 @@ export const C_PROGRAMMING_CATEGORY: SectionCategory = {
     ,
       {
         "id": "c-dma-3",
-        "question": "What is the primary difference between malloc() and calloc() in C?",
-        "options": [ "calloc() initializes all allocated bytes to zero; malloc() leaves allocated memory uninitialized.", "malloc() is thread-safe; calloc() is not.", "calloc() allocates memory on the stack; malloc() on the heap.", "malloc() takes two arguments (count, size); calloc() takes only total bytes." ],
+        "question": "What is a 'dangling pointer' in C, and what is the standard recommended defensive practice immediately after calling free(ptr)?",
+        "options": [
+          "A pointer referencing deallocated memory; prevented by immediately assigning ptr = NULL after free(ptr).",
+          "A pointer that was never initialized; prevented by declaring it as static.",
+          "A pointer holding address 0x0; prevented by casting it to void*.",
+          "A pointer pointing across stack frames; prevented by using alloca()."
+        ],
         "correct_option": 0,
-        "explanation": "calloc(n, size) allocates memory and clears all bits to zero (0). malloc(size) allocates uninitialized bytes containing whatever indeterminate garbage data was in memory."
+        "explanation": "A dangling pointer arises when memory is released via free() but the pointer variable still holds the freed address. Dereferencing it causes undefined behavior. Assigning ptr = NULL immediately ensures subsequent accidental access fails predictably with a crash rather than silent memory corruption."
       }
     ]},
   {

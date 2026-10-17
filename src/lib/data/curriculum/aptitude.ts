@@ -364,15 +364,15 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         },
         {
           "id": "ma-3",
-          "question": "A container contains 40 liters of milk. From this, 4 liters of milk is taken out and replaced by water. This process is repeated 2 more times. How much pure milk remains in the container?",
+          "question": "In what ratio must a 20% alcohol solution be mixed with a 50% alcohol solution to produce a 30% alcohol solution?",
           "options": [
-            "29.16 liters",
-            "30.24 liters",
-            "28.50 liters",
-            "32.40 liters"
+            "2 : 1",
+            "1 : 2",
+            "3 : 1",
+            "2 : 3"
           ],
           "correct_option": 0,
-          "explanation": "Formula: Remaining = Initial * (1 - x/V)^n = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * 0.729 = 29.16 liters."
+          "explanation": "Using the Rule of Alligation: (Concentration 2 - Mean) : (Mean - Concentration 1) = (50 - 30) : (30 - 20) = 20 : 10 = 2 : 1."
         }
       ],
       "difficulty": "Medium",
@@ -724,7 +724,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Analogy relationship types: Tool-Worker, Cause-Effect, Part-Whole, Synonyms-Antonyms, Degree of intensity.",
         "Classification (Odd-Man-Out): Identify common shared property among 3 options and the outlier violating it."
       ],
-      "notesMarkdown": "# Analogies and Classification\n\n---\n\n## 1. Analogy Relations\n$A : B :: C : D$ asserts that the relationship between $A$ and $B$ is identical to $C$ and $D$.\n- **Worker & Tool:** Carpenter : Saw :: Surgeon : Scalpel.\n- **Worker & Product:** Author : Book :: Choreographer : Ballet.\n- **Instrument & Measurement:** Barometer : Pressure :: Anemometer : Wind Speed.\n\n---\n\n## 2. Odd-Man-Out (Classification)\nIdentify the criterion common to all options except one:\n- Category / Taxon membership (e.g., mammals vs reptiles).\n- Functional utility.\n- Prime vs Composite numbers.\n",
+      "notesMarkdown": "# Analogies, Semantic Mapping & Classification (Odd-One-Out)\n\nAnalogy and Classification questions evaluate relational reasoning, vocabulary depth, mathematical pattern recognition, and conceptual categorization. They appear widely across campus placement assessments (TCS, Infosys, Wipro, Cognizant, Accenture) and standardized exams (GATE Aptitude, CAT).\n\n---\n\n## 1. The Anatomy of an Analogy ($A : B :: C : D$)\n\nThe notation $A : B :: C : D$ is read: *\"A is related to B in the exact same manner as C is related to D.\"*\n\n### The 8 Classic Analogy Relationships:\n1. **Tool & User / Worker:**\n   - *Carpenter : Saw :: Surgeon : Scalpel*\n   - *Astronomer : Telescope :: Sculptor : Chisel*\n2. **Worker & End Product:**\n   - *Author : Novel :: Choreographer : Ballet*\n   - *Mason : Wall :: Goldsmith : Ornament*\n3. **Instrument & Measurement:**\n   - *Barometer : Atmospheric Pressure :: Anemometer : Wind Speed*\n   - *Seismograph : Earthquake Intensity :: Hygrometer : Humidity*\n4. **Cause & Effect / Symptom:**\n   - *Pathogen : Infection :: Friction : Heat*\n   - *Drought : Famine :: Rain : Flood*\n5. **Part to Whole (Meronymy):**\n   - *Spoke : Wheel :: Petal : Flower*\n   - *Stanza : Poem :: Cell : Organism*\n6. **Degree of Intensity / Gradation:**\n   - *Warm : Torrid :: Cool : Frigid*\n   - *Whisper : Shout :: Glance : Scrutinize*\n7. **Synonyms and Antonyms:**\n   - *Prodigal : Spendthrift :: Parsimonious : Miserly* (Synonyms)\n   - *Ephemeral : Eternal :: Obsolete : Contemporary* (Antonyms)\n8. **Word Morphology / Sound / Anagrams:**\n   - *Night : Knight :: Bare : Bear* (Homophones)\n\n---\n\n## 2. Number & Letter Analogies\n\nWhen dealing with alphanumeric analogies, examine patterns in this priority order:\n1. **Prime numbers** (e.g., $11 : 13 :: 17 : 19$ - successive primes).\n2. **Squares and Cubes** (e.g., $n : n^2 \\pm 1$ or $n : n^3 \\pm n$).\n3. **Digit operations** (Sum of digits, product of digits, reversing digits).\n4. **Letter positional values** (A = 1, Z = 26; reverse positions: A = 26, Z = 1; sum of opposite letters $= 27$).\n\n---\n\n## 3. Classification (Odd-Man-Out) Strategy\n\nIn classification questions, four or five options are given, and exactly one does not fit.\n\n### The Golden Rule:\n**Never just search for why one option is unique.** Every option is unique in some arbitrary way!\nInstead, **you must first prove an unambiguous common rule that binds the other three options together**, leaving the remaining option as the clear outlier.\n\n- **Example:** $\\{2, 3, 5, 9\\}$. Why is 9 the odd one out? Because $\\{2, 3, 5\\}$ are all **prime numbers**, while 9 is composite. (Note: Saying \"2 is the odd one because it's even\" is rejected if a broader category of primes exists).\n",
       "questions": [
         {
           "id": "apt-ac-1",
@@ -1023,15 +1023,15 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         },
         {
           "id": "ds-2",
-          "question": "A man walks 30m North, then turns right and walks 40m. How far and in which direction is he from his original starting point?",
+          "question": "A person walks 10 km South, turns left and walks 15 km, turns left again and walks 10 km, then turns left again and walks 5 km. In which direction and at what distance is he from his initial point?",
           "options": [
-            "50m North-East",
-            "70m North-East",
-            "50m South-East",
-            "40m North"
+            "10 km East",
+            "10 km West",
+            "5 km East",
+            "15 km North"
           ],
           "correct_option": 0,
-          "explanation": "Forms a right-angled triangle: Distance = sqrt(30^2 + 40^2) = sqrt(900 + 1600) = sqrt(2500) = 50m. Direction from origin is North-East."
+          "explanation": "Tracing net coordinates: (Y: -10 + 10 = 0), (X: +15 - 5 = +10 km). Thus, he is exactly 10 km East of his starting position."
         },
         {
           "id": "ds-3",
@@ -1069,7 +1069,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "notesMarkdown": "# Critical Reasoning: Statements, Assumptions, and Deductions\n\nAnalyzing logical premises, unstated assumptions, courses of action, and valid syllogistic deductions.\n\n---\n\n## 1. Assumptions vs Inferences\n- **Assumption:** An unstated premise taken for granted by the speaker before making the statement.\n- **Inference / Conclusion:** A logical deduction drawn *after* evaluating the facts in the statement.\n- **Validity Rule:** An assumption is valid if the statement falls apart or loses sense without it. Avoid extreme qualifiers (e.g. \"all\", \"only\", \"never\", \"every\") unless explicitly supported by context.\n\n---\n\n## 2. Courses of Action\nA course of action is correct if:\n1. It directly addresses and solves the core problem or substantially minimizes it.\n2. It does not create new, more severe secondary problems.\n3. It is practical and proportional (not an extreme overreaction).\n\n---\n\n## 3. Syllogistic Deductions (Euler Diagrams)\n- **Universal Affirmative (All A are B):** Circle A is entirely contained inside Circle B.\n- **Universal Negative (No A is B):** Circles A and B are completely disjoint.\n- **Particular Affirmative (Some A are B):** Circles A and B overlap.\n- **Particular Negative (Some A are not B):** At least one element of A is outside B.\n",
       "questions": [
         {
-          "id": "sa-1",
+          "id": "sa-assump-1",
           "question": "Statement: 'Please consult a specialist doctor for skin allergy.' Assumptions: I. Specialist doctors understand allergies better. II. Skin allergies can be cured.",
           "options": [
             "Only I is implicit",
@@ -1233,15 +1233,15 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
         },
         {
           "id": "apt-voc-3",
-          "question": "Choose the word that is most nearly OPPOSITE in meaning to 'EPHEMERAL':",
+          "question": "Based on the Latin root 'loqu / loc' (meaning speech or talk), which word describes a person who speaks in a clear, persuasive, and fluent manner?",
           "options": [
-            "Permanent / Eternal",
-            "Fleeting",
-            "Transient",
-            "Momentary"
+            "Eloquent",
+            "Loquacious",
+            "Colloquial",
+            "Soliloquy"
           ],
           "correct_option": 0,
-          "explanation": "'Ephemeral' means lasting for a very short time (transient/fleeting). The exact antonym is Permanent or Eternal."
+          "explanation": "Eloquent means expressing ideas fluently and persuasively. While all four options derive from 'loqu/loc', 'loquacious' specifically means excessively talkative, 'colloquial' means informal spoken language, and 'soliloquy' is speaking one's thoughts aloud when alone."
         }
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Vocabulary+Verbal+Ability+English+lecture"
@@ -1511,7 +1511,7 @@ export const SPATIAL_APTITUDE_CATEGORY: SectionCategory = {
         "Mirror Reflection: Inverts horizontal orientation (left becomes right; top and bottom remain unchanged).",
         "Water Reflection: Inverts vertical orientation (top becomes bottom; left and right remain unchanged)."
       ],
-      "notesMarkdown": "# Rotation and Reflection (Mirror & Water Images)\n\n---\n\n## 1. Mirror Image vs. Water Image\n- **Mirror Image (Vertical Mirror axis):**\n  - Left $\\leftrightarrow$ Right inversion.\n  - Top and Bottom remain unchanged.\n- **Water Image (Horizontal Mirror axis at base):**\n  - Top $\\leftrightarrow$ Bottom inversion.\n  - Left and Right remain unchanged.\n\n---\n\n## 2. 2D Rotations\n- **$90^\\circ$ Clockwise:** $(x, y) \\to (y, -x)$.\n- **$180^\\circ$ Rotation:** $(x, y) \\to (-x, -y)$ (identical to simultaneous vertical and horizontal reflection).\n- **$270^\\circ$ Clockwise ($90^\\circ$ CCW):** $(x, y) \\to (-y, x)$.\n",
+      "notesMarkdown": "# Spatial Reasoning: 2D & 3D Rotation, Reflection & Inversion\n\nSpatial reasoning tests evaluate your mental manipulation of geometric shapes, symmetry, perspective transformations, and rotational invariance. These questions are a mandatory component of GATE General Aptitude, spatial visualization assessments, and tech hiring tests.\n\n---\n\n## 1. Reflection Transformations: Mirror Images vs. Water Images\n\nA reflection flips a 2D shape across a specified line of symmetry (axis of reflection), inverting chirality (handedness).\n\n```\n   Original Figure (F)            Mirror Image (Vertical Axis)     Water Image (Horizontal Axis)\n         |---|                               |---|                           \\\n         |   |                               |   |                            \\\n         |---|              |                |---|                             |---|\n         |                  |                    |                             |\n         |                  |                    |                             |---|\n                                                                               |   |\n                                                                         --------------\n                                                                               |---|\n                                                                               |   |\n                                                                               |---|\n                                                                               |\n                                                                               |\n```\n\n### A. Mirror Image (Vertical Reflection Axis)\n- **Rule of Inversion:** **Left $\\leftrightarrow$ Right** are swapped.\n- **Invariance:** **Top and Bottom** remain strictly unchanged.\n- **Letters with Vertical Symmetry (Unchanged in Mirror):** `A`, `H`, `I`, `M`, `O`, `T`, `U`, `V`, `W`, `X`, `Y`.\n\n### B. Water Image (Horizontal Reflection Axis along base)\n- **Rule of Inversion:** **Top $\\leftrightarrow$ Bottom** are inverted (upside down).\n- **Invariance:** **Left and Right** remain strictly unchanged.\n- **Letters with Horizontal Symmetry (Unchanged in Water):** `B`, `C`, `D`, `E`, `H`, `I`, `K`, `O`, `X`.\n\n---\n\n## 2. 2D Coordinate Rotations (Clockwise & Counter-Clockwise)\n\nRotation moves every point along a circular arc centered on the origin $(0, 0)$ without altering distances or angles (isometry). Rotation **preserves chirality** (handedness is not flipped).\n\n| Angle & Direction | Equivalent Rotation | Coordinate Transformation $(x, y) \\to$ | Visual Meaning |\n| :--- | :--- | :--- | :--- |\n| **$90^\\circ$ Clockwise** | $270^\\circ$ Counter-Clockwise | $(x, y) \\to (y, -x)$ | 1 quarter turn to the right |\n| **$180^\\circ$ Rotation** | $180^\\circ$ Counter-Clockwise | $(x, y) \\to (-x, -y)$ | Complete inversion (half turn) |\n| **$270^\\circ$ Clockwise** | $90^\\circ$ Counter-Clockwise | $(x, y) \\to (-y, x)$ | 3 quarter turns right / 1 quarter turn left |\n\n> [!TIP]\n> A $180^\\circ$ planar rotation is mathematically identical to applying **both a horizontal reflection and a vertical reflection simultaneously**!\n\n---\n\n## 3. Paper Folding and Punching (Spatial Traceback Method)\n\nTo solve paper folding and hole punch problems:\n1. Identify the chronological sequence of folds: $F_1 \\to F_2 \\to \\dots \\to \\text{Hole Punch}$.\n2. Solve in reverse chronological order: **Unfold step-by-step from the last fold to the first**.\n3. For each unfolding step, treat the fold crease as a **reflection mirror line** and reflect all existing holes across that crease.\n",
       "questions": [
         {
           "id": "apt-rr-1",

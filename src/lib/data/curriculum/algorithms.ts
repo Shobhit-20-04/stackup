@@ -176,15 +176,15 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "algo-rec-3",
-          "question": "According to the Master Theorem, what is the asymptotic solution to the recurrence T(n) = 2T(n/2) + O(n)?",
+          "question": "According to the Master Theorem, what is the asymptotic solution to the recurrence T(n) = 2T(n/2) + n^2?",
           "options": [
-            "Theta(n log n)",
-            "Theta(n^2)",
-            "Theta(n)",
-            "Theta(log n)"
+            "Θ(n^2)",
+            "Θ(n log n)",
+            "Θ(n^3)",
+            "Θ(n)"
           ],
           "correct_option": 0,
-          "explanation": "Here a = 2, b = 2, so n^(log_b a) = n^(log2 2) = n^1 = n. Since f(n) = Theta(n) = Theta(n^(log_b a)), Case 2 of Master Theorem applies: T(n) = Theta(n log n) (Mergesort recurrence)."
+          "explanation": "Here a = 2, b = 2, so n^(log_b a) = n^(log_2 2) = n^1. Since f(n) = n^2 = Ω(n^(1 + 1)), and regularity condition 2*(n/2)^2 = n^2/2 <= c * n^2 holds for c = 1/2 < 1, Master Theorem Case 3 applies: T(n) = Θ(f(n)) = Θ(n^2)."
         }
       ]
     },
@@ -236,15 +236,15 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "algo-search-3",
-          "question": "In Binary Search on an array of size N, what is the maximum number of comparisons in the worst case?",
+          "question": "In standard libraries (such as C++ std::lower_bound or Java binary search), what does lower_bound on a sorted collection return?",
           "options": [
-            "floor(log2 N) + 1",
-            "N / 2",
-            "log2(N) - 1",
-            "2 * log2(N)"
+            "An iterator/index pointing to the first element that is NOT LESS than (>=) the target value.",
+            "An iterator/index to the first element strictly greater than (>) the target value.",
+            "The exact index of target, or -1 if the element is not found.",
+            "The largest element strictly smaller than the target value."
           ],
           "correct_option": 0,
-          "explanation": "Binary search cuts the search space in half each comparison step, requiring at most floor(log2 N) + 1 comparisons to locate the element or determine its absence."
+          "explanation": "std::lower_bound locates the first element in [first, last) which does not compare less than target (i.e. element >= target). In contrast, upper_bound returns the first element strictly greater than target (element > target)."
         }
       ]
     },
@@ -297,15 +297,15 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "algo-sort-3",
-          "question": "What is the theoretical minimum number of comparisons required to sort N elements in any comparison-based sorting algorithm?",
+          "question": "What is meant by a 'Stable' sorting algorithm, and which of the following is inherently Stable?",
           "options": [
-            "Omega(N log N)",
-            "Omega(N)",
-            "Omega(N^2)",
-            "Omega(log N)"
+            "A stable sort preserves the original relative order of elements with equal keys; Merge Sort is stable.",
+            "A stable sort never runs slower than O(N log N); Quick Sort is stable.",
+            "A stable sort operates strictly with O(1) auxiliary RAM; Heap Sort is stable.",
+            "A stable sort performs no recursive function calls; Selection Sort is stable."
           ],
           "correct_option": 0,
-          "explanation": "Any comparison sort corresponds to a decision tree with N! leaves. A binary tree with N! leaves has minimum depth ceil(log2(N!)) = Omega(N log N) by Stirling's approximation."
+          "explanation": "A sorting algorithm is stable if records with identical keys appear in the same relative order in the sorted output as they were in the input. Merge Sort and Insertion Sort are naturally stable, whereas Quick Sort and Heap Sort are unstable because long-distance swaps can reorder duplicate keys."
         }
       ]
     },
@@ -329,7 +329,7 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         "Closest pair of points in 2D plane solved in O(n log n) using divide-and-conquer."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Divide+and+Conquer+Algorithms+Strassen+Karatsuba+Algorithms+lecture+tutorial",
-      "notesMarkdown": "# Divide and Conquer\n\nDivide and Conquer partitions a problem into non-overlapping subproblems of identical type.\n\n---\n\n## 1. Landmark Algorithms\n1. **Merge Sort:** Divides array into two halves ($2T(n/2)$), merges in $O(n)$ -> $O(n \\log n)$.\n2. **Karatsuba Algorithm:** Reduces multiplication of two $n$-bit integers to 3 sub-multiplications:\n   $$T(n) = 3T(n/2) + O(n) \\implies O(n^{\\log_2 3}) \\approx O(n^{1.585})$$\n3. **Strassen's Matrix Multiplication:** Replaces 8 standard block multiplications with 7:\n   $$T(n) = 7T(n/2) + O(n^2) \\implies O(n^{\\log_2 7}) \\approx O(n^{2.807})$$\n",
+      "notesMarkdown": "# Divide and Conquer Paradigm\n\nThe **Divide and Conquer** algorithmic design paradigm breaks a computationally hard problem into independent subproblems of the same type, solves them recursively, and merges their solutions into the overall answer. It forms the backbone of highly efficient sorting, computational geometry, fast arithmetic, and parallel algorithms.\n\n---\n\n## 1. The Three Algorithmic Phases\n\n1. **Divide:** Partition the initial problem instance of size $n$ into $a$ smaller, disjoint subproblems, each of size $n/b$.\n2. **Conquer:** Recursively solve each of the $a$ subproblems. If the subproblem size is sufficiently small (base case, e.g. $n \\le 1$), solve it directly via constant-time operations.\n3. **Combine:** Assemble the subproblem solutions into the unified solution for the original instance in $f(n)$ time.\n\n---\n\n## 2. Recurrence Relations & The Master Theorem\n\nA canonical divide-and-conquer recurrence follows:\n$$T(n) = aT\\left(\\frac{n}{b}\\right) + f(n)$$\nWhere:\n- $a \\ge 1$: Number of recursive subproblems generated per step.\n- $b > 1$: Factor by which input size shrinks.\n- $f(n)$: Cost of dividing the problem and combining the sub-solutions.\n\nThe runtime behavior is determined by comparing $f(n)$ with the watershed function $n^{\\log_b a}$:\n- **Case 1 ($f(n) = O(n^{\\log_b a - \\epsilon})$):** Subproblem leaves dominate $\\implies T(n) = \\Theta(n^{\\log_b a})$.\n- **Case 2 ($f(n) = \\Theta(n^{\\log_b a} \\log^k n)$):** Work is evenly distributed across levels $\\implies T(n) = \\Theta(n^{\\log_b a} \\log^{k+1} n)$.\n- **Case 3 ($f(n) = \\Omega(n^{\\log_b a + \\epsilon})$ and regularity condition holds):** Root work dominates $\\implies T(n) = \\Theta(f(n))$.\n\n---\n\n## 3. Landmark Divide and Conquer Algorithms\n\n| Algorithm | Recurrence Relation | Time Complexity | Key Algorithmic Insight |\n| :--- | :--- | :--- | :--- |\n| **Binary Search** | $T(n) = T(n/2) + O(1)$ | $O(\\log n)$ | Eliminates half the search space with one comparison in a sorted array. |\n| **Merge Sort** | $T(n) = 2T(n/2) + O(n)$ | $O(n \\log n)$ | Stable sort; linear-time two-pointer merge subroutine. |\n| **Quick Sort** | $T(n) = T(k) + T(n-k-1) + O(n)$ | $O(n \\log n)$ avg, $O(n^2)$ worst | In-place partitioning around a pivot; cache-friendly. |\n| **Karatsuba Multiplication** | $T(n) = 3T(n/2) + O(n)$ | $O(n^{\\log_2 3}) \\approx O(n^{1.585})$ | Multiplies two $n$-digit numbers using 3 sub-multiplications instead of 4: $z_1 = (x_1+x_0)(y_1+y_0) - z_2 - z_0$. |\n| **Strassen's Matrix Mult.** | $T(n) = 7T(n/2) + O(n^2)$ | $O(n^{\\log_2 7}) \\approx O(n^{2.807})$ | Multiplies $2 \\times 2$ block matrices using 7 multiplications instead of 8 using algebraic identities. |\n| **Closest Pair of Points (2D)**| $T(n) = 2T(n/2) + O(n)$ | $O(n \\log n)$ | Finds nearest pair in Euclidean plane by dividing vertically and checking a $2\\delta$ strip where each point tests at most 7 neighbors. |\n\n---\n\n## 4. Divide and Conquer vs. Dynamic Programming\n\nA common interview trap is confusing when to use Divide and Conquer versus Dynamic Programming:\n\n- **Divide and Conquer:** Suitable when subproblems are **completely disjoint and non-overlapping** (e.g. left and right halves in Merge Sort).\n- **Dynamic Programming:** Mandatory when subproblems **overlap extensively** (e.g., Fibonacci numbers, Matrix Chain Multiplication, Longest Common Subsequence). Applying pure divide and conquer to overlapping subproblems causes exponential $O(2^n)$ explosion due to redundant recalculation.\n",
       "questions": [
         {
           "id": "algo-dc-1",
@@ -417,15 +417,15 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "algo-greedy-3",
-          "question": "Which of the following problems CANNOT be solved optimally using a greedy algorithm?",
+          "question": "In Huffman Coding for lossless data compression, what data structure is used to repeatedly combine the two lowest-frequency character nodes in O(N log N) total time?",
           "options": [
-            "0/1 Knapsack Problem",
-            "Fractional Knapsack Problem",
-            "Huffman Coding",
-            "Kruskal's Minimum Spanning Tree"
+            "Min-Heap (Priority Queue)",
+            "Max-Heap",
+            "Doubly Linked List",
+            "Hash Table"
           ],
           "correct_option": 0,
-          "explanation": "The 0/1 Knapsack problem exhibits optimal substructure but lacks the greedy choice property; items cannot be broken into fractions, requiring Dynamic Programming (O(N*W)) for an exact optimal solution."
+          "explanation": "Huffman coding builds an optimal prefix tree by repeatedly extracting the two smallest frequency symbols from a Min-Heap, merging them under a new parent whose frequency is their sum, and reinserting the parent. With N symbols, 2(N-1) heap operations execute in O(N log N) total time."
         }
       ]
     },
@@ -478,15 +478,15 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "algo-dp-3",
-          "question": "What are the two mandatory properties a problem must possess to be solvable via Dynamic Programming?",
+          "question": "Why is the standard Dynamic Programming solution to the 0/1 Knapsack problem with N items and capacity W classified as 'pseudo-polynomial' rather than polynomial time?",
           "options": [
-            "Optimal Substructure and Overlapping Subproblems",
-            "Greedy Choice Property and Infinite Memory",
-            "Divide and Conquer with No Base Case",
-            "Disjoint Subproblems and Linear Traversal"
+            "Its runtime O(N * W) depends on the numeric magnitude of W, which is exponential in the input length (log2 W bits).",
+            "It produces an approximate result rather than an exact optimal solution.",
+            "It requires sorting all items by value-to-weight ratio in advance.",
+            "It can only be solved using top-down recursion with memoization."
           ],
           "correct_option": 0,
-          "explanation": "Dynamic programming applies strictly when optimal solutions to a problem can be constructed from optimal solutions to subproblems (Optimal Substructure) and the same subproblems are solved repeatedly (Overlapping Subproblems)."
+          "explanation": "An algorithm is pseudo-polynomial if its runtime is polynomial in the numeric value of an input parameter W rather than the number of bits required to encode W (which is log2 W). If W is large (e.g. 2^64), O(N * W) becomes strictly exponential in the input bit-size."
         }
       ]
     },
@@ -659,15 +659,15 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         },
         {
           "id": "algo-sp-3",
-          "question": "Why does Dijkstra's algorithm fail to guarantee correct shortest paths on graphs with negative edge weights?",
+          "question": "In the Floyd-Warshall algorithm for All-Pairs Shortest Paths, what condition indicates that the input graph contains a negative-weight cycle?",
           "options": [
-            "Because Dijkstra assumes once a vertex is marked visited with the minimum distance, its shortest path cannot be further reduced by longer paths with negative edges.",
-            "Because priority queues cannot store negative numbers.",
-            "Because Dijkstra requires undirected graphs only.",
-            "Because negative weights cause infinite recursion in BFS."
+            "If any diagonal element dist[i][i] becomes negative (< 0) at the end of the algorithm.",
+            "If the algorithm takes more than V^3 iterations.",
+            "If the sum of all elements in the distance matrix is zero.",
+            "If the path matrix contains asymmetric entries."
           ],
           "correct_option": 0,
-          "explanation": "Dijkstra relies on the greedy assumption that paths only grow longer as more edges are added. A negative edge encountered later could create a shorter path to an already-finalized vertex, invalidating its greedy invariant."
+          "explanation": "The distance from any vertex i to itself starts at 0. If dist[i][i] becomes negative (< 0) during Floyd-Warshall, it means there exists a path from i back to i with negative total weight, which confirms the existence of a negative cycle."
         }
       ]
     },
