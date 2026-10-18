@@ -6,8 +6,10 @@
   /* Default Theme: Cosmic Midnight (#0B1020 · #151D35 · #8B5CF6 · #22D3EE · #E8EEFF) */
   --background: #0b1020;
   --foreground: #e8eeff;
+  --foreground-muted: #8e9fc8;
   --surface-card: #151d35;
   --surface-card-elevated: #1b2442;
+  --surface-sunken: #0e1428;
   --border-subtle: #1e2b4d;
   --border-strong: #2d3d6e;
   --brand-primary: #8b5cf6;
@@ -27,8 +29,10 @@ html.dark:not([data-theme="lavender"]):not([data-theme="obsidian"]),
 :root:not([data-theme="lavender"]):not([data-theme="obsidian"]) {
   --background: #0b1020;
   --foreground: #e8eeff;
+  --foreground-muted: #8e9fc8;
   --surface-card: #151d35;
   --surface-card-elevated: #1b2442;
+  --surface-sunken: #0e1428;
   --border-subtle: #1e2b4d;
   --border-strong: #2d3d6e;
   --brand-primary: #8b5cf6;
@@ -42,32 +46,36 @@ html.dark:not([data-theme="lavender"]):not([data-theme="obsidian"]),
   --glow-color: rgba(139, 92, 246, 0.28);
 }
 
-/* Palette 2: Lavender Light (#F6F3FF · #E5DEFF · #A78BFA · #FFB4A2 · #34304A) */
+/* Palette 2: Lavender Light (#F6F3FF · #FFFFFF · #E5DEFF · #7C3AED · #1E1B4B) */
 html[data-theme="lavender"],
 html.light {
   --background: #f6f3ff;
-  --foreground: #34304a;
+  --foreground: #1e1b4b;
+  --foreground-muted: #64748b;
   --surface-card: #ffffff;
-  --surface-card-elevated: #e5deff;
+  --surface-card-elevated: #f1edfe;
+  --surface-sunken: #f8f6ff;
   --border-subtle: #e5deff;
   --border-strong: #d1c5f9;
   --brand-primary: #7c3aed;
   --brand-primary-hover: #6d28d9;
-  --brand-secondary: #ffb4a2;
-  --brand-accent: #a78bfa;
+  --brand-secondary: #0ea5e9;
+  --brand-accent: #8b5cf6;
   --brand-emerald: #059669;
   --brand-rose: #e11d48;
   --brand-violet: #7c3aed;
-  --text-muted: #6b6580;
-  --glow-color: rgba(167, 139, 250, 0.25);
+  --text-muted: #64748b;
+  --glow-color: rgba(124, 58, 237, 0.18);
 }
 
 /* Palette 3: Obsidian Amber (#111318 · #242731 · #FF7849 · #FFC857 · #F4F4F5) */
 html[data-theme="obsidian"] {
   --background: #111318;
   --foreground: #f4f4f5;
+  --foreground-muted: #a1a1aa;
   --surface-card: #242731;
   --surface-card-elevated: #2e333f;
+  --surface-sunken: #181b22;
   --border-subtle: #333845;
   --border-strong: #474e5f;
   --brand-primary: #ff7849;
@@ -84,14 +92,17 @@ html[data-theme="obsidian"] {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
   --color-surface: var(--surface-card);
   --color-surface-elevated: var(--surface-card-elevated);
+  --color-surface-sunken: var(--surface-sunken);
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
   --color-brand-primary: var(--brand-primary);
   --color-brand-primary-hover: var(--brand-primary-hover);
   --color-brand-secondary: var(--brand-secondary);
   --color-brand-accent: var(--brand-accent);
+  --color-text-muted: var(--text-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-slate-850: var(--surface-card);
@@ -171,6 +182,17 @@ html[data-theme="obsidian"] {
 [data-theme] .code-terminal-dark .code-terminal-badge {
   background-color: #1b2442 !important;
   color: #e8eeff !important;
+}
+
+/* Accessibility & High Contrast Safeguards for Light Themes */
+html[data-theme="lavender"] input::placeholder,
+html.light input::placeholder {
+  color: #94a3b8;
+}
+
+html[data-theme="lavender"] select,
+html.light select {
+  color: var(--foreground);
 }
 
 body {

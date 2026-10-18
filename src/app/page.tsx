@@ -104,23 +104,23 @@ export default function HomePage() {
         <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
           <div>
             <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">150+</div>
-            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">DSA Problems Mapped</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">LeetCode &amp; Striver SDE sheet</div>
+            <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">DSA Problems Mapped</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">LeetCode &amp; Striver SDE sheet</div>
           </div>
           <div>
             <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">19</div>
-            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Core CS &amp; Aptitude</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">15 CS Subjects + 4 Aptitude Tracks</div>
+            <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">Core CS &amp; Aptitude</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">15 CS Subjects + 4 Aptitude Tracks</div>
           </div>
           <div>
             <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">668</div>
-            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Verified Practice MCQs</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Timed tests with detailed solutions</div>
+            <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">Verified Practice MCQs</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Timed tests with detailed solutions</div>
           </div>
           <div>
             <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#E8EEFF]">ATS Scanner</div>
-            <div className="text-xs font-medium text-slate-500 dark:text-[#8E9FC8] mt-0.5">Resume Parser Audit</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Keyword match &amp; STAR rewrites</div>
+            <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">Resume Parser Audit</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Keyword match &amp; STAR rewrites</div>
           </div>
         </div>
       </section>
@@ -147,7 +147,7 @@ export default function HomePage() {
                   <Code2 className="w-4 h-4" />
                   <span>Algorithms &amp; Data Structures</span>
                 </span>
-                <span className="text-[11px] font-mono text-slate-400">15 Patterns</span>
+                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">15 Patterns</span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF]">
                 DSA Practice Hub
@@ -176,7 +176,7 @@ export default function HomePage() {
                   <Cpu className="w-4 h-4" />
                   <span>Engineering Subjects</span>
                 </span>
-                <span className="text-[11px] font-mono text-slate-400">15 Subjects</span>
+                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">15 Subjects</span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF]">
                 Core Computer Science
@@ -205,7 +205,7 @@ export default function HomePage() {
                   <BookOpen className="w-4 h-4" />
                   <span>Screening Aptitude</span>
                 </span>
-                <span className="text-[11px] font-mono text-slate-400">4 Categories</span>
+                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">4 Categories</span>
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-[#E8EEFF]">
                 Aptitude &amp; Reasoning
@@ -262,7 +262,7 @@ export default function HomePage() {
                 <div className="text-[11px] text-slate-500 dark:text-[#8E9FC8] mt-0.5 line-clamp-1">
                   {subject.description}
                 </div>
-                <div className="flex items-center space-x-2 mt-2 text-[10px] text-slate-400 font-mono">
+                <div className="flex items-center space-x-2 mt-2 text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                   <span>{subject.topicCount} Topics</span>
                   <span>•</span>
                   <span>{subject.questionCount} MCQs</span>
