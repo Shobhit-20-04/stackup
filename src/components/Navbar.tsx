@@ -15,8 +15,7 @@ import {
   Layers, 
   Menu, 
   X,
-  ArrowRight,
-  Sparkles
+  ArrowRight
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -133,7 +132,6 @@ export default function Navbar() {
     { name: 'Aptitude', href: '/aptitude', icon: BookOpen },
     { name: 'Core CS', href: '/core-cs', icon: Cpu },
     { name: 'DSA Hub', href: '/dsa', icon: Code2 },
-    { name: 'Striver Sheet', href: '/striver', icon: Sparkles },
     { name: 'ATS Resume', href: '/resume-checker', icon: FileCheck2 },
   ];
 

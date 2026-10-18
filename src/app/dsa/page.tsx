@@ -325,31 +325,6 @@ function DsaHubContent() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
-        {/* Striver SDE Sheet Fast Pathway Banner */}
-        <div className="mb-6 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/20 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/15 dark:bg-amber-400/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#E8EEFF]">Striver&apos;s SDE Sheet (150 Problems)</h2>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">Curated</span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-[#8E9FC8] mt-0.5">
-                Targeting FAANG/MANG software engineering interviews? Track the 150 core Striver problems with direct TakeUForward links &amp; video solutions.
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/striver"
-            className="inline-flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-xs font-semibold shadow-xs transition-all shrink-0 cursor-pointer"
-          >
-            <span>Open Striver Sheet</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
         {/* Controls: Search, Filters */}
         <div className="bg-white dark:bg-[#151D35] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] shadow-xs space-y-3.5 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">

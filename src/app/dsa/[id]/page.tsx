@@ -13,7 +13,7 @@ export default async function ProblemDeepLinkPage({ params }: ProblemPageProps) 
   
   // Canonical redirect for Striver's SDE sheet subroute
   if (cleanId === 'striver' || cleanId === 'striver-sheet') {
-    redirect('/striver');
+    redirect('/dsa');
   }
 
   // Find by exact id ('dsa-1'), numeric id ('1'), or slug ('two-sum')

@@ -70,22 +70,6 @@ export default function NotFound() {
 
         {/* Quick Prep Modules Nav Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left max-w-xl mx-auto pt-2">
-          {/* Striver SDE Sheet */}
-          <Link
-            href="/striver"
-            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-indigo-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
-          >
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-              <BookOpen className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-indigo-500 transition-colors">
-                Striver&apos;s SDE Sheet
-              </div>
-              <div className="text-xs text-slate-500 dark:text-zinc-400">150 problems mapped with TakeUForward</div>
-            </div>
-          </Link>
-
           {/* DSA Practice Hub */}
           <Link
             href="/dsa"
@@ -137,7 +121,7 @@ export default function NotFound() {
           {/* ATS Resume Checker */}
           <Link
             href="/resume-checker"
-            className="sm:col-span-2 p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-rose-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
+            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-rose-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
               <FileCheck2 className="w-5 h-5" />
