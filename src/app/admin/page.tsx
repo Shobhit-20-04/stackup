@@ -872,32 +872,51 @@ export default function AdminDashboardPage() {
               )}
 
               <form onSubmit={handleResetVerify} className="space-y-4">
-                {!isRecoverySession && (
+                {!resetEmail && (
                   <div>
-                    <label htmlFor="reset-code" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                      6-Digit Verification Code (Optional if using email link)
+                    <label htmlFor="verify-email" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      Administrator Email
                     </label>
                     <input
-                      id="reset-code"
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      maxLength={6}
-                      value={resetCode}
+                      id="verify-email"
+                      type="email"
+                      value={resetEmail}
                       onChange={(e) => {
-                        setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                        setResetEmail(e.target.value);
                         if (resetError) setResetError('');
                       }}
-                      placeholder="000000"
-                      autoFocus
-                      autoComplete="one-time-code"
-                      className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="admin@example.com"
+                      required
+                      className="w-full px-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
                     />
-                    <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                      If you click the &quot;Reset password&quot; link in your email, you do not need this code.
-                    </p>
                   </div>
                 )}
+
+                <div>
+                  <label htmlFor="reset-code" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    6-Digit Verification Code
+                  </label>
+                  <input
+                    id="reset-code"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
+                    value={resetCode}
+                    onChange={(e) => {
+                      setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                      if (resetError) setResetError('');
+                    }}
+                    placeholder="000000"
+                    autoFocus
+                    autoComplete="one-time-code"
+                    required
+                    className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    Enter the 6-digit cryptographic verification code to authenticate.
+                  </p>
+                </div>
 
                 <div>
                   <label htmlFor="reset-new-key" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">

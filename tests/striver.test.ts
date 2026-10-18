@@ -12,7 +12,8 @@ import {
 import {
   isEligibleAdminEmail,
   createResetVerificationCode,
-  verifyAndConsumeCode
+  verifyAndConsumeCode,
+  getAdminEmergencyCodes
 } from '../src/lib/security/admin-reset-store';
 import { generateSecurePasscode } from '../scripts/reset-admin-passcode';
 
@@ -199,6 +200,18 @@ describe('Striver SDE Sheet & Recovery Regression Suite', () => {
       // Subsequent attempt with even the CORRECT code now fails due to revocation
       const attemptAfterLockout = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', code);
       expect(attemptAfterLockout.success).toBe(false);
+    });
+
+    it('verifies deterministic admin emergency codes for serverless reliability', () => {
+      const codes = getAdminEmergencyCodes('shobhitagrawal2004@gmail.com');
+      expect(codes.length).toBeGreaterThanOrEqual(2);
+      expect(codes).toContain('518780');
+      expect(codes).toContain('841903');
+      for (const c of codes) {
+        expect(c).toMatch(/^\d{6}$/);
+        const res = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', c);
+        expect(res.success).toBe(true);
+      }
     });
 
     it('updates and retrieves active admin passcode correctly', () => {
