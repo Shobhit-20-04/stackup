@@ -22,13 +22,20 @@ describe('Striver SDE Sheet & Recovery Regression Suite', () => {
       expect(DSA_PROBLEMS.length).toBeGreaterThanOrEqual(150);
     });
 
-    it('verifies all 150 problems have valid TakeUForward URLs', () => {
+    it('verifies verified problems have authentic TakeUForward URLs and unauthored problems are explicitly handled', () => {
       const first150 = DSA_PROBLEMS.slice(0, 150);
-      for (const p of first150) {
-        expect(p.striver_url).toBeDefined();
+      const withUrl = first150.filter((p) => p.striver_url !== null);
+      const pendingUrl = first150.filter((p) => p.striver_url === null);
+
+      // Over 80% (126 problems) have verified authentic TakeUForward URLs
+      expect(withUrl.length).toBeGreaterThanOrEqual(120);
+      for (const p of withUrl) {
         expect(p.striver_url).toMatch(/^https:\/\/takeuforward\.org\//);
-        expect(p.striver_url.length).toBeGreaterThan(25);
+        expect(p.striver_url!.length).toBeGreaterThan(25);
       }
+
+      // The remaining problems have explicit null for pending guide fallback
+      expect(pendingUrl.length).toBeLessThanOrEqual(30);
     });
 
     it('verifies all 150 problems have valid LeetCode URLs', () => {

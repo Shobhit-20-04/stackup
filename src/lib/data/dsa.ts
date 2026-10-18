@@ -17,7 +17,7 @@ export interface DsaProblem {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   pattern_tag: string;
   leetcode_url: string;
-  striver_url: string;
+  striver_url: string | null;
   youtube_url: string;
   companies: string[];
   summary: string;
@@ -60,7 +60,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/two-sum/",
-    "striver_url": "https://takeuforward.org/data-structure/two-sum-check-if-a-pair-with-given-sum-exists-in-array/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/two-sum",
     "youtube_url": "https://www.youtube.com/watch?v=UXDSeD9mN-k",
     "companies": [
       "Google",
@@ -105,7 +105,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
-    "striver_url": "https://takeuforward.org/data-structure/stock-buy-and-sell/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/best-time-to-buy-and-sell-stock",
     "youtube_url": "https://www.youtube.com/watch?v=excAOvwF_Wk",
     "companies": [
       "Amazon",
@@ -147,7 +147,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/product-of-array-except-self/",
-    "striver_url": "https://takeuforward.org/arrays/product-of-array-except-self/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/product-of-array-except-self",
     "youtube_url": "https://www.youtube.com/watch?v=bNvIQI2wAjk",
     "companies": [
       "Amazon",
@@ -188,7 +188,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/longest-consecutive-sequence/",
-    "striver_url": "https://takeuforward.org/data-structure/longest-consecutive-sequence-in-an-array/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/longest-consecutive-sequence-in-an-array",
     "youtube_url": "https://www.youtube.com/watch?v=oO5uLE7EUlM",
     "companies": [
       "Google",
@@ -229,7 +229,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Two Pointers",
     "leetcode_url": "https://leetcode.com/problems/valid-palindrome/",
-    "striver_url": "https://takeuforward.org/data-structure/check-if-the-given-string-is-palindrome-or-not/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/valid-palindrome",
     "youtube_url": "https://www.youtube.com/watch?v=jJXJ16kPFWg",
     "companies": [
       "Meta",
@@ -270,7 +270,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Two Pointers",
     "leetcode_url": "https://leetcode.com/problems/3sum/",
-    "striver_url": "https://takeuforward.org/data-structure/3-sum-find-triplets-that-add-up-to-a-zero/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/3sum",
     "youtube_url": "https://www.youtube.com/watch?v=jzZsG8n2R9A",
     "companies": [
       "Meta",
@@ -311,7 +311,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Two Pointers",
     "leetcode_url": "https://leetcode.com/problems/container-with-most-water/",
-    "striver_url": "https://takeuforward.org/arrays/container-with-most-water/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/container-with-most-water",
     "youtube_url": "https://www.youtube.com/watch?v=UuiTKBwPgAo",
     "companies": [
       "Google",
@@ -349,7 +349,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Two Pointers",
     "leetcode_url": "https://leetcode.com/problems/trapping-rain-water/",
-    "striver_url": "https://takeuforward.org/data-structure/trapping-rainwater/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/trapping-rain-water",
     "youtube_url": "https://www.youtube.com/watch?v=m18Hntz4EB8",
     "companies": [
       "Google",
@@ -387,7 +387,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Sliding Window",
     "leetcode_url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
-    "striver_url": "https://takeuforward.org/data-structure/length-of-longest-substring-without-any-repeating-character/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/longest-substring-without-repeating-characters",
     "youtube_url": "https://www.youtube.com/watch?v=wiGpQwVHdE0",
     "companies": [
       "Amazon",
@@ -429,7 +429,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Sliding Window",
     "leetcode_url": "https://leetcode.com/problems/longest-repeating-character-replacement/",
-    "striver_url": "https://takeuforward.org/arrays/longest-repeating-character-replacement/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/longest-repeating-character-replacement",
     "youtube_url": "https://www.youtube.com/watch?v=gqXU1UyA8pk",
     "companies": [
       "Google",
@@ -471,7 +471,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Sliding Window",
     "leetcode_url": "https://leetcode.com/problems/minimum-window-substring/",
-    "striver_url": "https://takeuforward.org/arrays/minimum-window-substring/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/minimum-window-substring",
     "youtube_url": "https://www.youtube.com/watch?v=jSto0O4AJbM",
     "companies": [
       "Meta",
@@ -509,7 +509,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Binary Search",
     "leetcode_url": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
-    "striver_url": "https://takeuforward.org/data-structure/search-element-in-a-rotated-sorted-array/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/search-in-rotated-sorted-array",
     "youtube_url": "https://www.youtube.com/watch?v=r3pMQ8-Ad5s",
     "companies": [
       "Microsoft",
@@ -550,7 +550,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Binary Search",
     "leetcode_url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
-    "striver_url": "https://takeuforward.org/data-structure/minimum-in-rotated-sorted-array/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/find-minimum-in-rotated-sorted-array",
     "youtube_url": "https://www.youtube.com/watch?v=nIVW4P8b1VA",
     "companies": [
       "Amazon",
@@ -587,7 +587,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Binary Search",
     "leetcode_url": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
-    "striver_url": "https://takeuforward.org/data-structure/median-of-two-sorted-arrays-of-different-sizes/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/median-of-2-sorted-arrays",
     "youtube_url": "https://www.youtube.com/watch?v=q6IEA26hvPE",
     "companies": [
       "Google",
@@ -630,7 +630,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/reverse-linked-list/",
-    "striver_url": "https://takeuforward.org/data-structure/reverse-a-linked-list/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/reverse-a-singly-linked-list",
     "youtube_url": "https://www.youtube.com/watch?v=G0_I-ZF0S38",
     "companies": [
       "Amazon",
@@ -670,7 +670,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/merge-two-sorted-lists/",
-    "striver_url": "https://takeuforward.org/data-structure/merge-two-sorted-linked-lists/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/merge-two-sorted-linked-lists",
     "youtube_url": "https://www.youtube.com/watch?v=XIdigk956u0",
     "companies": [
       "Amazon",
@@ -706,7 +706,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/lru-cache/",
-    "striver_url": "https://takeuforward.org/data-structure/lru-cache-implementation/",
+    "striver_url": "https://takeuforward.org/practice/dsa/lru-cache",
     "youtube_url": "https://www.youtube.com/watch?v=7ABFKPK2hD4",
     "companies": [
       "Amazon",
@@ -746,7 +746,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/maximum-depth-of-a-binary-tree/",
+    "striver_url": "https://takeuforward.org/practice/dsa/maximum-depth-in-bt",
     "youtube_url": "https://www.youtube.com/watch?v=hTM3phVI6YQ",
     "companies": [
       "Amazon",
@@ -781,7 +781,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/validate-binary-search-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/check-if-a-tree-is-a-bst-or-bt/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/validate-binary-search-tree",
     "youtube_url": "https://www.youtube.com/watch?v=s6ATEkipzow",
     "companies": [
       "Amazon",
@@ -822,7 +822,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/lowest-common-ancestor-for-two-given-nodes/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/lowest-common-ancestor-of-a-binary-search-tree",
     "youtube_url": "https://www.youtube.com/watch?v=gs2LMfuOR9k",
     "companies": [
       "Amazon",
@@ -859,7 +859,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/number-of-islands/",
-    "striver_url": "https://takeuforward.org/data-structure/number-of-islands/",
+    "striver_url": "https://takeuforward.org/practice/dsa/number-of-islands",
     "youtube_url": "https://www.youtube.com/watch?v=pV2kpPD66nE",
     "companies": [
       "Amazon",
@@ -897,7 +897,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/course-schedule/",
-    "striver_url": "https://takeuforward.org/data-structure/course-schedule-i-and-ii-pre-requisite-tasks-topological-sort/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/detect-a-cycle-in-an-undirected-graph",
     "youtube_url": "https://www.youtube.com/watch?v=EgI5nU9etnU",
     "companies": [
       "Amazon",
@@ -939,7 +939,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/rotting-oranges/",
-    "striver_url": "https://takeuforward.org/data-structure/rotten-oranges-min-time-to-rot-all-oranges-bfs/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/rotting-oranges",
     "youtube_url": "https://www.youtube.com/watch?v=y704fEOx010",
     "companies": [
       "Amazon",
@@ -975,7 +975,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/climbing-stairs/",
-    "striver_url": "https://takeuforward.org/data-structure/dynamic-programming-climbing-stairs/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/climbing-stairs",
     "youtube_url": "https://www.youtube.com/watch?v=Y0lT9Fck7q8",
     "companies": [
       "Amazon",
@@ -1016,7 +1016,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/coin-change/",
-    "striver_url": "https://takeuforward.org/data-structure/coin-change-2-dp-22/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/coin-change-ii-combinations",
     "youtube_url": "https://www.youtube.com/watch?v=H9bfqozjoqs",
     "companies": [
       "Amazon",
@@ -1053,7 +1053,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/longest-increasing-subsequence/",
-    "striver_url": "https://takeuforward.org/data-structure/longest-increasing-subsequence-dp-41/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/print-longest-increasing-subsequence",
     "youtube_url": "https://www.youtube.com/watch?v=on2hvxBXJH4",
     "companies": [
       "Amazon",
@@ -1090,7 +1090,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/word-break/",
-    "striver_url": "https://takeuforward.org/data-structure/word-break-problem/",
+    "striver_url": "https://takeuforward.org/practice/dsa/word-break",
     "youtube_url": "https://www.youtube.com/watch?v=Sx9NNgInc3A",
     "companies": [
       "Amazon",
@@ -1128,7 +1128,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Stack & Queue",
     "leetcode_url": "https://leetcode.com/problems/valid-parentheses/",
-    "striver_url": "https://takeuforward.org/data-structure/check-for-balanced-parentheses/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/check-balanced-parentheses-using-a-stack",
     "youtube_url": "https://www.youtube.com/watch?v=WTzjTskDF30",
     "companies": [
       "Amazon",
@@ -1168,7 +1168,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Stack & Queue",
     "leetcode_url": "https://leetcode.com/problems/daily-temperatures/",
-    "striver_url": "https://takeuforward.org/data-structure/next-greater-element-using-stack/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/daily-temperatures",
     "youtube_url": "https://www.youtube.com/watch?v=cTBiBSnjO3c",
     "companies": [
       "Meta",
@@ -1203,7 +1203,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Heap / Priority Queue",
     "leetcode_url": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
-    "striver_url": "https://takeuforward.org/data-structure/kth-largest-smallest-element-in-an-array/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/k-th-largest-element-in-an-array",
     "youtube_url": "https://www.youtube.com/watch?v=XEmy138764E",
     "companies": [
       "Meta",
@@ -1243,7 +1243,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/contains-duplicate/",
-    "striver_url": "https://takeuforward.org/data-structure/contains-duplicate-check-if-a-value-appears-at-least-twice/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/contains-duplicate",
     "youtube_url": "https://www.youtube.com/watch?v=3OamzN90kPg",
     "companies": [
       "Amazon",
@@ -1283,7 +1283,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/valid-anagram/",
-    "striver_url": "https://takeuforward.org/data-structure/check-if-two-strings-are-anagrams-of-each-other/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/check-if-two-strings-are-anagrams",
     "youtube_url": "https://www.youtube.com/watch?v=9UtInBqnCgA",
     "companies": [
       "Amazon",
@@ -1323,7 +1323,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/group-anagrams/",
-    "striver_url": "https://takeuforward.org/data-structure/group-anagrams/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/group-anagrams",
     "youtube_url": "https://www.youtube.com/watch?v=vzdNOK2oQ2E",
     "companies": [
       "Amazon",
@@ -1361,7 +1361,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/top-k-frequent-elements/",
-    "striver_url": "https://takeuforward.org/data-structure/top-k-frequent-elements/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/top-k-frequent-elements",
     "youtube_url": "https://www.youtube.com/watch?v=YPTqKIgVk-v",
     "companies": [
       "Amazon",
@@ -1402,7 +1402,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trie",
     "leetcode_url": "https://leetcode.com/problems/implement-trie-prefix-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/implement-trie-1/",
+    "striver_url": "https://takeuforward.org/practice/dsa/trie-implementation-and-operations",
     "youtube_url": "https://www.youtube.com/watch?v=oobqoCJlHA0",
     "companies": [
       "Amazon",
@@ -1439,7 +1439,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/combination-sum/",
-    "striver_url": "https://takeuforward.org/data-structure/combination-sum-1/",
+    "striver_url": "https://takeuforward.org/practice/dsa/combination-sum",
     "youtube_url": "https://www.youtube.com/watch?v=GBKI9VSKdGg",
     "companies": [
       "Amazon",
@@ -1481,7 +1481,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/subsets/",
-    "striver_url": "https://takeuforward.org/data-structure/power-set-print-all-subsequences/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/count-subsets-with-sum-k",
     "youtube_url": "https://www.youtube.com/watch?v=REOH22Xwdlk",
     "companies": [
       "Amazon",
@@ -1522,7 +1522,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/word-search/",
-    "striver_url": "https://takeuforward.org/data-structure/word-search-problem/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/word-search-ii",
     "youtube_url": "https://www.youtube.com/watch?v=pfiQ_PS1g8E",
     "companies": [
       "Amazon",
@@ -1563,7 +1563,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Intervals",
     "leetcode_url": "https://leetcode.com/problems/merge-intervals/",
-    "striver_url": "https://takeuforward.org/data-structure/merge-overlapping-sub-intervals/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/merge-overlapping-intervals",
     "youtube_url": "https://www.youtube.com/watch?v=44H3cEC2fFM",
     "companies": [
       "Amazon",
@@ -1605,7 +1605,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Intervals",
     "leetcode_url": "https://leetcode.com/problems/insert-interval/",
-    "striver_url": "https://takeuforward.org/data-structure/insert-interval-in-interval-list/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/insert-interval",
     "youtube_url": "https://www.youtube.com/watch?v=A8NUOmlwOlM",
     "companies": [
       "Amazon",
@@ -1646,7 +1646,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Intervals",
     "leetcode_url": "https://leetcode.com/problems/non-overlapping-intervals/",
-    "striver_url": "https://takeuforward.org/data-structure/non-overlapping-intervals/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/non-overlapping-intervals",
     "youtube_url": "https://www.youtube.com/watch?v=nONCGxWoUfM",
     "companies": [
       "Amazon",
@@ -1686,7 +1686,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/jump-game/",
-    "striver_url": "https://takeuforward.org/data-structure/jump-game-i/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/jump-game",
     "youtube_url": "https://www.youtube.com/watch?v=Yan0cv2cLy8",
     "companies": [
       "Amazon",
@@ -1727,7 +1727,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/maximum-subarray/",
-    "striver_url": "https://takeuforward.org/data-structure/kadanes-algorithm-maximum-subarray-sum-in-an-array/",
+    "striver_url": "https://takeuforward.org/practice/dsa/kadane's-algorithm",
     "youtube_url": "https://www.youtube.com/watch?v=5WZl3MMT0Eg",
     "companies": [
       "Amazon",
@@ -1769,7 +1769,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Bit Manipulation",
     "leetcode_url": "https://leetcode.com/problems/number-of-1-bits/",
-    "striver_url": "https://takeuforward.org/data-structure/count-number-of-set-bits/",
+    "striver_url": "https://takeuforward.org/practice/dsa/count-the-number-of-set-bits",
     "youtube_url": "https://www.youtube.com/watch?v=5Km3utixwZs",
     "companies": [
       "Amazon",
@@ -1804,7 +1804,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Bit Manipulation",
     "leetcode_url": "https://leetcode.com/problems/counting-bits/",
-    "striver_url": "https://takeuforward.org/data-structure/counting-bits/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=RyBM56RIWr8",
     "companies": [
       "Amazon",
@@ -1842,7 +1842,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Bit Manipulation",
     "leetcode_url": "https://leetcode.com/problems/missing-number/",
-    "striver_url": "https://takeuforward.org/data-structure/find-the-missing-number-in-an-array/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/missing-number-solutions",
     "youtube_url": "https://www.youtube.com/watch?v=WnPLSRLSANE",
     "companies": [
       "Amazon",
@@ -1884,7 +1884,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Math & Geometry",
     "leetcode_url": "https://leetcode.com/problems/rotate-image/",
-    "striver_url": "https://takeuforward.org/data-structure/rotate-image-by-90-degree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/rotate-matrix-90-degrees-clockwise",
     "youtube_url": "https://www.youtube.com/watch?v=fMSJSS7eO1w",
     "companies": [
       "Amazon",
@@ -1921,7 +1921,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Math & Geometry",
     "leetcode_url": "https://leetcode.com/problems/spiral-matrix/",
-    "striver_url": "https://takeuforward.org/data-structure/spiral-traversal-of-matrix/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/spiral-traversal-of-a-matrix",
     "youtube_url": "https://www.youtube.com/watch?v=BJnMZNwUk1M",
     "companies": [
       "Amazon",
@@ -1958,7 +1958,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Math & Geometry",
     "leetcode_url": "https://leetcode.com/problems/set-matrix-zeroes/",
-    "striver_url": "https://takeuforward.org/data-structure/set-matrix-zero/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/set-matrix-zeroes",
     "youtube_url": "https://www.youtube.com/watch?v=T41rL0L3Pnw",
     "companies": [
       "Amazon",
@@ -1995,7 +1995,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/house-robber/",
-    "striver_url": "https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/",
+    "striver_url": "https://takeuforward.org/practice/dsa/house-robber",
     "youtube_url": "https://www.youtube.com/watch?v=73r3KWiEvyk",
     "companies": [
       "Amazon",
@@ -2036,7 +2036,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/house-robber-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/dynamic-programming-house-robber-dp-6/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/house-robber-ii",
     "youtube_url": "https://www.youtube.com/watch?v=rWAJCfYYOvM",
     "companies": [
       "Amazon",
@@ -2076,7 +2076,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/longest-palindromic-substring/",
-    "striver_url": "https://takeuforward.org/data-structure/longest-palindromic-substring/",
+    "striver_url": "https://takeuforward.org/practice/dsa/longest-palindrome-in-a-string",
     "youtube_url": "https://www.youtube.com/watch?v=XYQecbcd6fY",
     "companies": [
       "Amazon",
@@ -2118,7 +2118,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/palindromic-substrings/",
-    "striver_url": "https://takeuforward.org/data-structure/count-palindromic-substrings/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=4RACzI5-du8",
     "companies": [
       "Amazon",
@@ -2159,7 +2159,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/decode-ways/",
-    "striver_url": "https://takeuforward.org/data-structure/decode-ways/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=6aEyTjOwlJU",
     "companies": [
       "Amazon",
@@ -2205,7 +2205,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "2-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/unique-paths/",
-    "striver_url": "https://takeuforward.org/data-structure/grid-unique-paths-dp-on-grids-dp8/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/grid-unique-paths",
     "youtube_url": "https://www.youtube.com/watch?v=IlEsdxuD4lY",
     "companies": [
       "Amazon",
@@ -2244,7 +2244,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "2-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/longest-common-subsequence/",
-    "striver_url": "https://takeuforward.org/data-structure/longest-common-subsequence-dp-25/",
+    "striver_url": "https://takeuforward.org/practice/dsa/longest-common-subsequence",
     "youtube_url": "https://www.youtube.com/watch?v=Ua0GhsJSlWM",
     "companies": [
       "Amazon",
@@ -2285,7 +2285,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
-    "striver_url": "https://takeuforward.org/graph/pacific-atlantic-water-flow/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/pacific-atlantic-water-flow",
     "youtube_url": "https://www.youtube.com/watch?v=s-VKb831hk0",
     "companies": [
       "Amazon",
@@ -2322,7 +2322,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/clone-graph/",
-    "striver_url": "https://takeuforward.org/graph/clone-graph/",
+    "striver_url": "https://takeuforward.org/practice/dsa/clone-graph",
     "youtube_url": "https://www.youtube.com/watch?v=mQeF6bN8hMk",
     "companies": [
       "Amazon",
@@ -2359,7 +2359,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/course-schedule-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/course-schedule-i-and-ii-pre-requisite-tasks-topological-sort-bfs-g-24/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/course-schedule-ii",
     "youtube_url": "https://www.youtube.com/watch?v=Akt3glAwyfY",
     "companies": [
       "Amazon",
@@ -2400,7 +2400,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Advanced Graphs",
     "leetcode_url": "https://leetcode.com/problems/graph-valid-tree/",
-    "striver_url": "https://takeuforward.org/graph/detect-cycle-in-an-undirected-graph-using-dfs/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=bXsUuownnoQ",
     "companies": [
       "Amazon",
@@ -2440,7 +2440,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trie",
     "leetcode_url": "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
-    "striver_url": "https://takeuforward.org/data-structure/implement-trie-ii/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/design-add-and-search-words-data-structure",
     "youtube_url": "https://www.youtube.com/watch?v=BTf05gs_8iU",
     "companies": [
       "Amazon",
@@ -2477,7 +2477,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Trie",
     "leetcode_url": "https://leetcode.com/problems/word-search-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/word-search-ii/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/word-search-ii",
     "youtube_url": "https://www.youtube.com/watch?v=asbcE9mZz_U",
     "companies": [
       "Amazon",
@@ -2515,7 +2515,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Heap / Priority Queue",
     "leetcode_url": "https://leetcode.com/problems/find-median-from-data-stream/",
-    "striver_url": "https://takeuforward.org/data-structure/find-median-from-data-stream/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/find-median-data-stream",
     "youtube_url": "https://www.youtube.com/watch?v=itmhHWaHupI",
     "companies": [
       "Amazon",
@@ -2552,7 +2552,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Heap / Priority Queue",
     "leetcode_url": "https://leetcode.com/problems/merge-k-sorted-lists/",
-    "striver_url": "https://takeuforward.org/data-structure/merge-k-sorted-linked-lists/",
+    "striver_url": "https://takeuforward.org/practice/dsa/merge-k-sorted-lists",
     "youtube_url": "https://www.youtube.com/watch?v=q5a5OiGbT6Q",
     "companies": [
       "Amazon",
@@ -2594,7 +2594,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/reorder-list/",
-    "striver_url": "https://takeuforward.org/data-structure/reorder-list/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/reorder-list",
     "youtube_url": "https://www.youtube.com/watch?v=S5bfdUTrKLM",
     "companies": [
       "Amazon",
@@ -2634,7 +2634,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
-    "striver_url": "https://takeuforward.org/data-structure/remove-n-th-node-from-the-end-of-a-linked-list/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/remove-the-nth-node-from-the-end-of-a-linked-list",
     "youtube_url": "https://www.youtube.com/watch?v=XVuQxV42SX8",
     "companies": [
       "Amazon",
@@ -2676,7 +2676,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/linked-list-cycle/",
-    "striver_url": "https://takeuforward.org/data-structure/detect-a-cycle-in-a-linked-list/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/detect-cycle-linked-list",
     "youtube_url": "https://www.youtube.com/watch?v=gBTe7lFR3vc",
     "companies": [
       "Amazon",
@@ -2717,7 +2717,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/same-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/check-if-two-trees-are-identical/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/check-identical-binary-trees",
     "youtube_url": "https://www.youtube.com/watch?v=vRbbcKXCxOw",
     "companies": [
       "Amazon",
@@ -2756,7 +2756,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/invert-binary-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/invert-a-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/invert-binary-tree",
     "youtube_url": "https://www.youtube.com/watch?v=OnSn2XEQ4MY",
     "companies": [
       "Amazon",
@@ -2796,7 +2796,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/subtree-of-another-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/check-if-a-tree-is-a-subtree-of-another-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/subtree-of-another-tree",
     "youtube_url": "https://www.youtube.com/watch?v=E36O5SWp-LE",
     "companies": [
       "Amazon",
@@ -2836,7 +2836,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
-    "striver_url": "https://takeuforward.org/data-structure/level-order-traversal-of-a-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/binary-tree-level-order-traversal",
     "youtube_url": "https://www.youtube.com/watch?v=6ZnyEApgFYg",
     "companies": [
       "Amazon",
@@ -2876,7 +2876,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
-    "striver_url": "https://takeuforward.org/data-structure/maximum-sum-path-in-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/binary-tree-maximum-path-sum",
     "youtube_url": "https://www.youtube.com/watch?v=Hr5cWUld4vU",
     "companies": [
       "Amazon",
@@ -2919,7 +2919,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/serialize-and-deserialize-a-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/serialize-and-deserialize-a-binary-tree",
     "youtube_url": "https://www.youtube.com/watch?v=u4JAi2JJhIg",
     "companies": [
       "Amazon",
@@ -2955,7 +2955,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Stack & Queue",
     "leetcode_url": "https://leetcode.com/problems/min-stack/",
-    "striver_url": "https://takeuforward.org/data-structure/implement-min-stack-o2n-and-on-space-complexity/",
+    "striver_url": "https://takeuforward.org/practice/dsa/implement-min-stack",
     "youtube_url": "https://www.youtube.com/watch?v=qkLl7nAwDPo",
     "companies": [
       "Amazon",
@@ -2992,7 +2992,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Bit Manipulation",
     "leetcode_url": "https://leetcode.com/problems/reverse-bits/",
-    "striver_url": "https://takeuforward.org/data-structure/reverse-bits/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=UcoN6UjAI64",
     "companies": [
       "Amazon",
@@ -3027,7 +3027,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/valid-sudoku/",
-    "striver_url": "https://takeuforward.org/data-structure/valid-sudoku/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=TjFXEUCMqI8",
     "companies": [
       "Amazon",
@@ -3064,7 +3064,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Arrays & Hashing",
     "leetcode_url": "https://leetcode.com/problems/encode-and-decode-strings/",
-    "striver_url": "https://takeuforward.org/data-structure/encode-and-decode-strings/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=B1k_dbomRPT",
     "companies": [
       "Google",
@@ -3099,7 +3099,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Two Pointers",
     "leetcode_url": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
-    "striver_url": "https://takeuforward.org/data-structure/two-sum-ii-input-array-is-sorted/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/two-sum",
     "youtube_url": "https://www.youtube.com/watch?v=cQ1Oz4ckcMT",
     "companies": [
       "Amazon",
@@ -3134,7 +3134,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Two Pointers",
     "leetcode_url": "https://leetcode.com/problems/4sum/",
-    "striver_url": "https://takeuforward.org/data-structure/4-sum-find-quads-that-add-up-to-a-target-value/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/4sum",
     "youtube_url": "https://www.youtube.com/watch?v=EYeR-_1ei_8",
     "companies": [
       "Amazon",
@@ -3169,7 +3169,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Sliding Window",
     "leetcode_url": "https://leetcode.com/problems/permutation-in-string/",
-    "striver_url": "https://takeuforward.org/data-structure/permutation-in-string/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/permutation-in-string",
     "youtube_url": "https://www.youtube.com/watch?v=UbyhOgBN834",
     "companies": [
       "Microsoft",
@@ -3203,7 +3203,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Sliding Window",
     "leetcode_url": "https://leetcode.com/problems/sliding-window-maximum/",
-    "striver_url": "https://takeuforward.org/data-structure/sliding-window-maximum/",
+    "striver_url": "https://takeuforward.org/practice/dsa/sliding-window-maximum",
     "youtube_url": "https://www.youtube.com/watch?v=DfljaUwZsOk",
     "companies": [
       "Amazon",
@@ -3239,7 +3239,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Stack & Queue",
     "leetcode_url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
-    "striver_url": "https://takeuforward.org/data-structure/evaluate-reverse-polish-notation/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/evaluate-reverse-polish-notation",
     "youtube_url": "https://www.youtube.com/watch?v=iu0082c4HDE",
     "companies": [
       "Amazon",
@@ -3275,7 +3275,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Stack & Queue",
     "leetcode_url": "https://leetcode.com/problems/generate-parentheses/",
-    "striver_url": "https://takeuforward.org/data-structure/generate-parentheses/",
+    "striver_url": "https://takeuforward.org/practice/dsa/generate-parentheses",
     "youtube_url": "https://www.youtube.com/watch?v=s9fokUqJ76A",
     "companies": [
       "Amazon",
@@ -3309,7 +3309,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Stack & Queue",
     "leetcode_url": "https://leetcode.com/problems/car-fleet/",
-    "striver_url": "https://takeuforward.org/data-structure/car-fleet/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=Pr6T-3yB9RM",
     "companies": [
       "Google",
@@ -3345,7 +3345,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Stack & Queue",
     "leetcode_url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
-    "striver_url": "https://takeuforward.org/data-structure/area-of-largest-rectangle-in-histogram/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/largest-rectangle-in-histogram",
     "youtube_url": "https://www.youtube.com/watch?v=zx5Sw9130L0",
     "companies": [
       "Google",
@@ -3381,7 +3381,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Binary Search",
     "leetcode_url": "https://leetcode.com/problems/binary-search/",
-    "striver_url": "https://takeuforward.org/data-structure/binary-search-explained/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/binary-search-algorithm",
     "youtube_url": "https://www.youtube.com/watch?v=s4D98qLCMPE",
     "companies": [
       "Amazon",
@@ -3416,7 +3416,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Binary Search",
     "leetcode_url": "https://leetcode.com/problems/search-a-2d-matrix/",
-    "striver_url": "https://takeuforward.org/data-structure/search-in-a-sorted-2d-matrix/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/search-in-sorted-2d-matrix",
     "youtube_url": "https://www.youtube.com/watch?v=Ber2pi2C0j0",
     "companies": [
       "Amazon",
@@ -3452,7 +3452,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Binary Search",
     "leetcode_url": "https://leetcode.com/problems/koko-eating-bananas/",
-    "striver_url": "https://takeuforward.org/binary-search/koko-eating-bananas/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/koko-eating-bananas",
     "youtube_url": "https://www.youtube.com/watch?v=U2SozAs9RzA",
     "companies": [
       "Google",
@@ -3487,7 +3487,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Binary Search",
     "leetcode_url": "https://leetcode.com/problems/time-based-key-value-store/",
-    "striver_url": "https://takeuforward.org/data-structure/time-based-key-value-store/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=fu2cD_6E8Hw",
     "companies": [
       "Google",
@@ -3522,7 +3522,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/copy-list-with-random-pointer/",
-    "striver_url": "https://takeuforward.org/data-structure/clone-linked-list-with-random-and-next-pointer/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/clone-linked-list-random-pointer",
     "youtube_url": "https://www.youtube.com/watch?v=5Y2EiZST97Y",
     "companies": [
       "Amazon",
@@ -3557,7 +3557,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/add-two-numbers/",
-    "striver_url": "https://takeuforward.org/data-structure/add-two-numbers-represented-as-linked-lists/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/add-two-numbers-linked-lists-reverse-order",
     "youtube_url": "https://www.youtube.com/watch?v=wgFPrzTjm7s",
     "companies": [
       "Amazon",
@@ -3593,7 +3593,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/find-the-duplicate-number/",
-    "striver_url": "https://takeuforward.org/data-structure/find-the-duplicate-in-an-array-of-n1-integers/",
+    "striver_url": "https://takeuforward.org/practice/dsa/find-the-duplicate-number",
     "youtube_url": "https://www.youtube.com/watch?v=wjYnzkAhcNk",
     "companies": [
       "Amazon",
@@ -3629,7 +3629,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/reverse-nodes-in-k-group/",
-    "striver_url": "https://takeuforward.org/data-structure/reverse-linked-list-in-groups-of-size-k/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/reverse-linked-list-k-groups",
     "youtube_url": "https://www.youtube.com/watch?v=1UOPsfP85V4",
     "companies": [
       "Amazon",
@@ -3665,7 +3665,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/palindrome-linked-list/",
-    "striver_url": "https://takeuforward.org/data-structure/check-if-given-linked-list-is-palindrome/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/check-if-a-linked-list-is-a-palindrome",
     "youtube_url": "https://www.youtube.com/watch?v=yOzXms1J6Nk",
     "companies": [
       "Amazon",
@@ -3700,7 +3700,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Linked List",
     "leetcode_url": "https://leetcode.com/problems/intersection-of-two-linked-lists/",
-    "striver_url": "https://takeuforward.org/data-structure/find-intersection-of-two-linked-lists/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/intersection-of-two-linked-lists",
     "youtube_url": "https://www.youtube.com/watch?v=D0X0BONOQhI",
     "companies": [
       "Amazon",
@@ -3735,7 +3735,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/balanced-binary-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/check-for-balanced-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/check-if-a-binary-tree-is-height-balanced",
     "youtube_url": "https://www.youtube.com/watch?v=QfJsau0ItOY",
     "companies": [
       "Amazon",
@@ -3769,7 +3769,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/diameter-of-binary-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/calculate-the-diameter-of-a-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/diameter-of-a-binary-tree",
     "youtube_url": "https://www.youtube.com/watch?v=bkxqA8Rfv04",
     "companies": [
       "Amazon",
@@ -3805,7 +3805,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/binary-tree-right-side-view/",
-    "striver_url": "https://takeuforward.org/data-structure/right-left-view-of-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/left-and-right-views-of-a-binary-tree",
     "youtube_url": "https://www.youtube.com/watch?v=d4zLyf32RqA",
     "companies": [
       "Amazon",
@@ -3839,7 +3839,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/count-good-nodes-in-binary-tree/",
-    "striver_url": "https://takeuforward.org/data-structure/count-good-nodes-in-binary-tree/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=7cp5imvDzl4",
     "companies": [
       "Microsoft",
@@ -3875,7 +3875,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
-    "striver_url": "https://takeuforward.org/data-structure/kth-largest-smallest-element-in-binary-search-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/kth-smallest-and-largest-elements-in-a-bst",
     "youtube_url": "https://www.youtube.com/watch?v=5LUXSvlkurw",
     "companies": [
       "Amazon",
@@ -3911,7 +3911,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
-    "striver_url": "https://takeuforward.org/data-structure/construct-a-binary-tree-from-inorder-and-preorder-traversal/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/construct-a-binary-tree-from-preorder-and-inorder",
     "youtube_url": "https://www.youtube.com/watch?v=ihj4IQGZ2uc",
     "companies": [
       "Amazon",
@@ -3947,7 +3947,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Trees & BST",
     "leetcode_url": "https://leetcode.com/problems/path-sum/",
-    "striver_url": "https://takeuforward.org/data-structure/path-sum-in-binary-tree/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/binary-tree-maximum-path-sum",
     "youtube_url": "https://www.youtube.com/watch?v=Hg82DzMemMI",
     "companies": [
       "Amazon",
@@ -3982,7 +3982,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Heap / Priority Queue",
     "leetcode_url": "https://leetcode.com/problems/task-scheduler/",
-    "striver_url": "https://takeuforward.org/data-structure/task-scheduler/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/task-scheduler",
     "youtube_url": "https://www.youtube.com/watch?v=s8p8ukTyA2I",
     "companies": [
       "Meta",
@@ -4018,7 +4018,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Heap / Priority Queue",
     "leetcode_url": "https://leetcode.com/problems/design-twitter/",
-    "striver_url": "https://takeuforward.org/data-structure/design-twitter/",
+    "striver_url": "https://takeuforward.org/practice/dsa/design-twitter",
     "youtube_url": "https://www.youtube.com/watch?v=pNichitDD2E",
     "companies": [
       "Twitter",
@@ -4054,7 +4054,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Heap / Priority Queue",
     "leetcode_url": "https://leetcode.com/problems/trapping-rain-water-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/trapping-rain-water-ii/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/trapping-rain-water",
     "youtube_url": "https://www.youtube.com/watch?v=on4m7D0P7kQ",
     "companies": [
       "Google",
@@ -4090,7 +4090,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/subsets-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/subset-ii-print-all-the-unique-subsets/",
+    "striver_url": "https://takeuforward.org/practice/dsa/subsets-ii",
     "youtube_url": "https://www.youtube.com/watch?v=Vn2v6ajA7U0",
     "companies": [
       "Amazon",
@@ -4125,7 +4125,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/combination-sum-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/combination-sum-ii-find-all-unique-combinations/",
+    "striver_url": "https://takeuforward.org/practice/dsa/combination-sum-ii",
     "youtube_url": "https://www.youtube.com/watch?v=rSA3t6BDDwg",
     "companies": [
       "Amazon",
@@ -4161,7 +4161,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/permutations/",
-    "striver_url": "https://takeuforward.org/data-structure/print-all-permutations-of-a-string-array/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=s7AvT7cGdSo",
     "companies": [
       "Amazon",
@@ -4197,7 +4197,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/permutations-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/permutations-ii/",
+    "striver_url": "https://takeuforward.org/practice/dsa/permutations-of-a-string",
     "youtube_url": "https://www.youtube.com/watch?v=qhBVWeiGMXE",
     "companies": [
       "Amazon",
@@ -4232,7 +4232,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/palindrome-partitioning/",
-    "striver_url": "https://takeuforward.org/data-structure/palindrome-partitioning/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/palindrome-partitioning-ii-minimum-cuts",
     "youtube_url": "https://www.youtube.com/watch?v=3jvWodd7ht0",
     "companies": [
       "Amazon",
@@ -4267,7 +4267,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
-    "striver_url": "https://takeuforward.org/data-structure/letter-combinations-of-a-phone-number/",
+    "striver_url": "https://takeuforward.org/practice/dsa/letter-combinations-of-a-phone-number",
     "youtube_url": "https://www.youtube.com/watch?v=0snEunUacZY",
     "companies": [
       "Amazon",
@@ -4302,7 +4302,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Backtracking",
     "leetcode_url": "https://leetcode.com/problems/n-queens/",
-    "striver_url": "https://takeuforward.org/data-structure/n-queen-problem-return-all-distinct-solutions-to-the-n-queens-puzzle/",
+    "striver_url": "https://takeuforward.org/practice/dsa/n-queen",
     "youtube_url": "https://www.youtube.com/watch?v=Ph95IHmRp5M",
     "companies": [
       "Amazon",
@@ -4336,7 +4336,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/surrounded-regions/",
-    "striver_url": "https://takeuforward.org/data-structure/surrounded-regions-replace-os-with-xs/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/surrounded-regions",
     "youtube_url": "https://www.youtube.com/watch?v=9z2BunfoZ5Y",
     "companies": [
       "Amazon",
@@ -4372,7 +4372,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/walls-and-gates/",
-    "striver_url": "https://takeuforward.org/data-structure/walls-and-gates/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=e69C6xhiSQE",
     "companies": [
       "Meta",
@@ -4408,7 +4408,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/redundant-connection/",
-    "striver_url": "https://takeuforward.org/data-structure/redundant-connection/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/redundant-connection",
     "youtube_url": "https://www.youtube.com/watch?v=FXWRE67PLL0",
     "companies": [
       "Amazon",
@@ -4444,7 +4444,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
-    "striver_url": "https://takeuforward.org/data-structure/number-of-connected-components-in-an-undirected-graph/",
+    "striver_url": "https://takeuforward.org/practice/dsa/connected-components",
     "youtube_url": "https://www.youtube.com/watch?v=8f1XPm4WOUc",
     "companies": [
       "Amazon",
@@ -4479,7 +4479,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/word-ladder/",
-    "striver_url": "https://takeuforward.org/data-structure/word-ladder-i-shortest-paths/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/word-ladder",
     "youtube_url": "https://www.youtube.com/watch?v=h9iTnkgv05E",
     "companies": [
       "Amazon",
@@ -4515,7 +4515,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Graphs",
     "leetcode_url": "https://leetcode.com/problems/word-ladder-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/word-ladder-ii-shortest-paths-ii/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/word-ladder-ii",
     "youtube_url": "https://www.youtube.com/watch?v=DREutrv2gz0",
     "companies": [
       "Amazon",
@@ -4550,7 +4550,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Advanced Graphs",
     "leetcode_url": "https://leetcode.com/problems/reconstruct-itinerary/",
-    "striver_url": "https://takeuforward.org/data-structure/reconstruct-itinerary/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=ZyB_gQ89GA4",
     "companies": [
       "Google",
@@ -4586,7 +4586,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Advanced Graphs",
     "leetcode_url": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
-    "striver_url": "https://takeuforward.org/data-structure/min-cost-to-connect-all-points/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=f7JOBJIC-NA",
     "companies": [
       "Amazon",
@@ -4621,7 +4621,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Advanced Graphs",
     "leetcode_url": "https://leetcode.com/problems/network-delay-time/",
-    "striver_url": "https://takeuforward.org/data-structure/dijkstras-algorithm-shortest-distance/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/network-delay-time",
     "youtube_url": "https://www.youtube.com/watch?v=EaphyqKU4PQ",
     "companies": [
       "Google",
@@ -4656,7 +4656,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Advanced Graphs",
     "leetcode_url": "https://leetcode.com/problems/swim-in-rising-water/",
-    "striver_url": "https://takeuforward.org/data-structure/swim-in-rising-water/",
+    "striver_url": "https://takeuforward.org/practice/dsa/swim-in-rising-water",
     "youtube_url": "https://www.youtube.com/watch?v=amvrKlMLuGY",
     "companies": [
       "Google",
@@ -4691,7 +4691,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Advanced Graphs",
     "leetcode_url": "https://leetcode.com/problems/alien-dictionary/",
-    "striver_url": "https://takeuforward.org/data-structure/alien-dictionary-topological-sort/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/alien-dictionary",
     "youtube_url": "https://www.youtube.com/watch?v=6kTZYvNNyps",
     "companies": [
       "Amazon",
@@ -4726,7 +4726,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Advanced Graphs",
     "leetcode_url": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
-    "striver_url": "https://takeuforward.org/data-structure/cheapest-flights-within-k-stops/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/cheapest-flights-within-k-stops",
     "youtube_url": "https://www.youtube.com/watch?v=5eIK3zUdYmE",
     "companies": [
       "Amazon",
@@ -4762,7 +4762,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/partition-equal-subset-sum/",
-    "striver_url": "https://takeuforward.org/data-structure/subset-sum-equal-to-target/",
+    "striver_url": "https://takeuforward.org/practice/dsa/partition-equal-subset-sum",
     "youtube_url": "https://www.youtube.com/watch?v=Isv4gk188ao",
     "companies": [
       "Amazon",
@@ -4798,7 +4798,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/coin-change-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/coin-change-2-dp-22/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/coin-change-ii-combinations",
     "youtube_url": "https://www.youtube.com/watch?v=Mjy4hd2xgrs",
     "companies": [
       "Amazon",
@@ -4835,7 +4835,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/target-sum/",
-    "striver_url": "https://takeuforward.org/data-structure/target-sum-dp-21/",
+    "striver_url": "https://takeuforward.org/practice/dsa/target-sum",
     "youtube_url": "https://www.youtube.com/watch?v=g0npyaQtAQM",
     "companies": [
       "Amazon",
@@ -4871,7 +4871,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/interleaving-string/",
-    "striver_url": "https://takeuforward.org/data-structure/interleaving-string/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=3Rw3p9LrgvE",
     "companies": [
       "Amazon",
@@ -4906,7 +4906,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "1-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/maximum-product-subarray/",
-    "striver_url": "https://takeuforward.org/data-structure/maximum-product-subarray-in-an-array/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/maximum-product-subarray",
     "youtube_url": "https://www.youtube.com/watch?v=lXVy6YWFcRM",
     "companies": [
       "Amazon",
@@ -4942,7 +4942,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "2-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
-    "striver_url": "https://takeuforward.org/data-structure/longest-increasing-path-in-a-matrix/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=wCc_nvg7fZg",
     "companies": [
       "Google",
@@ -4979,7 +4979,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "2-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/distinct-subsequences/",
-    "striver_url": "https://takeuforward.org/data-structure/distinct-subsequences-dp-32/",
+    "striver_url": "https://takeuforward.org/practice/dsa/distinct-subsequences",
     "youtube_url": "https://www.youtube.com/watch?v=-RDzMJ33nx8",
     "companies": [
       "Google",
@@ -5014,7 +5014,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "2-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/edit-distance/",
-    "striver_url": "https://takeuforward.org/data-structure/edit-distance-dp-33/",
+    "striver_url": "https://takeuforward.org/practice/dsa/edit-distance",
     "youtube_url": "https://www.youtube.com/watch?v=XYi2-LPrv4g",
     "companies": [
       "Google",
@@ -5049,7 +5049,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "2-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/burst-balloons/",
-    "striver_url": "https://takeuforward.org/data-structure/burst-balloons-partition-dp-dp-51/",
+    "striver_url": "https://takeuforward.org/practice/dsa/burst-balloons",
     "youtube_url": "https://www.youtube.com/watch?v=VFskby7lUbw",
     "companies": [
       "Google",
@@ -5086,7 +5086,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "2-D Dynamic Programming",
     "leetcode_url": "https://leetcode.com/problems/regular-expression-matching/",
-    "striver_url": "https://takeuforward.org/data-structure/regular-expression-matching/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=HAA8mgxlov8",
     "companies": [
       "Google",
@@ -5122,7 +5122,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/jump-game-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/jump-game-ii/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/jump-game-ii-minimum-jumps",
     "youtube_url": "https://www.youtube.com/watch?v=dJ7sWiOoK7g",
     "companies": [
       "Amazon",
@@ -5158,7 +5158,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/gas-station/",
-    "striver_url": "https://takeuforward.org/data-structure/gas-station-circuit-problem/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/minimize-maximum-distance-between-gas-stations",
     "youtube_url": "https://www.youtube.com/watch?v=lJwbPZGo0GU",
     "companies": [
       "Amazon",
@@ -5194,7 +5194,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/hand-of-straights/",
-    "striver_url": "https://takeuforward.org/data-structure/hand-of-straights/",
+    "striver_url": "https://takeuforward.org/practice/dsa/hand-of-straights",
     "youtube_url": "https://www.youtube.com/watch?v=amnrMCVd2YI",
     "companies": [
       "Google",
@@ -5231,7 +5231,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/merge-triplets-to-form-target-triplet/",
-    "striver_url": "https://takeuforward.org/data-structure/merge-triplets-to-form-target-triplet/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=KKAOeVAbfvA",
     "companies": [
       "Amazon",
@@ -5266,7 +5266,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/partition-labels/",
-    "striver_url": "https://takeuforward.org/data-structure/partition-labels/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=B7mAKNDc45U",
     "companies": [
       "Amazon",
@@ -5301,7 +5301,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Greedy",
     "leetcode_url": "https://leetcode.com/problems/valid-parenthesis-string/",
-    "striver_url": "https://takeuforward.org/data-structure/valid-parenthesis-string/",
+    "striver_url": "https://takeuforward.org/practice/dsa/valid-paranthesis-checker",
     "youtube_url": "https://www.youtube.com/watch?v=QhPdNS143Rs",
     "companies": [
       "Amazon",
@@ -5335,7 +5335,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Intervals",
     "leetcode_url": "https://leetcode.com/problems/meeting-rooms/",
-    "striver_url": "https://takeuforward.org/data-structure/meeting-rooms/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/meeting-rooms-ii",
     "youtube_url": "https://www.youtube.com/watch?v=PaJxqZVPhbg",
     "companies": [
       "Amazon",
@@ -5370,7 +5370,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Intervals",
     "leetcode_url": "https://leetcode.com/problems/meeting-rooms-ii/",
-    "striver_url": "https://takeuforward.org/data-structure/meeting-rooms-ii/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/meeting-rooms-ii",
     "youtube_url": "https://www.youtube.com/watch?v=FdzJmTCVyJU",
     "companies": [
       "Amazon",
@@ -5404,7 +5404,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Hard",
     "pattern_tag": "Intervals",
     "leetcode_url": "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
-    "striver_url": "https://takeuforward.org/data-structure/minimum-interval-to-include-each-query/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=5hQ5WWW5awQ",
     "companies": [
       "Google",
@@ -5439,7 +5439,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Bit Manipulation",
     "leetcode_url": "https://leetcode.com/problems/single-number/",
-    "striver_url": "https://takeuforward.org/data-structure/find-the-number-that-appears-once-and-the-other-numbers-twice/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/single-number-i",
     "youtube_url": "https://www.youtube.com/watch?v=qMPX1AOa83k",
     "companies": [
       "Amazon",
@@ -5474,7 +5474,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Bit Manipulation",
     "leetcode_url": "https://leetcode.com/problems/reverse-integer/",
-    "striver_url": "https://takeuforward.org/data-structure/reverse-digits-of-a-number/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/reverse-digits-of-a-number",
     "youtube_url": "https://www.youtube.com/watch?v=HAgLH58IgJQ",
     "companies": [
       "Amazon",
@@ -5508,7 +5508,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Bit Manipulation",
     "leetcode_url": "https://leetcode.com/problems/sum-of-two-integers/",
-    "striver_url": "https://takeuforward.org/data-structure/sum-of-two-integers/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=gVUrDV4tZfY",
     "companies": [
       "Amazon",
@@ -5542,7 +5542,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Math & Geometry",
     "leetcode_url": "https://leetcode.com/problems/powx-n/",
-    "striver_url": "https://takeuforward.org/data-structure/calculate-powx-n/",
+    "striver_url": "https://takeuforward.org/blogs/data-structure-and-algorithm/fast-power-one-shot-binary-exponentiation-modular-exponentiation-and-powx-n",
     "youtube_url": "https://www.youtube.com/watch?v=g9YQyYi4IQQ",
     "companies": [
       "Google",
@@ -5578,7 +5578,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Math & Geometry",
     "leetcode_url": "https://leetcode.com/problems/multiply-strings/",
-    "striver_url": "https://takeuforward.org/data-structure/multiply-strings/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=1vZswirL8Y8",
     "companies": [
       "Amazon",
@@ -5613,7 +5613,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Medium",
     "pattern_tag": "Math & Geometry",
     "leetcode_url": "https://leetcode.com/problems/detect-squares/",
-    "striver_url": "https://takeuforward.org/data-structure/detect-squares/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=bahebearrDc",
     "companies": [
       "Google",
@@ -5649,7 +5649,7 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     "difficulty": "Easy",
     "pattern_tag": "Math & Geometry",
     "leetcode_url": "https://leetcode.com/problems/happy-number/",
-    "striver_url": "https://takeuforward.org/data-structure/happy-number/",
+    "striver_url": null,
     "youtube_url": "https://www.youtube.com/watch?v=ljz85bxOYJ0",
     "companies": [
       "Amazon",

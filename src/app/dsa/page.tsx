@@ -606,16 +606,25 @@ function DsaHubContent() {
                       </a>
 
                       {/* Striver's Sheet */}
-                      <a
-                        href={problem.striver_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-[#1B2442] dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] flex items-center space-x-1.5 transition-colors border border-slate-200 dark:border-[#1E2B4D]"
-                        title="Open Striver's SDE Sheet guide"
-                      >
-                        <span>Striver</span>
-                        <BookOpen className="w-3.5 h-3.5" />
-                      </a>
+                      {problem.striver_url ? (
+                        <a
+                          href={problem.striver_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-[#1B2442] dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] flex items-center space-x-1.5 transition-colors border border-slate-200 dark:border-[#1E2B4D]"
+                          title="Open Striver's TakeUForward guide"
+                        >
+                          <span>Striver</span>
+                          <BookOpen className="w-3.5 h-3.5" />
+                        </a>
+                      ) : (
+                        <span
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-50 dark:bg-slate-800/40 text-slate-400 dark:text-slate-500 flex items-center space-x-1.5 border border-slate-200/50 dark:border-slate-800/50 cursor-not-allowed opacity-75"
+                          title="Striver editorial guide pending for this problem"
+                        >
+                          <span>Guide Pending</span>
+                        </span>
+                      )}
 
                       {/* YouTube Video */}
                       <a
@@ -706,16 +715,27 @@ function DsaHubContent() {
                             <span>LeetCode #</span>
                             <ExternalLink className="w-3 h-3" />
                           </a>
-                          <span className="text-slate-300 dark:text-slate-700">•</span>
-                          <a
-                            href={problem.striver_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:underline"
-                          >
-                            <span>Striver Guide</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
+                          {problem.striver_url ? (
+                            <>
+                              <span className="text-slate-300 dark:text-slate-700">•</span>
+                              <a
+                                href={problem.striver_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                              >
+                                <span>Striver Guide</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-slate-300 dark:text-slate-700">•</span>
+                              <span className="text-slate-400 dark:text-slate-500 text-xs">
+                                Striver Guide Pending
+                              </span>
+                            </>
+                          )}
                           <span className="text-slate-300 dark:text-slate-700">•</span>
                           <a
                             href={problem.youtube_url}

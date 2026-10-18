@@ -14,7 +14,9 @@ describe('DSA Hub Dataset', () => {
       expect(problem.id).toMatch(/^dsa-/);
       expect(problem.title.length).toBeGreaterThan(0);
       expect(problem.leetcode_url).toMatch(/^https:\/\/leetcode\.com/);
-      expect(problem.striver_url).toMatch(/^https:\/\/takeuforward\.org/);
+      if (problem.striver_url !== null) {
+        expect(problem.striver_url).toMatch(/^https:\/\/takeuforward\.org/);
+      }
       expect(problem.youtube_url).toMatch(/^https:\/\/www\.youtube\.com/);
       expect(problem.companies.length).toBeGreaterThan(0);
       expect(DSA_CATEGORIES).toContain(problem.pattern_tag);

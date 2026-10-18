@@ -15,6 +15,8 @@ import {
   Building2,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   LayoutList,
   FolderTree,
   CheckCircle2,
@@ -32,6 +34,19 @@ import {
 } from 'lucide-react';
 import { DSA_PROBLEMS, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
+
+function getPageNumbers(current: number, total: number): (number | '...')[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, '...', total];
+  }
+  if (current >= total - 3) {
+    return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+  }
+  return [1, '...', current - 1, current, current + 1, '...', total];
+}
 
 // Striver Sheet SDE Topic Categories
 const STRIVER_TOPICS = [
@@ -173,6 +188,38 @@ function StriverSheetContent() {
     });
     return groups;
   }, [filteredProblems]);
+
+  // Pagination State (for List View)
+  const [pageSize, setPageSize] = useState<number>(24);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Reset page when filters change
+  const filterKey = `${selectedTopic}-${selectedDifficulty}-${deferredSearchQuery}-${showOnlyUnsolved}-${pageSize}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
+    setCurrentPage(1);
+  }
+
+  // Calculate pagination parameters
+  const effectivePageSize = pageSize === -1 ? (filteredProblems.length || 1) : pageSize;
+  const totalPages = Math.max(1, Math.ceil(filteredProblems.length / effectivePageSize));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const startIndex = pageSize === -1 ? 0 : (effectivePage - 1) * effectivePageSize;
+  const endIndex = pageSize === -1 ? filteredProblems.length : Math.min(startIndex + effectivePageSize, filteredProblems.length);
+
+  const displayedListProblems = useMemo(() => {
+    if (pageSize === -1) return filteredProblems;
+    return filteredProblems.slice(startIndex, endIndex);
+  }, [filteredProblems, pageSize, startIndex, endIndex]);
+
+  const handlePageChange = (page: number) => {
+    const targetPage = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(targetPage);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 280, behavior: 'smooth' });
+    }
+  };
 
   const solvedCount = solvedIds.filter((id) => DSA_PROBLEMS.some((p) => p.id === id)).length;
   const progressPercent = Math.round((solvedCount / DSA_PROBLEMS.length) * 100);
@@ -434,9 +481,100 @@ function StriverSheetContent() {
               );
             })
           ) : (
-            <div className="rounded-2xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] overflow-hidden divide-y divide-slate-100 dark:divide-[#1E2B4D] shadow-xs">
-              {filteredProblems.map((problem) => renderProblemCard(problem))}
-            </div>
+            <>
+              <div className="rounded-2xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] overflow-hidden divide-y divide-slate-100 dark:divide-[#1E2B4D] shadow-xs">
+                {displayedListProblems.map((problem) => renderProblemCard(problem))}
+              </div>
+
+              {/* Modern Pagination Controls (List View) */}
+              {filteredProblems.length > 0 && (
+                <div className="pt-6 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 dark:border-[#1E2B4D]">
+                  {/* Left: Summary */}
+                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                    Showing <span className="font-bold text-slate-900 dark:text-white">{startIndex + 1}</span>–
+                    <span className="font-bold text-slate-900 dark:text-white">{endIndex}</span> of{' '}
+                    <span className="font-bold text-slate-900 dark:text-white">{filteredProblems.length}</span> problems
+                  </div>
+
+                  {/* Center: Page navigation pills */}
+                  {pageSize !== -1 && totalPages > 1 && (
+                    <div className="flex items-center space-x-1.5 flex-wrap justify-center">
+                      <button
+                        type="button"
+                        onClick={() => handlePageChange(effectivePage - 1)}
+                        disabled={effectivePage <= 1}
+                        className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1B2442] disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
+                        title="Previous Page"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span>Prev</span>
+                      </button>
+
+                      {getPageNumbers(effectivePage, totalPages).map((p, idx) => {
+                        if (p === '...') {
+                          return (
+                            <span key={`dots-${idx}`} className="px-2 py-1 text-xs text-slate-400 select-none">
+                              ...
+                            </span>
+                          );
+                        }
+                        const pageNum = Number(p);
+                        const isActive = pageNum === effectivePage;
+                        return (
+                          <button
+                            key={pageNum}
+                            type="button"
+                            onClick={() => handlePageChange(pageNum)}
+                            className={`min-w-[32px] h-8 px-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                                : 'border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1B2442]'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+
+                      <button
+                        type="button"
+                        onClick={() => handlePageChange(effectivePage + 1)}
+                        disabled={effectivePage >= totalPages}
+                        className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1B2442] disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
+                        title="Next Page"
+                      >
+                        <span>Next</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Right: Per-page selector pills */}
+                  <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
+                    <span>Per page:</span>
+                    <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-[#0B1020] border border-slate-200 dark:border-[#1E2B4D]">
+                      {[12, 24, 48, -1].map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => {
+                            setPageSize(size);
+                            setCurrentPage(1);
+                          }}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                            pageSize === size
+                              ? 'bg-white dark:bg-[#151D35] text-indigo-600 dark:text-indigo-400 shadow-xs'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          {size === -1 ? 'All' : size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -513,17 +651,27 @@ function StriverSheetContent() {
           {/* Right: Actions */}
           <div className="flex flex-wrap items-center gap-1.5 sm:self-center self-start pt-2 sm:pt-0">
             {/* Striver TakeUForward Link */}
-            <a
-              href={problem.striver_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center space-x-1.5 transition-colors border border-indigo-200/50 dark:border-indigo-900/40"
-              title="Open Striver's TakeUForward Editorial"
-            >
-              <BookOpen className="w-3 h-3" />
-              <span>Striver Guide</span>
-              <ExternalLink className="w-2.5 h-2.5" />
-            </a>
+            {problem.striver_url ? (
+              <a
+                href={problem.striver_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 flex items-center space-x-1.5 transition-colors border border-indigo-200/50 dark:border-indigo-900/40"
+                title="Open Striver's TakeUForward Editorial"
+              >
+                <BookOpen className="w-3 h-3" />
+                <span>Striver Guide</span>
+                <ExternalLink className="w-2.5 h-2.5" />
+              </a>
+            ) : (
+              <span
+                className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100/70 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 flex items-center space-x-1.5 border border-slate-200/50 dark:border-slate-800/50 cursor-not-allowed opacity-75"
+                title="Striver editorial guide pending for this problem"
+              >
+                <BookOpen className="w-3 h-3 opacity-60" />
+                <span>Guide Pending</span>
+              </span>
+            )}
 
             {/* LeetCode Link */}
             <a
