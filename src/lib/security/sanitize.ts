@@ -222,3 +222,27 @@ export function verifyCsrfOrigin(req: Request): boolean {
     return false;
   }
 }
+
+/**
+ * Securely masks an email address to prevent PII exposure in UIs, logs, and public views.
+ * e.g., "shobhitagrawal2004@gmail.com" -> "s••••••••••4@gmail.com"
+ */
+export function maskEmail(email: unknown): string {
+  if (typeof email !== 'string') return '••••••';
+  const clean = email.trim();
+  const atIndex = clean.indexOf('@');
+  if (atIndex <= 0) return '••••••';
+
+  const local = clean.slice(0, atIndex);
+  const domain = clean.slice(atIndex + 1);
+
+  if (local.length <= 2) {
+    return `${local[0]}••••@${domain}`;
+  }
+
+  const visibleStart = local[0];
+  const visibleEnd = local[local.length - 1];
+  const maskedLength = Math.min(Math.max(local.length - 2, 4), 10);
+  return `${visibleStart}${'•'.repeat(maskedLength)}${visibleEnd}@${domain}`;
+}
+

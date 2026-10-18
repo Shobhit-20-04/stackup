@@ -6,6 +6,7 @@ import {
   sanitizeFilename,
   validateFileMagic,
   verifyCsrfOrigin,
+  maskEmail,
 } from '@/lib/security/sanitize';
 import {
   timingSafeCompare,
@@ -175,3 +176,27 @@ describe('Security: CSRF Origin Verification', () => {
     expect(verifyCsrfOrigin(req)).toBe(false);
   });
 });
+
+describe('Security: Email Masking & PII Protection', () => {
+  it('masks standard email addresses to protect administrator and student PII', () => {
+    const masked = maskEmail('shobhitagrawal2004@gmail.com');
+    expect(masked).toBe('s••••••••••4@gmail.com');
+    expect(masked).not.toContain('shobhit');
+    expect(masked).not.toContain('agrawal');
+    expect(masked).not.toContain('2004');
+    expect(masked).toContain('@gmail.com');
+  });
+
+  it('safely masks short email prefixes without exposing identity', () => {
+    expect(maskEmail('ab@gmail.com')).toBe('a••••@gmail.com');
+    expect(maskEmail('a@domain.org')).toBe('a••••@domain.org');
+  });
+
+  it('handles invalid or non-string inputs safely without crashing', () => {
+    expect(maskEmail('')).toBe('••••••');
+    expect(maskEmail('not-an-email')).toBe('••••••');
+    expect(maskEmail(null)).toBe('••••••');
+    expect(maskEmail(undefined)).toBe('••••••');
+  });
+});
+

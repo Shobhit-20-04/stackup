@@ -47,13 +47,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!code) {
-      return NextResponse.json(
-        { error: 'Please enter the 6-digit verification code.' },
-        { status: 400 }
-      );
-    }
-
     if (!newPassword || newPassword.length < 8) {
       return NextResponse.json(
         { error: 'New administrator security key must be at least 8 characters long.' },
@@ -68,13 +61,62 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Verify and Consume Code (Single-Use, Expiry, Rate-Limited)
-    const verification = verifyAndConsumeCode(cleanEmail, code);
-    if (!verification.success) {
-      return NextResponse.json(
-        { error: verification.error || 'Invalid or expired verification code.' },
-        { status: 400 }
-      );
+    // 3. Verify Identity: Check Authenticated Recovery Session OR 6-Digit Code
+    let isIdentityVerified = false;
+
+    // Check if the user is already authenticated via email recovery session
+    try {
+      const { createClient: createServerSupabase } = await import('@/lib/supabase/server');
+      const serverSupabase = await createServerSupabase();
+      const { data: { user } } = await serverSupabase.auth.getUser();
+      if (user && user.email && isEligibleAdminEmail(user.email)) {
+        isIdentityVerified = true;
+      }
+    } catch {
+      // ignore session lookup failure
+    }
+
+    // If not authenticated by recovery session, verify via 6-digit code
+    if (!isIdentityVerified) {
+      if (!code) {
+        return NextResponse.json(
+          { error: 'Please enter your verification code or follow the reset link in your email.' },
+          { status: 400 }
+        );
+      }
+
+      const verification = verifyAndConsumeCode(cleanEmail, code);
+      if (verification.success) {
+        isIdentityVerified = true;
+      } else {
+        // Fallback: Verify OTP token with Supabase directly if configured
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (supabaseUrl && anonKey && !anonKey.includes('placeholder')) {
+          try {
+            const clientSupabase = createSupabaseAdmin(supabaseUrl, anonKey, {
+              auth: { autoRefreshToken: false, persistSession: false },
+            });
+            const { error: otpErr } = await clientSupabase.auth.verifyOtp({
+              email: cleanEmail,
+              token: code,
+              type: 'recovery',
+            });
+            if (!otpErr) {
+              isIdentityVerified = true;
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        if (!isIdentityVerified) {
+          return NextResponse.json(
+            { error: verification.error || 'Invalid or expired verification code.' },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     // 4. Persist New Administrator Passcode

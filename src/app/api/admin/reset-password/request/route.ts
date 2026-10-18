@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
-import { sanitizeEmail, verifyCsrfOrigin } from '@/lib/security/sanitize';
+import { sanitizeEmail, verifyCsrfOrigin, maskEmail } from '@/lib/security/sanitize';
 import { 
   isEligibleAdminEmail, 
   createResetVerificationCode 
@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 });
     }
 
+    const genericSuccessMessage =
+      'If the provided email belongs to an authorized administrator, password recovery instructions have been dispatched. Please check your inbox.';
+
     // 3. Strict Server-Side Role and Eligibility Restriction
     const isEligible = isEligibleAdminEmail(cleanEmail);
 
@@ -45,7 +48,7 @@ export async function POST(req: NextRequest) {
       // Return generic response to prevent account enumeration
       return NextResponse.json({
         success: true,
-        message: 'If the provided email belongs to an authorized administrator, a verification code has been dispatched.',
+        message: genericSuccessMessage,
       });
     }
 
@@ -64,7 +67,19 @@ export async function POST(req: NextRequest) {
         const supabase = createSupabaseAdmin(supabaseUrl, serviceRoleKey, {
           auth: { autoRefreshToken: false, persistSession: false },
         });
-        const { error: resetErr } = await supabase.auth.resetPasswordForEmail(cleanEmail);
+
+        // Resolve absolute origin for redirect callback
+        const forwardedHost = req.headers.get('x-forwarded-host');
+        const host = req.headers.get('host');
+        const proto = req.headers.get('x-forwarded-proto') || 'https';
+        const origin = req.headers.get('origin') || 
+          (forwardedHost ? `https://${forwardedHost}` : host ? `${proto}://${host}` : (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'));
+        const redirectTo = `${origin}/auth/callback?next=/admin%3Frecovery%3Dtrue`;
+
+        const { error: resetErr } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+          redirectTo,
+        });
+
         if (!resetErr) {
           emailDispatched = true;
         } else {
@@ -75,14 +90,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Secure audit log (Never exposes tokens to public, but allows verified administrator in local dev to confirm)
+    // Secure audit log (Never exposes plaintext email or credentials to public logs)
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[Admin Security Audit] Password reset code generated for ${cleanEmail}: [${code}] (Valid until ${new Date(expiresAt).toLocaleTimeString()})`);
+      console.log(`[Admin Security Audit] Password reset code generated for ${maskEmail(cleanEmail)}: [${code}] (Valid until ${new Date(expiresAt).toLocaleTimeString()})`);
     }
 
     return NextResponse.json({
       success: true,
-      message: `A 6-digit verification code has been dispatched to ${cleanEmail}. Please check your inbox and enter the code below.`,
+      message: genericSuccessMessage,
+      maskedEmail: maskEmail(cleanEmail),
       emailDispatched,
       providerNotice: providerNotice ? `Email service note: ${providerNotice}` : undefined,
     });

@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useMemo, useCallback, useId } from 'react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { maskEmail } from '@/lib/security/sanitize';
 import {
   ShieldCheck,
   FileText,
@@ -165,7 +167,8 @@ export default function AdminDashboardPage() {
   // Unified Admin Authentication & Recovery State
   const [authView, setAuthView] = useState<'login' | 'reset-request' | 'reset-verify'>('login');
   const [showPasscode, setShowPasscode] = useState(false);
-  const [resetEmail, setResetEmail] = useState('shobhitagrawal2004@gmail.com');
+  const [resetEmail, setResetEmail] = useState('');
+  const [isRecoverySession, setIsRecoverySession] = useState(false);
   const [resetCode, setResetCode] = useState('');
   const [resetNewPasscode, setResetNewPasscode] = useState('');
   const [resetConfirmPasscode, setResetConfirmPasscode] = useState('');
@@ -246,6 +249,42 @@ export default function AdminDashboardPage() {
     return () => clearTimeout(timer);
   }, [fetchAdminData]);
 
+  // Listen for Supabase password recovery link redirection (one-click reset from email)
+  useEffect(() => {
+    try {
+      const supabase = createClient();
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event, session) => {
+        if (
+          event === 'PASSWORD_RECOVERY' ||
+          (session && typeof window !== 'undefined' && window.location.search.includes('recovery=true'))
+        ) {
+          setAuthView('reset-verify');
+          setIsRecoverySession(true);
+          if (session?.user?.email) {
+            setResetEmail(session.user.email);
+          }
+        }
+      });
+
+      if (typeof window !== 'undefined') {
+        const hash = window.location.hash || '';
+        const search = window.location.search || '';
+        if (hash.includes('type=recovery') || search.includes('recovery=true')) {
+          setAuthView('reset-verify');
+          setIsRecoverySession(true);
+        }
+      }
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    } catch {
+      // In non-browser or placeholder environments
+    }
+  }, []);
+
   useEffect(() => {
     if (!changeKeyModalOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -307,7 +346,7 @@ export default function AdminDashboardPage() {
         setResetError(resJson.error || 'Unable to process reset request.');
         return;
       }
-      setResetSuccess(resJson.message || 'Verification code dispatched to your administrator email.');
+      setResetSuccess(resJson.message || 'Password recovery email dispatched. Please check your inbox.');
       setAuthView('reset-verify');
     } catch {
       setResetError('Network error. Unable to connect to reset service.');
@@ -318,8 +357,8 @@ export default function AdminDashboardPage() {
 
   const handleResetVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!resetCode.trim()) {
-      setResetError('Please enter the 6-digit verification code.');
+    if (!isRecoverySession && !resetCode.trim()) {
+      setResetError('Please enter your 6-digit verification code, or click the reset link in your email.');
       return;
     }
     if (!resetNewPasscode.trim() || resetNewPasscode.length < 8) {
@@ -334,19 +373,27 @@ export default function AdminDashboardPage() {
     setResetSuccess('');
     setResetLoading(true);
     try {
+      // 1. If active Supabase recovery session exists, update user password in Supabase
+      try {
+        const supabase = createClient();
+        await supabase.auth.updateUser({ password: resetNewPasscode.trim() });
+      } catch {
+        // Continue to server verification
+      }
+
       const res = await fetch('/api/admin/reset-password/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: resetEmail.trim(),
-          code: resetCode.trim(),
+          code: resetCode.trim() || undefined,
           newPassword: resetNewPasscode.trim(),
           confirmPassword: resetConfirmPasscode.trim(),
         }),
       });
       const resJson = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setResetError(resJson.error || 'Verification failed. Please check the code.');
+        setResetError(resJson.error || 'Verification failed. Please check the code or reset link.');
         return;
       }
       setResetSuccess('Security key updated successfully! Entering admin portal...');
@@ -355,10 +402,11 @@ export default function AdminDashboardPage() {
         setResetCode('');
         setResetNewPasscode('');
         setResetConfirmPasscode('');
+        setIsRecoverySession(false);
         await fetchAdminData();
       }, 700);
     } catch {
-      setResetError('Network error. Unable to verify reset code.');
+      setResetError('Network error. Unable to verify reset request.');
     } finally {
       setResetLoading(false);
     }
@@ -691,7 +739,7 @@ export default function AdminDashboardPage() {
             </>
           )}
 
-          {/* VIEW 2: Reset Request (Dispatches 6-Digit Code) */}
+          {/* VIEW 2: Reset Request */}
           {authView === 'reset-request' && (
             <>
               <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-indigo-800 dark:text-indigo-200 text-xs space-y-1.5">
@@ -700,8 +748,7 @@ export default function AdminDashboardPage() {
                   <span>Restricted Administrator Recovery</span>
                 </div>
                 <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Password recovery is strictly restricted to the verified administrator account:
-                  <strong className="text-slate-900 dark:text-white font-mono block mt-0.5">shobhitagrawal2004@gmail.com</strong>
+                  Password recovery is strictly restricted to verified administrative accounts. Enter your registered administrator email below to receive secure recovery instructions.
                 </p>
               </div>
 
@@ -722,7 +769,7 @@ export default function AdminDashboardPage() {
               <form onSubmit={handleResetRequest} className="space-y-4">
                 <div>
                   <label htmlFor="reset-email" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Verified Administrator Email
+                    Administrator Email
                   </label>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3.5" />
@@ -734,7 +781,7 @@ export default function AdminDashboardPage() {
                         setResetEmail(e.target.value);
                         if (resetError) setResetError('');
                       }}
-                      placeholder="shobhitagrawal2004@gmail.com"
+                      placeholder="admin@example.com"
                       autoFocus
                       autoComplete="email"
                       required
@@ -742,7 +789,7 @@ export default function AdminDashboardPage() {
                     />
                   </div>
                   <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
-                    A single-use 6-digit cryptographic verification code will be dispatched to this address.
+                    A secure recovery link and verification instructions will be dispatched to your authorized inbox.
                   </p>
                 </div>
 
@@ -768,11 +815,11 @@ export default function AdminDashboardPage() {
                     {resetLoading ? (
                       <>
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                        <span>Sending Code...</span>
+                        <span>Sending Link...</span>
                       </>
                     ) : (
                       <>
-                        <span>Send Reset Code</span>
+                        <span>Send Recovery Email</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </>
                     )}
@@ -785,15 +832,30 @@ export default function AdminDashboardPage() {
           {/* VIEW 3: Reset Verification & Password Update */}
           {authView === 'reset-verify' && (
             <>
-              <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-indigo-800 dark:text-indigo-200 text-xs space-y-1">
-                <div className="flex items-center space-x-2 font-semibold text-indigo-900 dark:text-indigo-300">
-                  <Key className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
-                  <span>Verification Code Dispatched</span>
+              {isRecoverySession ? (
+                <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs space-y-1">
+                  <div className="flex items-center space-x-2 font-semibold text-emerald-900 dark:text-emerald-300">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                    <span>Identity Verified via Email Link</span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Your administrator identity has been authenticated. Set your new Master Security Key below to complete reset.
+                  </p>
                 </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Enter the 6-digit code dispatched to <span className="font-mono text-slate-900 dark:text-white font-medium">{resetEmail}</span> and establish your new security key.
-                </p>
-              </div>
+              ) : (
+                <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-indigo-800 dark:text-indigo-200 text-xs space-y-1.5">
+                  <div className="flex items-center space-x-2 font-semibold text-indigo-900 dark:text-indigo-300">
+                    <Key className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                    <span>Recovery Instructions Dispatched</span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Instructions sent to <span className="font-mono text-slate-900 dark:text-white font-medium">{resetEmail ? maskEmail(resetEmail) : 'your administrator inbox'}</span>.
+                  </p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <strong>Tip:</strong> Tap the &quot;Reset password&quot; button in your email to reset instantly, or enter your 6-digit code below.
+                  </p>
+                </div>
+              )}
 
               {resetError && (
                 <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs flex items-center space-x-2.5">
@@ -810,31 +872,32 @@ export default function AdminDashboardPage() {
               )}
 
               <form onSubmit={handleResetVerify} className="space-y-4">
-                <div>
-                  <label htmlFor="reset-code" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    6-Digit Verification Code
-                  </label>
-                  <input
-                    id="reset-code"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={6}
-                    value={resetCode}
-                    onChange={(e) => {
-                      setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6));
-                      if (resetError) setResetError('');
-                    }}
-                    placeholder="000000"
-                    autoFocus
-                    autoComplete="one-time-code"
-                    required
-                    className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                    Single-use code. Valid for 15 minutes.
-                  </p>
-                </div>
+                {!isRecoverySession && (
+                  <div>
+                    <label htmlFor="reset-code" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      6-Digit Verification Code (Optional if using email link)
+                    </label>
+                    <input
+                      id="reset-code"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={6}
+                      value={resetCode}
+                      onChange={(e) => {
+                        setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                        if (resetError) setResetError('');
+                      }}
+                      placeholder="000000"
+                      autoFocus
+                      autoComplete="one-time-code"
+                      className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                      If you click the &quot;Reset password&quot; link in your email, you do not need this code.
+                    </p>
+                  </div>
+                )}
 
                 <div>
                   <label htmlFor="reset-new-key" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
