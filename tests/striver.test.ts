@@ -221,9 +221,25 @@ describe('Striver SDE Sheet & Recovery Regression Suite', () => {
       setActiveAdminPasscode(testKey);
       expect(getAdminPasscode()).toBe(testKey);
 
+      // Rejects invalid security keys using timing-safe comparison
+      expect(timingSafeCompare('WrongSecurityKey123', getAdminPasscode())).toBe(false);
+      expect(timingSafeCompare('', getAdminPasscode())).toBe(false);
+      expect(timingSafeCompare(testKey, getAdminPasscode())).toBe(true);
+
       // Restore original passcode
       setActiveAdminPasscode(originalPasscode);
       expect(getAdminPasscode()).toBe(originalPasscode);
+    });
+
+    it('rejects empty or malformed verification code inputs', () => {
+      // @ts-expect-error Testing invalid input runtime handling
+      const resNull = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', null);
+      expect(resNull.success).toBe(false);
+      expect(resNull.error).toContain('Please enter the 6-digit verification code.');
+
+      const resEmpty = verifyAndConsumeCode('shobhitagrawal2004@gmail.com', '');
+      expect(resEmpty.success).toBe(false);
+      expect(resEmpty.error).toContain('Please enter the 6-digit verification code.');
     });
   });
 

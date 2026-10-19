@@ -38,7 +38,21 @@ export async function POST(req: NextRequest) {
     const newPassword = typeof body?.newPassword === 'string' ? body.newPassword.trim() : '';
     const confirmPassword = typeof body?.confirmPassword === 'string' ? body.confirmPassword.trim() : '';
 
-    const cleanEmail = sanitizeEmail(rawEmail);
+    let cleanEmail = sanitizeEmail(rawEmail);
+
+    // If email is not passed explicitly in payload, attempt to resolve from authenticated Supabase recovery session
+    if (!cleanEmail) {
+      try {
+        const { createClient: createServerSupabase } = await import('@/lib/supabase/server');
+        const serverSupabase = await createServerSupabase();
+        const { data: { user } } = await serverSupabase.auth.getUser();
+        if (user && user.email) {
+          cleanEmail = sanitizeEmail(user.email);
+        }
+      } catch {
+        // ignore session lookup failure
+      }
+    }
 
     if (!cleanEmail || !isEligibleAdminEmail(cleanEmail)) {
       return NextResponse.json(

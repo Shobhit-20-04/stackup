@@ -317,6 +317,7 @@ export default function AdminDashboardPage() {
         setAuthError(resJson.error || 'Invalid security key. Please try again.');
         return;
       }
+      setIsAuthenticated(true);
       setPasscode('');
       await fetchAdminData();
     } catch {
@@ -357,6 +358,10 @@ export default function AdminDashboardPage() {
 
   const handleResetVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!resetEmail.trim() && !isRecoverySession) {
+      setResetError('Please enter your administrator email address.');
+      return;
+    }
     if (!isRecoverySession && !resetCode.trim()) {
       setResetError('Please enter your 6-digit verification code, or click the reset link in your email.');
       return;
@@ -403,6 +408,7 @@ export default function AdminDashboardPage() {
         setResetNewPasscode('');
         setResetConfirmPasscode('');
         setIsRecoverySession(false);
+        setIsAuthenticated(true);
         await fetchAdminData();
       }, 700);
     } catch {
@@ -872,11 +878,12 @@ export default function AdminDashboardPage() {
               )}
 
               <form onSubmit={handleResetVerify} className="space-y-4">
-                {!resetEmail && (
-                  <div>
-                    <label htmlFor="verify-email" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                      Administrator Email
-                    </label>
+                <div>
+                  <label htmlFor="verify-email" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    Administrator Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3.5" />
                     <input
                       id="verify-email"
                       type="email"
@@ -887,14 +894,17 @@ export default function AdminDashboardPage() {
                       }}
                       placeholder="admin@example.com"
                       required
-                      className="w-full px-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium transition-colors"
                     />
                   </div>
-                )}
+                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    Target verified administrator account for security reset.
+                  </p>
+                </div>
 
                 <div>
                   <label htmlFor="reset-code" className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    6-Digit Verification Code
+                    6-Digit Verification Code {isRecoverySession && <span className="text-[10px] lowercase font-normal text-emerald-600 dark:text-emerald-400">(Optional — verified via email link)</span>}
                   </label>
                   <input
                     id="reset-code"
@@ -908,13 +918,15 @@ export default function AdminDashboardPage() {
                       if (resetError) setResetError('');
                     }}
                     placeholder="000000"
-                    autoFocus
+                    autoFocus={!isRecoverySession}
                     autoComplete="one-time-code"
-                    required
+                    required={!isRecoverySession}
                     className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                    Enter the 6-digit cryptographic verification code to authenticate.
+                    {isRecoverySession
+                      ? 'Already verified via email recovery link. Code entry is optional.'
+                      : 'Enter the 6-digit cryptographic verification code to authenticate.'}
                   </p>
                 </div>
 
