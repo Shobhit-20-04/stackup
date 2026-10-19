@@ -56,6 +56,20 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   serverExternalPackages: ['pdf-parse', 'mammoth'],
+  async redirects() {
+    return [
+      {
+        source: '/admin/login',
+        destination: '/admin',
+        permanent: true,
+      },
+      {
+        source: '/admin-login',
+        destination: '/admin',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
