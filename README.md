@@ -142,6 +142,6 @@ git push -u origin dev
 - [x] **Phase 1 (Weeks 1–3):** Project scaffolding, Git/CI pipeline, Supabase schema with RLS, Auth (Google OAuth, Email/Password, and 1-Click Instant Demo Login), and Profile Dashboard.
 - [x] **Phase 2 (Weeks 4–7):** Aptitude + Core CS Subjects (221 modules, 668 verified MCQs, notes markdown engine, timed/practice quiz engine, YouTube video lecture links, attempts & progress sync).
 - [x] **Phase 3 (Weeks 8–10):** DSA Hub & Striver SDE Sheet (150 curated problems, 19 algorithmic patterns, difficulty & pattern filters, live progress tracking, deep routing at `/dsa/[id]`, TakeUForward & LeetCode deep links, and canonical navigation).
-- [x] **Phase 4 (Weeks 11–14):** Resume ATS Checker (PDF/DOCX binary upload, ATS scoring & keyword gap analysis, bullet rewrites, admin download portal).
-- [x] **Phase 5 (Weeks 15–17):** Floating AI Chatbot Widget (Context-aware assistance, markdown rendering, per-user rate limiting).
-- [x] **Phase 6 (Weeks 18–20+):** Performance optimization, accessibility pass, SEO, robots.txt, and launch prep.
+- [ ] **Phase 4 (Weeks 11–14):** Resume ATS Checker (PDF/DOCX binary upload, ATS scoring & keyword gap analysis, bullet rewrites, admin download portal).
+- [ ] **Phase 5 (Weeks 15–17):** Floating AI Chatbot Widget (Context-aware assistance, markdown rendering, per-user rate limiting).
+- [ ] **Phase 6 (Weeks 18–20+):** Performance optimization, accessibility pass, SEO, robots.txt, and launch prep.
