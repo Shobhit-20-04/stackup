@@ -27,7 +27,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Base r digits range strictly from 0 to r - 1."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Number+Systems+Base+Conversions+Binary+Hexadecimal+DLD+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Number Systems and Base Conversions\n\nDigital systems process binary information encoded in positional number systems with radix $r$.\n\n---\n\n## 1. Radix Conversion Mechanics\n- **Radix $r$ Polynomial Representation:**\n  $$N_r = d_{n-1} r^{n-1} + \\dots + d_1 r^1 + d_0 r^0 + d_{-1} r^{-1} + \\dots + d_{-m} r^{-m}$$\n- **Integer Conversion to Base $r$:** Successive division by $r$; remainder sequence read from bottom-to-top (LSB to MSB).\n- **Fractional Conversion to Base $r$:** Successive multiplication by $r$; integer carry read from top-to-bottom.\n- **Power-of-Two Shortcuts ($2 \\leftrightarrow 8 \\leftrightarrow 16$):**\n  - Group 3 binary bits $\\leftrightarrow$ 1 Octal digit.\n  - Group 4 binary bits $\\leftrightarrow$ 1 Hexadecimal digit ($0-9, A-F$).\n\n---\n\n## 2. Complement Representations (Signed Integers)\nFor radix $r$ and $n$ digits:\n- **Radix Complement ($r$'s complement):** $r^n - N$ (e.g. 2's complement $= 2^n - N = 1\\text{'s complement} + 1$).\n- **Diminished Radix Complement ($(r-1)$'s complement):** $(r^n - 1) - N$ (invert all bits in binary).\n- **Range of $n$-bit 2's Complement Numbers:** $[-2^{n-1}, +2^{n-1} - 1]$. Has a unique zero ($+0$), unlike 1's complement.\n",
+      "notesMarkdown": "# Number Systems, Radix Conversions, and Digital Representations\n\nDigital computers use two-state electronic switches (transistors operating in saturation and cutoff) to process information. Understanding positional number systems (Binary, Octal, Decimal, Hexadecimal) and conversion algorithms is fundamental to digital design, microarchitectures, and low-level computer programming.\n\n---\n\n## 1. Positional Number System Formulation\n\nIn a positional number system with base (radix) $r$, any number $N$ is represented as a polynomial sum:\n$$N = \\sum_{i=-m}^{n-1} d_i \\cdot r^i = d_{n-1}r^{n-1} + \\dots + d_1 r^1 + d_0 r^0 + d_{-1}r^{-1} + \\dots + d_{-m}r^{-m}$$\nwhere $0 \\le d_i < r$.\n\n| Base ($r$) | Name | Digits Used | Weight of Position $k$ |\n| :--- | :--- | :--- | :--- |\n| **2** | Binary | `0, 1` | $2^k$ |\n| **8** | Octal | `0, 1, 2, 3, 4, 5, 6, 7` | $8^k$ |\n| **10** | Decimal | `0, 1, 2, 3, 4, 5, 6, 7, 8, 9` | $10^k$ |\n| **16** | Hexadecimal | `0-9, A(10), B(11), C(12), D(13), E(14), F(15)` | $16^k$ |\n\n---\n\n## 2. Base Conversion Algorithms\n\n### 1. From Base $r$ to Decimal\nExpand the polynomial sum:\n$$(1101.101)_2 = 1 \\cdot 2^3 + 1 \\cdot 2^2 + 0 \\cdot 2^1 + 1 \\cdot 2^0 + 1 \\cdot 2^{-1} + 0 \\cdot 2^{-2} + 1 \\cdot 2^{-3} = 8 + 4 + 0 + 1 + 0.5 + 0.125 = 13.625_{10}$$\n\n### 2. From Decimal to Base $r$\n- **Integer Part:** Successive division by $r$. Collect remainders from bottom to top (LSB to MSB).\n- **Fractional Part:** Successive multiplication by $r$. Collect integer overflows from top to bottom.\n\n### 3. Power-of-Two Fast Conversions ($2 \\leftrightarrow 8 \\leftrightarrow 16$)\nBecause $8 = 2^3$ and $16 = 2^4$, conversions require no arithmetic—only bit grouping:\n- **Binary to Octal:** Group bits in 3s starting from the binary point.\n  $$(010 \\quad 110 \\quad 111)_2 \\implies (2 \\quad 6 \\quad 7)_8$$\n- **Binary to Hexadecimal:** Group bits in 4s starting from the binary point.\n  $$(1011 \\quad 0101)_2 \\implies (\\text{B} \\quad 5)_{16}$$\n\n---\n\n## 3. High-Yield Interview Traps & Pitfalls\n\n1. **Fractional Conversion Termination:**\n   Not all decimal fractions have exact finite representations in binary! For example, $0.1_{10}$ is an infinite repeating binary fraction: $0.0001100110011\\dots_2$ (which is why floating-point calculations exhibit rounding errors!).\n2. **Padding Zeros:**\n   When grouping fractional binary digits into octal or hex, append padding zeros to the **RIGHT** (least significant end); for integer parts, pad to the **LEFT**.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Base Polynomial:** $N = \\sum d_i \\cdot r^i$.\n- **Binary to Hex Grouping:** 4 bits $= 1$ hex digit ($2^4 = 16$).\n- **Binary to Octal Grouping:** 3 bits $= 1$ octal digit ($2^3 = 8$).\n- **Minimum bits for $N$ states:** $k = \\lceil \\log_2 N \\rceil$.\n",
       "questions": [
         {
           "id": "dld-ns-1",
@@ -65,6 +65,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "2 * 16^1 + 15 * 16^0 + 4 * 16^(-1) = 32 + 15 + 4/16 = 47 + 0.25 = 47.25."
         }
+      ],
+      "prerequisites": [
+        "Basic arithmetic and powers of integers",
+        "Positional number notation"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Number Systems and Digital Foundations",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Number System and Base Conversions",
+          "url": "https://www.geeksforgeeks.org/number-system-and-base-conversions/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Digital Electronics Number Systems",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -87,7 +114,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Overflow occurs when adding two numbers of same sign yields a result of opposite sign."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Signed+Numbers+1s+2s+Complement+Overflow+DLD+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Signed Number Representation\n\n---\n\n## 1. System Comparison for $n$ bits\n\n| Representation | MSB Meaning | Representation of Zero | Range ($n$ bits) |\n| :--- | :--- | :--- | :--- |\n| **Sign-Magnitude** | Sign (0 = +, 1 = -) | $+0$ and $-0$ (Two zeros!) | $-(2^{n-1} - 1)$ to $+(2^{n-1} - 1)$ |\n| **1's Complement** | Sign (Invert bits for -) | $+0$ and $-0$ (Two zeros!) | $-(2^{n-1} - 1)$ to $+(2^{n-1} - 1)$ |\n| **2's Complement** | Weight is $-2^{n-1}$ | **Single Zero** ($00\\dots0$) | **$-2^{n-1}$ to $+(2^{n-1} - 1)$** |\n\n---\n\n## 2. 2's Complement Shortcut\nTo negate a binary number: Start from right, copy all bits up to and including the first `1`, then invert all remaining bits to the left.\n",
+      "notesMarkdown": "# Signed Number Representations and Two's Complement Arithmetic\n\nComputers require standardized binary representations to store negative numbers. Among Sign-Magnitude, One's Complement, and Two's Complement, modern microprocessors universally adopt **Two's Complement** because it eliminates redundant dual zeros and allows standard binary adder circuits to perform subtraction without separate subtraction hardware.\n\n---\n\n## 1. The Three Signed Binary Representations ($n$ bits)\n\n| Representation | Calculation for $-X$ | Value Range ($n$ bits) | Zero Representations |\n| :--- | :--- | :--- | :--- |\n| **Sign-Magnitude** | Invert only MSB (Sign bit) | $-(2^{n-1} - 1)$ to $+(2^{n-1} - 1)$ | Dual: $+0$ (`0000`) and $-0$ (`1000`) |\n| **1's Complement** | Invert all bits (bit-flip) | $-(2^{n-1} - 1)$ to $+(2^{n-1} - 1)$ | Dual: $+0$ (`0000`) and $-0$ (`1111`) |\n| **2's Complement** | $\\text{1's Comp} + 1 = 2^n - X$ | $\\mathbf{-2^{n-1}}$ to $\\mathbf{+(2^{n-1} - 1)}$ | **Unique:** Exactly one zero (`0000`) |\n\n### Advantages of Two's Complement:\n1. **Unique Zero:** No $+0$ and $-0$ ambiguity.\n2. **Extra Negative Value:** Covers $-2^{n-1}$ (e.g., 8-bit range is $-128$ to $+127$).\n3. **Hardware Reuse:** Subtraction $A - B$ is computed simply as $A + (\\text{2's Comp of } B)$, using the identical adder hardware!\n\n---\n\n## 2. Fast 2's Complement Shortcut & Mathematical Weight\n\n### The Inspection Shortcut:\nScan binary digits from **Right to Left (LSB to MSB)**:\n- Copy all trailing zeros and the very first `1` bit unchanged.\n- Invert all subsequent bits to the left!\n- *Example:* Find 2's comp of `101100`:\n  Copy `...100` $\\implies$ Invert remaining `101` $\\to$ `010` $\\implies$ `010100`!\n\n### MSB Negative Weight Formula:\nIn an $n$-bit two's complement integer, the MSB has a **negative positional weight** of $-2^{n-1}$:\n$$\\text{Value} = -b_{n-1} 2^{n-1} + \\sum_{i=0}^{n-2} b_i 2^i$$\n*Example:* `1011` in 4-bit 2's complement:\n$$\\text{Value} = -1 \\cdot 2^3 + 0 \\cdot 2^2 + 1 \\cdot 2^1 + 1 \\cdot 2^0 = -8 + 0 + 2 + 1 = -5_{10}$$\n\n---\n\n## 3. Arithmetic Overflow Detection\n\n**Arithmetic Overflow** occurs when the result of an arithmetic operation exceeds the representable range of the $n$-bit register.\n\n```\nOverflow Rules:\n1. Adding numbers of OPPOSITE signs CAN NEVER OVERFLOW!\n2. Adding two POSITIVE numbers produces a NEGATIVE result -> OVERFLOW!\n3. Adding two NEGATIVE numbers produces a POSITIVE result -> OVERFLOW!\n```\n\n### Hardware Detection via Carry Bits:\nLet $C_{\\text{in}}$ be the carry into the sign bit (MSB), and $C_{\\text{out}}$ be the carry out of the sign bit:\n$$\\mathbf{Overflow \\quad V = C_{\\text{in}} \\oplus C_{\\text{out}}}$$\nIf $C_{\\text{in}} \\ne C_{\\text{out}}$, an arithmetic overflow has occurred!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **$n$-bit Range:** $-2^{n-1} \\le X \\le 2^{n-1} - 1$.\n- **2's Complement Definition:** $X^* = 2^n - X = \\text{1's Complement}(X) + 1$.\n- **Subtraction via Addition:** $A - B = A + \\overline{B} + 1$.\n- **Overflow Flag:** $V = C_{n-1} \\oplus C_n$.\n",
       "questions": [
         {
           "id": "dld-sn-1",
@@ -124,6 +151,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "In an 8-bit 2's complement representation, the MSB has weight -2^7 = -128. Pattern 10000000 evaluates to -128 (the minimum representable 8-bit signed integer)."
+        }
+      ],
+      "prerequisites": [
+        "Number systems and binary representations",
+        "Binary addition and subtraction"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Two's Complement Arithmetic and Overflow",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: 1's and 2's Complement of a Binary Number",
+          "url": "https://www.geeksforgeeks.org/1s-2s-complement-binary-number/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Signed Numbers and Arithmetic Overflow Traps",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -185,6 +239,19 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "IEEE 754 single-precision allocates 1 bit for sign, 8 bits for biased exponent (bias 127), and 23 bits for the normalized mantissa fraction with an implicit leading 1."
         }
+      ],
+      "prerequisites": [
+        "Binary Number Systems",
+        "Two's Complement Arithmetic"
+      ],
+      "externalResources": [
+        {
+          "title": "IEEE 754 Floating-Point Standard — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/ieee-standard-754-floating-point-numbers/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -207,7 +274,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Involution Law: (A')' = A."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Boolean+Algebra+DLD+Consensus+Theorem+De+Morgan+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Boolean Algebra and Logic Axioms\n\nBoolean algebra operates on binary variables $\\{0, 1\\}$ under AND ($\\cdot$), OR ($+$), and NOT ($'$) operations.\n\n---\n\n## 1. Fundamental Theorems & Dualities\n- **Duality Principle:** Any valid Boolean equality remains valid if $+$ and $\\cdot$ are interchanged, and $0$ and $1$ are interchanged.\n- **Identity Laws:** $A + 0 = A$, $A \\cdot 1 = A$.\n- **Null / Annihilator Laws:** $A + 1 = 1$, $A \\cdot 0 = 0$.\n- **Idempotent Laws:** $A + A = A$, $A \\cdot A = A$.\n- **Complement Laws:** $A + A' = 1$, $A \\cdot A' = 0$.\n- **Involution:** $(A')' = A$.\n\n---\n\n## 2. Distributive & De Morgan's Laws\n- **Distributive Law:**\n  - $A \\cdot (B + C) = A \\cdot B + A \\cdot C$\n  - **Dual Distributive:** $A + (B \\cdot C) = (A + B) \\cdot (A + C)$ *(High-yield exam shortcut!)*\n- **De Morgan's Laws:**\n  $$(A + B)' = A' \\cdot B'$$\n  $$(A \\cdot B)' = A' + B'$$\n- **Consensus Theorem:**\n  $$A B + A' C + B C = A B + A' C$$\n  *(The term $B C$ is redundant consensus).*\n",
+      "notesMarkdown": "# Boolean Algebra: Postulates, Theorems, and De Morgan's Laws\n\nBoolean algebra, formulated by George Boole in 1854 and adapted to switching circuits by Claude Shannon in 1937, provides the mathematical framework for modeling, simplifying, and minimizing digital logic gates.\n\n---\n\n## 1. Fundamental Boolean Postulates and Axioms\n\nOperating over the set $B = \\{0, 1\\}$ with operations OR ($+$), AND ($\\cdot$), and NOT ($\\overline{A}$):\n\n| Law | OR Operation ($+$) | AND Operation ($\\cdot$) |\n| :--- | :--- | :--- |\n| **Identity Law** | $A + 0 = A$ | $A \\cdot 1 = A$ |\n| **Null (Dominance) Law** | $A + 1 = 1$ | $A \\cdot 0 = 0$ |\n| **Idempotent Law** | $A + A = A$ | $A \\cdot A = A$ |\n| **Complement Law** | $A + \\overline{A} = 1$ | $A \\cdot \\overline{A} = 0$ |\n| **Involution Law** | $\\overline{\\overline{A}} = A$ | $\\overline{\\overline{A}} = A$ |\n| **Commutative Law** | $A + B = B + A$ | $A \\cdot B = B \\cdot A$ |\n| **Associative Law** | $(A + B) + C = A + (B + C)$ | $(A \\cdot B) \\cdot C = A \\cdot (B \\cdot C)$ |\n| **Distributive Law** | $A + (B \\cdot C) = (A + B)(A + C)$ | $A \\cdot (B + C) = (A \\cdot B) + (A \\cdot C)$ |\n\n*(Notice: The second distributive law $A + BC = (A + B)(A + C)$ is uniquely true in Boolean algebra, but FALSE in ordinary arithmetic!)*\n\n---\n\n## 2. Advanced Theorems: Absorption, Consensus, and De Morgan's\n\n### 1. Absorption Laws:\n- $A + AB = A$\n- $A(A + B) = A$\n- $A + \\overline{A}B = A + B$\n- $\\overline{A} + AB = \\overline{A} + B$\n\n### 2. Consensus Theorem (Redundant Term Elimination):\n$$AB + \\overline{A}C + BC = AB + \\overline{A}C$$\n- *Condition:* Three variables ($A, B, C$). One variable ($A$) appears complemented ($\\overline{A}$) in one term and uncomplemented in another. The third term ($BC$, the consensus of $B$ and $C$) is completely redundant!\n- *Dual form:* $(A + B)(\\overline{A} + C)(B + C) = (A + B)(\\overline{A} + C)$.\n\n### 3. De Morgan's Laws:\n- **First Law:** The complement of a product is the sum of complements:\n  $$\\overline{A \\cdot B} = \\overline{A} + \\overline{B}$$\n- **Second Law:** The complement of a sum is the product of complements:\n  $$\\overline{A + B} = \\overline{A} \\cdot \\overline{B}$$\n\n---\n\n## 3. The Duality Principle\n\nAny true Boolean expression remains true if you:\n1. Swap all AND ($\\cdot$) operators with OR ($+$) operators.\n2. Swap all OR ($+$) operators with AND ($\\cdot$) operators.\n3. Swap all $0$s with $1$s, and $1$s with $0$s.\n*(Do NOT complement variables during dual transformation!)*\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Distributive Trick:** $A + \\overline{A}B = (A + \\overline{A})(A + B) = 1 \\cdot (A + B) = A + B$.\n- **Consensus Test:** $XY + \\overline{X}Z + YZ = XY + \\overline{X}Z$.\n- **De Morgan:** Break the line, change the sign! $\\overline{A + B + C} = \\overline{A} \\cdot \\overline{B} \\cdot \\overline{C}$.\n",
       "questions": [
         {
           "id": "dld-ba-1",
@@ -245,6 +312,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By the dual distributive law: A + A'B = (A + A')(A + B). Since (A + A') = 1, this simplifies to 1 * (A + B) = A + B."
         }
+      ],
+      "prerequisites": [
+        "Binary number systems and logic truth tables",
+        "Basic algebraic manipulation"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Boolean Algebra and Logic Minimization",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Laws of Boolean Algebra",
+          "url": "https://www.geeksforgeeks.org/laws-of-boolean-algebra/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Boolean Postulates and De Morgan's Laws",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -267,7 +361,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "XOR is an odd function (outputs 1 when number of 1s is odd); XNOR is an even function."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Logic+Gates+Universal+Gates+NAND+NOR+XOR+XNOR+DLD+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Logic Gates and Universal Logic\n\nLogic gates are the physical realization of Boolean functions using semiconductor transistors.\n\n---\n\n## 1. Gate Profiles & Truth Tables\n- **Universal Gates:** **NAND** and **NOR** can synthesize any Boolean function without other gate types.\n  - NAND: $Y = (A B)'$ (Low output only when all inputs are High).\n  - NOR: $Y = (A + B)'$ (High output only when all inputs are Low).\n- **XOR (Odd Parity Gate):** $Y = A \\oplus B = A B' + A' B$.\n  - Output is $1$ if the number of 1s in input is odd.\n  - $A \\oplus 0 = A$, $A \\oplus 1 = A'$, $A \\oplus A = 0$.\n- **XNOR (Equivalence Gate):** $Y = (A \\oplus B)' = A B + A' B'$.\n  - Output is $1$ if inputs are identical.\n\n---\n\n## 2. Gate Implementation Metrics\n- Minimum 2-input NAND gates required to implement:\n  - NOT: 1 gate\n  - AND: 2 gates\n  - OR: 3 gates\n  - NOR: 4 gates\n  - XOR: 4 gates\n  - XNOR: 5 gates\n",
+      "notesMarkdown": "# Logic Gates, Universal Logic (NAND/NOR), and Parity Operations\n\nLogic gates are physical electronic circuits that perform elementary Boolean operations on one or more binary inputs to produce a single binary output.\n\n---\n\n## 1. Primary and Derived Logic Gates\n\n| Gate | Symbol Equation | Truth Table ($A, B \\to Y$) | Behavior Description |\n| :--- | :--- | :--- | :--- |\n| **NOT (Inverter)** | $Y = \\overline{A}$ | $0 \\to 1, \\quad 1 \\to 0$ | Inverts logical state |\n| **AND** | $Y = A \\cdot B$ | $00 \\to 0, 01 \\to 0, 10 \\to 0, 11 \\to \\mathbf{1}$ | High ONLY when all inputs are 1 |\n| **OR** | $Y = A + B$ | $00 \\to 0, 01 \\to \\mathbf{1}, 10 \\to \\mathbf{1}, 11 \\to \\mathbf{1}$ | High when AT LEAST ONE input is 1 |\n| **NAND** | $Y = \\overline{A \\cdot B}$ | $00 \\to 1, 01 \\to 1, 10 \\to 1, 11 \\to \\mathbf{0}$ | Low ONLY when all inputs are 1 |\n| **NOR** | $Y = \\overline{A + B}$ | $00 \\to \\mathbf{1}, 01 \\to 0, 10 \\to 0, 11 \\to 0$ | High ONLY when all inputs are 0 |\n| **XOR** | $Y = A \\oplus B = A\\overline{B} + \\overline{A}B$ | $00 \\to 0, 01 \\to \\mathbf{1}, 10 \\to \\mathbf{1}, 11 \\to 0$ | High when inputs are DIFFERENT (Odd parity) |\n| **XNOR** | $Y = \\overline{A \\oplus B} = AB + \\overline{A}\\overline{B}$ | $00 \\to \\mathbf{1}, 01 \\to 0, 10 \\to 0, 11 \\to \\mathbf{1}$ | High when inputs are EQUAL (Even parity) |\n\n---\n\n## 2. Universal Logic Gates (NAND and NOR)\n\nA gate is **Universal** if any arbitrary Boolean function can be implemented using that gate type alone, without any other gates. Both **NAND** and **NOR** are universal.\n\n### Gate Implementation Count Table:\nMinimum number of 2-input Universal Gates required to implement basic logic functions:\n\n| Target Function | Minimum 2-Input NAND Gates | Minimum 2-Input NOR Gates |\n| :--- | :--- | :--- |\n| **NOT** | **1** | **1** |\n| **AND** | **2** | **3** |\n| **OR** | **3** | **2** |\n| **NOR** | **4** | **1** |\n| **NAND** | **1** | **4** |\n| **XOR** | **4** | **5** |\n| **XNOR** | **5** | **4** |\n\n*(Notice the elegant symmetry: swap NAND and NOR columns for dual operations!)*\n\n---\n\n## 3. High-Yield XOR Properties in Digital Design\n\n1. $A \\oplus 0 = A$ (Buffer)\n2. $A \\oplus 1 = \\overline{A}$ (Programmable Inverter)\n3. $A \\oplus A = 0$\n4. $A \\oplus \\overline{A} = 1$\n5. Commutative and Associative: $A \\oplus B \\oplus C = (A \\oplus B) \\oplus C$.\n6. **Multi-Input XOR Parity Checker:** Output is `1` if and only if the total number of `1` inputs is **ODD**.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Universal Gates:** NAND and NOR.\n- **XOR Equation:** $A \\oplus B = A\\overline{B} + \\overline{A}B$.\n- **XNOR Equation:** $\\overline{A \\oplus B} = AB + \\overline{A}\\overline{B}$.\n- **XOR Gate Count:** 4 NAND gates or 5 NOR gates.\n- **XNOR Gate Count:** 5 NAND gates or 4 NOR gates.\n",
       "questions": [
         {
           "id": "dld-gate-1",
@@ -305,6 +399,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In static CMOS logic, an n-input NAND gate is constructed with n PMOS transistors in parallel between V_DD and output (Pull-Up Network) and n NMOS transistors in series between output and GND (Pull-Down Network)."
         }
+      ],
+      "prerequisites": [
+        "Boolean algebra postulates and truth tables",
+        "Electronic switching concepts"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Logic Gates and Universal Gates",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Logic Gates and Universal Logic",
+          "url": "https://www.geeksforgeeks.org/logic-gates/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Universal Gates and Implementation Minimization",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -327,7 +448,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Duality: M_i = (m_i)' (Maxterm i is the complement of Minterm i)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Canonical+Forms+SOP+POS+Minterms+Maxterms+DLD+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Canonical Forms: SOP and POS\n\nEvery Boolean function can be expressed uniquely as a standard sum of minterms or product of maxterms.\n\n---\n\n## 1. Minterms and Sum of Products (SOP)\n- **Minterm ($m_i$):** A product (AND) of all literals where each variable appears once in true or complemented form, evaluating to $1$ for exactly one row.\n- **Canonical SOP:** Expresses $f$ as a sum (OR) of all minterms for which $f = 1$:\n  $$f(A, B, C) = \\sum m(1, 3, 5, 7) = A' B' C + A' B C + A B' C + A B C$$\n\n---\n\n## 2. Maxterms and Product of Sums (POS)\n- **Maxterm ($M_i$):** A sum (OR) of all literals evaluating to $0$ for exactly one row.\n- **Canonical POS:** Expresses $f$ as a product (AND) of all maxterms where $f = 0$:\n  $$f(A, B, C) = \\prod M(0, 2, 4, 6) = (A + B + C)(A + B' + C)(A' + B + C)(A' + B' + C)$$\n\n---\n\n## 3. Complementary Duality\n- $m_i = (M_i)'$\n- If $f = \\sum m(1, 3, 5, 7)$, then its complement is $f' = \\sum m(0, 2, 4, 6) = \\prod M(1, 3, 5, 7)$.\n",
+      "notesMarkdown": "# Canonical and Standard Forms: Minterms, Maxterms, SOP, and POS\n\nAny Boolean function can be expressed algebraically from its truth table in canonical (complete) or standard (minimal) forms. Understanding minterms and maxterms is the gateway to Karnaugh Map minimization and programmable logic arrays (PLAs).\n\n---\n\n## 1. Minterms and Maxterms for $n$ Variables\n\nFor a function of $n$ variables, there are $2^n$ distinct input combinations:\n- **Minterm ($m_i$):** A product (AND) of all $n$ variables, where each variable appears complemented if its value is $0$, and uncomplemented if $1$. Evaluates to $1$ for **exactly one** row in the truth table.\n- **Maxterm ($M_i$):** A sum (OR) of all $n$ variables, where each variable appears uncomplemented if $0$, and complemented if $1$. Evaluates to $0$ for **exactly one** row in the truth table.\n\n| Row ($i$) | $A$ | $B$ | $C$ | Minterm ($m_i$) | Maxterm ($M_i$) |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n| **0** | 0 | 0 | 0 | $m_0 = \\overline{A}\\,\\overline{B}\\,\\overline{C}$ | $M_0 = A + B + C$ |\n| **1** | 0 | 0 | 1 | $m_1 = \\overline{A}\\,\\overline{B}C$ | $M_1 = A + B + \\overline{C}$ |\n| **2** | 0 | 1 | 0 | $m_2 = \\overline{A}B\\overline{C}$ | $M_2 = A + \\overline{B} + C$ |\n| **3** | 0 | 1 | 1 | $m_3 = \\overline{A}BC$ | $M_3 = A + \\overline{B} + \\overline{C}$ |\n| **4** | 1 | 0 | 0 | $m_4 = A\\overline{B}\\,\\overline{C}$ | $M_4 = \\overline{A} + B + C$ |\n| **5** | 1 | 0 | 1 | $m_5 = A\\overline{B}C$ | $M_5 = \\overline{A} + B + \\overline{C}$ |\n| **6** | 1 | 1 | 0 | $m_6 = AB\\overline{C}$ | $M_6 = \\overline{A} + \\overline{B} + C$ |\n| **7** | 1 | 1 | 1 | $m_7 = ABC$ | $M_7 = \\overline{A} + \\overline{B} + \\overline{C}$ |\n\n### Fundamental Duality Relationship:\n$$M_i = \\overline{m_i} \\quad \\text{and} \\quad m_i = \\overline{M_i}$$\n\n---\n\n## 2. Canonical SOP vs Canonical POS\n\n### Canonical Sum of Products (SOP):\nSum (OR) of all minterms where the function evaluates to **1**:\n$$F(A, B, C) = \\sum m(1, 3, 5, 7) = \\overline{A}\\,\\overline{B}C + \\overline{A}BC + A\\overline{B}C + ABC$$\n\n### Canonical Product of Sums (POS):\nProduct (AND) of all maxterms where the function evaluates to **0**:\n$$F(A, B, C) = \\prod M(0, 2, 4, 6) = (A+B+C)(A+\\overline{B}+C)(\\overline{A}+B+C)(\\overline{A}+\\overline{B}+C)$$\n\n### Direct Conversion Rule:\nThe minterm indices of $F$ are the **exact complement set** of the maxterm indices:\n$$F = \\sum m(1, 4, 6) \\iff F = \\prod M(0, 2, 3, 5, 7)$$\n$$\\overline{F} = \\sum m(0, 2, 3, 5, 7) \\iff \\overline{F} = \\prod M(1, 4, 6)$$\n\n---\n\n## 3. Standard vs Canonical Forms\n\n- **Canonical Form:** Every single term contains **every variable** in the domain (either complemented or uncomplemented).\n- **Standard Form:** Terms may contain fewer variables due to algebraic reduction (e.g., $F = AB + C$ is standard SOP, but not canonical).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Minterm $m_i$:** AND term ($1 \\to A, 0 \\to \\overline{A}$).\n- **Maxterm $M_i$:** OR term ($0 \\to A, 1 \\to \\overline{A}$).\n- **Complement Relationship:** $M_i = \\overline{m_i}$.\n- **SOP $\\leftrightarrow$ POS Index Rule:** $\\sum m(\\text{True indices}) = \\prod M(\\text{False indices})$.\n",
       "questions": [
         {
           "id": "dld-canon-1",
@@ -365,6 +486,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A canonical POS expression consists of all maxterms where the function evaluates to 0. Since minterms are {0, 2, 4, 6}, the missing rows are {1, 3, 5, 7}, giving Pi M(1, 3, 5, 7)."
         }
+      ],
+      "prerequisites": [
+        "Boolean algebra and logic gates",
+        "Truth table evaluation"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Canonical Representations and Normal Forms",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Canonical and Standard Form in Digital Logic",
+          "url": "https://www.geeksforgeeks.org/canonical-and-standard-form/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Minterms, Maxterms, and SOP/POS Conversions",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -388,7 +536,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Don't cares ('d' / 'X') can be treated as 1 if it enlarges a group, or 0 otherwise."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Karnaugh+Maps+K+Map+Prime+Implicants+Essential+Dont+Care+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Karnaugh Maps (K-Maps)\n\nK-maps provide graphical minimization of Boolean functions by exploiting adjacency.\n\n---\n\n## 1. Gray Code Cell Ordering (4-Variable K-Map)\nRows: $AB \\in \\{00, 01, 11, 10\\}$ | Columns: $CD \\in \\{00, 01, 11, 10\\}$.\n\n```\n        CD\n   AB   00  01  11  10\n   00    0   1   3   2\n   01    4   5   7   6\n   11   12  13  15  14\n   10    8   9  11  10\n```\n\n---\n\n## 2. Essential Terminology\n- **Implicant:** Any group of minterms.\n- **Prime Implicant (PI):** A rectangular group that cannot be merged with any neighbor to form a group twice as large.\n- **Essential Prime Implicant (EPI):** A PI containing at least one minterm that is covered by NO other PI. **All EPIs must appear in the minimal SOP!**\n",
+      "notesMarkdown": "# Karnaugh Maps (K-Maps), Prime Implicants, and Don't Care Conditions\n\nThe Karnaugh Map (K-Map), invented by Maurice Karnaugh at Bell Labs in 1953, is a graphical technique for minimizing Boolean functions up to 6 variables. It arranges truth table entries into a multi-dimensional grid organized by **Gray Code** so that physically adjacent cells differ by exactly one binary literal.\n\n---\n\n## 1. K-Map Geometry and Gray Code Ordering\n\nIn a standard K-Map, rows and columns follow Gray code sequence: `00, 01, 11, 10` (notice `11` precedes `10` so that only one bit changes between adjacent columns).\n\n```\n4-Variable K-Map Cell Numbering:\n       CD  00    01    11    10\n   AB    +-----+-----+-----+-----+\n   00    |  0  |  1  |  3  |  2  |\n         +-----+-----+-----+-----+\n   01    |  4  |  5  |  7  |  6  |\n         +-----+-----+-----+-----+\n   11    | 12  | 13  | 15  | 14  |\n         +-----+-----+-----+-----+\n   10    |  8  |  9  | 11  | 10  |\n         +-----+-----+-----+-----+\n```\n\n### Toroidal Adjacency (Wrap-Around):\nThe top row is adjacent to the bottom row, and the leftmost column is adjacent to the rightmost column (the grid forms a torus). The 4 corner cells (`0, 2, 8, 10`) form a valid quad group!\n\n---\n\n## 2. Grouping Rules for Minimal SOP\n\n1. Group sizes **MUST be powers of two**: $1, 2, 4, 8, 16$ cells.\n2. Groups must be rectangular or square (never diagonal or L-shaped).\n3. Maximize group sizes: A group of size $2^k$ eliminates $k$ variables.\n   - Group of 1 cell ($2^0$): Retains all 4 variables.\n   - Group of 2 cells ($2^1$): Eliminates 1 variable (retains 3).\n   - Group of 4 cells ($2^2$): Eliminates 2 variables (retains 2).\n   - Group of 8 cells ($2^3$): Eliminates 3 variables (retains 1).\n   - Group of 16 cells ($2^4$): Eliminates all 4 variables (result $= 1$).\n\n---\n\n## 3. Implicant Definitions: PI vs EPI vs Redundant PI\n\n- **Implicant:** Any single minterm or legal group of minterms where the function is $1$.\n- **Prime Implicant (PI):** A group obtained by combining the maximum possible number of adjacent cells (cannot be subsumed into any larger valid power-of-two group).\n- **Essential Prime Implicant (EPI):** A Prime Implicant that contains **at least one minterm (`1`) that is not covered by ANY other Prime Implicant**. All EPIs **must be included** in the minimal SOP expression!\n- **Redundant Prime Implicant:** A PI whose `1`s are already completely covered by chosen Essential Prime Implicants.\n\n---\n\n## 4. Don't-Care Conditions ($d$ or $X$)\n\nIn many real-world systems, certain input combinations can never occur (e.g., BCD codes `1010` through `1111`).\n- In K-Maps, don't-care cells are marked with `$d$` or `$X$`.\n- **Strategy:** Treat `$d$` as `1` **only if it helps enlarge an existing group of 1s** (to eliminate more variables). If it does not help enlarge a group, leave it as `0`! Never create groups containing only don't-cares!\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Gray Code Order:** `00, 01, 11, 10`.\n- **Elimination Formula:** Group of $2^k$ cells eliminates $k$ variables.\n- **Corner Adjacency:** Cells `0, 2, 8, 10` form a single 4-cell group $\\implies \\overline{B}\\,\\overline{D}$.\n- **Essential PI Test:** A PI covering a minterm with degree of coverage $= 1$.\n",
       "questions": [
         {
           "id": "dld-kmap-1",
@@ -425,6 +573,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "A group of 2^k cells in a K-map eliminates k variables. For a quad (2^2 = 4 cells), k = 2 variables are eliminated, yielding a term with 4 - 2 = 2 literals."
+        }
+      ],
+      "prerequisites": [
+        "Canonical SOP and POS forms",
+        "Boolean algebra simplification and Gray codes"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Karnaugh Maps and Logic Minimization",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Introduction of K-Map (Karnaugh Map)",
+          "url": "https://www.geeksforgeeks.org/introduction-of-k-map-karnaugh-map/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: K-Map Minimization and Prime Implicant Traps",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -486,6 +661,19 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Combinational logic circuits have outputs determined solely by the present values of inputs at that instant, with zero internal memory states or clock dependency."
         }
+      ],
+      "prerequisites": [
+        "Boolean Algebra and K-Maps",
+        "Basic Logic Gates"
+      ],
+      "externalResources": [
+        {
+          "title": "Combinational Logic Circuits Design — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/combinational-circuits-in-digital-logic/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -508,7 +696,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Carry Lookahead Adder (CLA) computes carry signals in parallel in O(1) time using generate (G = AB) and propagate (P = A + B) terms."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Half+Adder+Full+Adder+Carry+Lookahead+Adder+CLA+DLD+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Adders and Subtractors: Combinational Arithmetic\n\nBinary addition and subtraction form the backbone of computer arithmetic logic units.\n\n---\n\n## 1. Half Adder vs Full Adder\n- **Half Adder (HA):** Adds 2 single-bit inputs $(A, B)$:\n  $$\\text{Sum} = A \\oplus B, \\quad \\text{Carry} = A \\cdot B$$\n- **Full Adder (FA):** Adds 3 single-bit inputs $(A, B, C_{\\text{in}})$:\n  $$\\text{Sum} = A \\oplus B \\oplus C_{\\text{in}}$$\n  $$\\text{Carry Out} = A B + B C_{\\text{in}} + A C_{\\text{in}} = A B + (A \\oplus B) C_{\\text{in}}$$\n- A Full Adder can be synthesized using **2 Half Adders + 1 OR gate**.\n\n---\n\n## 2. Binary Subtractors\n- **Half Subtractor (HS):** $\\text{Diff} = A \\oplus B, \\quad \\text{Borrow} = A' B$.\n- **Full Subtractor (FS):** $\\text{Diff} = A \\oplus B \\oplus B_{\\text{in}}, \\quad \\text{Borrow} = A' B + (A \\oplus B)' B_{\\text{in}}$.\n\n---\n\n## 3. 4-bit Parallel Adder/Subtractor\n- Uses 4 Full Adders with XOR gates on $B$ inputs controlled by mode bit $M$:\n  - When $M = 0$: $B \\oplus 0 = B, C_{\\text{in}} = 0 \\implies$ Addition $(A + B)$.\n  - When $M = 1$: $B \\oplus 1 = B', C_{\\text{in}} = 1 \\implies$ 2's complement Subtraction $(A + B' + 1 = A - B)$.\n",
+      "notesMarkdown": "# Adders, Subtractors, Ripple Carry, and Carry Lookahead Adders (CLA)\n\nBinary addition is the core computational operation performed by the Arithmetic Logic Unit (ALU). Because subtraction, multiplication, and division can all be framed around addition, optimizing adder speed directly impacts CPU clock frequency.\n\n---\n\n## 1. Half Adder vs Full Adder\n\n### Half Adder (HA)\nAdds two 1-bit inputs ($A, B$):\n- **Sum ($S$):** $S = A \\oplus B$\n- **Carry ($C$):** $C = A \\cdot B$\n- Requires: 1 XOR gate + 1 AND gate.\n- *Limitation:* Cannot accept a carry input from a prior stage.\n\n### Full Adder (FA)\nAdds three 1-bit inputs ($A, B, C_{\\text{in}}$):\n- **Sum ($S$):** $S = A \\oplus B \\oplus C_{\\text{in}}$\n- **Carry Out ($C_{\\text{out}}$):** $C_{\\text{out}} = AB + BC_{\\text{in}} + AC_{\\text{in}} = AB + C_{\\text{in}}(A \\oplus B)$\n- Implementation using Half Adders: **2 Half Adders + 1 OR gate**.\n\n---\n\n## 2. Ripple Carry Adder (RCA) Propagation Delay\n\nAn $n$-bit Ripple Carry Adder cascades $n$ Full Adders in series:\n\n```\n        A3 B3             A2 B2             A1 B1             A0 B0\n          |                 |                 |                 |\n          v                 v                 v                 v\n       +----+            +----+            +----+            +----+\nC_out -|FA 3|<-- C3 -----|FA 2|<-- C2 -----|FA 1|<-- C1 -----|FA 0|<-- C_in=0\n       +----+            +----+            +----+            +----+\n          |                 |                 |                 |\n          v                 v                 v                 v\n          S3                S2                S1                S0\n```\n\n### Delay Calculation:\nEach FA stage must wait for the carry bit to propagate from the prior stage.\nIf each gate has delay $\\Delta$:\n- Carry out of stage $i$: $t_{\\text{carry}} = 2\\Delta$.\n- Total worst-case propagation delay for an $n$-bit RCA:\n$$\\mathbf{T_{\\text{RCA}} = 2n\\Delta}$$\nFor a 64-bit adder, $128\\Delta$ gate delays is prohibitively slow for gigahertz CPUs!\n\n---\n\n## 3. Carry Lookahead Adder (CLA): Fast $O(1)$ Addition\n\nThe CLA eliminates ripple carry delays by calculating all carry bits **simultaneously in parallel** using two signals:\n- **Carry Generate ($G_i$):** $G_i = A_i \\cdot B_i$ (Stage $i$ generates a carry independently).\n- **Carry Propagate ($P_i$):** $P_i = A_i \\oplus B_i$ (Stage $i$ propagates an incoming carry).\n\n### Recursive Carry Expansion:\n- $C_1 = G_0 + P_0 C_0$\n- $C_2 = G_1 + P_1 C_1 = G_1 + P_1 G_0 + P_1 P_0 C_0$\n- $C_3 = G_2 + P_2 C_2 = G_2 + P_2 G_1 + P_2 P_1 G_0 + P_2 P_1 P_0 C_0$\n- $C_4 = G_3 + P_3 G_2 + P_3 P_2 G_1 + P_3 P_2 P_1 G_0 + P_3 P_2 P_1 P_0 C_0$\n\nEvery carry $C_i$ depends **only on inputs $A, B$ and the initial $C_0$**, evaluated through a 2-level AND-OR circuit in constant time ($O(1)$ gate delay)!\n- *Trade-off:* High fan-in on higher-order gates limits direct CLA width to 4 bits; larger adders use hierarchical 4-bit CLA blocks.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Full Adder from Half Adders:** $2\\text{ HAs} + 1\\text{ OR gate}$.\n- **RCA Delay:** $O(n)$ linear delay ($2n\\Delta$).\n- **CLA Delay:** $O(1)$ constant delay ($4\\Delta$ total for sum).\n- **Subtractor using Adder:** Invert $B$ ($\\overline{B}$) and set $C_0 = 1$ (adds $2$'s complement: $A + \\overline{B} + 1$).\n",
       "questions": [
         {
           "id": "dld-add-1",
@@ -546,6 +734,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A Full Adder is constructed from 2 Half Adders (producing partial sums and carries) and 1 OR gate to combine the two partial carry outputs."
         }
+      ],
+      "prerequisites": [
+        "Logic gates, XOR properties, and truth tables",
+        "Two's complement signed arithmetic"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Arithmetic Circuits and Adders",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Half Adder and Full Adder with CLA",
+          "url": "https://www.geeksforgeeks.org/half-adder-and-full-adder-circuit/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Adder Propagation Delays and CLA Design",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -568,7 +783,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "1-to-2^n DEMUX routes a single input data line to one of 2^n outputs based on n select lines."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Multiplexer+MUX+Demultiplexer+DEMUX+Implementation+DLD+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Multiplexers (MUX) and Demultiplexers (DEMUX)\n\nData selectors and distributors provide hardware-level routing and arbitrary function generation.\n\n---\n\n## 1. Multiplexer (Data Selector)\n- A $2^n \\times 1$ MUX routes one of $2^n$ data inputs to a single output line based on $n$ select lines.\n- **Universal Function Generator:**\n  - An $n$-variable Boolean function can be implemented using a $2^{n-1} \\times 1$ MUX by connecting $n-1$ variables to select lines and the remaining variable ($0, 1, V, V'$) to data inputs.\n  - A $2^n \\times 1$ MUX directly implements any $n$-variable function with zero external gates.\n\n---\n\n## 2. Demultiplexer (Data Distributor)\n- A $1 \\times 2^n$ DEMUX takes a single input line and routes it to one of $2^n$ output lines selected by $n$ control lines.\n- A DEMUX with an enable input behaves identically to a **Binary Decoder**.\n",
+      "notesMarkdown": "# Multiplexers (MUX), Demultiplexers (DEMUX), and Universal Function Generation\n\nA **Multiplexer (Data Selector)** is a combinational circuit that selects binary information from one of many input lines and directs it to a single output line, guided by binary select inputs.\n\n---\n\n## 1. Multiplexer Architecture ($2^n \\times 1$)\n\nA MUX with $n$ select lines has $2^n$ data inputs and $1$ output line:\n\n```\n        Data Inputs:               Select Lines:\n        I0 ------------------+\n        I1 ------------------|\n        I2 ------------------|===>  [ 4:1 MUX ] ---> Output (Y)\n        I3 ------------------+            ^\n                                          |\n                                       S1 S0\n```\n\n### Boolean Output Equation ($4:1$ MUX):\n$$Y = \\overline{S_1}\\,\\overline{S_0}I_0 + \\overline{S_1}S_0 I_1 + S_1\\overline{S_0}I_2 + S_1 S_0 I_3$$\n\n---\n\n## 2. Implementing Any Boolean Function Using a MUX\n\nA $2^n \\times 1$ MUX can implement:\n1. **ANY function of $n$ variables directly** by connecting variables to the $n$ select lines and tying inputs $I_k$ to logic `0` or `1`.\n2. **ANY function of $n+1$ variables** using Shannon's Expansion Theorem!\n\n### Algorithm to Implement $(n+1)$-Variable Function with $2^n \\times 1$ MUX:\nLet function be $F(A, B, C)$:\n1. Connect $n$ variables (e.g., $A, B$) to select lines ($S_1, S_0$).\n2. The remaining variable ($C$) is applied to data inputs as $0, 1, C$, or $\\overline{C}$.\n\n*Worked Example:* Implement $F(A, B, C) = \\sum m(1, 2, 6, 7)$ using $4:1$ MUX:\n- Inputs $AB$ to select lines ($S_1 = A, S_0 = B$).\n- Table of minterms:\n  - Row $AB = 00$: contains $m_0(0)$ and $m_1(C)$. Since $m_1 \\in F$, $I_0 = C$.\n  - Row $AB = 01$: contains $m_2(\\overline{C})$ and $m_3(C)$. Since $m_2 \\in F$, $I_1 = \\overline{C}$.\n  - Row $AB = 10$: contains $m_4, m_5$. Neither in $F \\implies I_2 = 0$.\n  - Row $AB = 11$: contains $m_6(\\overline{C})$ and $m_7(C)$. Both in $F \\implies I_3 = 1$.\n- **Result:** $I_0 = C, \\quad I_1 = \\overline{C}, \\quad I_2 = 0, \\quad I_3 = 1$.\n\n---\n\n## 3. Demultiplexer (DEMUX)\n\nTakes a single input line and routes it to one of $2^n$ possible output lines based on $n$ select lines. A $1 \\times 2^n$ DEMUX with its input line tied to high (`1`) behaves identically to an **$n$-to-$2^n$ Decoder with Enable**!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Inputs vs Select Lines:** $2^n$ data inputs $\\iff n$ select lines.\n- **Universal Function Capability:** $2^n \\times 1$ MUX implements any $(n+1)$-variable Boolean function without extra logic gates (except an inverter if $\\overline{C}$ is needed).\n- **Cascading Formula:** Number of $2 \\times 1$ MUXes to build $N \\times 1$ MUX $= N - 1$.\n",
       "questions": [
         {
           "id": "dld-mux-1",
@@ -606,6 +821,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "To build an 8-to-1 MUX using a tree of 2-to-1 MUXes: First stage requires 4 MUXes (8 inputs to 4), second stage requires 2 MUXes (4 inputs to 2), and final stage requires 1 MUX (2 inputs to 1). Total = 4 + 2 + 1 = 7."
         }
+      ],
+      "prerequisites": [
+        "Logic gates, canonical forms, and truth tables",
+        "Decoder basics and binary addressing"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Multiplexers and Function Generators",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Multiplexers in Digital Logic",
+          "url": "https://www.geeksforgeeks.org/multiplexers-in-digital-logic/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Multiplexer Design and Implementation Tricks",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -628,7 +870,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Decoders with active-low outputs generate NAND-based minterms directly."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Encoders+Decoders+Priority+Encoder+3+to+8+Decoder+DLD+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Encoders, Decoders, and Code Converters\n\nCode converters translate between coded representations (binary, BCD, Gray code, one-hot).\n\n---\n\n## 1. Decoders\n- An $n \\times 2^n$ decoder activates exactly one of its $2^n$ output lines for each $n$-bit input combination.\n- **Minterm Generation:** Each active-high output corresponds to an individual minterm $m_i$. Connecting an OR gate to select outputs realizes any Boolean function.\n- **Expansion:** Two $2 \\times 4$ decoders with enable inputs form a $3 \\times 8$ decoder.\n\n---\n\n## 2. Priority Encoders\n- In a standard $2^n \\times n$ encoder, only one input may be high.\n- In a **Priority Encoder**, if multiple inputs are high simultaneously, the output reflects the input with the **highest assigned priority** (typically highest index).\n- Features a valid output bit $V$ to distinguish \"input $D_0$ active\" from \"no active inputs\".\n",
+      "notesMarkdown": "# Encoders, Priority Encoders, Decoders, and Logic Function Synthesis\n\nEncoders and Decoders are standard MSI (Medium Scale Integration) building blocks used extensively for memory address decoding, data multiplexing, and translating human I/O interfaces to binary representations.\n\n---\n\n## 1. Decoders ($n$-to-$2^n$)\n\nA decoder converts an $n$-bit binary input into $2^n$ unique output lines. Exactly one output line is active (`1` for active-high, `0` for active-low) corresponding to the input binary code.\n\n```\n                  +-------------------+\n        A1 ------>|                   |-----> Y0 = A1' A0'  (m0)\n        A0 ------>|  2-to-4 Decoder   |-----> Y1 = A1' A0   (m1)\n                  |                   |-----> Y2 = A1 A0'   (m2)\n        EN ------>|                   |-----> Y3 = A1 A0    (m3)\n                  +-------------------+\n```\n\n### Implementing Any Function with a Decoder:\nBecause each output of an active-high decoder represents an individual **minterm**, any Boolean function in canonical SOP form can be implemented by connecting the corresponding minterm outputs into an **OR gate**!\n$$F = \\sum m(1, 2, 7) \\implies \\text{Connect outputs } Y_1, Y_2, Y_7 \\text{ to an OR gate!}$$\n\n---\n\n## 2. Encoders and Priority Encoders\n\nAn encoder performs the inverse operation of a decoder, converting $2^n$ input lines into an $n$-bit binary code.\n\n### The Ambiguity in Basic Encoders:\n1. If two or more inputs are active simultaneously, the output produces an invalid, garbled code.\n2. If all inputs are `0`, the output `00` is indistinguishable from input $D_0$ being active.\n\n### The Priority Encoder Solution:\nA **Priority Encoder** establishes a strict hierarchy: if multiple inputs are active simultaneously, the output reflects the input with the **highest priority index** (typically MSB).\n- **Valid Bit ($V$):** An additional output flag where $V = 1$ indicates that at least one input is active; $V = 0$ indicates no inputs are active.\n\n```\n4-to-2 Priority Encoder Truth Table (D3 highest priority):\n  D3   D2   D1   D0  |  Y1   Y0   V\n---+----+----+---+---+---+---+---\n   0    0    0    0  |   X    X   0  (No valid input)\n   0    0    0    1  |   0    0   1\n   0    0    1    X  |   0    1   1\n   0    1    X    X  |   1    0   1\n   1    X    X    X  |   1    1   1\n```\n\n---\n\n## 3. Decoder Expansion\n\nSmaller decoders can be cascaded to construct larger decoders using the **Enable ($EN$)** input.\n- To build a $3$-to-$8$ decoder using two $2$-to-$4$ decoders:\n  - Connect inputs $A, B$ to inputs of both $2$-to-$4$ decoders.\n  - Connect input $C$ to Enable: $C$ directly enables the high decoder, and $\\overline{C}$ enables the low decoder.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Decoder Minterm Generator:** Output $Y_i$ corresponds to minterm $m_i$.\n- **SOP Synthesis:** $n$-to-$2^n$ Decoder $+$ OR gate implements any $n$-variable function.\n- **Priority Encoder:** Resolves concurrent inputs via priority ranking + Valid flag ($V$).\n- **Decoder Expansion Formula:** Number of $k$-input decoders to build $m$-input decoder $= 2^{m-k}$.\n",
       "questions": [
         {
           "id": "dld-enc-1",
@@ -666,6 +908,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "An n-to-2^n decoder converts an n-bit input into 2^n unique output lines. For n = 3, there are 2^3 = 8 outputs corresponding to minterms m0 through m7."
         }
+      ],
+      "prerequisites": [
+        "Multiplexers and binary addressing",
+        "Truth tables and active-low logic"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Decoders, Encoders, and Memory Addressing",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Encoders and Decoders in Digital Logic",
+          "url": "https://www.geeksforgeeks.org/encoder-in-digital-logic/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Priority Encoders and Decoder Expansion",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -689,7 +958,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "D Flip-Flop: Q(next) = D (Data delay). T Flip-Flop: Q(next) = T XOR Q (Toggle)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Flip+Flops+Latches+JK+SR+D+T+Race+Around+Condition+Master+Slave+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Flip-Flops and Latches\n\nFlip-flops and latches are bistable multivibrators that store 1 bit of binary memory.\n\n---\n\n## 1. Flip-Flop Characteristic Equations\n\n| Flip-Flop | Characteristic Equation | Excitation ($Q \\to Q_{next}$) |\n| :--- | :--- | :--- |\n| **SR** | $Q_{next} = S + R' Q$ (with $S R = 0$) | $0 \\to 0: S=0, R=X$; $0 \\to 1: S=1, R=0$ |\n| **JK** | $Q_{next} = J Q' + K' Q$ | $0 \\to 0: J=0, X$; $0 \\to 1: J=1, X$ |\n| **D** | $Q_{next} = D$ | $D = Q_{next}$ |\n| **T** | $Q_{next} = T \\oplus Q = T Q' + T' Q$ | $T = Q \\oplus Q_{next}$ |\n\n---\n\n## 2. Race-Around Condition in JK Flip-Flop\nOccurs when $J = 1, K = 1$, level-triggered clock is high, and clock pulse width $t_p > \\Delta t$ (propagation delay). Output toggles repeatedly and unpredictably during the single clock pulse.\n- **Remedies:** Master-Slave JK flip-flop, or Edge-triggered flip-flop.\n",
+      "notesMarkdown": "# Flip-Flops, Latches, Race-Around Condition, and Excitation Tables\n\nUnlike combinational circuits whose outputs depend solely on present inputs, **Sequential Circuits** incorporate memory feedback elements, allowing outputs to depend on both present inputs and past history (current state).\n\n---\n\n## 1. Latches vs Flip-Flops\n\n- **Latch:** **Level-triggered**. Sensitive to input changes whenever the enable/clock signal is at logic level high (transparent).\n- **Flip-Flop:** **Edge-triggered**. Samples inputs and updates state **only on a clock transition** (Rising/Positive edge or Falling/Negative edge).\n\n---\n\n## 2. Core Flip-Flop Architectures\n\n### 1. SR Flip-Flop\n- Inputs: Set ($S$), Reset ($R$).\n- **Characteristic Equation:** $Q_{n+1} = S + \\overline{R}Q_n$ with constraint $S \\cdot R = 0$.\n- **Forbidden State:** $S = 1, R = 1$ causes $Q = \\overline{Q} = 0$, leading to non-deterministic race conditions upon release.\n\n### 2. JK Flip-Flop\nResolves the SR forbidden state by toggling when $J = K = 1$:\n- **Characteristic Equation:** $\\mathbf{Q_{n+1} = J\\overline{Q_n} + \\overline{K}Q_n}$.\n\n### 3. D Flip-Flop (Data / Delay)\nPrevents forbidden states by enforcing $S = \\overline{R} = D$:\n- **Characteristic Equation:** $\\mathbf{Q_{n+1} = D}$.\n- Used as the universal storage element in CPU registers and cache memories.\n\n### 4. T Flip-Flop (Toggle)\nToggles state whenever $T = 1$:\n- **Characteristic Equation:** $\\mathbf{Q_{n+1} = T \\oplus Q_n}$.\n- Ideal for frequency dividers and binary counters.\n\n---\n\n## 3. The Race-Around Condition in JK Flip-Flops\n\nIn a level-triggered JK flip-flop, if $J = K = 1$, the output toggles ($0 \\to 1 \\to 0 \\to 1\\dots$).\nIf the clock pulse width $t_p$ is greater than the propagation delay $t_{\\text{pd}}$ of the flip-flop:\n$$\\mathbf{t_p > t_{\\text{pd}}}$$\nThe output will toggle continuously and unpredictably multiple times during a single clock pulse, leaving an ambiguous final state!\n\n```\nClock Pulse (tp)    +------------------------+\n                    |                        |\nOutput Q            +-+  +-+  +-+  +-+  +-+  +\n                    | |  | |  | |  | |  | |  |  <-- Race-Around Toggling!\n```\n\n### Solutions to Race-Around:\n1. Ensure clock pulse width $t_p < t_{\\text{pd}}$ (difficult to control in practice).\n2. Use **Edge-Triggered Flip-Flops**.\n3. Use a **Master-Slave JK Flip-Flop** (Master samples on rising edge, Slave transfers to output on falling edge).\n\n---\n\n## 4. Excitation Tables (Crucial for Counter & FSM Design)\n\nAn excitation table dictates what inputs are required to force a state transition from Present State ($Q_n$) to Next State ($Q_{n+1}$):\n\n| $Q_n \\to Q_{n+1}$ | $S \\quad R$ | $J \\quad K$ | $D$ | $T$ |\n| :---: | :---: | :---: | :---: | :---: |\n| **$0 \\to 0$** | $0 \\quad X$ | $0 \\quad X$ | $0$ | $0$ |\n| **$0 \\to 1$** | $1 \\quad 0$ | $1 \\quad X$ | $1$ | $1$ |\n| **$1 \\to 0$** | $0 \\quad 1$ | $X \\quad 1$ | $0$ | $1$ |\n| **$1 \\to 1$** | $X \\quad 0$ | $X \\quad 0$ | $1$ | $0$ |\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **D-FF Characteristic:** $Q_{n+1} = D$.\n- **T-FF Characteristic:** $Q_{n+1} = T \\oplus Q_n$.\n- **JK-FF Characteristic:** $Q_{n+1} = J\\overline{Q}_n + \\overline{K}Q_n$.\n- **Race-Around Condition:** Occurs in level-triggered JK when $J=K=1$ and $t_p > t_{\\text{pd}}$.\n",
       "questions": [
         {
           "id": "dld-ff-1",
@@ -727,6 +996,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In an active-high NOR SR latch, setting both Set (S) and Reset (R) to 1 forces both outputs Q and Q' to 0 simultaneously, violating complementation and causing race conditions on release."
         }
+      ],
+      "prerequisites": [
+        "Logic gates, feedback loops, and truth tables",
+        "Combinational circuit delay concepts"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Sequential Logic, Latches, and Flip-Flops",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Flip-Flop Types, Conversion, and Applications",
+          "url": "https://www.geeksforgeeks.org/flip-flop-types-conversion-and-applications/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Race-Around Condition and Master-Slave Flip-Flops",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -749,7 +1045,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Ring counter of n flip-flops has n states; Johnson (Twisted Ring) counter has 2n states."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Counters+and+Registers+Synchronous+Asynchronous+Ripple+Ring+Johnson+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Counters and Registers\n\n---\n\n## 1. Asynchronous (Ripple) vs Synchronous Counters\n- **Ripple Counter:**\n  - Clock applied only to first flip-flop; subsequent stages clocked by $Q$ or $Q'$ of previous stage.\n  - Slower: Total propagation delay $= n \\times t_{pd}$. Max frequency $= \\frac{1}{n \\cdot t_{pd}}$.\n- **Synchronous Counter:**\n  - All flip-flops clocked simultaneously by master clock.\n  - Max frequency $= \\frac{1}{t_{pd} + t_{comb}}$.\n\n---\n\n## 2. Specialized Shift Counters\nFor $n$ flip-flops:\n- **Ring Counter:** Output of last stage feeds back to first. Total states $= n$.\n- **Johnson Counter (Twisted Ring):** Inverted output of last stage ($Q'$) feeds back to first. Total states $= 2n$.\n",
+      "notesMarkdown": "# Counters, Mod-N Frequency Dividers, and Shift Registers\n\nCounters and registers are fundamental sequential subsystems used for event counting, program counter sequencing, frequency division, and parallel-to-serial data conversion.\n\n---\n\n## 1. Asynchronous (Ripple) vs Synchronous Counters\n\n```\nASYNCHRONOUS (RIPPLE) COUNTER:               SYNCHRONOUS COUNTER:\nClock connects ONLY to FF 0.                 Clock connects SIMULTANEOUSLY\nOutput Q0 clocks FF 1, Q1 clocks FF 2...     to ALL flip-flops!\n(Ripple Delay accumulates: n * t_pd)         (Single t_pd delay!)\n```\n\n| Dimension | Asynchronous (Ripple) Counter | Synchronous Counter |\n| :--- | :--- | :--- |\n| **Clocking** | Clock applied only to LSB; subsequent stages clocked by prior FF outputs | Common clock applied to all flip-flops simultaneously |\n| **Propagation Delay** | $\\mathbf{T = n \\cdot t_{\\text{pd}}}$ (accumulates with each stage) | $\\mathbf{T = t_{\\text{pd}} + \\text{gate delay}}$ (constant) |\n| **Maximum Frequency** | Low: $f_{\\max} = \\frac{1}{n \\cdot t_{\\text{pd}}}$ | High: $f_{\\max} = \\frac{1}{t_{\\text{pd}} + t_{\\text{logic}}}$ |\n| **Circuit Complexity** | Simple hardware wiring | More complex combinational steering logic |\n| **Glitches** | Vulnerable to decoding spikes due to intermediate ripple states | Glitch-free synchronous state transitions |\n\n---\n\n## 2. Modulus (Mod-N) of Counters\n\nThe **Modulus ($N$)** of a counter is the total number of unique states it cycles through before repeating:\n- An $n$-bit counter has a maximum modulus of $N_{\\max} = 2^n$.\n- To build a counter of modulus $N$, the minimum number of flip-flops required is:\n$$n = \\lceil \\log_2 N \\rceil$$\n- *Example:* A Mod-10 (Decade / BCD) counter cycles through 10 states (`0000` to `1001`), requiring $\\lceil \\log_2 10 \\rceil = \\mathbf{4\\text{ flip-flops}}$ and clearing when state `1010` (10) is detected.\n\n---\n\n## 3. Shift Register Architectures\n\nA register is a cascade of flip-flops used to store and shift multi-bit binary words:\n1. **SISO (Serial-In, Serial-Out):** Requires $n$ clock cycles to load, and $n-1$ cycles to read.\n2. **SIPO (Serial-In, Parallel-Out):** Requires $n$ clock cycles to load; outputs all $n$ bits simultaneously in $1$ cycle.\n3. **PISO (Parallel-In, Serial-Out):** Loads all bits in 1 cycle; shifts out serially in $n-1$ cycles.\n4. **PIPO (Parallel-In, Parallel-Out):** Loads and reads in **1 clock cycle** (fastest data transfer).\n\n### Ring Counter vs Johnson (Twisted-Ring) Counter:\n- **Ring Counter ($n$ Flip-Flops):** Connects $Q_{n-1}$ back to $D_0$ in a circle. Circulates a single `1` bit (`1000 -> 0100 -> 0010 -> 0001`).\n  - Total States: $\\mathbf{n\\text{ states}}$.\n- **Johnson Counter ($n$ Flip-Flops):** Connects inverted $\\overline{Q}_{n-1}$ back to $D_0$.\n  - Total States: $\\mathbf{2n\\text{ states}}$ (Doubles the states with zero extra flip-flops!).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Flip-Flops for Mod-$N$:** $n = \\lceil \\log_2 N \\rceil$.\n- **Ripple Counter Delay:** $n \\times t_{\\text{pd}} \\le T_{\\text{clk}} \\implies f_{\\max} = \\frac{1}{n \\cdot t_{\\text{pd}}}$.\n- **Ring Counter States:** $n$.\n- **Johnson Counter States:** $2n$.\n- **Frequency Division:** An $n$-bit counter divides clock frequency by $2^n$ at the MSB output: $f_{\\text{out}} = \\frac{f_{\\text{in}}}{2^n}$.\n",
       "questions": [
         {
           "id": "dld-cnt-1",
@@ -787,6 +1083,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "With n flip-flops, the maximum number of distinct stable states is 2^n. For n = 4, 2^4 = 16 states (0 to 15), creating a MOD-16 counter."
         }
+      ],
+      "prerequisites": [
+        "Flip-flops, excitation tables, and clock triggering",
+        "Binary state sequencing"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Registers, Shift Registers, and Synchronous Counters",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Counters in Digital Logic",
+          "url": "https://www.geeksforgeeks.org/counters-in-digital-logic/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Counter Modulus and Shift Register Calculations",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -810,7 +1133,7 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
         "Setup time (t_setup) and Hold time (t_hold) ensure reliable edge-triggered data latching."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Finite+State+Machines+Mealy+Moore+Sequential+Circuits+Sequence+Detector+Digital+Logic+Design+DLD+gate+lecture",
-      "notesMarkdown": "# Sequential Circuits and Finite-State Machines (FSM)\n\n---\n\n## 1. Mealy Machine vs Moore Machine\n\n| Parameter | Moore Machine | Mealy Machine |\n| :--- | :--- | :--- |\n| **Output Dependency** | Present state **only** | Present state **AND** present input |\n| **State Count** | Typically requires more states ($N+1$ for $N$-bit sequence detector) | Typically requires fewer states ($N$ states for $N$-bit sequence detector) |\n| **Output Changes** | Synchronous with clock edge | Can change asynchronously whenever input changes |\n\n---\n\n## 2. Timing Constraints\n- **Setup Time ($t_{\\text{setup}}$):** Minimum duration data input must remain stable **before** clock edge.\n- **Hold Time ($t_{\\text{hold}}$):** Minimum duration data input must remain stable **after** clock edge.\n- **Maximum Clock Frequency:**\n  $$T_{clk} \\ge t_{cq} + t_{comb} + t_{setup} \\implies f_{max} = \\frac{1}{T_{clk}}$$\n",
+      "notesMarkdown": "# Sequential Circuits, Finite-State Machines (Mealy vs Moore), and Synthesis\n\nA Finite-State Machine (FSM) is a mathematical abstraction of a sequential circuit that transitions through a finite set of internal states driven by clock pulses and external inputs.\n\n---\n\n## 1. Mealy Machine vs Moore Machine\n\n```\nMOORE MACHINE: Output depends ONLY on Current State\nInputs -----> [ Next State Logic ] -----> [ State Memory (FFs) ] -----> [ Output Logic ] -----> Outputs\n                      ^                          |\n                      |                          |\n                      +--------------------------+\n\nMEALY MACHINE: Output depends on Current State AND Current Inputs!\nInputs ---+-> [ Next State Logic ] -----> [ State Memory (FFs) ]\n          |           ^                          |\n          |           |                          |\n          |           +--------------------------+\n          |                                      |\n          +----------------------------> [ Output Logic ] -----> Outputs\n```\n\n| Dimension | Moore Machine | Mealy Machine |\n| :--- | :--- | :--- |\n| **Output Function** | $\\mathbf{Output = \\lambda(Current\\_State)}$ | $\\mathbf{Output = \\lambda(Current\\_State, Inputs)}$ |\n| **State Count** | Typically requires **more states** to detect patterns | Requires **fewer or equal states** |\n| **Response Time** | Updates output **one clock cycle later** (synchronous to clock) | Reacts **immediately in current cycle** to input changes |\n| **Glitch Susceptibility**| Low (glitch-free: outputs change only on clock edges) | High (asynchronous input glitches propagate directly to outputs) |\n\n---\n\n## 2. Step-by-Step FSM Synthesis Procedure\n\n1. **State Diagram:** Formalize problem into states and directed transition arcs.\n2. **State Table:** Map Present State + Inputs $\\to$ Next State + Outputs.\n3. **State Reduction:** Eliminate redundant equivalent states using the **Row Equivalence Method** or **Implication Table**.\n4. **State Assignment:** Assign unique binary codes ($m$ flip-flops for $S$ states: $m = \\lceil \\log_2 S \\rceil$).\n5. **Excitation Table Mapping:** Use flip-flop excitation tables (e.g., D-FF or JK-FF) to determine input equations.\n6. **K-Map Simplification:** Derive minimal Boolean equations for flip-flop inputs and circuit outputs.\n7. **Circuit Schematic:** Implement with flip-flops and combinational logic gates.\n\n---\n\n## 3. Worked Example: Sequence Detector (Detects `101`)\n\n### Moore Machine for Overlapping `101` Detector:\n- $S_0$: Reset state (no bits matched), Output $= 0$.\n- $S_1$: Matched `1`, Output $= 0$.\n- $S_2$: Matched `10`, Output $= 0$.\n- $S_3$: Matched `101`, Output $= 1$.\n- Transitions from $S_3$:\n  - If next bit is `0`: string ends in `10` $\\implies$ transition to $S_2$.\n  - If next bit is `1`: string ends in `1` $\\implies$ transition to $S_1$.\n- Requires **4 States** in Moore Machine. (A Mealy machine requires only 3 states!).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Moore Output:** Solely a function of Present State.\n- **Mealy Output:** Function of Present State $\\land$ Present Input.\n- **State Count Relationship:** $N_{\\text{Moore}} = N_{\\text{Mealy}} + 1$ (typically for sequence detectors).\n- **Setup Time ($t_{\\text{su}}$) and Hold Time ($t_h$):** Inputs must remain stable for $t_{\\text{su}}$ before clock edge, and $t_h$ after clock edge to avoid **Metastability**.\n",
       "questions": [
         {
           "id": "dld-fsm-1",
@@ -847,6 +1170,33 @@ export const DIGITAL_LOGIC_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "In a Mealy machine, outputs are functions of both the present internal state and current external inputs, while in a Moore machine outputs depend strictly on the present state."
+        }
+      ],
+      "prerequisites": [
+        "Flip-flops, excitation tables, and synchronous counters",
+        "State transition diagrams and logic minimization"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Finite State Machines (FSM) Design and Synthesis",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Mealy and Moore Machines in Digital Logic",
+          "url": "https://www.geeksforgeeks.org/difference-between-mealy-machine-and-moore-machine/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: FSM State Minimization and Circuit Synthesis",
+          "url": "https://www.interviewbit.com/digital-electronics-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     }

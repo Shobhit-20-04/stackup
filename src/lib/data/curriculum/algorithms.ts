@@ -65,6 +65,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Big-O notation satisfies the transitivity property: if f(n) <= c1 * g(n) and g(n) <= c2 * h(n), then f(n) <= (c1 * c2) * h(n), which proves f(n) = O(h(n))."
         }
+      ],
+      "prerequisites": [
+        "Function Growth Rates",
+        "Limits and Inequalities"
+      ],
+      "externalResources": [
+        {
+          "title": "Asymptotic Analysis of Algorithms — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/analysis-of-algorithms-set-1-asymptotic-analysis/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Asymptotic Complexity (6.006) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -124,6 +144,19 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "In the worst case, inserting sorted elements into an unbalanced BST produces a completely skewed tree of height N, resulting in O(N) search time."
+        }
+      ],
+      "prerequisites": [
+        "Asymptotic Notations (Big-O, Omega, Theta)",
+        "Search & Sort Algorithms"
+      ],
+      "externalResources": [
+        {
+          "title": "Worst, Average and Best Case Analysis — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/analysis-of-algorithms-set-2-asymptotic-analysis/",
+          "difficulty": "Beginner",
+          "isFree": true
         }
       ]
     },
@@ -186,6 +219,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Here a = 2, b = 2, so n^(log_b a) = n^(log_2 2) = n^1. Since f(n) = n^2 = Ω(n^(1 + 1)), and regularity condition 2*(n/2)^2 = n^2/2 <= c * n^2 holds for c = 1/2 < 1, Master Theorem Case 3 applies: T(n) = Θ(f(n)) = Θ(n^2)."
         }
+      ],
+      "prerequisites": [
+        "Recursion Trees",
+        "Mathematical Induction"
+      ],
+      "externalResources": [
+        {
+          "title": "Master Theorem for Divide and Conquer Recurrences — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/master-theorem-for-divide-and-conquer-recurrences/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Divide & Conquer Recurrences — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -246,6 +299,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "std::lower_bound locates the first element in [first, last) which does not compare less than target (i.e. element >= target). In contrast, upper_bound returns the first element strictly greater than target (element > target)."
         }
+      ],
+      "prerequisites": [
+        "Arrays and Monotonicity",
+        "Linear vs Logarithmic Time"
+      ],
+      "externalResources": [
+        {
+          "title": "Binary Search and Search Algorithms — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/searching-algorithms/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Algorithms & Search: Week 3 — Harvard CS50",
+          "provider": "Harvard CS50",
+          "url": "https://cs50.harvard.edu/x/2024/weeks/3/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -269,7 +342,7 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         "Linear-time non-comparison sorts: Counting Sort O(n + k), Radix Sort O(d * (n + k))."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Sorting+Algorithms+MergeSort+QuickSort+HeapSort+Stable+Algorithms+lecture+tutorial",
-      "notesMarkdown": "# Sorting Algorithms\n\n---\n\n## 1. Master Complexity Matrix\n\n| Algorithm | Best Time | Average Time | Worst Time | Space | Stable? | In-Place? |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n| **Bubble Sort** | $O(n)$ | $O(n^2)$ | $O(n^2)$ | $O(1)$ | Yes | Yes |\n| **Selection Sort** | $O(n^2)$ | $O(n^2)$ | $O(n^2)$ | $O(1)$ | No | Yes |\n| **Insertion Sort** | $O(n)$ | $O(n^2)$ | $O(n^2)$ | $O(1)$ | Yes | Yes |\n| **Merge Sort** | $O(n \\log n)$ | $O(n \\log n)$ | $O(n \\log n)$ | $O(n)$ | **Yes** | No |\n| **Quick Sort** | $O(n \\log n)$ | $O(n \\log n)$ | $O(n^2)$ | $O(\\log n)$ | No | **Yes** |\n| **Heap Sort** | $O(n \\log n)$ | $O(n \\log n)$ | $O(n \\log n)$ | $O(1)$ | No | **Yes** |\n| **Counting Sort**| $O(n + k)$ | $O(n + k)$ | $O(n + k)$ | $O(k)$ | **Yes** | No |\n\n---\n\n## 2. Comparison Sort Lower Bound Theorem\nBy decision-tree modeling, any comparison-based sort has $n!$ possible permutations as leaves. Height $h \\ge \\log_2(n!) = \\Omega(n \\log n)$.\n",
+      "notesMarkdown": "# Sorting Algorithms: Stability, Comparison Bounds, and Linear Sorts\n\nSorting arranges elements in a specified order. Understanding the trade-offs between comparison sorts ($O(N \\log N)$ lower bound) and non-comparison sorts ($O(N)$ linear time) is an essential algorithmic competency.\n\n---\n\n## 1. Classical Sorting Algorithms Compared\n\n| Algorithm | Best Time | Average Time | Worst Time | Space | Stable? | Key Mechanism |\n| :--- | :--- | :--- | :--- | :--- | :---: | :--- |\n| **Insertion Sort** | $\\mathbf{O(N)}$ | $O(N^2)$ | $O(N^2)$ | $O(1)$ | **YES** | Sifts elements into sorted prefix (fast for nearly sorted) |\n| **Merge Sort** | $O(N \\log N)$| $O(N \\log N)$| $O(N \\log N)$| $O(N)$ | **YES** | Divide and conquer; external sorting standard |\n| **QuickSort** | $O(N \\log N)$| $\\mathbf{O(N \\log N)}$| $O(N^2)$ | $O(\\log N)$ | NO | Partitioning around pivot; cache-friendly |\n| **HeapSort** | $O(N \\log N)$| $O(N \\log N)$| $O(N \\log N)$| $\\mathbf{O(1)}$| NO | Priority queue selection; in-place guarantee |\n| **Counting Sort** | $O(N + K)$ | $O(N + K)$ | $O(N + K)$ | $O(K)$ | **YES** | Array index histogram (requires discrete range $K$) |\n| **Radix Sort** | $O(d(N + K))$| $O(d(N+K))$ | $O(d(N+K))$ | $O(N + K)$ | **YES** | Digit-by-digit sorting via stable counting sort |\n\n---\n\n## 2. The $\\Omega(N \\log N)$ Comparison Lower Bound\n\n```\nTheorem:\nAny comparison-based sorting algorithm requires AT LEAST Omega(N log N)\ncomparisons in the worst case!\n```\n\n### Proof via Decision Tree Model:\n1. An array of $N$ distinct elements has $N!$ possible permutations.\n2. Every comparison has 2 outcomes ($\\le$ or $>$), corresponding to a binary decision tree.\n3. To distinguish all $N!$ permutations, the binary tree must contain at least $N!$ leaves:\n   $$\\text{Leaves} = 2^h \\ge N! \\implies h \\ge \\log_2(N!)$$\n4. By Stirling's Approximation ($\\ln(N!) \\approx N \\ln N - N$):\n   $$h \\ge \\sum_{i=1}^N \\log_2 i \\ge \\sum_{i=N/2}^N \\log_2(N/2) = \\frac{N}{2} \\log_2\\left(\\frac{N}{2}\\right) = \\mathbf{\\Omega(N \\log N)}$$\n\n---\n\n## 3. Stability in Sorting Algorithms\n\nA sorting algorithm is **Stable** if elements with identical keys preserve their relative original order after sorting.\n- Essential when sorting multi-attribute records (e.g., sort employees by Name, then stably sort by Department $\\implies$ within each department, names remain alphabetized!).\n- *Inherently Stable:* Merge Sort, Insertion Sort, Bubble Sort, Counting Sort.\n- *Inherently Unstable:* QuickSort, HeapSort, Selection Sort (due to long-distance swaps).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Comparison Lower Bound:** $\\Omega(N \\log N)$ comparisons.\n- **Linear Time Exception:** Non-comparison sorts (Counting, Radix) achieve $O(N)$ when keys are bounded integers.\n- **QuickSort Worst-Case:** $O(N^2)$ occurs when pivot is consistently extreme (solved via randomized pivot or median-of-three).\n",
       "questions": [
         {
           "id": "algo-sort-1",
@@ -306,6 +379,33 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "A sorting algorithm is stable if records with identical keys appear in the same relative order in the sorted output as they were in the input. Merge Sort and Insertion Sort are naturally stable, whereas Quick Sort and Heap Sort are unstable because long-distance swaps can reorder duplicate keys."
+        }
+      ],
+      "prerequisites": [
+        "Asymptotic Big-O analysis and recursion",
+        "Array indexing and binary representations"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Sorting - Insertion Sort, Merge Sort, and QuickSort",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Sorting Algorithms Overview",
+          "url": "https://www.geeksforgeeks.org/sorting-algorithms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Sorting Algorithms Comparison and Stability Guide",
+          "url": "https://www.interviewbit.com/sorting-algorithms/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -367,6 +467,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Strassen's algorithm reduces matrix multiplication to 7 recursive multiplications of size N/2 instead of 8: T(N) = 7T(N/2) + O(N^2) => O(N^(log2 7)) = O(N^2.807)."
         }
+      ],
+      "prerequisites": [
+        "Recursion and Base Cases",
+        "Array Partitioning"
+      ],
+      "externalResources": [
+        {
+          "title": "Divide and Conquer Algorithms — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/divide-and-conquer-algorithm-introduction/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Introduction to Algorithms (6.006) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -427,6 +547,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Huffman coding builds an optimal prefix tree by repeatedly extracting the two smallest frequency symbols from a Min-Heap, merging them under a new parent whose frequency is their sum, and reinserting the parent. With N symbols, 2(N-1) heap operations execute in O(N log N) total time."
         }
+      ],
+      "prerequisites": [
+        "Optimal Substructure",
+        "Sorting Invariants"
+      ],
+      "externalResources": [
+        {
+          "title": "Greedy Algorithms and Proof of Correctness — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/greedy-algorithms/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Design and Analysis of Algorithms (6.046J) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
       ]
     },
     {
@@ -450,7 +590,7 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         "Classic benchmarks: Longest Common Subsequence O(mn), 0/1 Knapsack O(nW), Matrix Chain Multiplication O(n^3)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Dynamic+Programming+Memoization+Tabulation+0+1+Knapsack+LCS+Algorithms+lecture+tutorial",
-      "notesMarkdown": "# Dynamic Programming (DP)\n\nDP solves optimization problems by breaking them into overlapping subproblems, solving each once, and storing solutions.\n\n---\n\n## 1. Top-Down (Memoization) vs Bottom-Up (Tabulation)\n- **Memoization:** Follows natural recursion tree; computes only required subproblems; incurs stack overhead.\n- **Tabulation:** Iterative table filling; solves all subproblems; optimal memory locality; enables space optimization.\n\n---\n\n## 2. Canonical DP Recurrences\n- **0/1 Knapsack:**\n  $$dp[i][w] = \\max(dp[i-1][w], \\text{val}[i] + dp[i-1][w - \\text{wt}[i]])$$\n- **Longest Common Subsequence (LCS):**\n  $$dp[i][j] = \\begin{cases} 1 + dp[i-1][j-1] & \\text{if } A[i] = B[j] \\\\ \\max(dp[i-1][j], dp[i][j-1]) & \\text{otherwise} \\end{cases}$$\n",
+      "notesMarkdown": "# Dynamic Programming: Memoization, Tabulation, and Classical Patterns\n\nDynamic Programming (DP), formulated by Richard Bellman in 1953, is an algorithmic optimization paradigm that solves complex problems by breaking them down into overlapping subproblems, storing subproblem solutions to avoid redundant recalculation.\n\n---\n\n## 1. The Two Essential Ingredients for Dynamic Programming\n\nA problem can be solved with Dynamic Programming if and only if it exhibits:\n\n1. **Optimal Substructure:**\n   An optimal solution to the overall problem incorporates optimal solutions to its constituent subproblems (e.g., Shortest Path from $A \\to C$ via $B$ consists of Shortest Path $A \\to B$ + Shortest Path $B \\to C$).\n2. **Overlapping Subproblems:**\n   A naive recursive formulation revisits the identical subproblems repeatedly across different branches of the recursion tree (e.g., computing `fib(5)` solves `fib(3)` multiple times).\n\n---\n\n## 2. Top-Down (Memoization) vs Bottom-Up (Tabulation)\n\n```\nTOP-DOWN MEMOIZATION:                             BOTTOM-UP TABULATION:\nRecursive structure preserved.                    Iterative array loop.\nCache results in hash table/array on return.      Compute from smallest base case upward.\n(Easy to write, but call stack overhead).         (Optimal performance, zero stack recursion).\n```\n\n---\n\n## 3. Classical Pattern: 0/1 Knapsack Problem\n\nGiven $N$ items with weights $w_i$ and values $v_i$, maximize total value within weight capacity $W$.\n- **State Definition:** $dp[i][w]$ = Maximum value using a subset of first $i$ items with capacity $w$.\n- **Recurrence Relation:**\n  $$dp[i][w] = \\begin{cases} dp[i-1][w] & \\text{if } w_i > w \\\\ \\max(dp[i-1][w], \\quad v_i + dp[i-1][w - w_i]) & \\text{if } w_i \\le w \\end{cases}$$\n- **Complexity:** $O(N \\cdot W)$ time and $O(W)$ space (using 1D rolling array optimization).\n\n---\n\n## 4. Classical Pattern: Longest Common Subsequence (LCS)\n\nGiven strings $X[1\\dots m]$ and $Y[1\\dots n]$:\n- **Recurrence Relation:**\n  $$LCS(i, j) = \\begin{cases} 1 + LCS(i-1, j-1) & \\text{if } X[i] == Y[j] \\\\ \\max(LCS(i-1, j), \\quad LCS(i, j-1)) & \\text{if } X[i] \\ne Y[j] \\end{cases}$$\n- **Complexity:** $O(m \\cdot n)$ time and space.\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **DP Recipe:** State Definition $\\to$ Base Cases $\\to$ Transition Relation $\\to$ Order of Computation.\n- **Space Optimization:** If transition requires only previous row ($i-1$), space can always be compressed from $O(N \\times W)$ to $O(W)$!\n- **Pseudo-Polynomial Time:** $O(N \\cdot W)$ for Knapsack is pseudo-polynomial because it scales with numeric value $W$, not bit length $\\log_2 W$.\n",
       "questions": [
         {
           "id": "algo-dp-1",
@@ -487,6 +627,33 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "An algorithm is pseudo-polynomial if its runtime is polynomial in the numeric value of an input parameter W rather than the number of bits required to encode W (which is log2 W). If W is large (e.g. 2^64), O(N * W) becomes strictly exponential in the input bit-size."
+        }
+      ],
+      "prerequisites": [
+        "Recursion, call stacks, and memoization",
+        "Divide and conquer algorithms"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Dynamic Programming - Memoization and Tabulation",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Dynamic Programming (DP) Tutorial",
+          "url": "https://www.geeksforgeeks.org/dynamic-programming/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Dynamic Programming Patterns and Problem Solving",
+          "url": "https://www.interviewbit.com/dynamic-programming-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -548,6 +715,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A back edge connects a vertex to an ancestor in the current DFS path (a grey vertex). Reaching an active ancestor completes a directed cycle."
         }
+      ],
+      "prerequisites": [
+        "Graph Representations (Adjacency Matrix/List)",
+        "Stacks and Queues"
+      ],
+      "externalResources": [
+        {
+          "title": "Graph Traversals (BFS and DFS) — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Breadth-First Search (6.006) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -570,7 +757,7 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
         "If all edge weights are distinct, the Minimum Spanning Tree is guaranteed to be unique."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Minimum+Spanning+Tree+Prims+Kruskals+MST+Algorithms+lecture+tutorial",
-      "notesMarkdown": "# Minimum Spanning Trees: Prim's and Kruskal's\n\nA Spanning Tree of connected undirected graph $G = (V, E)$ has $V - 1$ edges and no cycles.\n\n---\n\n## 1. Prim's Algorithm vs Kruskal's Algorithm\n\n| Feature | Prim's Algorithm | Kruskal's Algorithm |\n| :--- | :--- | :--- |\n| **Strategy** | Grows a single connected tree from root vertex | Grows a forest by adding smallest edge globally |\n| **Data Structure** | Min-Heap / Priority Queue | Disjoint Set Union (DSU) + Sorted Edges |\n| **Time Complexity** | $O(E \\log V)$ | $O(E \\log E) = O(E \\log V)$ |\n| **Preferred For** | Dense graphs ($E \\approx V^2$) | Sparse graphs ($E \\ll V^2$) |\n\n---\n\n## 2. Uniqueness Property\nIf all edge weights in the graph are distinct, the MST is **strictly unique**.\n",
+      "notesMarkdown": "# Minimum Spanning Trees (MST): Cut Property, Kruskal's, and Prim's Algorithms\n\nGiven a connected, undirected graph $G = (V, E)$ with edge weights, a **Spanning Tree** is a subgraph that connects all $V$ vertices without cycles ($|V| - 1$ edges). A **Minimum Spanning Tree (MST)** minimizes total edge weight sum.\n\n---\n\n## 1. The Cut Property (Foundational Greedy Choice)\n\nLet $S \\subset V$ be any subset of vertices, defining a cut $(S, V - S)$ that partitions the graph.\n- An edge $(u, v)$ **crosses the cut** if $u \\in S$ and $v \\in V - S$.\n- **The Cut Property Theorem:** If edge $e$ is the **strictly lightest edge crossing cut $(S, V - S)$**, then edge $e$ **MUST belong to the Minimum Spanning Tree**!\n\n---\n\n## 2. Kruskal's Algorithm (Edge-Centric Greedy)\n\nSorts all edges and greedily adds the lightest edge that does not form a cycle:\n\n```\n1. Sort all edges E by weight ascending: O(E log E).\n2. Initialize Disjoint Set Union (DSU) with V singleton sets.\n3. For each edge (u, v) in sorted order:\n   - If find(u) != find(v): (Nodes belong to different components!)\n     - Add edge (u, v) to MST.\n     - union(u, v).\n   - If find(u) == find(v): Skip edge (adding would create a cycle!).\n4. Stop when MST contains V - 1 edges.\n```\n\n- **Time Complexity:** Sorting edges takes $O(E \\log E)$. DSU operations with Path Compression and Union by Rank take $O(E \\cdot \\alpha(V))$.\n  $$\\mathbf{T_{\\text{Kruskal}} = O(E \\log E) = O(E \\log V)}$$\n- **Best For:** **Sparse Graphs** ($E \\ll V^2$).\n\n---\n\n## 3. Prim's Algorithm (Vertex-Centric Greedy)\n\nGrows a single tree from an arbitrary starting vertex by always picking the lightest crossing edge:\n\n```\n1. Initialize Min-Heap with start vertex (key = 0, all other keys = infinity).\n2. While Min-Heap is not empty:\n   - Extract vertex u with minimum key: u is now added to MST.\n   - For each neighbor v of u:\n     - If v is still in Min-Heap and weight(u, v) < key[v]:\n       - Update key[v] = weight(u, v).\n       - Record parent[v] = u.\n       - Decrease-Key operation in Min-Heap.\n```\n\n- **Time Complexity with Binary Heap:** $O(V \\log V + E \\log V) = \\mathbf{O(E \\log V)}$.\n- **Time Complexity with Fibonacci Heap:** $\\mathbf{O(E + V \\log V)}$ (optimal for dense graphs!).\n- **Best For:** **Dense Graphs** ($E \\approx V^2$).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Spanning Tree Edges:** Exactly $V - 1$ edges.\n- **Unique MST Condition:** If all edge weights are distinct, the MST is **provably unique**.\n- **Kruskal's vs Prim's:** Kruskal's sorts edges (DSU); Prim's expands tree from vertex (Min-Heap).\n- **Cycle Property:** The heaviest edge in any cycle cannot belong to the MST.\n",
       "questions": [
         {
           "id": "algo-mst-1",
@@ -607,6 +794,33 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Kruskal's algorithm sorts edges by weight and uses Disjoint Set Union (DSU) with find and union operations to check if two endpoints belong to the same component in near O(1) time."
+        }
+      ],
+      "prerequisites": [
+        "Graph representations: adjacency lists and matrices",
+        "Priority queues (heaps) and disjoint set unions (DSU)"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Minimum Spanning Trees (Prim and Kruskal)",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Kruskal's and Prim's Minimum Spanning Tree",
+          "url": "https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: MST Properties and Disjoint Set Union (DSU)",
+          "url": "https://www.interviewbit.com/graph-data-structure-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -669,6 +883,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The distance from any vertex i to itself starts at 0. If dist[i][i] becomes negative (< 0) during Floyd-Warshall, it means there exists a path from i back to i with negative total weight, which confirms the existence of a negative cycle."
         }
+      ],
+      "prerequisites": [
+        "Weighted Graphs",
+        "Priority Queues / Min-Heaps"
+      ],
+      "externalResources": [
+        {
+          "title": "Dijkstra and Bellman-Ford Shortest Path — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Shortest Paths Algorithms — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -728,6 +962,19 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Kahn's algorithm initializes a queue with all vertices having in-degree 0 (no prerequisites). When a vertex is removed, its outgoing edges are deleted, decrementing neighbor in-degrees."
+        }
+      ],
+      "prerequisites": [
+        "Directed Acyclic Graphs (DAG)",
+        "DFS and In-Degrees"
+      ],
+      "externalResources": [
+        {
+          "title": "Topological Sorting and Kahn's Algorithm — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/topological-sorting/",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -789,6 +1036,19 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The bounding function validates row, column, and diagonal conflicts (row - col and row + col indices). If unsafe, it prunes the search branch immediately without exploring deeper."
         }
+      ],
+      "prerequisites": [
+        "Recursion Trees",
+        "State-Space Pruning"
+      ],
+      "externalResources": [
+        {
+          "title": "Backtracking Paradigm (N-Queens, Sudoku) — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/backtracking-algorithms/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -849,6 +1109,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The fundamental Max-Flow Min-Cut Theorem by Ford and Fulkerson proves that the maximum possible amount of flow through a network equals the minimum capacity among all valid cuts separating source and sink."
         }
+      ],
+      "prerequisites": [
+        "Flow Networks and Capacities",
+        "Augmenting Paths"
+      ],
+      "externalResources": [
+        {
+          "title": "Ford-Fulkerson Algorithm for Maximum Flow — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/ford-fulkerson-algorithm-for-maximum-flow-problem/",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "Network Flows (6.046J) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
       ]
     },
     {
@@ -908,6 +1188,26 @@ export const ALGORITHMS_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Polynomial-time reduction A <=_P B transforms any instance of A into an instance of B in polynomial time. If B can then be solved in polynomial time, composing the two yields a polynomial-time algorithm for A, proving A in P."
+        }
+      ],
+      "prerequisites": [
+        "Turing Machines and Decidability",
+        "Polynomial-Time Reductions"
+      ],
+      "externalResources": [
+        {
+          "title": "NP-Completeness and Cook-Levin Theorem — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/np-completeness-set-1/",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "Automata, Computability, and Complexity (6.045J) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-045j-automata-computability-and-complexity-spring-2011/",
+          "difficulty": "Advanced",
+          "isFree": true
         }
       ]
     }

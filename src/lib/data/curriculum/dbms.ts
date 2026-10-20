@@ -25,7 +25,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Logical Data Independence: Capacity to alter conceptual schema without altering external views.",
         "Physical Data Independence: Capacity to alter internal schema (indexing, storage layout) without altering conceptual schema."
       ],
-      "notesMarkdown": "# Database Architecture & ANSI-SPARC\n\n---\n\n## 1. The 3-Level ANSI-SPARC Architecture\n1. **External Level (View Level):** What individual users or applications see. Multiple tailored views can exist over the same database.\n2. **Conceptual Level (Logical Level):** Describes *what* data is stored in the entire database and relationships among data (tables, entities, constraints).\n3. **Internal Level (Physical Level):** Describes *how* data is stored physically on disk (record formats, B-trees, hashing, compression, block layouts).\n\n---\n\n## 2. Data Independence\n- **Logical Data Independence:** Modifying the conceptual schema (e.g., adding a new attribute or table) does not require changing external schemas or existing application code.\n- **Physical Data Independence:** Modifying internal storage structures (e.g., changing file organization from heap to B+ tree) does not affect the conceptual or external schema.\n",
+      "notesMarkdown": "# Database Architecture and the ANSI-SPARC Three-Schema Framework\n\nA Database Management System (DBMS) is software designed to store, retrieve, query, and manage structured data efficiently with guarantees of integrity, concurrency, and crash recovery. To decouple user applications from physical storage representations, the database community standardized the **ANSI-SPARC Three-Schema Architecture**.\n\n---\n\n## 1. The ANSI-SPARC Three-Level Architecture\n\n```\n                  +-----------------------------------+\n                  | External Level (User Views)       |\n                  | View 1: Payroll   View 2: HR      |\n                  +-----------------+-----------------+\n                                    |\n                    [ Logical Data Independence ]\n                                    |\n                  +-----------------+-----------------+\n                  | Conceptual Level (Community Schema)|\n                  | Entities, Attributes, Constraints |\n                  +-----------------+-----------------+\n                                    |\n                    [ Physical Data Independence ]\n                                    |\n                  +-----------------+-----------------+\n                  | Internal Level (Physical Schema)  |\n                  | B+ Trees, Hashing, File Blocks    |\n                  +-----------------+-----------------+\n                                    |\n                  +-----------------+-----------------+\n                  | Physical Storage (Disk / SSD / OS)|\n                  +-----------------------------------+\n```\n\n1. **External Level (View Schema):** Describes the part of the database relevant to specific end-user groups. Hides irrelevant data and enforces security/privacy (e.g., an employee view hides salary data).\n2. **Conceptual Level (Logical Schema):** Describes *what* data is stored in the entire database and the relationships among data items. Free of physical storage details; defines tables, columns, data types, and integrity constraints.\n3. **Internal Level (Physical Schema):** Describes *how* data is physically stored on disk (record layouts, compression, B+ tree indexes, hashing schemes, and block clustering).\n\n---\n\n## 2. Logical vs Physical Data Independence\n\nData Independence is the capacity to modify a schema definition at one level without requiring alterations to schemas at higher levels.\n\n### Physical Data Independence\nThe capacity to modify the **Internal Schema** without altering the **Conceptual Schema**.\n- *Example:* Adding a B+ tree index to speed up queries, switching from magnetic HDD to NVMe SSD, or reorganizing block storage.\n- Application programs and SQL queries require **zero code changes**!\n\n### Logical Data Independence\nThe capacity to modify the **Conceptual Schema** without altering the **External Views** or application programs.\n- *Example:* Adding a new attribute to a table, splitting a table into two normalized tables, or creating a SQL View (`CREATE VIEW`) that preserves the legacy table interface.\n- Much harder to achieve than physical data independence because application logic is tightly bound to conceptual attributes.\n\n---\n\n## 3. High-Yield Interview Traps & Pitfalls\n\n1. **Database Schema vs Database Instance:**\n   - **Schema (Intension):** The overall structural design and constraints of the database; specified during database creation and rarely changes.\n   - **Instance (Extension):** The actual collection of data records populated in the database at a specific snapshot in time; changes constantly with `INSERT`/`UPDATE`/`DELETE`.\n2. **File System vs DBMS:**\n   Traditional file processing systems suffer from data redundancy, inconsistent updates, difficult concurrent access, lack of atomicity during crashes, and security enforcement scattered across application code. A DBMS centralizes query optimization, concurrency control, and ACID durability.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Three Layers:** External (Views) $\\to$ Conceptual (Tables/Constraints) $\\to$ Internal (Storage/Indexes).\n- **Physical Independence:** Change storage/indexes without rewriting SQL queries.\n- **Logical Independence:** Change schema/relations without breaking existing external views.\n- **DDL vs DML:** DDL (Data Definition Language: `CREATE`, `ALTER`, `DROP`) alters Schema; DML (Data Manipulation Language: `SELECT`, `INSERT`, `UPDATE`, `DELETE`) operates on Instances.\n",
       "questions": [
         {
           "id": "dbms-arch-1",
@@ -64,7 +64,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "Physical data independence ensures that alterations to physical storage layouts (adding B+ tree indexes, reorganizing partitions) do not require modifications to the conceptual schema or application queries."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Database+Architecture+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Database+Architecture+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Operating system file I/O fundamentals",
+        "Client-server networking basics"
+      ],
+      "externalResources": [
+        {
+          "title": "PostgreSQL Architecture and Internal Design",
+          "url": "https://www.postgresql.org/docs/current/overview.html",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: DBMS 3-Tier Architecture",
+          "url": "https://www.geeksforgeeks.org/three-schema-architecture-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Database Architecture and Data Independence",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-er-model-and-diagrams",
@@ -85,7 +112,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Relationships: Diamonds. Total participation: Double line.",
         "Converting to relational schema: 1:N relationship merges foreign key into the N-side table."
       ],
-      "notesMarkdown": "# ER Model & Conceptual Design\n\n---\n\n## 1. ER Notations\n- **Entity:** Object distinguishable from others (Rectangle).\n- **Weak Entity:** Lacks primary key on its own; identified via discriminator + identifying relationship with strong entity (Double rectangle).\n- **Attributes:**\n  - Simple vs. Composite (`Address` = `Street` + `City` + `Pincode`).\n  - Single-valued vs. Multi-valued (`PhoneNumbers` in double ellipse).\n  - Stored vs. Derived (`Age` derived from `DOB`, dashed ellipse).\n\n---\n\n## 2. Converting ER to Tables\n- **1 : N Relationship:** Place Primary Key of 1-side as Foreign Key in $N$-side table. No separate table required!\n- **M : N Relationship:** Requires a separate junction table containing Primary Keys of both participating entity sets.\n- **Multi-valued Attribute:** Requires separate table with (Entity PK, Attribute Value).\n",
+      "notesMarkdown": "# Entity-Relationship (ER) Modeling, Attributes, and Diagram Conversion\n\nThe Entity-Relationship (ER) model is a high-level conceptual data model developed by Peter Chen. It provides visual, formal representations of real-world entities, their properties, and relationships to facilitate database schema design before physical table implementation.\n\n---\n\n## 1. Core ER Diagram Symbols & Constructs\n\n```\nSymbol in ER Diagram          Meaning\n+-----------------------+     +-----------------------------------------------+\n| Rectangle             |     Strong Entity Set (independent existence)       |\n| Double Rectangle      |     Weak Entity Set (existence dependent on owner)  |\n| Diamond               |     Relationship Set                                |\n| Double Diamond        |     Identifying Relationship for Weak Entity        |\n| Ellipse / Oval        |     Attribute                                       |\n| Double Ellipse        |     Multivalued Attribute (e.g., PhoneNumbers)      |\n| Dashed Ellipse        |     Derived Attribute (e.g., Age derived from DOB)  |\n| Underlined Text       |     Primary Key (Discriminator)                     |\n| Dashed Underline      |     Partial Key (Discriminator of Weak Entity)      |\n| Double Line           |     Total Participation (Existential Dependency)    |\n| Single Line           |     Partial Participation                           |\n+-----------------------+     +-----------------------------------------------+\n```\n\n---\n\n## 2. Attribute Classifications\n\n- **Simple (Atomic):** Cannot be divided further (e.g., `Salary`, `RollNo`).\n- **Composite:** Composed of sub-components (e.g., `Name` $\\to$ `FirstName`, `LastName`; `Address` $\\to$ `City`, `State`, `Zip`).\n- **Single-Valued:** Holds exactly one value per entity (e.g., `DateOfBirth`).\n- **Multivalued:** Can hold multiple values for a single entity (e.g., `Skills`, `PhoneNumbers`). Represented by double oval.\n- **Derived:** Computed dynamically from stored attributes (e.g., `Age = CurrentDate - DateOfBirth`). Represented by dashed oval; not stored physically in tables.\n\n---\n\n## 3. Mapping Cardinalities and Participation\n\n- **Cardinality Ratios:**\n  - **1 : 1 (One-to-One):** An entity in $A$ is associated with at most one entity in $B$, and vice versa (e.g., Department $\\leftrightarrow$ Manager).\n  - **1 : N (One-to-Many):** An entity in $A$ is associated with any number of entities in $B$; an entity in $B$ is associated with at most one in $A$ (e.g., Department $\\leftrightarrow$ Employees).\n  - **M : N (Many-to-Many):** Entities in $A$ and $B$ are associated with any number of each other (e.g., Students $\\leftrightarrow$ Courses).\n- **Participation Constraints:**\n  - **Total Participation:** Every entity in the set must participate in the relationship (e.g., every Employee *must* belong to a Department).\n  - **Partial Participation:** Some entities may not participate (e.g., not every Employee manages a Department).\n\n---\n\n## 4. Weak Entity Sets\n\nA **Weak Entity Set** does not possess sufficient attributes to form a primary key on its own.\n- Must be existence-dependent on an **Identifying (Owner) Entity Set**.\n- Identified by combining the Owner's Primary Key + the Weak Entity's **Partial Key (Discriminator)**.\n- *Example:* `Employee` (Strong: `EmpId`) $\\leftrightarrow$ `Dependent` (Weak: `DependentName`).\n  Primary Key of `Dependent` table is `(EmpId, DependentName)`.\n\n---\n\n## 5. Converting ER Diagrams to Relational Tables\n\n1. **Strong Entity Set:** Maps directly to a relation with all atomic attributes. Composite attributes are flattened into their constituent atomic fields.\n2. **Multivalued Attribute:** Creates a **separate relation** containing the primary key of the parent entity + the multivalued attribute.\n3. **1:N Relationship:** Place the Primary Key of the \"1\" side into the table on the \"N\" side as a **Foreign Key** (avoids creating a redundant relationship table!).\n4. **M:N Relationship:** **Must create a separate relationship table (Junction Table)** containing foreign keys referencing primary keys of both participating entities: `(KeyA, KeyB)`.\n\n---\n\n## 6. Summary Cheatsheet & Key Formulas\n\n- **Minimum Tables for 1:N with Total Participation:** $2$ tables.\n- **Minimum Tables for M:N Relationship:** $3$ tables (Table A, Table B, and Bridge Table AB).\n- **Weak Entity Table Key:** $\\text{PK} = \\text{Owner\\_PK} \\cup \\text{Partial\\_Key}$.\n",
       "questions": [
         {
           "id": "dbms-er-1",
@@ -124,7 +151,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "A weak entity set lacks a primary key of its own; it is drawn as a double rectangle and its discriminator (dashed underline) must be combined with the identifying strong entity's primary key to form its primary key."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=ER+Model+and+ER+Diagrams+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=ER+Model+and+ER+Diagrams+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Database architecture and relational concepts",
+        "Basic set theory and relations"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Database Systems - Conceptual Modeling",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: ER Model in DBMS",
+          "url": "https://www.geeksforgeeks.org/introduction-of-er-model/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: ER Diagrams and Cardinality Ratios",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-relational-model",
@@ -184,7 +238,20 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "In relational terminology, Degree is the total number of attributes (columns = 5), while Cardinality is the total number of tuples (rows = 100)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Relational+Model+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Relational+Model+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Relational Algebra",
+        "Candidate, Primary and Foreign Keys"
+      ],
+      "externalResources": [
+        {
+          "title": "Relational Model and Constraints — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/relational-model-in-dbms/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-relational-algebra-and-calculus",
@@ -205,7 +272,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Division (R / S): Finds tuples in R that match ALL tuples in S (e.g. students who took ALL prerequisite courses).",
         "Relational Completeness: A query language is relationally complete if it can express any query expressible in basic Relational Algebra."
       ],
-      "notesMarkdown": "# Relational Algebra & Calculus\n\n---\n\n## 1. 6 Basic Relational Algebra Operators\n1. **Selection ($\\sigma_c(R)$):** Filters rows satisfying predicate $c$.\n2. **Projection ($\\pi_A(R)$):** Extracts specified columns $A$, automatically eliminating duplicate rows.\n3. **Union ($R \\cup S$):** Tuples in $R$ or $S$. Requires union compatibility (same arity and compatible domains).\n4. **Set Difference ($R - S$):** Tuples in $R$ but not in $S$. Union compatible.\n5. **Cartesian Product ($R \\times S$):** Pairs every tuple of $R$ with every tuple of $S$.\n6. **Rename ($\\rho_{S}(R)$):** Renames relation or attributes.\n\n---\n\n## 2. Division Operator ($R \\div S$)\nUsed for queries with the universal quantifier **\"FOR ALL\"** or **\"EVERY\"**:\n- \"Find customers who bought all models of smartphone.\"\n- Degree of $(R \\div S) = \\text{Degree}(R) - \\text{Degree}(S)$.\n",
+      "notesMarkdown": "# Relational Algebra and Relational Calculus\n\nRelational Algebra is a formal, procedural query language where queries are expressed by applying relational operators to relations to produce new relations. It forms the mathematical backbone of SQL query parsing, execution planning, and cost-based query optimization inside database engines.\n\n---\n\n## 1. Fundamental Relational Algebra Operators\n\nThere are six fundamental operators from which all other algebraic operations can be derived:\n\n### 1. Selection ($\\sigma$)\nFilters tuples (rows) that satisfy a specified predicate condition:\n$$\\sigma_{p}(R) = \\{ t \\mid t \\in R \\land p(t) = \\text{true} \\}$$\n- *Example:* $\\sigma_{\\text{salary} > 50000}(\\text{Employee})$ selects employees with salary exceeding 50,000.\n- Commutative: $\\sigma_{c_1}(\\sigma_{c_2}(R)) = \\sigma_{c_2}(\\sigma_{c_1}(R))$.\n\n### 2. Projection ($\\pi$)\nSelects specified attributes (columns) and automatically discards duplicate tuples (set semantics):\n$$\\pi_{A_1, A_2, \\dots, A_k}(R)$$\n- *Example:* $\\pi_{\\text{name, department}}(\\text{Employee})$.\n\n### 3. Cartesian Product ($\\times$)\nCombines every tuple of relation $R$ with every tuple of relation $S$:\n- Degree: $\\text{Degree}(R \\times S) = \\text{Degree}(R) + \\text{Degree}(S)$.\n- Cardinality: $|R \\times S| = |R| \\times |S|$.\n\n### 4. Set Union ($\\cup$), Set Difference ($-$), and Intersection ($\\cap$)\n- Relations must be **Union-Compatible**: same degree and matching attribute domain types.\n- Set Difference: $R - S$ yields tuples in $R$ that are not in $S$.\n- Intersection is derived: $R \\cap S = R - (R - S)$.\n\n### 5. Rename ($\\rho$)\nRenames relations and attributes: $\\rho_{S(B_1, B_2, \\dots)}(R)$.\n\n---\n\n## 2. Derived Operators: Natural Join ($\\bowtie$) and Division ($\\div$)\n\n### Natural Join ($R \\bowtie S$)\nPerforms equality comparison on all common attribute names, keeping only one copy of each common attribute:\n$$R \\bowtie S = \\pi_{\\text{all unique}}(\\sigma_{R.A_1 = S.A_1 \\land \\dots}(R \\times S))$$\n\n### Relational Division ($\\div$)\nAnswers queries involving universal quantification (\"Find all students who enrolled in **ALL** courses taught by Prof. Knuth\"):\n$$R(A, B) \\div S(B)$$\nYields all values of attribute $A$ that are paired with **every** value in relation $S$.\nFormulation using basic operators:\n$$R \\div S = \\pi_A(R) - \\pi_A((\\pi_A(R) \\times S) - R)$$\n\n---\n\n## 3. Relational Calculus: Declarative Querying\n\nWhile Relational Algebra is **procedural** (specifying *how* to evaluate the result), Relational Calculus is **declarative** (specifying *what* data is desired).\n\n- **Tuple Relational Calculus (TRC):** $\\{ t \\mid P(t) \\}$ where $t$ is a tuple variable.\n  - *Example:* $\\{ t \\mid t \\in \\text{Employee} \\land t[\\text{salary}] > 50000 \\}$.\n- **Domain Relational Calculus (DRC):** $\\{ \\langle x_1, x_2, \\dots, x_n \\rangle \\mid P(x_1, \\dots, x_n) \\}$ where variables range over attribute domains.\n- **Codd's Equivalence Theorem:** Relational Algebra, safe Tuple Relational Calculus, and safe Domain Relational Calculus are mathematically equivalent in expressive power (a query language that can express these is said to be **Relational Complete**).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Selection ($\\sigma$):** Row slicing (Horizontal reduction).\n- **Projection ($\\pi$):** Column slicing (Vertical reduction, eliminates duplicates).\n- **Natural Join Degree:** $\\text{Degree}(R \\bowtie S) = \\text{Degree}(R) + \\text{Degree}(S) - \\text{Common Attributes}$.\n- **Universal Query (\"FOR ALL\"):** Requires Relational Division ($\\div$).\n",
       "questions": [
         {
           "id": "dbms-ra-1",
@@ -244,7 +311,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "The 5 primitive operators of relational algebra are Selection (sigma), Projection (pi), Union (cup), Set Difference (-), and Cartesian Product (x). Natural Join is a derived operator defined as Projection of Selection over Cartesian Product."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Relational+Algebra+and+Relational+Calculus+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Relational+Algebra+and+Relational+Calculus+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Set theory: unions, intersections, Cartesian products",
+        "Relational model and schemas"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Relational Algebra and Query Optimization",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Relational Algebra in DBMS",
+          "url": "https://www.geeksforgeeks.org/introduction-of-relational-algebra-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Relational Algebra Operators and Query Formulation",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "sql-joins-queries",
@@ -303,7 +397,27 @@ export const DBMS_CATEGORY: SectionCategory = {
         "RANK() leaves gaps in sequence for ties (1, 2, 2, 4); DENSE_RANK() leaves no gaps (1, 2, 2, 3).",
         "COUNT(column) ignores NULLs; COUNT(*) counts all rows including NULLs."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=SQL+Queries+Joins+Subqueries+Window+Functions+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=SQL+Queries+Joins+Subqueries+Window+Functions+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Cartesian Products",
+        "SQL SELECT and Filtering"
+      ],
+      "externalResources": [
+        {
+          "title": "SQL Joins Explained with Examples — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/sql-join-set-1-inner-left-right-and-full-joins/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "SQL Joins Tutorial — W3Schools",
+          "provider": "W3Schools",
+          "url": "https://www.w3schools.com/sql/sql_join.asp",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-keys-and-integrity-constraints",
@@ -324,7 +438,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Primary Key: Candidate key chosen by database designer; CANNOT contain NULL values (Entity Integrity).",
         "Referential Integrity: Foreign key must match primary key in referenced table, or be NULL."
       ],
-      "notesMarkdown": "# Keys & Relational Integrity\n\n---\n\n## 1. Key Hierarchy\n$$\\text{All Attributes} \\supseteq \\text{Super Keys} \\supseteq \\text{Candidate Keys} \\ni \\text{Primary Key}$$\n- **Super Key:** Any attribute combination that uniquely identifies a row.\n- **Candidate Key:** A super key with zero redundant attributes (minimal).\n- **Primary Key:** The single chosen candidate key.\n\n---\n\n## 2. Core Integrity Constraints\n1. **Domain Integrity:** Attribute values must conform to declared data type and range constraints.\n2. **Entity Integrity:** Primary key attributes can **never be NULL**.\n3. **Referential Integrity:** A foreign key value must either exist as a valid primary key in the referenced parent relation, or be completely NULL.\n   - Handled via `ON DELETE CASCADE`, `ON DELETE SET NULL`, or `ON DELETE RESTRICT`.\n",
+      "notesMarkdown": "# Keys and Integrity Constraints in the Relational Model\n\nKeys uniquely identify tuples within relations and enforce relational integrity constraints to maintain consistency, accuracy, and referential validity across database updates.\n\n---\n\n## 1. Hierarchy of Database Keys\n\n```\n               +---------------------------------------+\n               |              SUPER KEYS               |\n               | (Any set of attributes that uniquely  |\n               |  identifies a tuple)                  |\n               |   +-------------------------------+   |\n               |   |        CANDIDATE KEYS         |   |\n               |   |  (Minimal Super Key:          |   |\n               |   |   No proper subset is a key)  |   |\n               |   |   +-----------------------+   |   |\n               |   |   |     PRIMARY KEY       |   |   |\n               |   |   | (Chosen Candidate Key)|   |   |\n               |   |   +-----------------------+   |   |\n               |   |   |    ALTERNATE KEYS     |   |   |\n               |   |   | (Unchosen Candidates) |   |   |\n               |   |   +-----------------------+   |   |\n               |   +-------------------------------+   |\n               +---------------------------------------+\n```\n\n1. **Super Key:** A set of one or more attributes that uniquely identifies a row in a table. Adding extraneous attributes to a super key leaves it a super key (e.g., if `{ID}` is unique, `{ID, Name}` and `{ID, Name, Phone}` are also super keys).\n2. **Candidate Key:** A **Minimal Super Key**. If any attribute is removed from a candidate key, it ceases to be unique.\n3. **Primary Key:** The single candidate key selected by the database designer as the principal tuple identifier. **Cannot contain NULL values.**\n4. **Alternate (Secondary) Keys:** Candidate keys that were not chosen as the primary key.\n5. **Foreign Key:** An attribute (or set of attributes) in table $R_1$ that references the Candidate Key (typically Primary Key) of table $R_2$.\n\n---\n\n## 2. Relational Integrity Constraints\n\n1. **Domain Integrity:** Attribute values must conform to declared data types, valid ranges, and `CHECK` constraints.\n2. **Entity Integrity:** The Primary Key attribute cannot contain `NULL` values (because `NULL` cannot uniquely distinguish rows).\n3. **Referential Integrity:** A Foreign Key value in referencing table $R_1$ must either:\n   - Match a valid existing Primary Key value in referenced table $R_2$, OR\n   - Be `NULL` (if nullable).\n\n### Referential Action Policies (`ON DELETE / ON UPDATE`)\nWhen a referenced parent row is deleted or updated:\n- `CASCADE`: Automatically deletes or updates matching child rows.\n- `SET NULL`: Sets referencing foreign key columns to `NULL`.\n- `RESTRICT / NO ACTION`: Rejects the parent delete/update operation with an integrity violation error.\n- `SET DEFAULT`: Resets referencing columns to designated default values.\n\n---\n\n## 3. High-Yield Interview Traps & Calculations\n\n- **Calculating Number of Super Keys:**\n  If a relation $R(A_1, A_2, \\dots, A_n)$ has candidate key $A_1$:\n  Any combination of the remaining $n - 1$ attributes appended to $A_1$ yields a super key.\n  $$\\text{Total Super Keys} = 2^{n - 1}$$\n- If candidate keys are $A_1$ and $A_2$:\n  $$\\text{Total Super Keys} = 2^{n - 1} + 2^{n - 1} - 2^{n - 2} = 3 \\times 2^{n - 2}$$ (by Principle of Inclusion-Exclusion).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Candidate Key Definition:** Super key with the minimality property.\n- **Prime Attribute:** An attribute that is a member of *any* candidate key.\n- **Non-Prime Attribute:** An attribute that does not belong to any candidate key.\n- **Foreign Key Invariant:** References a unique/primary key in parent relation.\n",
       "questions": [
         {
           "id": "dbms-key-1",
@@ -363,7 +477,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "Referential integrity requires that every non-null foreign key value in a referencing relation must exist as an actual primary key value in the referenced relation, preventing dangling references."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Keys+and+Integrity+Constraints+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Keys+and+Integrity+Constraints+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Relational model fundamentals",
+        "Sets, Cartesian products, and attributes"
+      ],
+      "externalResources": [
+        {
+          "title": "PostgreSQL Documentation: Constraints and Foreign Keys",
+          "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+          "provider": "Official Documentation",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Keys in Relational Model (Candidate, Super, Primary, Foreign)",
+          "url": "https://www.geeksforgeeks.org/types-of-keys-in-relational-model-candidate-super-primary-alternate-and-foreign/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Database Keys and Referential Integrity Traps",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-functional-dependencies",
@@ -385,7 +526,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Augmentation: If X -> Y, then XZ -> YZ.",
         "Transitivity: If X -> Y and Y -> Z, then X -> Z."
       ],
-      "notesMarkdown": "# Functional Dependencies & Armstrong's Axioms\n\n---\n\n## 1. Functional Dependency (FD) Definition\nGiven relation $R$, an FD $X \\to Y$ holds if for any two tuples $t_1, t_2 \\in R$:\n$$t_1[X] = t_2[X] \\implies t_1[Y] = t_2[Y]$$\n\n---\n\n## 2. Armstrong's Axioms (Sound & Complete)\n1. **Reflexivity Rule:** If $Y \\subseteq X$, then $X \\to Y$ (Trivial FD).\n2. **Augmentation Rule:** If $X \\to Y$, then $XZ \\to YZ$ for any attribute set $Z$.\n3. **Transitivity Rule:** If $X \\to Y$ and $Y \\to Z$, then $X \\to Z$.\n\n### Derived Secondary Rules:\n- **Union:** If $X \\to Y$ and $X \\to Z$, then $X \\to YZ$.\n- **Decomposition:** If $X \\to YZ$, then $X \\to Y$ and $X \\to Z$. *(Caution: $XY \\to Z$ does NOT imply $X \\to Z$ or $Y \\to Z$!)*\n- **Pseudo-Transitivity:** If $X \\to Y$ and $WY \\to Z$, then $WX \\to Z$.\n",
+      "notesMarkdown": "# Functional Dependencies and Armstrong's Axioms\n\nA Functional Dependency (FD) is a mathematical constraint between two sets of attributes in a relational database. It formalizes the concept of data determinism and provides the mathematical foundation for evaluating database normalization and eliminating update anomalies.\n\n---\n\n## 1. Formal Definition of Functional Dependency\n\nGiven a relation schema $R$ and subsets of attributes $X, Y \\subseteq R$:\nThe functional dependency $X \\to Y$ (read \"$X$ functionally determines $Y$\" or \"$Y$ is functionally dependent on $X$\") holds if and only if:\n$$\\forall t_1, t_2 \\in R, \\quad \\text{if } t_1[X] = t_2[X] \\implies t_1[Y] = t_2[Y]$$\nWhenever two tuples agree on attribute values of $X$, they **must agree** on attribute values of $Y$.\n\n- **Trivial FD:** $X \\to Y$ is trivial if $Y \\subseteq X$ (e.g., $AB \\to A$). Always holds automatically.\n- **Non-Trivial FD:** $X \\to Y$ where $Y \\not\\subseteq X$.\n- **Completely Non-Trivial FD:** $X \\to Y$ where $X \\cap Y = \\emptyset$.\n\n---\n\n## 2. Armstrong's Axioms\n\nIn 1974, William W. Armstrong proved that the following three inference rules are **Sound** (only true dependencies are generated) and **Complete** (generate all valid implied dependencies):\n\n### The 3 Primary Axioms:\n1. **Reflexivity Rule:**\n   $$\\text{If } Y \\subseteq X, \\quad \\text{then } X \\to Y$$\n2. **Augmentation Rule:**\n   $$\\text{If } X \\to Y, \\quad \\text{then } XZ \\to YZ \\quad \\text{for any } Z$$\n3. **Transitivity Rule:**\n   $$\\text{If } X \\to Y \\land Y \\to Z, \\quad \\text{then } X \\to Z$$\n\n### Derived Secondary Rules:\n- **Union (Additive) Rule:**\n  $$\\text{If } X \\to Y \\land X \\to Z \\implies X \\to YZ$$\n- **Decomposition (Projective) Rule:**\n  $$\\text{If } X \\to YZ \\implies X \\to Y \\land X \\to Z$$\n  *(Crucial Note: Decomposition applies ONLY to the right-hand side! $XY \\to Z$ does NOT imply $X \\to Z$!)*\n- **Pseudo-Transitivity Rule:**\n  $$\\text{If } X \\to Y \\land WY \\to Z \\implies WX \\to Z$$\n\n---\n\n## 3. High-Yield Interview Traps & Pitfalls\n\n1. **Left-Hand Side Decomposition Trap:**\n   Students frequently mistake $AB \\to C$ for $A \\to C$ and $B \\to C$. This is fundamentally invalid (e.g., `{Course, Student} -> Grade`, but `Course` alone does not determine `Grade`!).\n2. **FDs are Schema Constraints, Not Instance Coincidences:**\n   You cannot prove an FD holds merely by looking at the rows of a current table instance. An FD is a semantic business rule that must hold across all past, present, and future valid states of the database.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **FD Definition:** $t_1[X] = t_2[X] \\implies t_1[Y] = t_2[Y]$.\n- **Super Key via FD:** $K$ is a super key of $R \\iff K \\to R$.\n- **Sound & Complete:** Armstrong's Axioms generate the exact closure $F^+$.\n",
       "questions": [
         {
           "id": "dbms-fd-1",
@@ -424,7 +565,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "Armstrong's transitivity rule states that if attribute set X functionally determines Y, and Y functionally determines Z, then X functionally determines Z (X -> Z)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Functional+Dependencies+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Functional+Dependencies+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Keys and integrity constraints in relational models",
+        "Relations and attribute schemas"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Functional Dependencies and Normalization",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Functional Dependency and Armstrong Axioms",
+          "url": "https://www.geeksforgeeks.org/functional-dependency-and-attribute-closure/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Functional Dependencies and Closure Calculation",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-attribute-closure-and-candidate-keys",
@@ -445,7 +613,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Candidate Key: If X is a Super Key and no proper subset of X is a Super Key, X is a Candidate Key.",
         "Canonical Cover: Minimal set of FDs equivalent to F, with no extraneous attributes and no redundant FDs."
       ],
-      "notesMarkdown": "# Attribute Closure & Finding Candidate Keys\n\n---\n\n## 1. Attribute Closure Algorithm ($X^+$)\nTo compute closure of attribute set $X$ under FDs $F$:\n1. Initialize $\\text{result} = X$.\n2. Repeatedly search for FD $Y \\to Z \\in F$ such that $Y \\subseteq \\text{result}$.\n3. Add $Z$ to $\\text{result}$: $\\text{result} = \\text{result} \\cup Z$.\n4. Repeat until no more attributes can be added.\n\n---\n\n## 2. Determining Candidate Keys\n1. Identify attributes that **never appear on the RHS** of any FD. These **must** be part of every candidate key!\n2. Identify attributes that appear **only on the RHS**. These can never be part of any candidate key.\n3. Compute the closure of the essential attributes. If it yields $R^+$, it is the sole candidate key. If not, combine with intermediate attributes.\n",
+      "notesMarkdown": "# Attribute Closure and Candidate Key Determination\n\nFinding attribute closures is the fundamental algorithm used to test if a functional dependency is implied, determine all candidate keys of a relation, and check if a decomposition satisfies normal forms.\n\n---\n\n## 1. The Attribute Closure Algorithm ($X^+$)\n\nThe **Attribute Closure** $X^+$ of a set of attributes $X$ under a set of functional dependencies $F$ is the set of all attributes that are functionally determined by $X$.\n\n### Algorithm:\n1. Initialize $\\text{Closure} = X$.\n2. Repeatedly scan each FD $Y \\to Z \\in F$:\n   - If $Y \\subseteq \\text{Closure}$ and $Z \\not\\subseteq \\text{Closure}$:\n   - $\\text{Closure} = \\text{Closure} \\cup Z$.\n3. Stop when an entire pass over $F$ adds no new attributes to $\\text{Closure}$.\n4. Return $X^+ = \\text{Closure}$.\n\n---\n\n## 2. Algorithm to Find All Candidate Keys\n\nTo find all candidate keys of schema $R(A_1, A_2, \\dots, A_n)$ with dependencies $F$:\n\n1. **Partition Attributes into Four Categories:**\n   - **Set L:** Attributes appearing **only on the Left-Hand Side** of FDs.\n   - **Set R:** Attributes appearing **only on the Right-Hand Side** of FDs.\n   - **Set B:** Attributes appearing on **Both** sides of FDs.\n   - **Set N:** Attributes appearing on **Neither** side of FDs.\n2. **Key Invariants:**\n   - Attributes in **$L \\cup N$ must be present in EVERY candidate key** (because nothing determines them!).\n   - Attributes in **$R$ can NEVER be present in any candidate key**.\n3. **Evaluate Closure:**\n   - Compute closure of essential attributes $(L \\cup N)^+$.\n   - If $(L \\cup N)^+ = R$, then $(L \\cup N)$ is the **sole unique Candidate Key**!\n   - If not, systematically combine attributes from set $B$ with $(L \\cup N)$ and test closures to find minimal keys.\n\n---\n\n## 3. Worked Example: Finding Candidate Keys\n\nConsider relation $R(A, B, C, D, E, F)$ with FDs:\n$$F = \\{ A \\to B, \\quad BC \\to D, \\quad E \\to C, \\quad D \\to A \\}$$\n\n1. **Categorize Attributes:**\n   - Left only ($L$): $\\{ E, F \\}$ (F is on neither side $\\implies N = \\{F\\}$).\n   - Right only ($R$): None.\n   - Both ($B$): $\\{ A, B, C, D \\}$.\n2. **Essential Core:** Must include $E$ and $F$.\n   - Compute $(EF)^+$:\n     $E \\to C \\implies EF^+ = \\{E, F, C\\}$ (Not all attributes).\n3. **Test Combinations with Set B:**\n   - Try $(AEF)^+$:\n     $A \\to B \\implies \\{A, E, F, C, B\\}$.\n     $BC \\to D \\implies \\{A, B, C, D, E, F\\} = R$. $\\implies \\mathbf{AEF}$ is a Candidate Key!\n   - Try $(BEF)^+$:\n     $E \\to C \\implies \\{B, E, F, C\\}$.\n     $BC \\to D \\implies \\{B, C, D, E, F\\}$.\n     $D \\to A \\implies \\{A, B, C, D, E, F\\} = R$. $\\implies \\mathbf{BEF}$ is a Candidate Key!\n   - Try $(DEF)^+$:\n     $D \\to A \\implies \\{A, D, E, F\\}$.\n     $A \\to B \\implies \\{A, B, D, E, F\\}$.\n     $E \\to C \\implies \\{A, B, C, D, E, F\\} = R$. $\\implies \\mathbf{DEF}$ is a Candidate Key!\n   - Try $(CEF)^+$: $(CEF)^+ = \\{C, E, F\\}$ (Cannot generate $A, B, D$).\n- **Final Candidate Keys:** $\\{ AEF, BEF, DEF \\}$.\n- **Prime Attributes:** $\\{ A, B, D, E, F \\}$.\n- **Non-Prime Attributes:** $\\{ C \\}$.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Super Key Test:** $X$ is a super key $\\iff X^+ = R$.\n- **Candidate Key Test:** $X^+ = R$ AND for all proper subsets $Y \\subset X$, $Y^+ \\ne R$.\n- **Prime vs Non-Prime:** Prime attributes belong to at least one candidate key.\n",
       "questions": [
         {
           "id": "dbms-ac-1",
@@ -484,7 +652,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "An attribute that is a member of any candidate key of relation schema R is called a Prime Attribute. Attributes that do not belong to any candidate key are Non-Prime."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Attribute+Closure+and+Candidate+Keys+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Attribute+Closure+and+Candidate+Keys+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Functional dependencies and Armstrong's axioms",
+        "Super keys and candidate keys definitions"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Attribute Closure and Key Determination",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Finding Attribute Closure and Candidate Keys",
+          "url": "https://www.geeksforgeeks.org/finding-attribute-closure-and-candidate-keys-using-functional-dependencies/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Attribute Closure and Minimal Cover Guide",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "normalization",
@@ -492,7 +687,7 @@ export const DBMS_CATEGORY: SectionCategory = {
       "title": "Normalization: 1NF, 2NF, 3NF, BCNF",
       "description": "Functional dependencies, eliminating insertion/deletion/update anomalies.",
       "estimatedMinutes": 16,
-      "notesMarkdown": "\n# Database Normalization Summary\n\nNormalization organizes table columns to reduce data redundancy and eliminate anomalies.\n\n---\n\n## 1. Normal Forms Hierarchy\n1. **1NF (First Normal Form):**\n   - Each column contains atomic (indivisible) values. No repeating groups or arrays.\n2. **2NF (Second Normal Form):**\n   - Must be in 1NF.\n   - **No partial dependency:** Every non-prime attribute must depend on the whole candidate key, not a proper subset of it.\n3. **3NF (Third Normal Form):**\n   - Must be in 2NF.\n   - **No transitive dependency:** Non-prime attributes must not depend on other non-prime attributes ($X \\rightarrow Y$, $X$ must be superkey or $Y$ is prime).\n4. **BCNF (Boyce-Codd Normal Form):**\n   - For every functional dependency $X \\rightarrow Y$, $X$ must strictly be a **Super Key**.\n",
+      "notesMarkdown": "# Database Normalization: 1NF, 2NF, 3NF, and BCNF\n\nDatabase Normalization is the systematic process of organizing relation schemas to minimize data redundancy and eliminate **Insertion, Update, and Deletion Anomalies** while preserving data dependencies and information integrity.\n\n---\n\n## 1. Database Anomalies in Unnormalized Tables\n\nConsider an unnormalized table `EmpDept(EmpId, EmpName, DeptId, DeptName)`:\n1. **Insertion Anomaly:** Cannot insert a newly created department unless at least one employee is assigned to it (if `EmpId` is part of primary key).\n2. **Deletion Anomaly:** Deleting the sole employee in a department inadvertently deletes the department itself from the database!\n3. **Update Anomaly:** If a department name changes, updating it in some rows but missing others leaves the database in an inconsistent state.\n\n---\n\n## 2. Normal Forms Hierarchy and Criteria\n\n```\n                        +-------------------------------+\n                        |             1NF               |\n                        | (Atomic Attribute Values)     |\n                        |   +-----------------------+   |\n                        |   |          2NF          |   |\n                        |   | (No Partial FDs)      |   |\n                        |   |   +---------------+   |   |\n                        |   |   |      3NF      |   |   |\n                        |   |   | (No Transitive|   |   |\n                        |   |   |  Dependencies)|   |   |\n                        |   |   |   +-------+   |   |   |\n                        |   |   |   | BCNF  |   |   |   |\n                        |   |   |   +-------+   |   |   |\n                        |   |   +---------------+   |   |\n                        |   +-----------------------+   |\n                        +-------------------------------+\n```\n\n### 1. First Normal Form (1NF)\n- Every column must contain only **atomic (indivisible) values**.\n- No multivalued attributes or repeating groups (e.g., storing comma-separated phones `\"123, 456\"` violates 1NF).\n\n### 2. Second Normal Form (2NF)\n- Must be in **1NF**.\n- **No Partial Dependency:** No non-prime attribute may depend on a proper subset of any candidate key:\n$$\\text{If } X \\to Y \\text{ and } Y \\text{ is non-prime} \\implies X \\text{ cannot be a proper subset of a Candidate Key}$$\n*(Note: If every candidate key is a single attribute, the relation is automatically in 2NF!)*\n\n### 3. Third Normal Form (3NF)\n- Must be in **2NF**.\n- **No Transitive Dependency:** For every non-trivial functional dependency $X \\to Y$:\n  1. $X$ is a **Super Key**, OR\n  2. $Y$ is a **Prime Attribute** (part of a candidate key).\n\n### 4. Boyce-Codd Normal Form (BCNF)\n- Stricter version of 3NF.\n- For every non-trivial functional dependency $X \\to Y$:\n  - **$X$ MUST be a Super Key.**\n- BCNF completely eliminates all redundancy arising from functional dependencies.\n\n---\n\n## 3. Comparison: 3NF vs BCNF Trade-Off\n\n| Property | Third Normal Form (3NF) | Boyce-Codd Normal Form (BCNF) |\n| :--- | :--- | :--- |\n| **FD Condition** | $X$ is Superkey OR $Y$ is Prime | $X$ MUST be Superkey |\n| **Lossless Join Guarantee** | **Always Achievable** | **Always Achievable** |\n| **Dependency Preservation** | **Always Achievable** | **Not always possible!** |\n| **Redundancy** | Allows minor redundancy if $Y$ is prime | Zero functional redundancy |\n\n*Crucial Theorem:* A 3NF decomposition can **always guarantee both lossless join AND dependency preservation**. A BCNF decomposition guarantees lossless join, but can sometimes lose dependency preservation!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **1NF:** Atomic attribute domains.\n- **2NF:** In 1NF $\\land$ No $\\text{Proper Subset of CK} \\to \\text{Non-Prime}$.\n- **3NF:** In 2NF $\\land$ For every $X \\to Y$, ($X$ is Super Key $\\lor$ $Y$ is Prime).\n- **BCNF:** For every $X \\to Y$, ($X$ is Super Key).\n",
       "questions": [
         {
           "id": "db-3",
@@ -544,7 +739,34 @@ export const DBMS_CATEGORY: SectionCategory = {
         "3NF: 2NF + No transitive dependencies.",
         "BCNF: For every functional dependency X -> Y, X must be a superkey."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Normalization+1NF+2NF+3NF+BCNF+DBMS+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Normalization+1NF+2NF+3NF+BCNF+DBMS+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Functional dependencies and attribute closure",
+        "Candidate keys and prime attributes"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Database Normalization (1NF to BCNF)",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Database Normalization (1NF, 2NF, 3NF, BCNF)",
+          "url": "https://www.geeksforgeeks.org/introduction-of-database-normalization/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Database Normalization and Normal Forms Guide",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-lossless-decomposition",
@@ -604,7 +826,20 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "A binary decomposition R into R1 and R2 is lossless-join iff the common attribute set (R1 intersect R2) is a superkey of either R1 or R2, ensuring no spurious tuples are generated upon natural join."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Lossless+Decomposition+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Lossless+Decomposition+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Functional Dependencies",
+        "Relational Schemas"
+      ],
+      "externalResources": [
+        {
+          "title": "Lossless Join Decomposition Testing — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/lossless-join-decomposition-in-dbms/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-dependency-preservation",
@@ -663,7 +898,20 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "Dependency preservation allows database updates to verify all integrity constraints using only single-table checks rather than executing cross-table join operations, significantly speeding up INSERT/UPDATE performance."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Dependency+Preservation+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Dependency+Preservation+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Functional Dependency Closures",
+        "Minimal Cover"
+      ],
+      "externalResources": [
+        {
+          "title": "Dependency Preserving Decomposition — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/dependency-preserving-decomposition-in-dbms/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "acid-transactions",
@@ -671,7 +919,7 @@ export const DBMS_CATEGORY: SectionCategory = {
       "title": "Transactions and ACID Properties",
       "description": "Atomicity (WAL), Consistency, Isolation (Dirty Read, Non-repeatable, Phantom), Durability.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "\n# ACID Properties & Isolation Levels\n\nThe bedrock of relational database reliability and distributed systems interviews.\n\n---\n\n## 1. The ACID Guarantees\n\n- **Atomicity:** All-or-nothing execution. Achieved using **Write-Ahead Logging (WAL)** and undo logs.\n- **Consistency:** Database transitions from one valid state satisfying all schema constraints, foreign keys, and triggers to another.\n- **Isolation:** Concurrent transactions execute without interfering with one another.\n- **Durability:** Once committed, changes survive system crashes or power failures. Achieved using disk commits and redo logs.\n\n---\n\n## 2. SQL Isolation Levels & Concurrency Phenomena\n\n| Isolation Level | Dirty Read | Non-Repeatable Read | Phantom Read |\n| :--- | :---: | :---: | :---: |\n| **Read Uncommitted** | ❌ Allowed | ❌ Allowed | ❌ Allowed |\n| **Read Committed** | ✅ Prevented | ❌ Allowed | ❌ Allowed |\n| **Repeatable Read** | ✅ Prevented | ✅ Prevented | ❌ Allowed |\n| **Serializable** | ✅ Prevented | ✅ Prevented | ✅ Prevented |\n\n### Phenomena Explained:\n- **Dirty Read:** Reading uncommitted data written by a concurrent transaction that could still be rolled back.\n- **Non-Repeatable Read:** Re-reading the same row within a transaction produces different column values because another transaction modified and committed it.\n- **Phantom Read:** Re-executing a range query returns new rows added or deleted by another committed transaction.\n",
+      "notesMarkdown": "# Transactions, ACID Properties, and Transaction State Lifecycle\n\nA **Transaction** is a logical unit of database processing that includes one or more database operations (reading, writing, updating records). To ensure integrity during system failures and concurrent multi-user execution, DBMS engines enforce the foundational **ACID Properties**.\n\n---\n\n## 1. The ACID Properties\n\n1. **Atomicity (\"All or Nothing\"):**\n   Either all operations of the transaction are reflected properly in the database, or none are. If a transaction crashes halfway through, all partial updates are completely undone (rolled back).\n   - *Enforced by:* **Recovery Management Component (Write-Ahead Logging / Undo Logs)**.\n2. **Consistency (Preserving Invariants):**\n   Execution of a transaction in isolation preserves database consistency constraints (e.g., total account balance across bank accounts must remain constant after a transfer).\n   - *Enforced by:* Application programmer logic and DBMS integrity constraints (`CHECK`, foreign keys).\n3. **Isolation (Concurrency Independence):**\n   Even though multiple transactions execute concurrently, the system guarantees that for every pair of transactions $T_i$ and $T_j$, it appears to $T_i$ that $T_j$ either finished before $T_i$ started, or started after $T_i$ finished.\n   - *Enforced by:* **Concurrency Control Component (Locking / 2PL, MVCC, Timestamps)**.\n4. **Durability (Persistence):**\n   After a transaction completes successfully (`COMMIT`), its updates persist permanently in non-volatile storage, even if the system crashes or loses power immediately thereafter.\n   - *Enforced by:* **Recovery Component (Redo Logs / Write-Ahead Logging)**.\n\n---\n\n## 2. Transaction State Transition Machine\n\n```\n              +--------------+\n              |    Active    | <---+ (Initial state: reads/writes)\n              +-------+------+     |\n                      |            |\n                      v            |\n              +--------------+     |\n              |  Partially   |     |\n              |  Committed   |     |\n              +-------+------+     |\n                      |            |\n         +------------+-------+    |\n         |                    |    |\n         v                    v    |\n   +-----------+        +----------+---+\n   | Committed |        |    Failed    |\n   +-----------+        +-------+------+\n                                |\n                                v\n                        +--------------+\n                        |   Aborted    |\n                        +--------------+\n```\n\n1. **Active:** Initial state; transaction executes read and write operations.\n2. **Partially Committed:** Final statement has been executed, but updates are buffered in memory and not yet flushed to non-volatile disk logs.\n3. **Committed:** All log records safely written to disk; transaction successfully completed.\n4. **Failed:** Normal execution cannot proceed (hardware crash, constraint violation, deadlock abort).\n5. **Aborted:** Transaction rolled back and database restored to state prior to transaction start. The transaction may be restarted or killed.\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **A**tomicity $\\leftrightarrow$ Undo Logs / WAL.\n- **C**onsistency $\\leftrightarrow$ Integrity constraints & business logic.\n- **I**solation $\\leftrightarrow$ Concurrency control (2PL, MVCC).\n- **D**urability $\\leftrightarrow$ Redo Logs / Checkpoints.\n",
       "questions": [
         {
           "id": "db-1",
@@ -735,7 +983,34 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Isolation levels: Read Uncommitted < Read Committed < Repeatable Read < Serializable.",
         "Durability: Committed updates survive system crashes (fsync to disk / WAL)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Transactions+and+ACID+Properties+DBMS+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Transactions+and+ACID+Properties+DBMS+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Relational model and SQL queries",
+        "Operating system crash recovery and file systems"
+      ],
+      "externalResources": [
+        {
+          "title": "PostgreSQL Documentation: Transactions and Concurrency",
+          "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+          "provider": "Official Documentation",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: ACID Properties in DBMS",
+          "url": "https://www.geeksforgeeks.org/acid-properties-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "MIT 6.830: Transactions, Logging, and ARIES",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-conflict-and-view-serializability",
@@ -756,7 +1031,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Precedence Graph: Cycle in graph <=> Schedule is NOT conflict serializable.",
         "View Serializability: Every conflict serializable schedule is view serializable, but not vice-versa (view serializability permits blind writes)."
       ],
-      "notesMarkdown": "# Conflict & View Serializability\n\n---\n\n## 1. Conflicting Operations\nTwo operations $I_i$ and $I_j$ conflict if:\n1. They belong to different transactions ($T_i \\neq T_j$).\n2. They operate on the exact same data item $Q$.\n3. At least one of them is a `write(Q)`.\n*(Read-Read operations never conflict).*\n\n---\n\n## 2. Conflict Serializability\nA schedule $S$ is conflict serializable if it is conflict equivalent to some serial schedule. Tested by constructing a **Precedence Graph (Serialization Graph)**:\n- Nodes: Committed transactions $T_i$.\n- Directed Edge $T_i \\to T_j$: If $T_i$ executes an operation conflicting with a subsequent operation in $T_j$.\n- **Theorem:** Schedule is conflict serializable $\\iff$ Precedence graph has **NO CYCLES**.\n\n---\n\n## 3. View Serializability\nWeaker condition than conflict serializability:\n- Matches initial read, final write, and write-read dependencies of a serial schedule.\n- Allows schedules with **Blind Writes** (writing without reading) that may have cycles in conflict precedence graph.\n- Testing View Serializability is NP-Complete!\n",
+      "notesMarkdown": "# Conflict and View Serializability and Precedence Graphs\n\nWhen multiple transactions interleave operations concurrently, the resulting execution schedule must be equivalent to some serial schedule (where transactions run one after another) to preserve database consistency.\n\n---\n\n## 1. Conflicting Operations\n\nTwo consecutive operations $I_i$ and $I_j$ in a schedule are said to **conflict** if and only if:\n1. They belong to **different transactions** ($T_i \\ne T_j$).\n2. They access the **exact same data item** ($Q$).\n3. **At least one of the operations is a write operation** (`Write(Q)`).\n\n| Operation 1 | Operation 2 | Conflicting? | Reason |\n| :--- | :--- | :--- | :--- |\n| $R_i(A)$ | $R_j(A)$ | **NO** | Both read; order does not alter state |\n| $R_i(A)$ | $W_j(A)$ | **YES** | Read-Write Conflict (Dirty Read / Unrepeatable Read) |\n| $W_i(A)$ | $R_j(A)$ | **YES** | Write-Read Conflict |\n| $W_i(A)$ | $W_j(A)$ | **YES** | Write-Write Conflict (Lost Update) |\n| $W_i(A)$ | $W_j(B)$ | **NO** | Different data items ($A \\ne B$) |\n\n---\n\n## 2. Conflict Serializability & Precedence Graphs\n\nA schedule $S$ is **Conflict Serializable** if it can be transformed into a serial schedule by a series of non-conflicting operation swaps.\n\n### The Precedence (Serialization) Graph Algorithm:\nConstruct a directed graph $G = (V, E)$:\n- **Vertices ($V$):** Each transaction in the schedule is a vertex ($T_1, T_2, \\dots, T_n$).\n- **Directed Edges ($E$):** Draw an edge $T_i \\to T_j$ if an operation of $T_i$ precedes and conflicts with an operation of $T_j$.\n\n```\nTheorem:\nA schedule is Conflict Serializable IF AND ONLY IF its Precedence Graph has NO DIRECTED CYCLES (is a Directed Acyclic Graph - DAG).\n```\n\nIf acyclic, the equivalent serial order is given by the **Topological Sort** of the precedence graph!\n\n---\n\n## 3. View Serializability\n\nA schedule $S$ is **View Serializable** if it is view equivalent to some serial schedule:\n1. **Initial Read:** If $T_i$ reads the initial value of $A$ in $S$, $T_i$ must read the initial value of $A$ in serial schedule $S'$.\n2. **Updated Read:** If $T_i$ reads a value of $A$ written by $T_j$ in $S$, $T_i$ must read the value written by $T_j$ in $S'$.\n3. **Final Write:** If $T_i$ performs the final write on $A$ in $S$, $T_i$ must perform the final write on $A$ in $S'$.\n\n```\nHierarchy:\nConflict Serializable  ===>  View Serializable  ===>  All Schedules\n         (Sub-set)                  (Super-set)\n```\n- Every Conflict Serializable schedule is View Serializable.\n- If a schedule is View Serializable but NOT Conflict Serializable, it **must contain at least one Blind Write** ($W(A)$ without a prior $R(A)$).\n- Testing View Serializability is **NP-Complete**; testing Conflict Serializability is $O(V + E)$ (polynomial).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Conflict Condition:** Different transactions $\\land$ Same data item $\\land$ At least one Write.\n- **Conflict Serializability Test:** Run topological sort on Precedence Graph. Acyclic $\\iff$ Serializable.\n- **View Equivalence vs Conflict Equivalence:** View equivalence allows blind writes to mask conflicts.\n",
       "questions": [
         {
           "id": "dbms-ser-1",
@@ -795,7 +1070,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "Two operations conflict iff they belong to different transactions, target the same data item Q, and at least one is a Write operation (Read-Write or Write-Write conflict)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Conflict+and+View+Serializability+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Conflict+and+View+Serializability+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Transactions and ACID properties",
+        "Directed graphs and cycle detection"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Concurrency Control and Serializability",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Conflict Serializability and Precedence Graphs",
+          "url": "https://www.geeksforgeeks.org/conflict-serializability-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Serializability and View Equivalence Guide",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-precedence-graphs",
@@ -854,7 +1156,20 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "A schedule S is conflict serializable iff its precedence graph has no directed cycles. If acyclic, topological sort gives an equivalent serial execution order."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Precedence+Graphs+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Precedence+Graphs+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Conflicting Operations (Read/Write)",
+        "Transaction Schedules"
+      ],
+      "externalResources": [
+        {
+          "title": "Conflict Serializability and Precedence Graphs — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/conflict-serializability-in-dbms/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "concurrency-2pl",
@@ -862,7 +1177,7 @@ export const DBMS_CATEGORY: SectionCategory = {
       "title": "Concurrency Control and Locking",
       "description": "Conflict serializability, shared vs exclusive locks, and growing/shrinking phases.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Concurrency Control & Two-Phase Locking (2PL)\n\nTo maintain database consistency when concurrent transactions execute, DBMS engines enforce **Two-Phase Locking (2PL)** to guarantee **conflict serializability**.\n\n---\n\n## 1. Lock Types\n- **Shared Lock (S-Lock)**: For reading. Multiple transactions can hold S-locks concurrently.\n- **Exclusive Lock (X-Lock)**: For writing. Only one transaction can hold X-lock on a data item; blocks all other S and X locks.\n\n## 2. The Two Phases of 2PL\n1. **Growing Phase**: Transaction may acquire locks, but **cannot release any lock**.\n2. **Shrinking Phase**: Transaction may release locks, but **cannot acquire any new locks**.\n\n> **Rigorous/Strict 2PL**: Holds all exclusive locks until transaction commits or aborts. Prevents cascading rollbacks.\n",
+      "notesMarkdown": "# Concurrency Control: Two-Phase Locking (2PL), Strict 2PL, and Rigorous 2PL\n\nConcurrency control protocols ensure that interleaved transactions preserve serializability. The **Two-Phase Locking (2PL)** protocol is the industry-standard pessimistic concurrency control mechanism that guarantees conflict serializability without manual scheduling.\n\n---\n\n## 1. Lock Modes: Shared vs Exclusive\n\n- **Shared Lock ($S$):** Read-only lock. Multiple transactions can hold shared locks on the same item simultaneously.\n- **Exclusive Lock ($X$):** Read and write lock. Only one transaction can hold an exclusive lock on an item; no other transaction can hold $S$ or $X$.\n\n```\nLock Compatibility Matrix:\n                  Requested Lock\nCurrent Lock | Shared (S) | Exclusive (X)\n-------------+------------+---------------\nShared (S)   |    YES     |      NO\nExclusive (X)|    NO      |      NO\n```\n\n---\n\n## 2. The Two-Phase Locking (2PL) Protocol\n\nA transaction complies with 2PL if all lock acquisitions precede all lock releases:\n\n```\nNumber of Locks Held\n     ^\n     |         Lock Point (Peak)\n     |               /---\\\\\n     |   Growing    /     \\\\   Shrinking\n     |    Phase    /       \\\\    Phase\n     |            /         \\\\\n     |           /           \\\\\n   0 +----------+-------------+---------> Time\n```\n\n1. **Growing (Expanding) Phase:** Transaction may acquire new locks or upgrade ($S \\to X$). **No locks may be released.**\n2. **Shrinking (Contracting) Phase:** Transaction may release locks or downgrade ($X \\to S$). **No new locks may be acquired.**\n- **Lock Point:** The exact instant when the transaction acquires its final lock. The serialization order of transactions in basic 2PL corresponds precisely to the order of their Lock Points.\n\n---\n\n## 3. Variations of 2PL: Strict and Rigorous\n\nWhile Basic 2PL guarantees conflict serializability, it is susceptible to **Cascading Aborts** (if $T_1$ releases an exclusive lock early and then aborts, $T_2$ read dirty uncommitted data and must also abort).\n\n```\n+-----------------------------------------------------------+\n|                        BASIC 2PL                          |\n| - Guarantees Conflict Serializability.                    |\n| - Vulnerable to Cascading Aborts and Deadlocks.           |\n+-----------------------------------------------------------+\n|                       STRICT 2PL                          |\n| - Holds ALL Exclusive (X) locks until COMMIT or ABORT!    |\n| - Guarantees Cascadeless Recoverability (ACID standard).  |\n+-----------------------------------------------------------+\n|                      RIGOROUS 2PL                         |\n| - Holds ALL Shared (S) AND Exclusive (X) locks until end! |\n| - Transactions serialize strictly in order of commitment. |\n+-----------------------------------------------------------+\n```\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **2PL Rule:** Once you unlock any item, you can NEVER lock anything again!\n- **2PL Guarantees:** Conflict Serializability $\\implies$ View Serializability.\n- **2PL Does NOT Guarantee:** Deadlock freedom (2PL transactions can still deadlock!).\n- **Strict 2PL:** Release Exclusive locks only at Commit/Abort $\\implies$ Zero cascading rollbacks.\n",
       "questions": [
         {
           "id": "2pl-1",
@@ -912,7 +1227,34 @@ export const DBMS_CATEGORY: SectionCategory = {
         "2PL guarantees conflict serializability but DOES NOT prevent deadlocks.",
         "Strict 2PL: All exclusive (X) locks held until transaction commits or aborts (prevents cascading rollbacks)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Concurrency+Control+Locking+2PL+DBMS+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Concurrency+Control+Locking+2PL+DBMS+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Conflict serializability and transactions",
+        "Operating system locks and race conditions"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Two-Phase Locking (2PL) and Strict 2PL",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Two Phase Locking Protocol (2PL)",
+          "url": "https://www.geeksforgeeks.org/two-phase-locking-protocol/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "PostgreSQL Documentation: Explicit Locking",
+          "url": "https://www.postgresql.org/docs/current/explicit-locking.html",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-deadlocks-in-databases",
@@ -933,7 +1275,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Wait-For Graph (WFG): Nodes are active transactions; edge Ti -> Tj means Ti is waiting for lock held by Tj. Cycle = Deadlock.",
         "Victim Selection: Minimize rollback cost (transactions near completion are spared)."
       ],
-      "notesMarkdown": "# Deadlocks in Databases\n\n---\n\n## 1. Deadlock Prevention: Wait-Die vs. Wound-Wait\nBased on transaction arrival timestamps $TS(T)$ (smaller timestamp = older transaction):\n\n| Scheme | Older requests lock held by Younger | Younger requests lock held by Older | Type |\n|---|---|---|---|\n| **Wait-Die** | Older **waits** | Younger **dies** (aborts & restarts) | Non-preemptive |\n| **Wound-Wait** | Older preempts (**wounds/aborts**) Younger | Younger **waits** | Preemptive |\n\nBoth schemes are completely deadlock-free because timestamps strictly prohibit circular wait!\n\n---\n\n## 2. Deadlock Detection & Wait-For Graphs\n- OS/DBMS periodically builds **Wait-For Graph (WFG)**.\n- If cycle detected $\\implies$ Deadlock!\n- **Recovery:** Select victim transaction to rollback (either partial savepoint or complete abort). To prevent victim starvation, maintain retry counter.\n",
+      "notesMarkdown": "# Deadlocks in Databases: Detection, Prevention, and Recovery\n\nBecause transactions lock database records dynamically based on user transactions, circular wait conditions can develop where transaction $T_1$ holds a lock on item $A$ and waits for item $B$ held by $T_2$, which in turn is waiting for item $A$.\n\n---\n\n## 1. Deadlock Detection via Wait-For Graphs (WFG)\n\nA **Wait-For Graph (WFG)** is a directed graph where:\n- Nodes represent active Transactions.\n- A directed edge $T_i \\to T_j$ indicates that transaction $T_i$ is blocked waiting for a lock currently held by $T_j$.\n\n```\n     +--------+      waits for Lock A      +--------+\n     |   T1   | -------------------------> |   T2   |\n     +--------+                            +--------+\n         ^                                     |\n         |         waits for Lock B            |\n         +-------------------------------------+\n              [ DIRECTED CYCLE = DEADLOCK! ]\n```\n\nThe database background lock manager runs a periodic cycle-detection algorithm (e.g., Tarjan's or Kosaraju's DFS). If a directed cycle is detected, a deadlock exists!\n\n---\n\n## 2. Deadlock Prevention via Timestamps\n\nInstead of waiting for deadlocks to occur, database engines can use transaction start timestamps $TS(T)$ to prevent cycles at lock request time. Let $T_{\\text{old}}$ have a smaller timestamp (older) and $T_{\\text{new}}$ have a larger timestamp (younger):\n\n### 1. Wait-Die Scheme (Non-preemptive)\n- If older requests lock held by younger: $T_{\\text{old}}$ is allowed to **WAIT**.\n- If younger requests lock held by older: $T_{\\text{new}}$ is killed and rolled back (**DIES**).\n- Mnemonic: *\"Older can wait; younger dies immediately.\"*\n\n### 2. Wound-Wait Scheme (Preemptive)\n- If older requests lock held by younger: $T_{\\text{old}}$ preempts and rolls back the younger (**WOUNDS** $T_{\\text{young}}$).\n- If younger requests lock held by older: $T_{\\text{young}}$ is allowed to **WAIT**.\n- Mnemonic: *\"Older wounds younger; younger waits.\"*\n\n*Advantage:* Both schemes guarantee **Deadlock Freedom** because wait edges can only point in one chronological direction, eliminating circular dependencies. Furthermore, aborted transactions retain their original timestamps upon restart, preventing starvation!\n\n---\n\n## 3. Deadlock Recovery: Victim Selection\n\nWhen a deadlock is detected via WFG:\n1. **Victim Selection:** Choose a transaction to abort based on minimal rollback cost (fewest locks held, fewest updates performed, least elapsed CPU time).\n2. **Rollback:** Roll back the victim transaction to its starting point or a savepoint.\n3. **Starvation Prevention:** Ensure the same transaction is not repeatedly selected as the victim by tracking retry count.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Wait-For Graph Theorem:** Directed cycle in WFG $\\iff$ Deadlock.\n- **Wait-Die:** Old waits, Young dies.\n- **Wound-Wait:** Old wounds (preempts), Young waits.\n- **Starvation Avoidance:** Retain original timestamp upon transaction restart.\n",
       "questions": [
         {
           "id": "dbms-dl-1",
@@ -972,7 +1314,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "Wait-Die is a timestamp-based non-preemptive prevention policy: if Ti requests a lock held by Tj, Ti waits only if Timestamp(Ti) < Timestamp(Tj) (older waits for younger); otherwise Ti dies."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Deadlocks+in+Databases+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Deadlocks+in+Databases+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Two-phase locking and concurrency control",
+        "Operating system deadlock fundamentals"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Concurrency Control and Deadlock Handling",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Deadlock Handling in DBMS",
+          "url": "https://www.geeksforgeeks.org/deadlock-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "PostgreSQL Documentation: Deadlocks and Lock Monitoring",
+          "url": "https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-DEADLOCKS",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "dbms-recovery-techniques",
@@ -994,7 +1363,7 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Checkpointing: Reduces recovery log scan time by flushing dirty buffer pages and recording active transaction table.",
         "ARIES: Analysis (reconstruct state) -> Redo (repeat history) -> Undo (rollback uncommitted)."
       ],
-      "notesMarkdown": "# Database Recovery & Logging\n\n---\n\n## 1. Write-Ahead Logging (WAL) Protocol\n1. Must write log record `<Ti, X, old_val, new_val>` to stable disk storage **before** writing the modified data item to database disk.\n2. Must write `<Ti, COMMIT>` log record to disk **before** acknowledging commit to client.\n\n---\n\n## 2. Immediate vs. Deferred Update\n- **Deferred Update:** Database is updated on disk *only after* commit. Recovery needs only `REDO`. No `UNDO` needed because uncommitted writes never touched disk.\n- **Immediate Update:** Database can be updated on disk *before* commit. Recovery needs:\n  - `UNDO` transactions that have `START` but no `COMMIT` in log.\n  - `REDO` transactions that have both `START` and `COMMIT` in log.\n\n---\n\n## 3. ARIES Recovery Algorithm\n1. **Analysis Phase:** Scan forward from latest checkpoint to identify dirty pages in buffer and active transactions at crash time.\n2. **Redo Phase:** Scan forward repeating history; reapplies all logged updates to return DB to crash state.\n3. **Undo Phase:** Scan backward rolling back changes of all active (uncommitted) transactions.\n",
+      "notesMarkdown": "# Database Recovery Techniques: Write-Ahead Logging (WAL), Checkpoints, and ARIES\n\nA database engine must guarantee Atomicity and Durability despite sudden power failures, operating system kernel panics, or application crashes. Recovery systems ensure that committed transactions survive crashes and uncommitted transactions leave zero trace.\n\n---\n\n## 1. Write-Ahead Logging (WAL) Protocol\n\nIn high-performance databases, writing modified data pages directly to random disk sectors on every transaction is prohibitively slow. Instead, pages are modified in volatile RAM buffer pools (dirty pages).\n\nTo ensure durability before flushing dirty pages, the DBMS enforces the **Write-Ahead Logging (WAL) Protocol**:\n1. **The WAL Invariant:** The log record describing a change must be written to non-volatile disk storage **BEFORE the corresponding data page is written to disk**.\n2. **Commit Invariant:** All log records for a transaction must be flushed to non-volatile disk **BEFORE the transaction is acknowledged as committed** (`COMMIT`).\n\n```\nRAM Buffer Pool (Dirty Pages) --------> Disk Data Files (Random I/O)\n               ^                                   ^\n               | Must write log FIRST!             |\n               v                                   |\nWAL Log Buffer (Sequential I/O) ------> Disk WAL Log (Append-Only)\n```\n\n---\n\n## 2. Checkpointing Mechanics\n\nWithout checkpoints, a crash would require scanning the entire transaction log from the beginning of time.\n- **Checkpoint:** Periodically, the DBMS flushes all dirty buffer pool pages to disk, writes a `[CHECKPOINT, {Active_Transactions}]` record to the WAL, and flushes the log.\n- **Recovery Benefit:** During crash recovery, the recovery manager only needs to scan backwards to the most recent checkpoint!\n\n---\n\n## 3. The ARIES Recovery Algorithm (C. Mohan)\n\nThe gold standard recovery algorithm utilized by IBM DB2, PostgreSQL, Microsoft SQL Server, and SQLite is **ARIES (Algorithm for Recovery and Isolation Exploiting Semantics)**.\n\n```\n       Crash Occurs!\n             |\n             v\n   +--------------------+\n   | 1. ANALYSIS PASS   |  Scan log forward from checkpoint:\n   |                    |  Reconstruct Dirty Page Table & Active Transactions.\n   +---------+----------+\n             |\n             v\n   +---------+----------+\n   | 2. REDO PASS       |  \"Repeating History\":\n   |                    |  Reapply ALL changes (committed & uncommitted) forward.\n   +---------+----------+\n             |\n             v\n   +---------+----------+\n   | 3. UNDO PASS       |  Scan backward:\n   |                    |  Roll back all active/uncommitted \"loser\" transactions!\n   +--------------------+\n```\n\n1. **Analysis Pass:** Determines the state of the system at crash time; identifies all dirty pages and active uncommitted transactions (\"loser transactions\").\n2. **Redo Pass (\"Repeat History\"):** Scans forward from the oldest unwritten page LSN (Log Sequence Number) and reapplies all logged updates (even for transactions that eventually aborted) to restore the exact pre-crash state.\n3. **Undo Pass:** Scans backward to undo the updates of all transactions that were active at crash time, writing Compensation Log Records (CLRs) to guarantee idempotence if the system crashes again during recovery.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **WAL Golden Rule:** Log must hit disk BEFORE dirty data hits disk.\n- **Commit Rule:** Log flushes sequentially before `COMMIT` returns success.\n- **ARIES Three Passes:** Analysis $\\to$ Redo (repeats history) $\\to$ Undo (rolls back losers).\n- **Idempotence:** Recovery algorithms can crash and restart indefinitely without corrupting state.\n",
       "questions": [
         {
           "id": "dbms-rec-1",
@@ -1033,7 +1402,34 @@ export const DBMS_CATEGORY: SectionCategory = {
           "explanation": "The WAL protocol dictates that log records describing an update must be forced to stable non-volatile storage before the actual database page containing that update can be written to disk, ensuring atomicity and durability on crash recovery."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Recovery+Techniques+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Recovery+Techniques+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "ACID transactions and logging",
+        "Operating system virtual memory and disk caching"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Crash Recovery and ARIES Algorithm",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Recovery Techniques in DBMS",
+          "url": "https://www.geeksforgeeks.org/recovery-techniques-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "PostgreSQL Documentation: Write-Ahead Logging (WAL)",
+          "url": "https://www.postgresql.org/docs/current/wal-intro.html",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "indexing-btree",
@@ -1041,7 +1437,7 @@ export const DBMS_CATEGORY: SectionCategory = {
       "title": "Indexing, B-Trees, and B+ Trees",
       "description": "Clustered vs Non-Clustered index, leaf node linked lists, composite indexing, and index scans.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# Database Indexing & B+ Trees\n\n---\n\n## 1. Clustered vs. Non-Clustered Index\n- **Clustered Index:**\n  - Dictates the physical order of data rows on disk.\n  - Exactly **one** clustered index per table (typically Primary Key).\n  - Leaf nodes contain the actual table data pages.\n- **Non-Clustered (Secondary) Index:**\n  - Separate structure with pointers to the physical data rows (row IDs or clustered key).\n  - Can have multiple non-clustered indexes on a table.\n\n---\n\n## 2. Why B+ Trees instead of Binary Trees?\n- **High Fanout:** B+ tree nodes hold hundreds of keys, keeping tree height very shallow (3-4 levels) to minimize disk I/O.\n- **Sequential Leaf Linking:** All leaf nodes in a B+ tree are doubly linked, allowing blazing-fast range queries (`WHERE age BETWEEN 20 AND 30`).\n",
+      "notesMarkdown": "# Indexing, B-Trees, and B+ Trees in Relational Databases\n\nAn **Index** is an auxiliary data structure that enables the database engine to locate target records in $O(\\log N)$ or $O(1)$ I/O operations without performing an expensive Full Table Scan ($O(N)$ linear disk scan).\n\n---\n\n## 1. Index Classifications: Dense vs Sparse, Primary vs Secondary\n\n| Type | Definition | Data File Organization |\n| :--- | :--- | :--- |\n| **Dense Index** | An index record appears for **every single search key value** in the data file | Unordered or Ordered |\n| **Sparse Index** | An index record appears for only some search key values (typically one per disk block) | **Must be Ordered (Clustered)** |\n| **Primary (Clustered) Index**| Built on the ordered primary key field; physically orders the table rows on disk | Only **ONE** per table |\n| **Secondary (Non-Clustered)**| Built on any non-ordering candidate key or attribute; contains pointers to table rows | Multiple allowed per table |\n\n---\n\n## 2. Why B+ Trees Dominate Database Engines\n\nStandard balanced binary search trees (AVL, Red-Black) have a fanout of 2, requiring $\\log_2 N$ pointer dereferences. On secondary storage, each pointer dereference is an expensive disk block read.\n\nA **B+ Tree** is a self-balancing, multi-way search tree with a massive branching factor (fanout typically 100 to 500), designed so that each tree node fits precisely into a single disk page (e.g., 4KB or 8KB).\n\n```\n                      [ Root: 50 | 100 ]\n                     /        |        \\\n                    /         |         \\\n         [ 20 | 35 ]     [ 65 | 80 ]     [ 120 | 150 ]  <-- Internal Nodes (Keys only)\n           /   |   \\       /   |   \\       /    |    \\\n          v    v    v     v    v    v     v     v     v\n        [10]->[20]->[35]->[50]->[65]->[80]->[100]->[120]->[150]  <-- Leaf Nodes\n        ======================================================\n        Leaf nodes contain ACTUAL DATA POINTERS and form a\n        DOUBLY-LINKED LIST for blazing-fast RANGE QUERIES!\n```\n\n### B-Tree vs B+ Tree: The Decisive Differences\n1. **Data Record Pointers:**\n   - In a **B-Tree**, data pointers are stored in both internal nodes and leaf nodes.\n   - In a **B+ Tree**, data pointers are stored **ONLY in leaf nodes**. Internal nodes store only navigation search keys.\n   - *Result:* B+ Tree internal nodes hold vastly more keys, resulting in **higher fanout and a much shorter tree** (height 3 can index billions of rows!).\n2. **Range Queries:**\n   - In a B-Tree, range queries require expensive in-order tree traversals across multiple disk levels.\n   - In a B+ Tree, leaf nodes are connected via a **doubly linked list**. Finding records in range `[50, 150]` requires one $O(\\log N)$ search to the start leaf, followed by a fast linear scan along the leaf list!\n\n---\n\n## 3. B+ Tree Node Capacity and Order Calculations\n\nLet:\n- Block Size $= B$ bytes.\n- Key Size $= K$ bytes.\n- Block Pointer Size $= P$ bytes.\n- Record Pointer Size $= R$ bytes.\n\n### Order $p$ of Internal Node:\nAn internal node holds at most $p$ block pointers and $p - 1$ search keys:\n$$p \\cdot P + (p - 1) \\cdot K \\le B \\implies p \\le \\frac{B + K}{P + K}$$\n\n### Numerical Example:\nIf Block Size $B = 4096\\text{ bytes}$, Search Key $K = 16\\text{ bytes}$, and Pointer $P = 8\\text{ bytes}$:\n$$p \\le \\frac{4096 + 16}{8 + 16} = \\frac{4112}{24} = 171.33 \\implies \\mathbf{p = 171}$$\nWith a fanout of 171, a 3-level B+ tree indexes up to $171^3 \\approx \\mathbf{5,000,000\\text{ blocks}}$ with only **3 disk reads**!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Internal Node Capacity:** $p \\cdot P + (p - 1) \\cdot K \\le B$.\n- **Leaf Node Capacity:** $p_{\\text{leaf}} \\cdot (K + R) + P \\le B$.\n- **Search Cost:** $O(H)$ where height $H \\approx \\lceil \\log_{\\text{fanout}}(N) \\rceil$ (typically 3 to 4 in production).\n- **B+ Tree Superiority:** High fanout $\\implies$ minimal I/O $\\implies$ contiguous leaf range scans.\n",
       "questions": [
         {
           "id": "db-5",
@@ -1092,7 +1488,34 @@ export const DBMS_CATEGORY: SectionCategory = {
         "Internal nodes store only routing keys, allowing high fan-out and shallow tree height (3-4 I/O lookups).",
         "Covering index satisfies query entirely from index leaf nodes without fetching table heap pages."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Indexing+B-Trees+B%2B+Trees+DBMS+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Indexing+B-Trees+B%2B+Trees+DBMS+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Binary search trees and balanced tree fundamentals",
+        "Disk storage blocks and secondary memory geometry"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.830: Database Indexing, B-Trees, and Access Methods",
+          "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "PostgreSQL Documentation: B-Tree Indexes",
+          "url": "https://www.postgresql.org/docs/current/btree.html",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: B-Tree and B+ Tree in DBMS",
+          "url": "https://www.geeksforgeeks.org/b-tree-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "nosql-cap",
@@ -1100,7 +1523,7 @@ export const DBMS_CATEGORY: SectionCategory = {
       "title": "CAP Theorem, BASE Model & NoSQL Paradigms",
       "description": "Consistency vs Availability vs Partition tolerance, Document, Key-Value, and Columnar stores.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "# CAP Theorem & NoSQL Architecture\n\nDistributed database systems must balance consistency, availability, and network durability across clusters.\n\n---\n\n## 1. Brewer's CAP Theorem\nIn any asynchronous distributed data store with network partitioning, you can choose at most **two of three** properties:\n- **Consistency (C)**: Every read receives the most recent write or an error.\n- **Availability (A)**: Every non-failing node returns a non-error response, without guarantee of latest data.\n- **Partition Tolerance (P)**: System continues operating despite arbitrary dropped or delayed network packets.\n\n> **Crucial Reality**: Network partitions (P) are unavoidable in distributed hardware. Therefore, the architectural choice is always between **CP** (Consistency over Availability) and **AP** (Availability over Consistency).\n\n## 2. ACID vs BASE\n- **ACID** (Relational): Atomicity, Consistency, Isolation, Durability.\n- **BASE** (Distributed NoSQL):\n  - **B**asically **A**vailable: Guaranteed availability.\n  - **S**oft-state: State may change over time without inputs due to replication.\n  - **E**ventual consistency: Nodes will eventually converge to identical data once writes cease.\n",
+      "notesMarkdown": "# The CAP Theorem, PACELC, BASE Model, and NoSQL Paradigms\n\nAs web applications scaled to hundreds of millions of users, traditional monolithic relational databases struggled with horizontal write scaling. Distributed NoSQL databases emerged, trading strict ACID guarantees for horizontal partitioning and high availability.\n\n---\n\n## 1. Eric Brewer's CAP Theorem\n\nIn any distributed data store, you can achieve at most **two out of the three** guarantees simultaneously:\n\n```\n                          Consistency (C)\n                             /       \\\\\n                            /         \\\\\n                           /   CA      \\\\\n                          /  (RDBMS)    \\\\\n                         /               \\\\\n            Availability (A) ----------- Partition Tolerance (P)\n                   \\\\         AP         CP         /\n                    \\\\    (DynamoDB,   (HBase,    /\n                     \\\\    Cassandra)  MongoDB)  /\n```\n\n1. **Consistency (Linearizability):** Every read receives the most recent write or an error. All nodes see the exact same data at the same instant.\n2. **Availability:** Every non-failing node returns a non-error response for every request (no guarantee it contains the most recent write).\n3. **Partition Tolerance:** The system continues to operate despite an arbitrary number of dropped or delayed network messages between nodes.\n\n### The Realistic Choice: CP vs AP\nIn physical networks, **network partitions ($P$) are inevitable** (cables fail, routers drop packets). Therefore, a distributed system must choose between:\n- **CP (Consistency / Partition Tolerance):** When a network partition occurs, reject writes or block reads to prevent divergent state (e.g., MongoDB, HBase, Spanner).\n- **AP (Availability / Partition Tolerance):** Accept writes and reads on both sides of the partition; reconcile divergent state later via eventual consistency (e.g., Cassandra, Amazon DynamoDB, CouchDB).\n\n---\n\n## 2. PACELC Theorem (Daniel Abadi)\n\nExtends CAP by considering normal operations when there is **NO** partition:\n$$\\text{If } \\mathbf{P} \\text{ (Partition)}, \\quad \\text{choose } \\mathbf{A} \\lor \\mathbf{C}; \\quad \\mathbf{E} \\text{lse}, \\quad \\text{choose } \\mathbf{L} \\text{atency} \\lor \\mathbf{C} \\text{onsistency}$$\n- *Example:* MongoDB is **PC/EC** (consistent under partition, low latency over consistency when normal).\n- *Example:* Spanner is **PC/EC** (consistent in both).\n\n---\n\n## 3. ACID vs BASE Model\n\n| ACID (Relational Databases) | BASE (Distributed NoSQL) |\n| :--- | :--- |\n| **Atomicity** (All or nothing) | **Basically Available** (System remains operational despite node failures) |\n| **Consistency** (Strict invariants) | **Soft State** (Data state may drift without user interaction) |\n| **Isolation** (Serializability) | **Eventual Consistency** (Nodes converge to consistent state over time) |\n| **Durability** (Committed data safe)| Focuses on horizontal write throughput and low latency |\n\n---\n\n## 4. The Four NoSQL Architectural Paradigms\n\n1. **Key-Value Stores (Redis, Memcached, AWS DynamoDB):**\n   - Simple $O(1)$ lookups via hash table key.\n   - Best for: Session caches, leaderboard state, shopping carts.\n2. **Document Databases (MongoDB, Couchbase):**\n   - Stores flexible, semi-structured JSON/BSON documents.\n   - Best for: Content management systems, e-commerce product catalogs.\n3. **Wide-Column Stores (Apache Cassandra, ScyllaDB, HBase):**\n   - Two-dimensional keyspace (row key $\\times$ column key) optimized for write throughput and append-only time-series data.\n   - Best for: IoT sensor metrics, logging, high-volume analytics.\n4. **Graph Databases (Neo4j, AWS Neptune):**\n   - Uses nodes, edges, and properties for index-free adjacency graph traversals.\n   - Best for: Social networks, fraud detection, recommendation engines.\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **CAP Trade-Off:** Network partition ($P$) forces a choice between Consistency ($C$) and Availability ($A$).\n- **BASE Philosophy:** Basically Available, Soft state, Eventual consistency.\n- **NoSQL Categories:** Key-Value, Document, Columnar, Graph.\n",
       "questions": [
         {
           "id": "cap-1",
@@ -1151,7 +1574,34 @@ export const DBMS_CATEGORY: SectionCategory = {
         "BASE model: Basically Available, Soft state, Eventual consistency.",
         "Cassandra and DynamoDB are AP (high availability + partition tolerance + eventual consistency)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=CAP+Theorem+BASE+NoSQL+DBMS+DBMS+Database+Management+Systems+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=CAP+Theorem+BASE+NoSQL+DBMS+DBMS+Database+Management+Systems+GATE+lecture",
+      "prerequisites": [
+        "Relational database architecture and ACID transactions",
+        "Distributed systems and network partitioning"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.824: Distributed Systems - CAP and Consistency Models",
+          "url": "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: CAP Theorem in Distributed Systems",
+          "url": "https://www.geeksforgeeks.org/the-cap-theorem-in-dbms/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: NoSQL Databases and CAP Theorem Guide",
+          "url": "https://www.interviewbit.com/dbms-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     }
   ]
 };

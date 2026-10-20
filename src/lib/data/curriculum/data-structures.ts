@@ -28,7 +28,7 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         "Amortized analysis guarantees average cost per operation over a sequence of operations (e.g. dynamic array doubling)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Time+and+Space+Complexity+Basics+Big+O+Data+Structures+lecture+tutorial",
-      "notesMarkdown": "# Time and Space Complexity Basics\n\nAsymptotic notation evaluates algorithm efficiency independently of specific hardware or compiler optimizations.\n\n---\n\n## 1. Asymptotic Notations\n- **Big-O ($O$):** Asymptotic Upper Bound. $f(n) = O(g(n))$ if $\\exists c > 0, n_0 > 0$ such that $f(n) \\le c \\cdot g(n)$ for all $n \\ge n_0$.\n- **Big-Omega ($\\Omega$):** Asymptotic Lower Bound. $f(n) \\ge c \\cdot g(n)$ for all $n \\ge n_0$.\n- **Big-Theta ($\\Theta$):** Asymptotically Tight Bound. $c_1 g(n) \\le f(n) \\le c_2 g(n)$ for all $n \\ge n_0$.\n- **Little-o and Little-omega:** Strict bounds without matching equality.\n\n---\n\n## 2. Complexity Hierarchy\n$$\\mathcal{O}(1) < \\mathcal{O}(\\log n) < \\mathcal{O}(\\sqrt{n}) < \\mathcal{O}(n) < \\mathcal{O}(n \\log n) < \\mathcal{O}(n^2) < \\mathcal{O}(2^n) < \\mathcal{O}(n!)$$\n\n---\n\n## 3. Master Theorem for Divide-and-Conquer Recurrences\nFor $T(n) = aT(n/b) + \\Theta(n^k \\log^p n)$ with $a \\ge 1, b > 1$:\n1. If $\\log_b a > k \\implies T(n) = \\Theta(n^{\\log_b a})$\n2. If $\\log_b a = k$:\n   - If $p > -1 \\implies T(n) = \\Theta(n^k \\log^{p+1} n)$\n   - If $p = -1 \\implies T(n) = \\Theta(n^k \\log \\log n)$\n3. If $\\log_b a < k \\implies T(n) = \\Theta(n^k \\log^p n)$\n",
+      "notesMarkdown": "# Asymptotic Analysis, Master Theorem, and Time/Space Complexity\n\nAsymptotic analysis evaluates algorithmic efficiency independently of specific hardware, operating system, or programming language implementation, analyzing how computational resource requirements scale as input size $n \\to \\infty$.\n\n---\n\n## 1. The Big-Three Asymptotic Notations\n\n```\n        Upper Bound: O(g(n))            Tight Bound: Theta(g(n))          Lower Bound: Omega(g(n))\n           f(n) <= c * g(n)             c1 * g(n) <= f(n) <= c2 * g(n)        f(n) >= c * g(n)\n```\n\n1. **Big-O Notation ($O$ - Asymptotic Upper Bound):**\n   $$f(n) = O(g(n)) \\iff \\exists c > 0, n_0 > 0 \\text{ such that } 0 \\le f(n) \\le c \\cdot g(n) \\quad \\forall n \\ge n_0$$\n   Guarantees the algorithm will run *no slower* than $c \\cdot g(n)$ in the worst case.\n2. **Big-$\\Omega$ Notation ($\\Omega$ - Asymptotic Lower Bound):**\n   $$f(n) = \\Omega(g(n)) \\iff \\exists c > 0, n_0 > 0 \\text{ such that } 0 \\le c \\cdot g(n) \\le f(n) \\quad \\forall n \\ge n_0$$\n   Guarantees the algorithm requires *at least* $c \\cdot g(n)$ steps.\n3. **Big-$\\Theta$ Notation ($\\Theta$ - Asymptotically Tight Bound):**\n   $$f(n) = \\Theta(g(n)) \\iff f(n) = O(g(n)) \\quad \\text{AND} \\quad f(n) = \\Omega(g(n))$$\n\n---\n\n## 2. The Master Theorem for Divide-and-Conquer Recurrences\n\nFor recurrences of form:\n$$T(n) = a T\\left(\\frac{n}{b}\\right) + f(n) \\quad \\text{where } a \\ge 1, b > 1$$\nCompare $f(n)$ with the watershed function $n^{\\log_b a}$:\n\n1. **Case 1 (Leaf Dominant):** If $f(n) = O(n^{\\log_b a - \\epsilon})$ for $\\epsilon > 0$:\n   $$\\mathbf{T(n) = \\Theta(n^{\\log_b a})}$$\n2. **Case 2 (Even Distribution):** If $f(n) = \\Theta(n^{\\log_b a} \\log^k n)$ for $k \\ge 0$:\n   $$\\mathbf{T(n) = \\Theta(n^{\\log_b a} \\log^{k+1} n)}$$\n3. **Case 3 (Root Dominant):** If $f(n) = \\Omega(n^{\\log_b a + \\epsilon})$ and regularity condition holds ($a f(n/b) \\le c f(n)$):\n   $$\\mathbf{T(n) = \\Theta(f(n))}$$\n\n### Classic Master Theorem Examples:\n- **Binary Search:** $T(n) = T(n/2) + O(1) \\implies a=1, b=2, n^{\\log_2 1} = n^0 = 1 \\implies \\mathbf{\\Theta(\\log n)}$ (Case 2 with $k=0$).\n- **Merge Sort:** $T(n) = 2T(n/2) + O(n) \\implies a=2, b=2, n^{\\log_2 2} = n^1 \\implies \\mathbf{\\Theta(n \\log n)}$ (Case 2 with $k=0$).\n- **Karatsuba Multiplication:** $T(n) = 3T(n/2) + O(n) \\implies n^{\\log_2 3} \\approx n^{1.585} \\implies \\mathbf{\\Theta(n^{1.585})}$ (Case 1).\n\n---\n\n## 3. Hierarchy of Complexity Classes\n\n$$O(1) < O(\\log \\log n) < O(\\log n) < O(\\sqrt{n}) < O(n) < O(n \\log n) < O(n^2) < O(n^3) < O(2^n) < O(n!)$$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Big-O:** Worst-case ceiling ($f(n) \\le c \\cdot g(n)$).\n- **Big-Omega:** Best-case floor ($f(n) \\ge c \\cdot g(n)$).\n- **Big-Theta:** Exact growth rate ($c_1 g(n) \\le f(n) \\le c_2 g(n)$).\n- **Space Complexity:** $\\text{Total Space} = \\text{Input Space} + \\text{Auxiliary Workspace} + \\text{Call Stack Recursion Depth}$.\n",
       "questions": [
         {
           "id": "ds-comp-1",
@@ -65,6 +65,33 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "The outer loop increments multiplicatively (i *= 2), running log2(n) times. The inner loop executes n times per outer iteration. Total iterations = n * log2(n) = O(n log n)."
+        }
+      ],
+      "prerequisites": [
+        "Mathematical functions, limits, and exponents",
+        "Programming in C loops and function recursion"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Asymptotic Complexity and Algorithmic Analysis",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Analysis of Algorithms and Asymptotic Notations",
+          "url": "https://www.geeksforgeeks.org/analysis-of-algorithms-set-1-asymptotic-analysis/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Time and Space Complexity Master Theorem Guide",
+          "url": "https://www.interviewbit.com/dsa-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -126,6 +153,26 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Dutch National Flag sorts an array of three distinct elements in a single pass using three pointers (low, mid, high) in O(N) time and O(1) auxiliary space."
         }
+      ],
+      "prerequisites": [
+        "Basic Programming Syntax",
+        "Memory Addressing and Indices"
+      ],
+      "externalResources": [
+        {
+          "title": "Arrays in Data Structure — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/array-data-structure/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Data Structures & Memory: Week 5 — Harvard CS50",
+          "provider": "Harvard CS50",
+          "url": "https://cs50.harvard.edu/x/2024/weeks/5/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -148,7 +195,7 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         "Floyd's Cycle-Finding Algorithm (Tortoise & Hare) detects cycles in O(n) time and O(1) space."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Linked+Lists+Singly+Doubly+Circular+Floyd+Cycle+Data+Structures+lecture+tutorial",
-      "notesMarkdown": "# Linked Lists\n\nLinked lists store data in discrete nodes containing data and reference pointers.\n\n---\n\n## 1. Linked List Types\n- **Singly Linked List:** Node contains `data` and `next` pointer.\n- **Doubly Linked List:** Node contains `prev`, `data`, and `next` pointers (enables bidirectional traversal, $O(1)$ deletion given node pointer).\n- **Circular Linked List:** Tail node points back to the head node.\n\n---\n\n## 2. Floyd's Cycle Detection (Tortoise and Hare)\n```c\nbool hasCycle(Node *head) {\n    Node *slow = head, *fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;\n        fast = fast->next->next;\n        if (slow == fast) return true; // Cycle detected\n    }\n    return false;\n}\n```\n",
+      "notesMarkdown": "# Linked Lists: Singly, Doubly, Circular, and Floyd's Cycle Detection\n\nA Linked List is a linear data structure where elements (nodes) are stored non-contiguously in heap memory, linked together via pointer references.\n\n---\n\n## 1. Array vs Linked List: Mechanical Trade-Offs\n\n| Operation / Feature | Array | Singly Linked List |\n| :--- | :--- | :--- |\n| **Memory Allocation** | Contiguous chunk | Scattered across heap |\n| **Random Access ($i$-th element)**| $\\mathbf{O(1)}$ instant | $\\mathbf{O(N)}$ pointer traversal |\n| **Insertion at Head** | $O(N)$ (requires shifting) | $\\mathbf{O(1)}$ pointer update |\n| **Insertion at Tail (with tail ptr)**| $O(1)$ amortized | $\\mathbf{O(1)}$ |\n| **Cache Friendliness** | Exceptional (spatial locality) | Poor (pointer chasing causes cache misses) |\n| **Memory Overhead** | Zero extra pointer bytes | Extra 8 bytes per node for `next` pointer |\n\n---\n\n## 2. Node Architectures\n\n```\nSINGLY LINKED LIST:\n[ Head ] -> [ Data | Next ] -> [ Data | Next ] -> [ Data | NULL ]\n\nDOUBLY LINKED LIST:\n[ Head ] -> [ Prev=NULL | Data | Next ] <===> [ Prev | Data | Next=NULL ]\n\nCIRCULAR LINKED LIST:\n[ Head ] -> [ Data | Next ] -> [ Data | Next ] ---+\n     ^                                            |\n     +--------------------------------------------+\n```\n\n---\n\n## 3. Fast and Slow Pointer: Floyd's Cycle Detection Algorithm\n\nDetects if a linked list contains an infinite cycle in $O(N)$ time and $O(1)$ auxiliary memory:\n\n```\n           [ 1 ] -> [ 2 ] -> [ 3 ] -> [ 4 ]\n                              ^         |\n                              |         v\n                             [ 6 ] <- [ 5 ]\n```\n\n1. Initialize two pointers: `slow = head` and `fast = head`.\n2. Move `slow` by 1 node (`slow = slow->next`) and `fast` by 2 nodes (`fast = fast->next->next`).\n3. If `fast` or `fast->next` reaches `NULL`, the list has **no cycle**.\n4. If `slow == fast`, a **cycle is detected**!\n5. **Finding Cycle Start Node:**\n   Reset `slow = head` while leaving `fast` at the meeting point. Advance both pointers one step at a time (`slow = slow->next; fast = fast->next;`). The node where they meet is **the exact start node of the cycle**!\n\n---\n\n## 4. In-Place Reversal of Singly Linked List ($O(N)$ Time, $O(1)$ Space)\n\n```c\nstruct ListNode* reverseList(struct ListNode* head) {\n    struct ListNode *prev = NULL, *curr = head, *next = NULL;\n    while (curr != NULL) {\n        next = curr->next;  // Save next node\n        curr->next = prev;  // Reverse pointer\n        prev = curr;        // Advance prev\n        curr = next;        // Advance curr\n    }\n    return prev; // New head of reversed list\n}\n```\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Cycle Detection:** Floyd's Tortoise and Hare algorithm ($O(N)$ time, $O(1)$ memory).\n- **Find Middle Node:** Slow moves 1 step, Fast moves 2 steps $\\implies$ when Fast reaches end, Slow is at middle.\n- **Delete Node without Head:** `node->val = node->next->val; node->next = node->next->next;` (copy next node and delete next).\n",
       "questions": [
         {
           "id": "ds-ll-1",
@@ -185,6 +232,33 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "The fast pointer enters the cycle first. When the slow pointer enters the cycle, the distance between them is at most C. Since fast closes the gap by 1 node per iteration, they meet within C steps. Total steps = O(N)."
+        }
+      ],
+      "prerequisites": [
+        "Pointers and dynamic memory allocation in C",
+        "Memory layout: contiguous vs non-contiguous nodes"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Linked Lists and Pointer-Based Data Structures",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Linked List Data Structure",
+          "url": "https://www.geeksforgeeks.org/data-structures/linked-list/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Linked List Problems and Floyd's Cycle Algorithm",
+          "url": "https://www.interviewbit.com/linked-list-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -246,6 +320,26 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In postfix evaluation, operands are pushed onto the stack. When an operator is read, the top two operands are popped (first popped is second operand, second popped is first operand), evaluated, and the result is pushed back."
         }
+      ],
+      "prerequisites": [
+        "Arrays and Dynamic Sizing",
+        "LIFO and FIFO Principles"
+      ],
+      "externalResources": [
+        {
+          "title": "Stack and Queue Data Structures — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/stack-data-structure/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Introduction to Algorithms (6.006) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -268,7 +362,7 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         "Maximum number of nodes at level L is 2^L (root at level 0)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Trees+and+Binary+Trees+Properties+Complete+Full+Tree+Data+Structures+lecture+tutorial",
-      "notesMarkdown": "# Trees and Binary Trees\n\nA tree is an acyclic, connected, hierarchical graph with a designated root node.\n\n---\n\n## 1. Key Binary Tree Classifications\n- **Full Binary Tree:** Every node has either $0$ or $2$ children.\n- **Complete Binary Tree:** All levels full except possibly the last level, filled strictly from left to right (used in Binary Heaps).\n- **Perfect Binary Tree:** All internal nodes have 2 children, all leaf nodes at the same level. Total nodes = $2^{h+1} - 1$.\n- **Degenerate (Skewed) Tree:** Every internal node has only one child; behaves like a linked list ($O(n)$ search).\n\n---\n\n## 2. Fundamental Properties\n- In a non-empty binary tree, if $n$ is total nodes and $e$ is total edges: $e = n - 1$.\n- In a full binary tree with $L$ leaves: Internal nodes $I = L - 1$.\n",
+      "notesMarkdown": "# Trees, Binary Tree Classifications, and Tree Traversals\n\nA Tree is a non-linear, hierarchical data structure consisting of nodes connected by edges, without cycles. A **Binary Tree** restricts every node to at most two children (termed Left child and Right child).\n\n---\n\n## 1. Binary Tree Taxonomy\n\n```\nFULL BINARY TREE:            COMPLETE BINARY TREE:          PERFECT BINARY TREE:\nEvery node has 0 or 2        All levels completely filled   All internal nodes have 2 children;\nchildren. (Never 1 child!).  except possibly last (filled   all leaves are at same level.\n                             from left to right).           Nodes = 2^(h+1) - 1.\n```\n\n- **Full (Strict) Binary Tree:** Every node has either $0$ or $2$ children.\n- **Complete Binary Tree:** Every level, except possibly the last, is completely filled, and all nodes in the last level are as far left as possible (enables flat array representation in Heaps).\n- **Perfect Binary Tree:** All interior nodes have 2 children and all leaf nodes are at the exact same depth.\n- **Degenerate (Skewed) Tree:** Every internal node has only one child; degenerates into a linked list with $O(N)$ height.\n\n---\n\n## 2. Core Tree Properties and Mathematical Identities\n\nFor a binary tree of height $h$ (where root is height $0$):\n1. **Maximum nodes at level $k$:** $2^k$.\n2. **Maximum nodes in tree of height $h$:** $2^{h+1} - 1$.\n3. **Minimum height for $N$ nodes:** $h_{\\min} = \\lceil \\log_2(N + 1) \\rceil - 1$.\n4. **Leaf Nodes vs Degree-2 Nodes Property:**\n   In any binary tree, if $n_0$ is the number of leaf nodes (degree 0) and $n_2$ is the number of nodes with 2 children:\n   $$\\mathbf{n_0 = n_2 + 1}$$\n\n---\n\n## 3. Tree Traversals\n\n```\n           [ 1 ]\n          /     \\\n       [ 2 ]   [ 3 ]\n       /   \\\n    [ 4 ] [ 5 ]\n```\n\n1. **Preorder (Root $\\to$ Left $\\to$ Right):** `1, 2, 4, 5, 3` (Used for cloning/serialization).\n2. **Inorder (Left $\\to$ Root $\\to$ Right):** `4, 2, 5, 1, 3` (Yields sorted order in BSTs).\n3. **Postorder (Left $\\to$ Right $\\to$ Root):** `4, 5, 2, 3, 1` (Used for bottom-up deletion/freeing).\n4. **Level-Order (Breadth-First Search - BFS):** `1, 2, 3, 4, 5` (Implemented using a FIFO Queue).\n\n---\n\n## 4. Reconstructing a Unique Binary Tree\n\n- A binary tree can be **uniquely reconstructed** if and only if you are given:\n  1. **Inorder + Preorder**, OR\n  2. **Inorder + Postorder**.\n- *(Crucial Note: Preorder + Postorder does NOT uniquely reconstruct a general binary tree, but DOES uniquely reconstruct a Full Binary Tree!).*\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Leaf-to-Degree-2 Theorem:** $n_0 = n_2 + 1$.\n- **Max Nodes at Height $h$:** $2^{h+1} - 1$.\n- **Traversal Requirements:** Inorder is mandatory to uniquely split left and right subtrees!\n",
       "questions": [
         {
           "id": "ds-tree-1",
@@ -306,6 +400,33 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A complete binary tree fills all levels completely except possibly the last level, which is filled sequentially from left to right. This guarantees contiguous placement in an array where for index i, left child is 2i + 1 and right child is 2i + 2 with zero wasted space or pointer overhead."
         }
+      ],
+      "prerequisites": [
+        "Linked lists and dynamic node allocation",
+        "Recursion and call stack activation frames"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Binary Trees and Tree Traversals",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Binary Tree Data Structure",
+          "url": "https://www.geeksforgeeks.org/binary-tree-data-structure/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Tree Traversals and Diameter Calculation",
+          "url": "https://www.interviewbit.com/tree-data-structure-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -328,7 +449,7 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         "Deleting a node with two children requires replacing with its in-order predecessor or successor."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Binary+Search+Tree+BST+Insertion+Deletion+Search+Data+Structures+lecture+tutorial",
-      "notesMarkdown": "# Binary Search Trees (BST)\n\nA Binary Search Tree is a node-based binary tree data structure with the ordered BST invariant.\n\n---\n\n## 1. The BST Invariant\nFor every node $X$:\n- All keys in the **left subtree** are strictly less than $X.\\text{val}$: $\\text{left.val} < X.\\text{val}$.\n- All keys in the **right subtree** are strictly greater than $X.\\text{val}$: $\\text{right.val} > X.\\text{val}$.\n- **Inorder Traversal Property:** An inorder traversal (Left-Root-Right) of a BST produces keys in strictly monotonically sorted ascending order.\n\n---\n\n## 2. Core Operations & Complexities\n| Operation | Average Case | Worst Case (Degenerate Tree) |\n| :--- | :--- | :--- |\n| Search | $O(\\log N)$ | $O(N)$ (skewed tree) |\n| Insertion | $O(\\log N)$ | $O(N)$ |\n| Deletion | $O(\\log N)$ | $O(N)$ |\n| Min / Max | $O(\\log N)$ | $O(N)$ |\n\n---\n\n## 3. Node Deletion Cases\n1. **Node is a leaf:** Remove directly.\n2. **Node has one child:** Splice out node by linking parent directly to its single child.\n3. **Node has two children:** Replace target key with its **Inorder Successor** (smallest element in right subtree) or Inorder Predecessor, then recursively delete successor from right subtree.\n",
+      "notesMarkdown": "# Binary Search Trees (BST), Deletion Cases, and Self-Balancing Trees (AVL)\n\nA Binary Search Tree (BST) is an ordered tree data structure that facilitates fast dynamic lookups, insertions, deletions, and sorted order enumerations.\n\n---\n\n## 1. The Binary Search Tree Invariant\n\nFor every node $X$ in a BST:\n- Every key in the **left subtree** of $X$ is **strictly less than** $X.\\text{key}$: $\\forall y \\in \\text{Left}(X), \\quad y.\\text{key} < X.\\text{key}$.\n- Every key in the **right subtree** of $X$ is **strictly greater than** $X.\\text{key}$: $\\forall z \\in \\text{Right}(X), \\quad z.\\text{key} > X.\\text{key}$.\n\n```\n                 [ 50 ]\n                /      \\\n             [ 30 ]   [ 70 ]\n             /   \\     /   \\\n           [20] [40] [60] [80]\n```\n*Golden Theorem:* The **Inorder Traversal of a BST produces keys in strictly ascending sorted order**!\n\n---\n\n## 2. BST Deletion: The Three Cases\n\nDeleting a node $Z$ from a BST requires preserving the BST property:\n\n1. **Case 1: $Z$ is a Leaf Node (0 children):**\n   Simply remove the node and update parent pointer to `NULL`.\n2. **Case 2: $Z$ has exactly One Child:**\n   Bypass $Z$ by linking $Z$'s parent directly to $Z$'s child (splice out $Z$).\n3. **Case 3: $Z$ has Two Children:**\n   - Locate $Z$'s **Inorder Successor** (smallest node in $Z$'s right subtree: go right once, then left all the way).\n   - Copy the value of the inorder successor into $Z$.\n   - Recursively delete the inorder successor from the right subtree (which falls into Case 1 or Case 2 because the successor has at most one child!).\n\n---\n\n## 3. Complexity Degeneration and AVL Self-Balancing Trees\n\n- If keys are inserted in sorted or reverse-sorted order (`1, 2, 3, 4, 5`), a naive BST degenerates into a linear linked list with height $h = N$, causing search complexity to collapse from $O(\\log N)$ to $O(N)$!\n- **AVL Tree (Adelson-Velsky and Landis):** Enforces balance factor $BF \\in \\{-1, 0, +1\\}$ at every node:\n  $$BF = \\text{Height}(\\text{Left Subtree}) - \\text{Height}(\\text{Right Subtree})$$\n  Restores balance in $O(1)$ time via **Tree Rotations** (LL, RR, LR, RL). Guaranteed height: $h < 1.44 \\log_2 N$.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **BST Search/Insert/Delete Complexity:** Average $O(\\log N)$, Worst-case $O(N)$.\n- **Inorder Successor:** Minimum element in right subtree.\n- **Inorder Predecessor:** Maximum element in left subtree.\n- **AVL Balance Invariant:** $|h_L - h_R| \\le 1$.\n",
       "questions": [
         {
           "id": "ds-bst-1",
@@ -365,6 +486,33 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "To maintain the BST ordering property when a node has two children, it must be replaced by either the next larger key (in-order successor, smallest key in right subtree) or next smaller key (in-order predecessor). That chosen node is guaranteed to have at most one child, making its subsequent removal from the subtree trivial."
+        }
+      ],
+      "prerequisites": [
+        "Binary trees and tree traversals",
+        "Recursion and sorted arrays"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Binary Search Trees and AVL Self-Balancing",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Binary Search Tree (BST) Data Structure",
+          "url": "https://www.geeksforgeeks.org/binary-search-tree-data-structure/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: BST Insertion, Deletion, and Balancing Problems",
+          "url": "https://www.interviewbit.com/tree-data-structure-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -426,6 +574,19 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Level-order traversal visits nodes layer by layer from root downward, which requires a First-In-First-Out (Queue) data structure to store child nodes for exploration in FIFO sequence."
         }
+      ],
+      "prerequisites": [
+        "Binary Trees",
+        "Recursion and Call Stacks"
+      ],
+      "externalResources": [
+        {
+          "title": "Tree Traversals (Inorder, Preorder, Postorder) — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -486,6 +647,26 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The minimum nodes for height h is given by N(h) = N(h-1) + N(h-2) + 1, with base cases N(0)=1 and N(1)=2. For h=2: N(2) = 2 + 1 + 1 = 4. For h=3: N(3) = N(2) + N(1) + 1 = 4 + 2 + 1 = 7 nodes."
         }
+      ],
+      "prerequisites": [
+        "Binary Search Trees",
+        "Tree Height and Balance Factors"
+      ],
+      "externalResources": [
+        {
+          "title": "AVL Tree Insertion and Rotations — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/introduction-to-avl-tree/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Binary Search Trees & AVL Trees — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -508,7 +689,7 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         "Extracting min/max root takes O(log n) time; peek takes O(1) time."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Heaps+and+Priority+Queues+Min+Heap+Max+Heap+Heapify+Data+Structures+lecture+tutorial",
-      "notesMarkdown": "# Heaps and Priority Queues\n\nA Binary Heap is a complete binary tree implemented efficiently within a contiguous array without explicit pointers.\n\n---\n\n## 1. Array-Based Complete Binary Tree Indexing (0-indexed)\nFor element at index $i$:\n- **Parent:** $\\lfloor (i - 1) / 2 \\rfloor$\n- **Left Child:** $2i + 1$\n- **Right Child:** $2i + 2$\n\n---\n\n## 2. Heap Invariant\n- **Max-Heap:** Every parent key is greater than or equal to its children: $A[\\text{parent}(i)] \\ge A[i]$.\n- **Min-Heap:** Every parent key is less than or equal to its children: $A[\\text{parent}(i)] \\le A[i]$.\n\n---\n\n## 3. Complexity Summary\n- `findMin() / findMax()`: $O(1)$\n- `insert(x)`: $O(\\log N)$ (sift-up / bubble-up)\n- `extractMin() / extractMax()`: $O(\\log N)$ (replace root with last leaf, then sift-down)\n- `heapify(arr)`: **$O(N)$ linear time** (bottom-up sift-down of non-leaf nodes from index $N/2 - 1$ down to 0).\n",
+      "notesMarkdown": "# Binary Heaps, Priority Queues, and HeapSort\n\nA Binary Heap is a complete binary tree that satisfies the **Heap Order Invariant**. Because it is always complete, it can be mapped compactly into a contiguous 1D array without storing pointer variables.\n\n---\n\n## 1. Array Representation of a Complete Binary Tree\n\nFor a 0-indexed array with element at index $i$:\n- **Parent Index:** $\\lfloor \\frac{i - 1}{2} \\rfloor$\n- **Left Child Index:** $2i + 1$\n- **Right Child Index:** $2i + 2$\n- **Internal Nodes Range:** $0$ to $\\lfloor \\frac{N}{2} \\rfloor - 1$\n- **Leaf Nodes Range:** $\\lfloor \\frac{N}{2} \\rfloor$ to $N - 1$\n\n```\nHeap Tree:                    Array Layout:\n        [ 90 ]                Index:  0    1    2    3    4    5\n       /      \\               Value: [90 | 70 | 80 | 30 | 50 | 40]\n    [ 70 ]  [ 80 ]\n    /    \\   /\n  [30]  [50][40]\n```\n\n---\n\n## 2. Heap Invariants: Min-Heap vs Max-Heap\n\n- **Max-Heap:** Every parent node is greater than or equal to its children ($A[\\text{parent}(i)] \\ge A[i]$). The maximum element is always at the root (`A[0]`).\n- **Min-Heap:** Every parent node is less than or equal to its children ($A[\\text{parent}(i)] \\le A[i]$). The minimum element is always at the root (`A[0]`).\n\n---\n\n## 3. Core Heap Operations\n\n1. **`heapify(i)` (Sift-Down):** Restores heap property downward when children satisfy heap invariant but root $i$ violates it. Height is at most $\\log N \\implies \\mathbf{O(\\log N)}$.\n2. **`insert(val)`:** Appends element at array end ($N$), and bubbles upward (sift-up) by swapping with parent: $\\mathbf{O(\\log N)}$.\n3. **`extractMin()` / `extractMax()`:** Swap root with last leaf element, decrement heap size, and call `heapify(0)`: $\\mathbf{O(\\log N)}$.\n4. **`buildHeap(array)`:** Converts an arbitrary array into a heap.\n   - Naive analysis suggests $O(N \\log N)$, but summing heights over all nodes proves **`buildHeap` runs in strictly $O(N)$ linear time!**\n   $$\\sum_{h=0}^{\\lfloor \\log N \\rfloor} \\left\\lceil \\frac{N}{2^{h+1}} \\right\\rceil O(h) = O\\left( N \\sum_{h=0}^\\infty \\frac{h}{2^h} \\right) = \\mathbf{O(N)}$$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Parent:** $(i - 1) / 2$.\n- **Children:** $2i + 1$ (Left) and $2i + 2$ (Right).\n- **Build-Heap Time:** $O(N)$ linear time.\n- **HeapSort:** $O(N \\log N)$ worst-case time, $O(1)$ auxiliary space (in-place).\n- **Find Min/Max:** $O(1)$ instant read at index 0.\n",
       "questions": [
         {
           "id": "ds-hp-1",
@@ -545,6 +726,33 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "extractMax() achieves O(log N) time by swapping the maximum root element with the last array element (O(1)), discarding the last element, and restoring the heap invariant by sifting down the new root along the path of maximum children (at most tree height = log N swaps)."
+        }
+      ],
+      "prerequisites": [
+        "Complete binary trees and arrays",
+        "Asymptotic complexity analysis"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Heaps and HeapSort",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Binary Heap Data Structure",
+          "url": "https://www.geeksforgeeks.org/binary-heap/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Priority Queues and Heap Operations",
+          "url": "https://www.interviewbit.com/heap-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -606,6 +814,26 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In double hashing, the offset step is h2(k). If h2(k) and table size m share a common factor greater than 1, probing will cycle through a small subset of slots and fail to inspect the entire table. Therefore, gcd(h2(k), m) must strictly equal 1."
         }
+      ],
+      "prerequisites": [
+        "Arrays and Modulo Arithmetic",
+        "Collision Resolution Concepts"
+      ],
+      "externalResources": [
+        {
+          "title": "Hashing and Hash Tables Guide — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/hashing-data-structure/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Data Structures and Hash Tables — Harvard CS50",
+          "provider": "Harvard CS50",
+          "url": "https://cs50.harvard.edu/x/2024/weeks/5/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -628,7 +856,7 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
         "Directed graphs have asymmetric adjacency matrices; undirected graphs are symmetric along main diagonal."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Graph+Representations+Adjacency+Matrix+List+Data+Structures+lecture+tutorial",
-      "notesMarkdown": "# Graph Representations: Adjacency Matrix vs List\n\nGraphs $G = (V, E)$ consist of vertices $V$ and edges $E$ (directed or undirected, weighted or unweighted).\n\n---\n\n## 1. Comparative Analysis\n\n| Feature | Adjacency Matrix | Adjacency List |\n| :--- | :--- | :--- |\n| **Space Complexity** | $\\Theta(V^2)$ | $\\Theta(V + E)$ |\n| **Add Edge** | $O(1)$ | $O(1)$ |\n| **Check Edge $(u, v)$** | $O(1)$ | $O(\\text{deg}(u))$ |\n| **Iterate Neighbors of $u$** | $\\Theta(V)$ | $\\Theta(\\text{deg}(u))$ |\n| **Ideal Use Case** | Dense graphs ($E \\approx V^2$), constant-time edge queries | Sparse graphs ($E \\ll V^2$), standard traversal algorithms (BFS, DFS) |\n\n---\n\n## 2. Memory Footprint Comparison\n- When $|V| = 10^5$ and $|E| = 2 \\times 10^5$:\n  - Adjacency Matrix requires $(10^5)^2 = 10^{10}$ integers $\\approx 40\\text{ GB}$ (Causes Out-of-Memory / TLE).\n  - Adjacency List requires only $10^5 + 2 \\times 10^5 = 3 \\times 10^5$ entries $\\approx 2.4\\text{ MB}$.\n",
+      "notesMarkdown": "# Graph Representations: Adjacency Matrix, Adjacency List, and Trade-Offs\n\nA Graph $G = (V, E)$ consists of a set of vertices $V$ and a set of edges $E$ connecting pairs of vertices. Choosing the appropriate memory representation is critical for algorithmic time and space complexity.\n\n---\n\n## 1. Adjacency Matrix vs Adjacency List\n\n```\nGraph:                          ADJACENCY MATRIX (V x V)      ADJACENCY LIST\n  (0) -------- (1)                  0  1  2  3                0: [1] -> [2]\n   |            |                0 [0, 1, 1, 0]               1: [0] -> [3]\n   |            |                1 [1, 0, 0, 1]               2: [0] -> [3]\n  (2) -------- (3)                2 [1, 0, 0, 1]               3: [1] -> [2]\n                                 3 [0, 1, 1, 0]\n```\n\n| Operation / Metric | Adjacency Matrix | Adjacency List |\n| :--- | :--- | :--- |\n| **Storage Memory Space** | $\\mathbf{\\Theta(V^2)}$ | $\\mathbf{\\Theta(V + E)}$ |\n| **Check if Edge $(u, v)$ Exists** | $\\mathbf{O(1)}$ instant array lookup | $O(\\text{deg}(u))$ list traversal |\n| **Iterate All Neighbors of $u$** | $O(V)$ (must scan entire row) | $\\mathbf{O(\\text{deg}(u))}$ (immediate) |\n| **Add Vertex** | $O(V^2)$ (resize matrix) | $O(1)$ |\n| **Add Edge** | $O(1)$ | $O(1)$ |\n| **Best Suited For** | **Dense Graphs** ($E \\approx V^2$) | **Sparse Graphs** ($E \\ll V^2$) |\n\n---\n\n## 2. Handshaking Lemma (Fundamental Invariant)\n\nFor any undirected graph $G = (V, E)$:\n$$\\sum_{v \\in V} \\text{deg}(v) = 2|E|$$\n*Consequence:* The sum of degrees across all vertices is always an **even number**, and the count of vertices having **odd degree is strictly even**!\n\n---\n\n## 3. Modern Hybrid: Adjacency Vectors / CSR (Compressed Sparse Row)\n\nIn production software (high-performance graphics, graph neural networks):\n- Pointer-based linked lists suffer from pointer overhead and CPU cache misses.\n- Compilers and engines use **Compressed Sparse Row (CSR)** or `std::vector<std::vector<int>>` which stores neighbor lists in contiguous dynamic arrays, delivering $O(V + E)$ space with $O(1)$ cache spatial locality!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Dense Graphs:** Use Adjacency Matrix ($E \\approx V^2$).\n- **Sparse Graphs:** Use Adjacency List ($E \\ll V^2$).\n- **Handshaking Lemma:** $\\sum \\text{deg}(v) = 2E$.\n- **Graph Traversal Complexities:** Both BFS and DFS run in $\\mathbf{O(V + E)}$ using Adjacency List, but $\\mathbf{O(V^2)}$ using Adjacency Matrix.\n",
       "questions": [
         {
           "id": "ds-gr-1",
@@ -665,6 +893,33 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "An adjacency list stores an array or list of size V, and each edge appears once (for directed) or twice (for undirected), yielding total space O(V + E)."
+        }
+      ],
+      "prerequisites": [
+        "Arrays and linked lists",
+        "Graph theory basics: vertices, edges, and degrees"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.006: Graph Representations, BFS, and DFS",
+          "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Graph and its Representations",
+          "url": "https://www.geeksforgeeks.org/graph-and-its-representations/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Graph Representations and Adjacency List Traps",
+          "url": "https://www.interviewbit.com/graph-data-structure-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -726,6 +981,19 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Path compression recursively traverses up to the root and re-assigns the parent pointer of every traversed node directly to the root (parent[x] = find(parent[x])). This flattens tree depth so that subsequent find operations execute in nearly O(1) time."
         }
+      ],
+      "prerequisites": [
+        "Trees and Graphs",
+        "Equivalence Relations"
+      ],
+      "externalResources": [
+        {
+          "title": "Disjoint Set Union (DSU / Union-Find) — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/introduction-to-disjoint-set-data-structure-or-union-find-algorithm/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -786,6 +1054,19 @@ export const DATA_STRUCTURES_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "A Bloom filter tests set membership using k independent hash functions over an m-bit array. If any hashed bit is 0, the element is guaranteed not to exist (0% false negatives). If all k bits are 1, the element probably exists (false positives occur due to bit overlaps)."
+        }
+      ],
+      "prerequisites": [
+        "Core Data Structures",
+        "Algorithmic Complexity"
+      ],
+      "externalResources": [
+        {
+          "title": "Real-World Applications of Data Structures — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/real-time-applications-of-data-structures/",
+          "difficulty": "Beginner",
+          "isFree": true
         }
       ]
     }

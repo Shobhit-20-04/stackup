@@ -13,7 +13,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Percentages & Simple / Compound Interest",
       "description": "Percentage base shifts, Simple Interest, Compounding frequency, and CI-SI 2-year difference formula.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Percentages & Simple / Compound Interest\n\nMastering percentage base shifts and compounding formulas is essential for technical screening and quantitative aptitude tests.\n\n---\n\n## 1. Percentage Shift and Constant Product Rule\n- **Inverse Variation Rule:** If price of a commodity increases by $x\\%$, consumption must decrease by:\n  $$\\text{Decrease \\%} = \\left(\\frac{x}{100 + x}\\right) \\times 100\\%$$\n- **Example:** If price rises by $25\\%$, expenditure is kept constant by reducing consumption by $\\frac{25}{125} \\times 100\\% = 20\\%$.\n- **Successive Percentage Changes:** If a value changes by $+a\\%$ then $+b\\%$, net effective change is:\n  $$\\text{Net \\%} = a + b + \\frac{ab}{100}$$\n\n---\n\n## 2. Simple Interest (SI)\n$$SI = \\frac{P \\times R \\times T}{100}, \\quad A = P + SI = P \\left(1 + \\frac{RT}{100}\\right)$$\n- Growth is strictly linear over time.\n- If sum doubles in $T$ years at SI, rate $R = \\frac{100}{T}\\%$.\n\n---\n\n## 3. Compound Interest (CI) & Compounding Frequency\n$$A = P \\left(1 + \\frac{R}{100 \\times m}\\right)^{m \\cdot T}$$\nWhere $m$ is compounding frequency per year ($m = 1$ annually, $m = 2$ half-yearly, $m = 4$ quarterly).\n\n---\n\n## 4. High-Yield Exam Difference Shortcuts\n- **Difference between CI and SI for 2 years ($D_2$):**\n  $$D_2 = P \\left(\\frac{R}{100}\\right)^2$$\n- **Difference between CI and SI for 3 years ($D_3$):**\n  $$D_3 = P \\left(\\frac{R}{100}\\right)^2 \\left(3 + \\frac{R}{100}\\right)$$\n",
+      "notesMarkdown": "# Percentages, Simple Interest & Compound Interest\n\nPercentages and interest calculations form the bedrock of numerical aptitude assessments across competitive and placement examinations.\n\n---\n\n## 1. Percentage Foundations & Multiplier Method\n\nA percentage represents a fraction with denominator $100$: $x\\% = \\frac{x}{100}$.\n\n### Standard Fraction to Percentage Conversions\n| Fraction | Percent | Fraction | Percent | Fraction | Percent |\n| :---: | :---: | :---: | :---: | :---: | :---: |\n| $1/2$ | $50\\%$ | $1/6$ | $16.67\\%$ | $1/11$ | $9.09\\%$ |\n| $1/3$ | $33.33\\%$ | $1/7$ | $14.28\\%$ | $1/12$ | $8.33\\%$ |\n| $1/4$ | $25\\%$ | $1/8$ | $12.5\\%$ | $1/15$ | $6.67\\%$ |\n| $1/5$ | $20\\%$ | $1/9$ | $11.11\\%$ | $1/16$ | $6.25\\%$ |\n\n### The Decimal Multiplier Concept\n- Increase by $x\\%$: Multiply original by $\\left(1 + \\frac{x}{100}\\right)$\n- Decrease by $x\\%$: Multiply original by $\\left(1 - \\frac{x}{100}\\right)$\n- **Net Successive Change Formula:**\n  If a quantity changes by $+a\\%$ and then by $+b\\%$, the net percentage change is:\n  $$\\text{Net Change} = a + b + \\frac{a \\cdot b}{100} \\%$$\n\n---\n\n## 2. Simple Interest (SI)\n\nSimple Interest is computed strictly on the original principal $P$ over time $T$ years at rate $R\\%$ per annum:\n\n$$\\text{SI} = \\frac{P \\cdot R \\cdot T}{100}$$\n$$\\text{Total Amount } A = P + \\text{SI} = P \\left(1 + \\frac{R \\cdot T}{100}\\right)$$\n\n---\n\n## 3. Compound Interest (CI)\n\nCompound Interest compounds accumulated interest into principal at the end of each compounding interval.\n\n$$\\text{Total Amount } A = P \\left(1 + \\frac{R}{100 \\cdot n}\\right)^{n \\cdot T}$$\nWhere $n$ is compounding frequency per year ($n=1$ annual, $n=2$ semi-annual, $n=4$ quarterly).\n\n$$\\text{CI} = A - P = P \\left[ \\left(1 + \\frac{R}{100}\\right)^T - 1 \\right]$$\n\n### Key Difference Formula ($CI - SI$):\n- **For 2 Years ($T = 2$):**\n  $$\\text{CI}_2 - \\text{SI}_2 = P \\left(\\frac{R}{100}\\right)^2$$\n- **For 3 Years ($T = 3$):**\n  $$\\text{CI}_3 - \\text{SI}_3 = P \\left(\\frac{R}{100}\\right)^2 \\left(\\frac{300 + R}{100}\\right)$$\n",
       "questions": [
         {
           "id": "pi-1",
@@ -65,7 +65,27 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Compound Interest A = P * (1 + R/100)^T.",
         "Difference between CI and SI for 2 years: D2 = P * (R / 100)^2."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Percentages+%26+Simple+%2F+Compound+Interest+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Percentages+%26+Simple+%2F+Compound+Interest+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Basic Arithmetic and Fractions",
+        "Decimals and Ratio Concepts"
+      ],
+      "externalResources": [
+        {
+          "title": "Percentages and Interest Formulas — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/quantitative-aptitude/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Simple and Compound Interest Guide — InterviewBit",
+          "provider": "InterviewBit",
+          "url": "https://www.interviewbit.com/quantitative-aptitude-interview-questions/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "ratio-proportion",
@@ -73,7 +93,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Ratio, Proportion & Rule of Alligation",
       "description": "Direct & inverse variation, mean proportional, duplicate ratios, and weighted mixture alligations.",
       "estimatedMinutes": 14,
-      "notesMarkdown": "# Ratio, Proportion, and Rule of Alligation\n\nRatios compare quantities of the same kind, while alligation determines mixture proportions.\n\n---\n\n## 1. Properties of Ratios & Proportions\nFor $a : b = c : d$:\n- **Product of Extremes = Product of Means:** $a \\cdot d = b \\cdot c$.\n- **Mean Proportional:** Between $x$ and $y$ is $\\sqrt{x y}$.\n- **Third Proportional:** To $x$ and $y$ is $\\frac{y^2}{x}$.\n- **Fourth Proportional:** To $x, y, z$ is $\\frac{y z}{x}$.\n- **Compounding Ratios:** Combining $A : B = m : n$ and $B : C = p : q \\implies A : B : C = mp : np : nq$.\n\n---\n\n## 2. Rule of Alligation (Weighted Averages)\nWhen two ingredients of unit costs $C_1$ (cheaper) and $C_2$ (dearer) are mixed to achieve mean price $M$:\n$$\\frac{\\text{Quantity of Cheaper } (Q_1)}{\\text{Quantity of Dearer } (Q_2)} = \\frac{C_2 - M}{M - C_1}$$\n\n---\n\n## 3. Repeated Dilution Formula\nIf a vessel initially contains $x$ units of pure liquid, and $y$ units are withdrawn and replaced with water $n$ successive times:\n$$\\text{Amount of Pure Liquid Left} = x \\left(1 - \\frac{y}{x}\\right)^n$$\n",
+      "notesMarkdown": "# Ratio, Proportion & Compounding Principles\n\nA ratio represents the quantitative relation between two amounts showing how many times one value contains or is contained within the other.\n\n---\n\n## 1. Core Mathematical Properties\n\n- **Ratio Invariance:** For any non-zero constant $k$:\n  $$\\frac{a}{b} = \\frac{k \\cdot a}{k \\cdot b}$$\n- **Proportion Equality:** If $a : b = c : d$ ($a/b = c/d$), then:\n  - Product of Extremes $=$ Product of Means: $a \\cdot d = b \\cdot c$\n  - Invertendo: $b : a = d : c$\n  - Alternando: $a : c = b : d$\n  - Componendo & Dividendo: $\\frac{a + b}{a - b} = \\frac{c + d}{c - d}$\n\n---\n\n## 2. Compounding Compound Ratios ($A:B$ and $B:C$)\n\nTo combine $A : B = x : y$ and $B : C = z : w$:\n1. Scale so the shared term $B$ matches in both ratios:\n   - Multiply $A : B$ by $z \\implies (x \\cdot z) : (y \\cdot z)$\n   - Multiply $B : C$ by $y \\implies (y \\cdot z) : (y \\cdot w)$\n2. Result:\n   $$A : B : C = (x \\cdot z) : (y \\cdot z) : (y \\cdot w)$$\n\n### Worked Example:\nIf $A : B = 2 : 3$ and $B : C = 4 : 5$:\n- $A : B : C = (2 \\times 4) : (3 \\times 4) : (3 \\times 5) = \\mathbf{8 : 12 : 15}$.\n\n---\n\n## 3. Dynamic Ratio Transitions (Add/Subtract Entities)\n\n### Problem Blueprint:\nThe ratio of boys to girls in a college is $5 : 3$. If 50 boys leave and 50 girls join, the ratio becomes $9 : 7$. What was the original number of boys?\n\n### Step-by-Step Solution:\n1. Let original boys $= 5x$ and girls $= 3x$.\n2. After transition:\n   $$\\frac{5x - 50}{3x + 50} = \\frac{9}{7}$$\n3. Cross-multiply:\n   $$7(5x - 50) = 9(3x + 50) \\implies 35x - 350 = 27x + 450$$\n   $$8x = 800 \\implies x = 100$$\n4. Original boys $= 5 \\times 100 = \\mathbf{500}$.\n",
       "questions": [
         {
           "id": "rp-1",
@@ -124,7 +144,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "If A:B = a:b and B:C = c:d, then A:B:C = (a*c) : (b*c) : (b*d).",
         "Alligation formula: (Cheaper / Dearer) = (Dearer Price - Mean) / (Mean - Cheaper Price)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Ratio%2C+Proportion+%26+Rule+of+Alligation+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Ratio%2C+Proportion+%26+Rule+of+Alligation+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Basic Multiplication and Division",
+        "Fractions and Equations"
+      ],
+      "externalResources": [
+        {
+          "title": "Ratios and Proportions Tutorial — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/ratios-and-proportions/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "profit-loss",
@@ -132,7 +165,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Profit, Loss & Successive Discounts",
       "description": "Cost Price, Selling Price, Marked Price, Margin, and Successive Percentage Discounts.",
       "estimatedMinutes": 16,
-      "notesMarkdown": "\n# Profit, Loss & Discount — Quick Reference\n\n---\n\n## 1. Key Formulas\n- $\\text{Profit} = SP - CP$ (when $SP > CP$)\n- $\\text{Loss} = CP - SP$ (when $CP > SP$)\n- $\\text{Profit Percentage} = \\left(\\frac{SP - CP}{CP}\\right) \\times 100$\n- $\\text{Loss Percentage} = \\left(\\frac{CP - SP}{CP}\\right) \\times 100$\n*(Note: Profit and loss are strictly calculated on CP unless stated otherwise).*\n\n---\n\n## 2. Marked Price & Discount\n- $\\text{Discount} = MP - SP$\n- $\\text{Discount \\%} = \\left(\\frac{MP - SP}{MP}\\right) \\times 100$\n\n---\n\n## 3. Successive Discounts\nTwo successive discounts of $a\\%$ and $b\\%$ are equivalent to a single net discount of:\n$$\\text{Net Discount} = \\left(a + b - \\frac{ab}{100}\\right)\\%$$\n",
+      "notesMarkdown": "# Profit, Loss, Marked Price & Successive Discounts\n\nCommercial mathematics assessments frequently feature retail pricing, multi-tier successive discounts, dishonest weighing, and unit cost equations.\n\n---\n\n## 1. Foundational Accounting Terms & Relations\n\n```\n               +-----------------------------------------+\n               | Marked Price (MP) / List Price / MRP    |\n               +-----------------------------------------+\n                                    |\n                            - Discount % (D)\n                                    v\n+-----------------------+   Profit %   +-----------------------+\n|    Cost Price (CP)    | -----------> |   Selling Price (SP)  |\n+-----------------------+              +-----------------------+\n```\n\n### Core Equations:\n- $\\text{Profit} = \\text{SP} - \\text{CP} \\quad (\\text{when } \\text{SP} > \\text{CP})$\n- $\\text{Loss} = \\text{CP} - \\text{SP} \\quad (\\text{when } \\text{CP} > \\text{SP})$\n- **Profit Percentage:**\n  $$\\text{Profit \\%} = \\frac{\\text{SP} - \\text{CP}}{\\text{CP}} \\times 100\\%$$\n- **Loss Percentage:**\n  $$\\text{Loss \\%} = \\frac{\\text{CP} - \\text{SP}}{\\text{CP}} \\times 100\\%$$\n  *(Crucial rule: Profit % and Loss % are ALWAYS calculated over CP unless explicitly stated otherwise).*\n\n---\n\n## 2. Successive Discounts & Net Selling Price\n\nWhen a merchant offers two successive discounts of $d_1\\%$ and $d_2\\%$ on Marked Price (MP):\n$$\\text{SP} = \\text{MP} \\times \\left(1 - \\frac{d_1}{100}\\right) \\times \\left(1 - \\frac{d_2}{100}\\right)$$\n$$\\text{Single Equivalent Discount } D_{\\text{net}} = d_1 + d_2 - \\frac{d_1 \\cdot d_2}{100} \\%$$\n\n### Worked Example:\nAn item is marked at $\\$500$ and sold with successive discounts of $20\\%$ and $10\\%$.\n$$\\text{SP} = 500 \\times 0.80 \\times 0.90 = 500 \\times 0.72 = \\mathbf{\\$360}$$\nNet single discount $= 20 + 10 - \\frac{200}{100} = 28\\%$. $\\$500 \\times (1 - 0.28) = \\$360$.\n\n---\n\n## 3. The Dishonest Merchant & False Weights\n\nWhen a dealer claims to sell goods at cost price ($\\text{SP} = \\text{CP}$ per unit nominal weight) but uses a false weight that under-delivers product:\n\n$$\\text{Actual Gain \\%} = \\frac{\\text{Error}}{\\text{True Value} - \\text{Error}} \\times 100\\% = \\frac{\\text{Nominal Weight} - \\text{Actual Weight Given}}{\\text{Actual Weight Given}} \\times 100\\%$$\n\n### Worked Example:\nA dealer claims to sell at cost price, but uses a 900g false weight instead of 1000g:\n$$\\text{Gain \\%} = \\frac{1000 - 900}{900} \\times 100\\% = \\frac{100}{900} \\times 100\\% = \\frac{1}{9} \\times 100\\% = \\mathbf{11.11\\%}$$\n\n---\n\n## 4. Selling $N$ items with profit of $K$ items\n\n### Worked Example:\nBy selling 33 meters of cloth, a merchant gains the selling price of 11 meters. Find the merchant's profit percentage.\n1. Let $\\text{SP of } 1 \\text{ meter} = \\$1$.\n2. $\\text{SP of } 33 \\text{ meters} = \\$33$.\n3. $\\text{Profit} = \\text{SP of } 11 \\text{ meters} = \\$11$.\n4. $\\text{CP of } 33 \\text{ meters} = \\text{SP} - \\text{Profit} = \\$33 - \\$11 = \\$22$.\n5. $\\text{Profit \\%} = \\frac{\\text{Profit}}{\\text{CP}} \\times 100\\% = \\frac{11}{22} \\times 100\\% = \\mathbf{50\\%}$.\n",
       "questions": [
         {
           "id": "pl-1",
@@ -184,7 +217,27 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Successive discounts of a% and b% = (a + b - ab/100)%.",
         "Dishonest dealer profit % = (Error / (True Value - Error)) * 100."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Profit%2C+Loss+%26+Successive+Discounts+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Profit%2C+Loss+%26+Successive+Discounts+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Percentages and Decimal Multipliers",
+        "Linear Equations"
+      ],
+      "externalResources": [
+        {
+          "title": "Profit and Loss Formulas & Shortcuts — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/profit-and-loss/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Aptitude: Profit and Loss Problems — InterviewBit",
+          "provider": "InterviewBit",
+          "url": "https://www.interviewbit.com/quantitative-aptitude-interview-questions/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "time-work",
@@ -256,7 +309,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Assume Total Work = LCM(A, B, C) to avoid fractions.",
         "Wages ratio = Efficiency ratio = 1/TimeA : 1/TimeB."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Time+and+Work+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Time+and+Work+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Ratios and Proportions",
+        "LCM of Integers"
+      ],
+      "externalResources": [
+        {
+          "title": "Time and Work Problems and Shortcuts — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/time-and-work/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "speed-time-distance",
@@ -264,7 +330,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Speed, Time & Distance (Trains & Streams)",
       "description": "Relative speed, train crossing times, average speed harmonic mean, and upstream/downstream boats.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# Speed, Time & Distance — Master Formulas\n\nCore concepts for campus aptitude tests and speed calculation rounds.\n\n---\n\n## 1. Fundamental Conversions & Relationships\n- $\\text{Distance} = \\text{Speed} \\times \\text{Time}$\n- Conversion: $1\\text{ km/hr} = \\frac{5}{18}\\text{ m/s}$ and $1\\text{ m/s} = \\frac{18}{5}\\text{ km/hr}$\n- **Average Speed** for equal distances at speeds $x$ and $y$:\n$$\\text{Average Speed} = \\frac{2xy}{x + y}$$\n\n---\n\n## 2. Relative Speed\n- **Opposite Directions:** $S_{\\text{rel}} = S_1 + S_2$\n- **Same Direction:** $S_{\\text{rel}} = |S_1 - S_2|$\n\n---\n\n## 3. Train Scenarios\n- **Crossing a point object (pole, standing man):** Distance covered = Length of train $L_T$.\n- **Crossing a platform/bridge of length $L_P$:** Distance covered = $L_T + L_P$.\n\n---\n\n## 4. Boats and Streams\n- Downstream Speed ($D$) = $U + V$ (Boat speed in still water + Stream speed)\n- Upstream Speed ($U$) = $U - V$\n- Speed of boat in still water = $\\frac{D + U}{2}$\n- Speed of stream = $\\frac{D - U}{2}$\n",
+      "notesMarkdown": "# Speed, Time & Distance: Relative Speed, Trains & River Streams\n\nMastering dimensional unit conversions, relative velocity vectors, and multi-train crossings.\n\n---\n\n## 1. Foundational Relations & Unit Conversion\n\n$$\\text{Distance} = \\text{Speed} \\times \\text{Time}$$\n\n### Rapid Unit Conversion:\n- $\\text{km/h} \\to \\text{m/s}$: Multiply by $\\frac{5}{18}$\n- $\\text{m/s} \\to \\text{km/h}$: Multiply by $\\frac{18}{5}$\n\n### Average Speed for Round Trips:\nWhen traveling a fixed distance $D$ at speed $x$ and returning at speed $y$:\n$$\\text{Average Speed} = \\frac{2xy}{x + y}$$\n\n---\n\n## 2. Relative Speed Principles\n\n```\nOpposite Directions (Approaching each other):\n[ Train A -> s1 ]         [ <- s2 Train B ]\nRelative Speed = s1 + s2\n\nSame Direction (Overtaking):\n[ Train A -> s1 ]   [ Train B -> s2 ]\nRelative Speed = |s1 - s2|\n```\n\n---\n\n## 3. Train Crossing Mechanics\n\n1. **Passing a Point Object (Pole, Person, Signpost):**\n   $$\\text{Distance} = L_{\\text{train}}$$\n   $$\\text{Time} = \\frac{L_{\\text{train}}}{\\text{Speed}}$$\n2. **Passing an Extended Object (Platform, Bridge, Tunnel):**\n   $$\\text{Distance} = L_{\\text{train}} + L_{\\text{platform}}$$\n3. **Two Trains Crossing Each Other:**\n   $$\\text{Distance} = L_1 + L_2$$\n   $$\\text{Time} = \\frac{L_1 + L_2}{\\text{Relative Speed}}$$\n\n### Worked Example:\nTwo trains 140m and 160m long run at 60 km/h and 40 km/h in opposite directions. Time to cross completely?\n- Total distance $= 140 + 160 = 300\\text{ m}$.\n- Relative speed $= 60 + 40 = 100\\text{ km/h} = 100 \\times \\frac{5}{18} = \\frac{500}{18}\\text{ m/s}$.\n- $\\text{Time} = \\frac{300}{500/18} = \\frac{300 \\times 18}{500} = \\frac{54}{5} = \\mathbf{10.8\\text{ seconds}}$.\n\n---\n\n## 4. Boats and River Streams\n\nLet Boat Speed in still water $= b\\text{ km/h}$, Stream current speed $= s\\text{ km/h}$.\n- **Downstream Speed ($u$):** Along the current $\\implies u = b + s$\n- **Upstream Speed ($v$):** Against the current $\\implies v = b - s$\n- **Inversion Formulas:**\n  $$b = \\frac{u + v}{2}, \\quad s = \\frac{u - v}{2}$$\n\n### Worked Example:\nA boat travels 24 km downstream in 2 hours ($u = 12\\text{ km/h}$) and takes 4 hours upstream ($v = 6\\text{ km/h}$). What is stream speed?\n$$s = \\frac{12 - 6}{2} = \\mathbf{3\\text{ km/h}}$$\n",
       "questions": [
         {
           "id": "std-1",
@@ -328,7 +394,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Relative Speed: Opposite = S1 + S2; Same direction = |S1 - S2|.",
         "Boat Speed = (Downstream + Upstream) / 2."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Speed%2C+Time+%26+Distance+%28Trains+%26+Streams%29+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Speed%2C+Time+%26+Distance+%28Trains+%26+Streams%29+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Basic Physics Motion Formulas",
+        "Fractions and Conversions"
+      ],
+      "externalResources": [
+        {
+          "title": "Speed, Time, and Distance Formulas — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/speed-time-and-distance/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "mixtures-alligations",
@@ -336,7 +415,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Mixtures and Alligations",
       "description": "Rule of alligation, successive dilution, and mean concentration ratios.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Rule of Alligation & Replacement Formulas\n\nAlligation is an arithmetic shortcut to find the ratio in which two or more ingredients at given prices must be mixed to produce a mixture at a given price.\n\n---\n\n## 1. Rule of Alligation\n$$\\frac{\\text{Quantity of Cheaper}}{\\text{Quantity of Dearer}} = \\frac{\\text{Price of Dearer} - \\text{Mean Price}}{\\text{Mean Price} - \\text{Price of Cheaper}}$$\n\n```\n   Cheaper Price (c)              Dearer Price (d)\n              \\                    /\n               \\                  /\n                 Mean Price (m)\n               /                  \\\n              /                    \\\n       (d - m)           :         (m - c)\n```\n\n## 2. Repeated Dilution / Replacement Formula\nIf a container contains $x$ units of pure liquid and $y$ units are taken out and replaced with water $n$ times:\n$$\\text{Quantity of pure liquid remaining} = x \\left(1 - \\frac{y}{x}\\right)^n$$\n$$\\frac{\\text{Pure Liquid Remaining}}{\\text{Total Mixture Volume}} = \\left(1 - \\frac{y}{x}\\right)^n$$\n",
+      "notesMarkdown": "# Mixtures and Alligations: Weighted Averages & Repeated Dilution\n\nThe Rule of Alligation is a high-speed graphical shortcut for solving weighted average problems involving mixtures of two ingredients at different price or concentration levels.\n\n---\n\n## 1. The Rule of Alligation\n\n```\nCheaper Price / Conc (c)          Dearer Price / Conc (d)\n                    \\            /\n                     Mean Price (m)\n                    /            \\\nQuantity (Dearer) = (d - m)      Quantity (Cheaper) = (m - c)\n```\n\n$$\\frac{\\text{Quantity of Cheaper}}{\\text{Quantity of Dearer}} = \\frac{d - m}{m - c}$$\n\n### Worked Example:\nIn what ratio must rice at $\\$30/\\text{kg}$ be mixed with rice at $\\$45/\\text{kg}$ to obtain a mixture worth $\\$35/\\text{kg}$?\n- Cheaper $c = 30$, Dearer $d = 45$, Mean $m = 35$.\n- Ratio $= (45 - 35) : (35 - 30) = 10 : 5 = \\mathbf{2 : 1}$.\n\n---\n\n## 2. Repeated Dilution / Replacement Formula\n\nIf a vessel initially contains $V$ liters of pure liquid, and $x$ liters are repeatedly withdrawn and replaced with water $n$ times:\n\n$$\\text{Final Volume of Pure Liquid} = V \\left(1 - \\frac{x}{V}\\right)^n$$\n\n### Worked Example:\nA container contains 40 liters of milk. 4 liters are removed and replaced with water, and this process is repeated twice more ($n = 3$ total operations). Milk remaining?\n$$\\text{Remaining Milk} = 40 \\times \\left(1 - \\frac{4}{40}\\right)^3 = 40 \\times (0.9)^3 = 40 \\times 0.729 = \\mathbf{29.16\\text{ liters}}$$\n",
       "questions": [
         {
           "id": "ma-1",
@@ -385,7 +464,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Repeated replacement formula: Final Liquid = Initial * (1 - x / V)^n.",
         "Alligation ratio = (Dearer Price - Mean) / (Mean - Cheaper Price)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Mixtures+and+Alligations+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Mixtures+and+Alligations+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Ratios and Proportions",
+        "Weighted Averages"
+      ],
+      "externalResources": [
+        {
+          "title": "Alligation and Mixture Rules — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/alligation-or-mixture/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "apt-number-systems",
@@ -407,7 +499,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Product of two numbers: N1 * N2 = HCF(N1, N2) * LCM(N1, N2).",
         "Divisibility: By 3/9 (sum of digits), by 4 (last 2 digits), by 8 (last 3 digits), by 11 (alternating sum difference)."
       ],
-      "notesMarkdown": "# Number Systems — Formulas & Shortcuts\n\n---\n\n## 1. Cyclicity of Unit Digits\nTo find the unit digit of $x^n$:\n- **Cyclicity 4:** Bases ending in $2, 3, 7, 8$.\n  - Divide exponent $n$ by $4$: $n = 4k + r$.\n  - Unit digit is base$^r$ (if $r=0$, use power $4$).\n  - *Example:* Unit digit of $7^{45}$: $45 \\pmod 4 = 1 \\implies 7^1 = 7$.\n- **Cyclicity 2:**\n  - $4^{\\text{odd}} = 4$, $4^{\\text{even}} = 6$.\n  - $9^{\\text{odd}} = 9$, $9^{\\text{even}} = 1$.\n- **Cyclicity 1:** Bases ending in $0, 1, 5, 6$ always yield $0, 1, 5, 6$.\n\n---\n\n## 2. HCF and LCM Relations\n$$\\text{Product of two numbers} = \\text{HCF} \\times \\text{LCM}$$\n$$\\text{HCF of fractions} = \\frac{\\text{HCF of numerators}}{\\text{LCM of denominators}}$$\n$$\\text{LCM of fractions} = \\frac{\\text{LCM of numerators}}{\\text{HCF of denominators}}$$\n",
+      "notesMarkdown": "# Number Systems: Divisibility, Unit Digits, Remainders & LCM/HCF\n\nMastering prime factorizations, cyclicity of unit digits, and congruence modular arithmetic.\n\n---\n\n## 1. Unit Digit Calculation & Cyclicity\n\nThe unit digit of $x^n$ repeats in cycles of length $1, 2,$ or $4$:\n\n| Base Unit Digit | Powers Cyclicity Cycle | Cycle Length |\n| :---: | :---: | :---: |\n| **0, 1, 5, 6** | Always ends in same digit ($0, 1, 5, 6$) | 1 |\n| **4** | $4^1 = 4, \\; 4^2 = 6, \\; 4^3 = 4 \\dots$ | 2 ($4^{\\text{odd}} \\to 4, \\; 4^{\\text{even}} \\to 6$) |\n| **9** | $9^1 = 9, \\; 9^2 = 1, \\; 9^3 = 9 \\dots$ | 2 ($9^{\\text{odd}} \\to 9, \\; 9^{\\text{even}} \\to 1$) |\n| **2** | $2, 4, 8, 6$ | 4 |\n| **3** | $3, 9, 7, 1$ | 4 |\n| **7** | $7, 9, 3, 1$ | 4 |\n| **8** | $8, 4, 2, 6$ | 4 |\n\n### Worked Example:\nFind unit digit of $3^{65} \\times 6^{59} \\times 7^{71}$:\n- For $3^{65}$: $65 \\pmod 4 = 1 \\implies 3^1 \\to 3$\n- For $6^{59}$: 6 to any power always ends in $6$\n- For $7^{71}$: $71 \\pmod 4 = 3 \\implies 7^3 = 343 \\to 3$\n- Product of unit digits $= 3 \\times 6 \\times 3 = 54 \\implies \\mathbf{4}$.\n\n---\n\n## 2. HCF, LCM & Product Invariant\n\nFor any two positive integers $A$ and $B$:\n$$\\text{HCF}(A, B) \\times \\text{LCM}(A, B) = A \\times B$$\n\n### Worked Example:\n$\\text{HCF} = 12$, $\\text{LCM} = 144$, one number is $36$.\n$$B = \\frac{12 \\times 144}{36} = 12 \\times 4 = \\mathbf{48}$$\n\n---\n\n## 3. Modular Remainders & Fermat's Little Theorem\n\nFermat's Little Theorem states that if $p$ is prime and $\\gcd(a, p) = 1$:\n$$a^{p-1} \\equiv 1 \\pmod p$$\n\n### Worked Example:\nFind remainder when $2^{50}$ is divided by $7$:\n- Since $7$ is prime, $2^6 \\equiv 1 \\pmod 7$.\n- $50 = 6 \\times 8 + 2$.\n- $2^{50} = (2^6)^8 \\times 2^2 \\equiv 1^8 \\times 4 \\equiv \\mathbf{4} \\pmod 7$.\n",
       "questions": [
         {
           "id": "apt-ns-1",
@@ -446,7 +538,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
           "explanation": "2^3 = 8 = 1 (mod 7). Expressing exponent: 50 = 3 * 16 + 2. Thus 2^50 = (2^3)^16 * 2^2 = (1)^16 * 4 = 4 (mod 7)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Number+Systems+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Number+Systems+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Elementary Arithmetic",
+        "Exponents and Factors"
+      ],
+      "externalResources": [
+        {
+          "title": "Number Systems for Placement Aptitude — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/number-system-in-quantitative-aptitude/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "prob-perm",
@@ -454,7 +559,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Permutations, Combinations & Probability",
       "description": "Selection vs arrangement, fundamental counting principle, independent events, and Bayes theorem.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "\n# Permutations & Probability — Campus Cheat Sheet\n\nFrequently tested in quantitative screening tests for software engineering and analytical roles.\n\n---\n\n## 1. Permutations vs. Combinations\n- **Permutation ($^n P_r$):** Order **matters** (arrangements, passwords, ranks).\n$$^n P_r = \\frac{n!}{(n - r)!}$$\n- **Combination ($^n C_r$):** Order **does not matter** (selections, committee, handshakes).\n$$^n C_r = \\frac{n!}{r!(n - r)!}$$\n\n---\n\n## 2. Key Identities\n- $^n C_0 = ^n C_n = 1$\n- $^n C_r = ^n C_{n-r}$\n- $^n C_1 = n$\n\n---\n\n## 3. Probability Fundamentals\n$$P(E) = \\frac{\\text{Number of favorable outcomes}}{\\text{Total number of possible outcomes}}$$\n\n- **Complementary Rule:** $P(E') = 1 - P(E)$ *(Often easier to compute \"none\" and subtract from 1)*.\n- **Independent Events:** $P(A \\cap B) = P(A) \\times P(B)$\n- **Mutually Exclusive:** $P(A \\cup B) = P(A) + P(B)$\n",
+      "notesMarkdown": "# Permutations, Combinations & Probability\n\nCombinatorial reasoning governs arrangements, selections, and stochastic probabilities in aptitude exams.\n\n---\n\n## 1. Permutations ($nPr$) vs. Combinations ($nCr$)\n\n| Dimension | Permutation ($nPr$) | Combination ($nCr$) |\n| :--- | :--- | :--- |\n| **Meaning** | Arrangement where **order matters** | Selection where **order does not matter** |\n| **Formula** | $P(n, r) = \\frac{n!}{(n-r)!}$ | $C(n, r) = \\frac{n!}{r!(n-r)!}$ |\n| **Symmetry** | $P(n, n) = n!$ | $C(n, r) = C(n, n-r)$ |\n\n---\n\n## 2. Arrangements with Identical Items & Grouping\n\nArranging $n$ objects where item 1 appears $p$ times, item 2 appears $q$ times:\n$$\\text{Arrangements} = \\frac{n!}{p! \\cdot q! \\dots}$$\n\n### Worked Example:\nArranging letters of **CORPORATION** such that all vowels are always together:\n- Letters: $C, R, P, R, T, N$ (6 consonants: 2 R's, 1 C, 1 P, 1 T, 1 N)\n- Vowels: $O, O, A, I, O$ (5 vowels: 3 O's, 1 A, 1 I)\n- Tie 5 vowels into 1 block. Total blocks to arrange $= 6 + 1 = 7$ blocks.\n- Arrangements of 7 blocks with 2 R's: $\\frac{7!}{2!} = \\frac{5040}{2} = 2520$.\n- Internal arrangements of 5 vowels with 3 O's: $\\frac{5!}{3!} = \\frac{120}{6} = 20$.\n- Total arrangements $= 2520 \\times 20 = \\mathbf{50,400}$.\n\n---\n\n## 3. Probability Axioms & Dice Combinations\n\n$$\\text{Probability } P(E) = \\frac{n(E)}{n(S)} = \\frac{\\text{Favorable Outcomes}}{\\text{Total Elementary Outcomes}}$$\n\n### Rolling Two Dice ($n(S) = 36$):\nSum of 7 outcomes: $(1,6), (2,5), (3,4), (4,3), (5,2), (6,1) \\implies 6 \\text{ pairs}$.\n$$P(\\text{Sum} = 7) = \\frac{6}{36} = \\mathbf{\\frac{1}{6}}$$\n",
       "questions": [
         {
           "id": "pp-1",
@@ -518,7 +623,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Complementary rule: P(E) = 1 - P(none).",
         "Independent events: P(A ∩ B) = P(A) * P(B)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Permutations%2C+Combinations+%26+Probability+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Permutations%2C+Combinations+%26+Probability+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Combinatorics and Counting",
+        "Factorial Properties"
+      ],
+      "externalResources": [
+        {
+          "title": "Permutations, Combinations & Probability — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/permutations-and-combinations/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "pipes-cisterns",
@@ -576,7 +694,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Net time to fill with leak = (A * B) / (B - A).",
         "Use LCM method to find total capacity units and individual hourly rates."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Pipes+and+Cisterns+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Pipes+and+Cisterns+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Time and Work LCM Method",
+        "Positive and Negative Efficiencies"
+      ],
+      "externalResources": [
+        {
+          "title": "Pipes and Cisterns Formulas — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/pipes-and-cisterns/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "clocks-calendars",
@@ -584,7 +715,7 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
       "title": "Clocks and Calendars",
       "description": "Angle between hands, clock gains/losses, leap year rules, and odd days computation.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Clocks & Calendars — Formulas & Rapid Solving\n\n---\n\n## 1. Clock Speed Relationships\n- Minute hand moves at **$6^\\circ$ per minute** ($360^\\circ / 60\\text{ min}$).\n- Hour hand moves at **$0.5^\\circ$ per minute** ($30^\\circ / 60\\text{ min}$).\n- Relative speed = $6^\\circ - 0.5^\\circ = \\mathbf{5.5^\\circ \\text{ per minute}}$ ($11/2^\\circ$).\n\n### Formula for Angle $\\theta$ between Hands:\n$$\\theta = \\left| 30H - \\frac{11}{2}M \\right|$$\n*(If $\\theta > 180^\\circ$, reflex angle = $360^\\circ - \\theta$)*.\n\n---\n\n## 2. Calendars & Odd Days\n- **Odd Days**: Remainder when total days are divided by 7.\n- **Ordinary Year**: 365 days = 52 weeks + **1 odd day**.\n- **Leap Year**: 366 days = 52 weeks + **2 odd days**.\n- **100 years** has **5 odd days**.\n- **200 years** has **3 odd days**.\n- **300 years** has **1 odd day**.\n- **400 years** has **0 odd days**.\n",
+      "notesMarkdown": "# Clocks and Calendars: Angular Velocity & Odd Day Arithmetic\n\nClocks and calendars assess angular kinematics and modular arithmetic over calendar cycles.\n\n---\n\n## 1. Clocks: Hand Velocities & Angle Formula\n\n```\n- Dial = 360 degrees = 60 minute divisions (6 degrees per minute space)\n- Minute Hand Speed = 360 deg / 60 min = 6 deg/min\n- Hour Hand Speed = 360 deg / 720 min = 0.5 deg/min\n- Relative Speed = 6 - 0.5 = 5.5 deg/min = (11/2) deg/min\n```\n\n### The Angle Formula:\n$$\\theta = \\left| 30H - \\frac{11}{2}M \\right|$$\n\n### Worked Example: Angle at 3:40\n$$\\theta = \\left| 30(3) - \\frac{11}{2}(40) \\right| = |90 - 220| = |-130| = \\mathbf{130^\\circ}$$\n\n### Coincidence Time ($0^\\circ$ between $H$ and $H+1$):\n$$M = \\frac{60}{11} \\times H \\text{ minutes past } H$$\nBetween 3 and 4 o'clock:\n$$M = \\frac{60}{11} \\times 3 = \\frac{180}{11} = \\mathbf{16\\frac{4}{11}\\text{ minutes past 3}}$$\n\n---\n\n## 2. Calendars: Odd Days & Leap Years\n\n- **Normal Year (365 days):** 52 weeks $+ 1 \\text{ day} \\implies \\mathbf{1\\text{ odd day}}$.\n- **Leap Year (366 days):** 52 weeks $+ 2 \\text{ days} \\implies \\mathbf{2\\text{ odd days}}$.\n  - Leap year if divisible by 4, except century years must be divisible by 400 (1900 was NOT leap, 2000 was LEAP).\n\n### Day of the Year Progression:\nIf Jan 1, 2007 was Monday, what was Jan 1, 2008?\n- 2007 is a non-leap year (1 odd day).\n- Day advances by $+1$: $\\text{Monday} + 1 = \\mathbf{\\text{Tuesday}}$.\n",
       "questions": [
         {
           "id": "cc-1",
@@ -635,7 +766,20 @@ export const QUANTITATIVE_APTITUDE_CATEGORY: SectionCategory = {
         "Normal year has 1 odd day; leap year has 2 odd days.",
         "Hands of clock coincide 22 times in 24 hours (not 24!)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Clocks+and+Calendars+Quantitative+Aptitude+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Clocks+and+Calendars+Quantitative+Aptitude+lecture",
+      "prerequisites": [
+        "Circular Angles (360 degrees)",
+        "Leap Year Rules and Gregorian Calendar"
+      ],
+      "externalResources": [
+        {
+          "title": "Clocks and Calendars Aptitude Shortcuts — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/clocks-in-quantitative-aptitude/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     }
   ]
 };
@@ -666,7 +810,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Alternating series: Odd and even indices follow separate concurrent arithmetic rules.",
         "Letter series: Convert alphabet letters to positions (A=1, Z=26; reverse A=26, Z=1) using EJOTY (5, 10, 15, 20, 25)."
       ],
-      "notesMarkdown": "# Series and Pattern Recognition\n\n---\n\n## 1. Types of Number Series\n1. **Difference Series:** Constant difference or arithmetic sequence of differences.\n2. **Geometric / Multiplicative Series:** Multiply/divide by factor ($k$, $k+1$, etc.).\n3. **Difference of Differences:**\n   - E.g., $2, 5, 10, 17, 26 \\dots$ Differences are $3, 5, 7, 9 \\implies n^2 + 1$.\n4. **Alternating / Interleaved Series:**\n   - Two interleaved sub-sequences: $S[0], S[2], S[4]$ and $S[1], S[3], S[5]$.\n\n---\n\n## 2. Letter Series Navigation (EJOTY)\n- Memorize positional anchors:\n  $$\\mathbf{E}=5, \\quad \\mathbf{J}=10, \\quad \\mathbf{O}=15, \\quad \\mathbf{T}=20, \\quad \\mathbf{Y}=25$$\n- Opposite letter pairs sum to $27$ ($A+Z = 1+26=27$, $B+Y=2+25=27$).\n",
+      "notesMarkdown": "# Series and Patterns: Numerical, Alphabetical & Polynomial Sequences\n\nPattern recognition requires diagnosing progressive differences, multiplicative ratios, powers, and interleaving dual series.\n\n---\n\n## 1. Primary Number Series Categories\n\n1. **Difference Series:** Calculating $\\Delta_n = a_{n+1} - a_n$. If $\\Delta_n$ is constant $\\to$ AP; if $\\Delta_n$ increases by a constant $\\to$ 2nd order difference.\n2. **Multiplicative / Geometric Growth:** $a_{n+1} = k \\cdot a_n + c$.\n   - Example: $3, 7, 15, 31, 63 \\dots$\n     - Pattern: $a_{n+1} = 2a_n + 1$ (or $2^{n+1} - 1$).\n     - Next term: $2(63) + 1 = \\mathbf{127}$.\n3. **Polynomial Series ($n^2 \\pm k$ or $n^2 + n$):**\n   - Example: $2, 6, 12, 20, 30, 42 \\dots$\n     - Notice: $1 \\times 2, 2 \\times 3, 3 \\times 4, 4 \\times 5, 5 \\times 6, 6 \\times 7$.\n     - Next term: $7 \\times 8 = \\mathbf{56}$ (or $42 + 14 = 56$).\n\n---\n\n## 2. Alphabetical Position Indexing (The EJOTY Rule)\n\n```\nE = 5,  J = 10,  O = 15,  T = 20,  Y = 25\n```\n\n### Worked Example:\nSequence: $B, D, G, K, P, \\dots$\n- Convert to numerical alphabet indices:\n  $B = 2, \\; D = 4 \\; (+2), \\; G = 7 \\; (+3), \\; K = 11 \\; (+4), \\; P = 16 \\; (+5)$\n- Next jump must be $+6$:\n  $16 + 6 = 22 \\implies \\mathbf{V}$.\n",
       "questions": [
         {
           "id": "apt-sp-1",
@@ -705,7 +849,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
           "explanation": "The pattern is n * (n + 1): 1*2=2, 2*3=6, 3*4=12, 4*5=20, 5*6=30, 6*7=42. The next term is 7*8 = 56 (or differences: +4, +6, +8, +10, +12, +14 => 42 + 14 = 56)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Series+and+Patterns+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Series+and+Patterns+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Basic Arithmetic and Sequence Identification",
+        "Alphabetical Indexing"
+      ],
+      "externalResources": [
+        {
+          "title": "Number and Letter Series Reasoning — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/number-series-in-logical-reasoning/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "apt-analogies-and-classification",
@@ -763,7 +920,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
           "explanation": "A thermometer is an instrument used to measure temperature; a barometer is an instrument used to measure atmospheric pressure."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Analogies+and+Classification+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Analogies+and+Classification+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Semantic Word Relationships",
+        "Set Classification"
+      ],
+      "externalResources": [
+        {
+          "title": "Analogy and Classification in Reasoning — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/analogy-in-logical-reasoning/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "syllogisms",
@@ -771,7 +941,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "title": "Syllogisms & Logical Deductions",
       "description": "Venn diagram approach, \"All/Some/No\" rules, and definite vs possibility conclusions.",
       "estimatedMinutes": 12,
-      "notesMarkdown": "\n# Syllogisms — High-Accuracy Venn Method\n\nSyllogisms test your ability to derive strictly true deductions from arbitrary premises.\n\n---\n\n## 1. The 4 Standard Statement Types\n1. **Universal Affirmative (A):** \"All A are B\" (Circle A inside Circle B)\n2. **Universal Negative (E):** \"No A is B\" (Disjoint circles A and B)\n3. **Particular Affirmative (I):** \"Some A are B\" (Intersecting circles A and B)\n4. **Particular Negative (O):** \"Some A are not B\"\n\n---\n\n## 2. Golden Rules for Definite Conclusions\n- Never assume beyond what is stated.\n- A conclusion is **definitely true** only if it holds across **every single valid Venn diagram**.\n- If a conclusion fails in even one valid diagram, it does not follow.\n",
+      "notesMarkdown": "# Syllogisms & Deductive Logic: Venn Diagrams & Inference Rules\n\nSyllogisms test categorical deductive reasoning, determining whether conclusions follow necessarily from stated premise propositions.\n\n---\n\n## 1. The 4 Standard Categorical Propositions\n\n```\nType A: Universal Affirmative  | \"All S are P\"     | S is a proper subset of P\nType E: Universal Negative     | \"No S is P\"       | Disjoint sets (S ∩ P = ∅)\nType I: Particular Affirmative | \"Some S are P\"    | Overlapping sets (S ∩ P ≠ ∅)\nType O: Particular Negative    | \"Some S are not P\"| Part of S lies outside P\n```\n\n```\nUniversal Affirmative:           Universal Negative:           Particular Affirmative:\n+-------------------+            +-------+   +-------+         +-------+---+-------+\n|  P                |            |   S   |   |   P   |         |   S   |S∩P|   P   |\n|   +-----------+   |            |       |   |       |         |       |   |       |\n|   |     S     |   |            +-------+   +-------+         +-------+---+-------+\n|   +-----------+   |            (Disjoint sets)               (Non-empty intersection)\n+-------------------+\n```\n\n---\n\n## 2. Syllogistic Inference Rules & Complementary Pairs\n\n- **Definite vs. Possibility:** A conclusion follows *only* if it holds in **all possible valid Venn diagrams**.\n- **Complementary Pairs (\"Either I or II Follows\"):**\n  1. Both conclusions contain identical subject and predicate elements.\n  2. One conclusion is positive and one is negative.\n  3. Valid pairs: **Some + No** OR **All + Some Not**.\n\n### Worked Example:\n- **Statements:** All cats are dogs. No dog is a bird.\n- **Conclusions:**\n  - I. No cat is a bird: True (Since all cats are enclosed within dogs, and dogs have zero overlap with birds, cats cannot touch birds).\n  - II. Some dogs are cats: True (Since all cats are dogs, the portion of dogs containing cats is non-empty).\n- **Result:** Both conclusions I and II follow.\n",
       "questions": [
         {
           "id": "syl-1",
@@ -822,7 +992,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Negative Premise: No A is B. Combines to yield negative conclusions.",
         "Either-Or condition: Same elements, one affirmative + one negative, neither individually certain."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Syllogisms+%26+Logical+Deductions+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Syllogisms+%26+Logical+Deductions+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Propositional Logic",
+        "Venn Diagram Set Representation"
+      ],
+      "externalResources": [
+        {
+          "title": "Syllogisms and Deductive Reasoning — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/syllogism-logical-reasoning/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "coding-decoding",
@@ -881,7 +1064,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Check standard shift patterns (+1, -1, +2, reverse sequence).",
         "Cross-check direct letter-to-symbol substitutions."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Coding-Decoding+%26+Direction+Sense+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Coding-Decoding+%26+Direction+Sense+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Alphabetical Ordering",
+        "Modulo Arithmetic (Base 26)"
+      ],
+      "externalResources": [
+        {
+          "title": "Coding and Decoding Techniques — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/coding-decoding-logical-reasoning/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "seating-arrangements",
@@ -940,7 +1136,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Identify definite statements first (e.g., fixed corner or extreme end).",
         "Map secondary clues relative to already-anchored members."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Seating+Arrangements+%26+Puzzles+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Seating+Arrangements+%26+Puzzles+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Spatial Orientation",
+        "Linear and Circular Graph Permutations"
+      ],
+      "externalResources": [
+        {
+          "title": "Seating Arrangement Puzzles — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/seating-arrangement-reasoning/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "blood-relations",
@@ -999,7 +1208,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Draw generational tree: Horizontal for siblings/spouses, Vertical for parent/child.",
         "Never assume gender purely from name unless explicitly stated."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Blood+Relations+%26+Family+Trees+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Blood+Relations+%26+Family+Trees+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Genealogical Tree Diagrams",
+        "Family Hierarchy Levels"
+      ],
+      "externalResources": [
+        {
+          "title": "Blood Relations Family Tree Method — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/blood-relations-logical-reasoning/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "direction-sense",
@@ -1007,7 +1229,7 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
       "title": "Direction Sense & Compass Navigation",
       "description": "Cardinal coordinates, turn angles, shortest distance via Pythagoras theorem, and shadow analysis.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Direction Sense & Navigation\n\nDirection sense problems test your ability to trace a person or object's path through Euclidean 2D space.\n\n---\n\n## 1. The 8 Cardinal Points\n- Primary: **North (N)**, **South (S)**, **East (E)**, **West (W)**.\n- Secondary: **North-East (NE)**, **North-West (NW)**, **South-East (SE)**, **South-West (SW)**.\n- Right turn = $90^\\circ$ clockwise.\n- Left turn = $90^\\circ$ counter-clockwise.\n\n## 2. Shortest Distance\n$$\\text{Distance} = \\sqrt{(\\Delta x)^2 + (\\Delta y)^2}$$\nAlways draw a Cartesian diagram tracking net displacements along X (East/West) and Y (North/South) axes.\n\n## 3. Shadows Rule of Thumb\n- **Sunrise (East)**: Shadows always fall towards **West**.\n- **Sunset (West)**: Shadows always fall towards **East**.\n- **Noon (12:00 PM)**: The sun is overhead, so **no shadow** is formed.\n",
+      "notesMarkdown": "# Direction Sense & Compass Navigation: 2D Coordinates & Shadows\n\nDirection sense questions require tracing displacements across a 2D Cartesian plane and applying vector addition.\n\n---\n\n## 1. The 8 Compass Cardinal Directions\n\n```\n                       North (0 deg)\n                            |\n           North-West       |       North-East\n                 \\          |          /\n                   \\        |        /\nWest (270 deg) -----+-------+-------+----- East (90 deg)\n                   /        |        \\\n                 /          |          \\\n           South-West       |       South-East\n                            |\n                       South (180 deg)\n```\n\n- **Turns:**\n  - **Right Turn:** $90^\\circ$ Clockwise rotation\n  - **Left Turn:** $90^\\circ$ Counter-Clockwise rotation\n- **Shortest Distance (Pythagoras Theorem):**\n  $$d = \\sqrt{(\\Delta x)^2 + (\\Delta y)^2}$$\n\n### Worked Example:\nA person walks 12 km North, then turns right (East) and walks 5 km.\n$$d = \\sqrt{12^2 + 5^2} = \\sqrt{144 + 25} = \\sqrt{169} = \\mathbf{13\\text{ km North-East}}$$\n\n---\n\n## 2. Shadow Navigation Rules\n\n| Time of Day | Sun Position | Shadow Direction |\n| :--- | :--- | :--- |\n| **Morning (Sunrise)** | **East** | **West** (Always falls towards West) |\n| **Evening (Sunset)** | **West** | **East** (Always falls towards East) |\n| **Noon (12:00 PM)** | Directly Overhead | No shadow or minimal underfoot |\n\n### Worked Example:\nOne morning after sunrise, Gopal was standing facing a pole. The shadow of the pole fell exactly to Gopal's right. Which direction was Gopal facing?\n- In the morning, the shadow of any object falls toward the **West**.\n- Gopal's right side is pointing toward the shadow $\\implies$ Gopal's Right is pointing **West**.\n- If Right is West, Left is East, Back is North, and Gopal is facing **South**.\n",
       "questions": [
         {
           "id": "ds-1",
@@ -1058,7 +1280,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Pythagorean theorem: Distance = sqrt(Δx^2 + Δy^2).",
         "Morning shadow falls towards West; evening shadow falls towards East."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Direction+Sense+%26+Compass+Navigation+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Direction+Sense+%26+Compass+Navigation+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Cardinal Directions",
+        "Pythagoras Theorem"
+      ],
+      "externalResources": [
+        {
+          "title": "Direction Sense Test Shortcuts — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/direction-sense-test/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "statements-assumptions",
@@ -1116,7 +1351,20 @@ export const LOGICAL_REASONING_CATEGORY: SectionCategory = {
         "Assumptions must be logically implicit, not external speculation.",
         "Words like \"only\", \"always\", \"best\" usually weaken an assumption unless explicit."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Statements%2C+Assumptions+%26+Deductions+Logical+Reasoning+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Statements%2C+Assumptions+%26+Deductions+Logical+Reasoning+lecture",
+      "prerequisites": [
+        "Logical Deduction",
+        "Critical Reading"
+      ],
+      "externalResources": [
+        {
+          "title": "Statements and Assumptions in Reasoning — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/statement-and-assumption/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     }
   ]
 };
@@ -1134,7 +1382,7 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
       "title": "Grammar and Sentence Completion",
       "description": "Subject-verb agreement, modifier placement, parallelism, and tense consistency.",
       "estimatedMinutes": 15,
-      "notesMarkdown": "# Sentence Correction & Placement Grammar\n\nSentence correction questions test standard written English grammar and clarity.\n\n---\n\n## 1. Subject-Verb Agreement\n- Singular subjects take singular verbs; plural subjects take plural verbs.\n- Phrases between subject and verb (e.g. *along with, as well as, accompanied by*) do not change the subject's number.\n  * Example: *The professor, along with his students, **is** attending the seminar.*\n\n## 2. Dangling Modifiers\n- Modifiers must be placed immediately adjacent to the noun they describe.\n  * Incorrect: *Walking through the park, the trees looked majestic.*\n  * Correct: *Walking through the park, I noticed the majestic trees.*\n\n## 3. Parallelism\n- Elements in a list or comparison must share identical grammatical structures (all nouns, all gerunds, or all infinitive phrases).\n",
+      "notesMarkdown": "# Grammar, Sentence Correction & Subject-Verb Agreement\n\nSentence correction evaluates grammatical syntax, parallelism, modifier placement, and subject-verb concord.\n\n---\n\n## 1. High-Frequency Subject-Verb Agreement Rules\n\n### Rule 1: Intervening Prepositional Phrases\nWords between subject and verb do not change the subject's grammatical number.\n- *Incorrect:* The lead architect, together with his entire development team, **are** attending.\n- *Correct:* The lead architect, together with his entire development team, **is** attending.\n*(Phrases like \"together with\", \"as well as\", \"accompanied by\", \"in addition to\" are parenthetical modifiers, not coordinating conjunctions).*\n\n### Rule 2: Correlative Conjunctions (\"Neither... Nor\", \"Either... Or\")\nThe verb agrees in person and number with the **closer/nearest subject**.\n- *Example:* \"Neither the manager nor the **engineers were** aware of the outage.\"\n- *Example:* \"Neither the engineers nor the **manager was** aware of the outage.\"\n\n### Rule 3: Distributive Pronouns (\"Each\", \"Every\", \"Neither of\")\nIndefinite distributive pronouns are strictly **singular**.\n- *Incorrect:* Neither of the two candidates have completed their interview.\n- *Correct:* Neither of the two candidates **has completed his or her** interview.\n\n---\n\n## 2. Dangling and Misplaced Modifiers\n\nA modifying clause must be placed immediately adjacent to the noun it logically modifies.\n- *Dangling Modifier:* \"Walking into the office, the server crashed.\" (Implies the server was walking!).\n- *Corrected:* \"Walking into the office, the engineer saw that the server had crashed.\"\n",
       "questions": [
         {
           "id": "sc-1",
@@ -1185,7 +1433,20 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
         "Collective nouns (team, group) take singular verbs when acting as a single unit.",
         "Modifier placement: Modifying phrases must be right next to the noun they modify."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Grammar+and+Sentence+Completion+Verbal+Ability+English+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Grammar+and+Sentence+Completion+Verbal+Ability+English+lecture",
+      "prerequisites": [
+        "English Grammatical Parts of Speech",
+        "Sentence Clause Structure"
+      ],
+      "externalResources": [
+        {
+          "title": "Sentence Correction Rules and Error Spotting — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/rules-of-sentence-correction/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "apt-vocabulary",
@@ -1205,7 +1466,7 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
         "Context Clues: Restatement, contrast (however, despite), and cause-effect indicators identify word meanings in sentences.",
         "Collocations: Conventional pairings of words (e.g. 'make an effort', not 'do an effort')."
       ],
-      "notesMarkdown": "# High-Yield Vocabulary & Root Words\n\n---\n\n## 1. Etymology Roots\n| Root | Meaning | Examples |\n|---|---|---|\n| **Bene** | Good, well | Benevolent, Benefactor, Benign |\n| **Mal** | Bad, evil | Malevolent, Malign, Malfunction |\n| **Loqu / Loc** | Speech, talk | Loquacious, Eloquent, Colloquial |\n| **Path** | Feeling, disease | Empathy, Apathy, Pathology |\n| **Chron** | Time | Chronological, Anachronism, Synchronize |\n\n---\n\n## 2. Context Clue Strategies\nWhen encountering an unfamiliar word in an assessment:\n1. **Contrast Clues:** Words like *although, nevertheless, on the contrary* signal the opposite meaning.\n2. **Cause & Effect Clues:** Words like *because, therefore, consequently* explain the rationale.\n",
+      "notesMarkdown": "# Advanced Vocabulary: Etymology, Latin/Greek Roots & Context Clues\n\nMastering morphology and classical roots allows candidates to deduce meanings of unfamiliar words.\n\n---\n\n## 1. High-Frequency Classical Latin & Greek Roots\n\n| Root | Language & Meaning | Derived English Words |\n| :--- | :--- | :--- |\n| **loqu / loc** | Latin: *talk, speak* | **Eloquent** (fluent speech), Loquacious (talkative), Soliloquy, Circumlocution |\n| **chron** | Greek: *time* | Chronological, Chronic, Synchronous, Anachronism |\n| **bene / mal** | Latin: *good / bad* | Benevolent, Benefactor $\\leftrightarrow$ Malevolent, Malicious |\n| **omni** | Latin: *all, every* | Omniscient (all-knowing), Omnipotent (all-powerful), Omnipresent |\n\n---\n\n## 2. High-Frequency Placement Antonyms & Idioms\n\n- **EPHEMERAL:** Lasting for a very short time; transient, fleeting.\n  - *Antonym:* **Eternal**, Perennial, Permanent, Everlasting.\n- **SPECIOUS:** Superficially plausible or attractive, but actually deceptive, wrong, or false.\n- **\"To take with a grain of salt\":** To maintain a healthy degree of skepticism or doubt regarding a claim.\n",
       "questions": [
         {
           "id": "apt-voc-1",
@@ -1244,7 +1505,20 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
           "explanation": "Eloquent means expressing ideas fluently and persuasively. While all four options derive from 'loqu/loc', 'loquacious' specifically means excessively talkative, 'colloquial' means informal spoken language, and 'soliloquy' is speaking one's thoughts aloud when alone."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Vocabulary+Verbal+Ability+English+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Vocabulary+Verbal+Ability+English+lecture",
+      "prerequisites": [
+        "Root Words and Etymology",
+        "Contextual Vocabulary Clues"
+      ],
+      "externalResources": [
+        {
+          "title": "English Vocabulary and Word Roots — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/root-words-in-english-vocabulary/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "apt-reading-comprehension",
@@ -1265,7 +1539,7 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
         "Inference Questions: Must be 100% logically substantiated by text without external assumptions.",
         "Tone Recognition: Objective/neutral, critical, cynical, laudatory, satirical, didactic."
       ],
-      "notesMarkdown": "# Reading Comprehension Strategies\n\n---\n\n## 1. Strategic Passage Reading\n1. **Paragraph Mapping:** After reading each paragraph, mentally summarize its core point in 4 words.\n2. **Identify Author's Main Thesis:** Locate the sentence stating *why* the author wrote the passage.\n3. **Tone Identification:**\n   - *Objective / Descriptive:* Reports data and facts without emotion.\n   - *Advocatory / Laudatory:* Praises a concept or policy.\n   - *Critical / Skeptical:* Questions arguments and highlights flaws.\n\n---\n\n## 2. Common Trap Answer Formats\n- **Too Extreme:** Answers with absolute modifiers (*all, completely, impossible, universally*).\n- **True in Reality, but Absent in Passage:** Valid real-world facts not supported by the passage text.\n- **Half-Right / Half-Wrong:** Begins accurately but twists the conclusion.\n",
+      "notesMarkdown": "# Reading Comprehension: Structure, Traps & Active Inference\n\nReading comprehension tests analytical reading, passage synthesis, identifying authorial tone, and distinguishing direct evidence from speculative traps.\n\n---\n\n## 1. Direct Facts vs. Logical Inferences\n\n```\n+------------------------------------+------------------------------------+\n| Direct Fact Questions              | Logical Inference Questions        |\n+------------------------------------+------------------------------------+\n| - Directly stated verbatim in text | - Must be deduced from given facts |\n| - Answers restate passage content  | - Author implies; reader infers    |\n| - Zero logical leap required       | - Must follow necessarily (no gap) |\n+------------------------------------+------------------------------------+\n```\n\n---\n\n## 2. Common Distractor & Trap Patterns in Standardized Tests\n\n1. **The Absolute Extreme Language Trap:**\n   - Options containing words like **\"always\"**, **\"never\"**, **\"completely\"**, **\"universally\"**, **\"exclusively\"** are almost always incorrect distractors in nuanced literary/scientific passages.\n2. **The Out-of-Scope (True but Irrelevant) Trap:**\n   - The statement may be an undeniable real-world fact, but the author never mentioned or supported it in the passage.\n3. **The Half-Right, Half-Wrong Trap:**\n   - The first half of the option matches the text perfectly, but the second half subtly mischaracterizes the conclusion.\n",
       "questions": [
         {
           "id": "apt-rc-1",
@@ -1304,7 +1578,20 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
           "explanation": "'Specious' describes an argument or statement that appears superficially plausible or attractive at first glance, but is deceptive, logically flawed, or false upon examination."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Reading+Comprehension+Verbal+Ability+English+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Reading+Comprehension+Verbal+Ability+English+lecture",
+      "prerequisites": [
+        "Critical Reading Comprehension",
+        "Identifying Main Ideas and Tone"
+      ],
+      "externalResources": [
+        {
+          "title": "Reading Comprehension Strategies — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/reading-comprehension-passages-for-interviews/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "apt-verbal-analogies",
@@ -1363,7 +1650,20 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
           "explanation": "A doctor uses a stethoscope as their primary professional observational instrument; an astronomer uses a telescope."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Verbal+Analogies+Verbal+Ability+English+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Verbal+Analogies+Verbal+Ability+English+lecture",
+      "prerequisites": [
+        "Vocabulary Relationships",
+        "Semantic Invariance"
+      ],
+      "externalResources": [
+        {
+          "title": "Verbal Analogies Practice and Techniques — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/verbal-analogies/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "data-interpretation",
@@ -1422,7 +1722,20 @@ export const VERBAL_ABILITY_CATEGORY: SectionCategory = {
         "Percentage Growth = ((Final - Initial) / Initial) * 100%.",
         "Always simplify ratios before calculating large multiplied values."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Data+Interpretation+%28Pie+Charts%2C+Tables+%26+Bar+Graphs%29+Verbal+Ability+English+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Data+Interpretation+%28Pie+Charts%2C+Tables+%26+Bar+Graphs%29+Verbal+Ability+English+lecture",
+      "prerequisites": [
+        "Percentages and Growth Rates",
+        "Reading Bar Graphs, Pie Charts & Tables"
+      ],
+      "externalResources": [
+        {
+          "title": "Data Interpretation Techniques & Charts — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/data-interpretation/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     }
   ]
 };
@@ -1491,7 +1804,20 @@ export const SPATIAL_APTITUDE_CATEGORY: SectionCategory = {
           "explanation": "Reflection across the vertical line (y-axis) inverts the sign of the horizontal x-coordinate while preserving the y-coordinate: (x, y) maps to (-x, y)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Shape+Transformations+Spatial+Aptitude+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Shape+Transformations+Spatial+Aptitude+GATE+lecture",
+      "prerequisites": [
+        "2D/3D Geometric Shapes",
+        "Spatial Transformations"
+      ],
+      "externalResources": [
+        {
+          "title": "Non-Verbal Reasoning and Shape Transformations — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/non-verbal-reasoning/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "apt-rotation-and-reflection",
@@ -1550,7 +1876,20 @@ export const SPATIAL_APTITUDE_CATEGORY: SectionCategory = {
           "explanation": "A 90-degree counter-clockwise rotation about the origin transforms (x, y) into (-y, x)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Rotation+and+Reflection+Spatial+Aptitude+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Rotation+and+Reflection+Spatial+Aptitude+GATE+lecture",
+      "prerequisites": [
+        "Cartesian Transformations",
+        "Mirror Images and Water Reflections"
+      ],
+      "externalResources": [
+        {
+          "title": "Mirror and Water Images in Spatial Reasoning — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/mirror-and-water-images/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "apt-pattern-recognition",
@@ -1609,7 +1948,20 @@ export const SPATIAL_APTITUDE_CATEGORY: SectionCategory = {
           "explanation": "Abstract spatial matrix tests evaluate composite rule induction (identifying multiple concurrent transformation rules: count addition and angular rotation across rows and columns)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Pattern+Recognition+Spatial+Aptitude+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Pattern+Recognition+Spatial+Aptitude+GATE+lecture",
+      "prerequisites": [
+        "Matrix Matching",
+        "Visual Sequence Tracking"
+      ],
+      "externalResources": [
+        {
+          "title": "Visual Pattern Recognition and Matrix Puzzles — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/pattern-completion/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     }
   ]
 };

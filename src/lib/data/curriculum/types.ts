@@ -6,6 +6,14 @@ export interface Question {
   explanation: string;
 }
 
+export interface ExternalResource {
+  title: string;
+  provider: 'GeeksforGeeks' | 'MDN Web Docs' | 'W3Schools' | 'Harvard CS50' | 'MIT OpenCourseWare' | 'freeCodeCamp' | 'The Odin Project' | 'Official Documentation' | 'InterviewBit' | 'OpenDSA';
+  url: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  isFree: boolean;
+}
+
 export interface Topic {
   id: string;
   slug: string;
@@ -16,6 +24,8 @@ export interface Topic {
   difficulty?: 'Easy' | 'Medium' | 'Hard';
   companyTags?: string[];
   keyTakeaways?: string[];
+  prerequisites?: string[];
+  externalResources?: ExternalResource[];
   youtube_url: string;
   questions: Question[];
 }

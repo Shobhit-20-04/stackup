@@ -27,7 +27,7 @@ export const COA_CATEGORY: SectionCategory = {
         "Condition codes / status flags: Zero (Z), Carry (C), Overflow (V), Sign/Negative (N)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Instruction+Set+Architecture+ISA+Endianness+Registers+Computer+Organization+Architecture+COA+gate+lecture",
-      "notesMarkdown": "# Instruction Set Architecture (ISA)\n\nThe ISA is the boundary interface between software (compilers/OS) and underlying microarchitecture.\n\n---\n\n## 1. Endianness (Byte Ordering)\nStoring 32-bit word `0x12345678` starting at address `0x1000`:\n- **Big-Endian:** MSB at lowest address (`0x1000: 12`, `0x1001: 34`, `0x1002: 56`, `0x1003: 78`).\n- **Little-Endian:** LSB at lowest address (`0x1000: 78`, `0x1001: 56`, `0x1002: 34`, `0x1003: 12`).\n\n---\n\n## 2. Processor State Registers\n- **Program Counter (PC):** Holds address of next instruction to fetch.\n- **Instruction Register (IR):** Holds instruction currently being decoded/executed.\n- **Memory Address Register (MAR):** Connects to CPU address bus.\n- **Memory Buffer / Data Register (MBR/MDR):** Connects to CPU data bus.\n",
+      "notesMarkdown": "# Instruction Set Architecture (ISA): RISC vs CISC, Instruction Cycles, and Formats\n\nThe Instruction Set Architecture (ISA) is the foundational contract between hardware designers and software programmers. It specifies the programmer-visible machine state, memory addressing, register sets, and instructions supported by the CPU.\n\n---\n\n## 1. Architectural Paradigms: RISC vs CISC\n\n```\nRISC (Reduced Instruction Set Computer)          CISC (Complex Instruction Set Computer)\n- Fixed instruction length (typically 32 bits)   - Variable instruction length (1 to 15 bytes)\n- Load/Store architecture (ALU operates ONLY     - Memory-to-memory operations supported\n  on registers)                                  - High hardware complexity, microprogrammed\n- Single-cycle execution via deep pipelines      - Multi-cycle execution of complex instructions\n- Examples: ARM, RISC-V, MIPS                    - Examples: Intel x86, AMD64\n```\n\n---\n\n## 2. The Classic Instruction Execution Cycle\n\nEvery machine instruction progresses through a sequence of hardware micro-phases:\n\n```\n+------------+       +------------+       +------------+       +------------+       +------------+\n|  1. FETCH  | ----> | 2. DECODE  | ----> | 3. EXECUTE | ----> | 4. MEMORY  | ----> | 5. WRITE-  |\n| (PC -> IR) |       | (Control)  |       | (ALU op)   |       | (Load/Store|       |    BACK    |\n+------------+       +------------+       +------------+       +------------+       +------------+\n      ^                                                                                    |\n      +----------------------------- Next Instruction -------------------------------------+\n```\n\n1. **Fetch (IF):** Read instruction from RAM at address in Program Counter (PC) into Instruction Register (IR); increment PC.\n2. **Decode (ID):** Control unit decodes opcode, resolves register operands, checks for sign extension.\n3. **Execute (EX):** ALU performs the requested mathematical or logical operation, or calculates effective memory address.\n4. **Memory Access (MEM):** Read or write RAM operand if instruction is Load or Store.\n5. **Write-Back (WB):** Write the result back into the target register file.\n\n---\n\n## 3. Instruction Formats and Field Decomposition\n\nAn instruction word is partitioned into fields:\n$$\\text{Instruction} = [ \\text{Opcode} \\mid \\text{Addressing Mode} \\mid \\text{Register Specifier} \\mid \\text{Immediate / Address Offset} ]$$\n\n- **Expanding Opcode Technique:**\n  If a 16-bit instruction word uses 4 bits for opcode:\n  - Supports $2^4 = 16$ distinct instructions with two 6-bit operand addresses.\n  - By reserving one code (e.g., `1111`) as an escape sequence, the remaining bits can be reclaimed to support dozens of single-operand or zero-operand instructions.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **RISC Principle:** Load/Store only; simple instructions facilitate pipelining.\n- **CISC Principle:** Dense code size; powerful instructions reduce memory footprint.\n- **Instruction Cycle:** Fetch $\\to$ Decode $\\to$ Execute $\\to$ Memory $\\to$ Writeback.\n- **Clock Cycles per Instruction (CPI):** $\\text{Time} = \\text{Instruction Count} \\times \\text{CPI} \\times \\text{Clock Period}$.\n",
       "questions": [
         {
           "id": "coa-isa-1",
@@ -65,6 +65,33 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "CISC architectures (like x86) emphasize dense, variable-length instructions capable of complex memory operations, whereas RISC (like ARM, MIPS, RISC-V) uses fixed 32-bit instructions and restricts memory access exclusively to load/store instructions."
         }
+      ],
+      "prerequisites": [
+        "Digital logic gates and registers",
+        "Binary machine representations and assembly instructions"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Instruction Set Architecture and RISC-V",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Instruction Set Architecture (ISA)",
+          "url": "https://www.geeksforgeeks.org/instruction-set-architecture-isa/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: RISC vs CISC and Instruction Formats Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -88,7 +115,7 @@ export const COA_CATEGORY: SectionCategory = {
         "PC-Relative: Effective Address = PC + Offset (used for relocatable branch instructions)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Addressing+Modes+Instruction+Formats+Direct+Indirect+PC+Relative+Computer+Organization+Architecture+COA+gate+lecture",
-      "notesMarkdown": "# Instruction Formats and Addressing Modes\n\n---\n\n## 1. Addressing Modes Summary\n\n| Addressing Mode | Effective Address ($EA$) | Memory References to Fetch Operand | Use Case |\n| :--- | :--- | :--- | :--- |\n| **Immediate** | Operand in instruction | **0** | Loading constants |\n| **Register** | $EA = R$ | **0** | High-speed register data |\n| **Direct (Absolute)** | $EA = \\text{Address}$ | **1** | Global static variables |\n| **Indirect** | $EA = [\\text{Address}]$ | **2** | Pointers / dereferencing |\n| **Register Indirect**| $EA = [R]$ | **1** | Loops, pointer traversal |\n| **PC-Relative** | $EA = PC + \\text{Offset}$ | **1** | Position-independent branches |\n| **Base-Register** | $EA = R_{\\text{base}} + \\text{Offset}$ | **1** | Relocatable code segments |\n| **Indexed** | $EA = R_{\\text{index}} + \\text{Base}$ | **1** | Array subscript indexing |\n\n---\n\n## 2. Memory Reference Calculations\nIn Indirect Addressing, reading operand requires:\n1. Memory fetch to get Effective Address pointer.\n2. Memory fetch to read actual operand at Effective Address. Total = 2 memory accesses.\n",
+      "notesMarkdown": "# CPU Addressing Modes and Effective Address Calculations\n\nAddressing modes specify how the machine language operand of an instruction is interpreted—whether as a constant value, a CPU register, a direct RAM location, or an offset relative to a base or index pointer.\n\n---\n\n## 1. Classical Addressing Modes Compared\n\n| Addressing Mode | Syntax Example | Effective Address ($EA$) | Memory References | Primary Application |\n| :--- | :--- | :--- | :---: | :--- |\n| **Immediate** | `ADD R1, #5` | Operand $= \\mathbf{Value}$ | **0** | Initializing constants and loop bounds |\n| **Register** | `ADD R1, R2` | Operand $= \\mathbf{R2}$ | **0** | Ultra-fast register arithmetic |\n| **Direct (Absolute)** | `LOAD R1, 1000` | $EA = \\mathbf{1000}$ | **1** | Accessing static global variables |\n| **Indirect** | `LOAD R1, (1000)`| $EA = \\mathbf{Memory[1000]}$ | **2** | Pointer dereferencing (`*ptr`) |\n| **Register Indirect**| `LOAD R1, (R2)` | $EA = \\mathbf{R2}$ | **1** | Pointers held in registers |\n| **PC-Relative** | `BR L1` | $EA = \\mathbf{PC + Offset}$ | **0** | Position-Independent Code (PIC) & branches |\n| **Base-Register** | `LOAD R1, 100(R2)`| $EA = \\mathbf{Base(R2) + Offset}$| **1** | Relocatable code and stack frame frames |\n| **Indexed** | `LOAD R1, 2000(R3)`| $EA = \\mathbf{2000 + Index(R3)}$| **1** | Array traversal (`arr[i]`) |\n| **Auto-Increment** | `LOAD R1, (R2)+`| $EA = \\mathbf{R2}; \\quad R2 \\leftarrow R2 + d$ | **1** | Sequential array loops and stack pop |\n\n---\n\n## 2. Visual Representation: Direct vs Indirect vs Indexed\n\n```\nDIRECT ADDRESSING:\nInstruction: [ LOAD R1, 500 ] ----> Memory[500] = [ 42 ] (Loaded into R1)\n\nINDIRECT ADDRESSING:\nInstruction: [ LOAD R1, (500) ] ---> Memory[500] = [ 800 ]\n                                                      |\n                                                      v\n                                                   Memory[800] = [ 42 ] (Loaded into R1)\n\nINDEXED ADDRESSING:\nInstruction: [ LOAD R1, 100(R2) ] -> EA = 100 + Contents(R2)\n```\n\n---\n\n## 3. High-Yield Interview Traps & Pitfalls\n\n1. **PC-Relative Offset Update Trap:**\n   When calculating branch target address:\n   $$EA = \\text{Updated PC} + \\text{Displacement}$$\n   Remember that by the time an instruction is executed, the **Program Counter has already incremented** to point to the *next instruction*!\n2. **Auto-Increment vs Auto-Decrement Ordering:**\n   - Auto-Increment: Uses address first, then increments: $EA = R; \\quad R \\leftarrow R + 1$.\n   - Auto-Decrement: Decrements address first, then uses: $R \\leftarrow R - 1; \\quad EA = R$.\n   (This allows clean stack push/pop implementations!).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Immediate:** No memory access; data in instruction.\n- **Indirect:** Two memory accesses (pointer in RAM $\\to$ target data).\n- **Register Indirect:** One memory access (pointer in register $\\to$ target data).\n- **Array Indexing Mode:** $EA = \\text{Base Address} + i \\times \\text{Size}$.\n",
       "questions": [
         {
           "id": "coa-am-1",
@@ -125,6 +152,33 @@ export const COA_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "PC-relative addressing adds a signed offset embedded in the branch instruction to the current PC value, enabling position-independent branching without hardcoded absolute addresses."
+        }
+      ],
+      "prerequisites": [
+        "Instruction set architecture and instruction cycle",
+        "CPU register files and memory pointers"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Addressing Modes and Memory Operands",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Addressing Modes in Computer Architecture",
+          "url": "https://www.geeksforgeeks.org/addressing-modes/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Effective Address Calculation and Addressing Modes",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -186,6 +240,26 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The Program Counter (PC) is a dedicated CPU register that holds the memory address of the next instruction in sequence, incrementing automatically or loading a branch address on control transfers."
         }
+      ],
+      "prerequisites": [
+        "Registers and ALUs",
+        "System Bus Architectures"
+      ],
+      "externalResources": [
+        {
+          "title": "CPU Datapath and Control Unit — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/datapath-in-computer-architecture/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Computation Structures (6.004) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -246,6 +320,19 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "After instruction fetch, the CPU decodes the instruction format. In indirect or memory-referencing addressing modes, an operand fetch cycle accesses memory to retrieve the effective operand."
         }
+      ],
+      "prerequisites": [
+        "CPU Datapath",
+        "Program Counter and Instruction Register"
+      ],
+      "externalResources": [
+        {
+          "title": "Instruction Cycle and Micro-Operations — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/instruction-cycle-in-computer-architecture/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -268,7 +355,7 @@ export const COA_CATEGORY: SectionCategory = {
         "Vertical Microprogramming: Control signals encoded into groups; requires decoders; narrow words; slower."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Hardwired+vs+Microprogrammed+Control+Horizontal+Vertical+Computer+Organization+Architecture+COA+gate+lecture",
-      "notesMarkdown": "# Hardwired and Microprogrammed Control\n\n---\n\n## 1. Comparison Matrix\n\n| Metric | Hardwired Control Unit | Microprogrammed Control Unit |\n| :--- | :--- | :--- |\n| **Implementation** | Logic gates, decoders, flip-flops | Control memory (ROM) with micro-code |\n| **Speed** | **Very Fast** | Slower (ROM read delay) |\n| **Flexibility** | Rigid; modifying instructions requires circuit redesign | **Flexible**; modify ROM micro-program |\n| **Instruction Set** | Best for **RISC** (simple, uniform) | Best for **CISC** (complex instructions) |\n| **Cost** | High for complex instruction sets | Lower design cost for complex sets |\n\n---\n\n## 2. Horizontal vs Vertical Microprogramming\n- **Horizontal:** Each control signal has a dedicated bit. Wide words, fast, zero decoding.\n- **Vertical:** Control bits encoded (e.g. 3 bits decoded to 8 signals). Narrow words, slower due to decoders.\n",
+      "notesMarkdown": "# Control Unit Design: Hardwired vs Microprogrammed Architectures\n\nThe Control Unit (CU) is the nerve center of the CPU. It orchestrates the flow of data between CPU registers, the ALU, and system memory by asserting precise hardware control signals on every clock pulse.\n\n---\n\n## 1. Hardwired Control vs Microprogrammed Control\n\n```\nHARDWIRED CONTROL UNIT:                          MICROPROGRAMMED CONTROL UNIT:\nCombinational logic gates (Decoders,             Control Store (ROM) holds micro-instructions.\nFlip-flops, Logic arrays) generate signals.      Microprogram counter sequences addresses.\nUltra-fast, but impossible to modify.            Flexible, easy to update, but slower.\n```\n\n| Dimension | Hardwired Control Unit | Microprogrammed Control Unit |\n| :--- | :--- | :--- |\n| **Implementation** | Fixed combinational and sequential logic circuits | Microcode stored in internal Control ROM |\n| **Execution Speed**| **Maximum (RISC standard)** | Slower (requires ROM read cycle per micro-op) |\n| **Modifiability** | Rigid: Modifying instruction requires silicon redesign | Flexible: Updating ISA requires rewriting microcode |\n| **Chip Area** | Grows exponentially with complex CISC instructions | Compact and structured |\n| **Typical Target** | RISC processors (ARM, RISC-V, MIPS) | CISC processors (Intel x86, VAX, IBM System/360) |\n\n---\n\n## 2. Microprogrammed Architecture: Horizontal vs Vertical\n\nA microprogrammed control unit translates a machine instruction into a sequence of **micro-operations** (Control Words).\n\n```\nHORIZONTAL MICRO-INSTRUCTION (Unencoded):\n+-----+-----+-----+-----+-----+-----+-----+-----+--------------------+\n| S0  | S1  | S2  | S3  | S4  | S5  | S6  | S7  | Next Address Field |\n+-----+-----+-----+-----+-----+-----+-----+-----+--------------------+\nEach bit directly asserts 1 control line! (Wide word: 40-100 bits).\n\nVERTICAL MICRO-INSTRUCTION (Encoded):\n+---------------+---------------+---------------+--------------------+\n| Group 1 (3b)  | Group 2 (3b)  | Group 3 (2b)  | Next Address Field |\n+---------------+---------------+---------------+--------------------+\nFields are decoded via 3-to-8 Decoders! (Narrow word: 16-32 bits).\n```\n\n- **Horizontal Microcode:**\n  - One bit per control line. No decoders needed.\n  - Highly parallel (can assert 20 control lines simultaneously).\n  - *Disadvantage:* Very wide control words; wastes memory.\n- **Vertical Microcode:**\n  - Encodes mutually exclusive signals into $k$-bit fields ($2^k$ signals).\n  - Requires decoders at the output.\n  - *Advantage:* Compact control memory; slower due to decoder propagation delay.\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **Hardwired:** Logic gates $\\implies$ Maximum speed, zero flexibility (RISC).\n- **Microprogrammed:** Control ROM $\\implies$ High flexibility, slower speed (CISC).\n- **Horizontal:** 1 bit per signal, maximum parallelism, wide ROM.\n- **Vertical:** Encoded fields with decoders, narrower ROM, sequential execution.\n",
       "questions": [
         {
           "id": "coa-cu-1",
@@ -305,6 +392,33 @@ export const COA_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Microprogrammed control units store control words (microinstructions) in ROM, making updates and complex instruction emulation straightforward, whereas hardwired units are faster but fixed in silicon logic gates."
+        }
+      ],
+      "prerequisites": [
+        "Instruction set architecture and instruction cycle",
+        "Sequential logic, multiplexers, and decoders"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Control Unit Design - Hardwired and Microcoded",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Hardwired vs Microprogrammed Control Unit",
+          "url": "https://www.geeksforgeeks.org/hardwired-v-s-micro-programmed-control-unit/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Control Unit Architecture and Microinstruction Formats",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -366,6 +480,26 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Pipelining hazards stall instruction execution: Structural hazards (resource conflicts), Data hazards (data dependencies between instructions), and Control hazards (branching and jumps)."
         }
+      ],
+      "prerequisites": [
+        "Instruction Cycle Stages",
+        "Clock Frequencies and Throughput"
+      ],
+      "externalResources": [
+        {
+          "title": "Instruction Pipelining and Hazard Resolution — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/pipelining-in-computer-architecture/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Pipelined Processor Design (6.004) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -425,6 +559,19 @@ export const COA_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Spatial locality dictates that nearby consecutive memory locations (such as contiguous array elements or sequential instructions) are accessed in proximity. Caches exploit this by loading whole cache blocks/lines."
+        }
+      ],
+      "prerequisites": [
+        "Primary and Secondary Storage",
+        "Latency and Bandwidth"
+      ],
+      "externalResources": [
+        {
+          "title": "Memory Hierarchy and Locality of Reference — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/memory-hierarchy-in-computer-architecture/",
+          "difficulty": "Beginner",
+          "isFree": true
         }
       ]
     },
@@ -487,6 +634,19 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In row-major languages, contiguous row elements reside adjacently in memory. Accessing row-by-row exploits Spatial Locality because fetching one element pulls an entire cache line (64 bytes) into L1 cache."
         }
+      ],
+      "prerequisites": [
+        "Memory Hierarchy",
+        "Direct-Mapped and Set-Associative Caching"
+      ],
+      "externalResources": [
+        {
+          "title": "Cache Coherence Protocols (MESI / MOESI) — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/cache-coherence-in-computer-organization/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -547,6 +707,19 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The Translation Lookaside Buffer (TLB) is an associative hardware cache inside the MMU that stores recent virtual-to-physical page mappings, avoiding memory walks on page hits."
         }
+      ],
+      "prerequisites": [
+        "Page Tables and TLBs",
+        "Virtual Address Translation"
+      ],
+      "externalResources": [
+        {
+          "title": "Virtual Memory and Paging in Computer Architecture — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/virtual-memory-in-operating-system/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -569,7 +742,7 @@ export const COA_CATEGORY: SectionCategory = {
         "Widely used in high-speed TLBs and network switch routing tables (TCAM)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Associative+Memory+Content+Addressable+Memory+CAM+TLB+COA+Computer+Organization+Architecture+COA+gate+lecture",
-      "notesMarkdown": "# Associative Memory (Content Addressable Memory - CAM)\n\nAssociative memory accesses stored words based on their **content** rather than a sequential address.\n\n---\n\n## 1. Operating Principle\n- An **Argument Register** holds the pattern to be matched.\n- A **Key / Mask Register** specifies which bits to match.\n- All memory words are compared **in parallel** against the argument in a single clock cycle.\n- A **Match Register** flags every row that satisfies the condition.\n\n---\n\n## 2. High-Yield Applications\n- **TLB (Translation Lookaside Buffer):** Compares virtual page numbers in parallel.\n- **TCAM in Network Routers:** Evaluates IP longest prefix matching in hardware at line rates (100 Gbps+).\n",
+      "notesMarkdown": "# Associative Memory (Content-Addressable Memory - CAM) and Cache Mapping\n\nTraditional RAM is accessed by providing a physical **numerical address** to retrieve data. In contrast, **Associative Memory (Content-Addressable Memory - CAM)** is accessed by providing the **content or data pattern itself**, searching all storage locations in parallel in a single clock cycle.\n\n---\n\n## 1. Associative Memory (CAM) Architecture\n\n```\n                  +-----------------------------------+\nArgument Register | Search Key / Tag Value            |\n                  +-----------------+-----------------+\n                                    |\nMask Register     | 1 1 1 1 0 0 0 0 (Enables search)  |\n                  +-----------------+-----------------+\n                                    |\n                  +-----------------v-----------------+\nMemory Words:     | Word 0  [ Bit Comparators ] ------> Match Bit 0\n                  | Word 1  [ Bit Comparators ] ------> Match Bit 1\n                  | Word 2  [ Bit Comparators ] ------> Match Bit 2\n                  | Word 3  [ Bit Comparators ] ------> Match Bit 3\n                  +-----------------------------------+\n                                    |\n                             Match Register\n```\n\n1. **Argument Register ($A$):** Holds the bit pattern to be searched.\n2. **Key / Mask Register ($K$):** Selects which specific bit positions participate in the comparison (a `0` in mask ignores that bit).\n3. **Internal Bit Comparators:** Every word in memory contains dedicated hardware XOR/XNOR gates to compare each stored bit against the argument register in parallel.\n4. **Match Register:** A bit vector where bit $i = 1$ indicates word $i$ matched the search criteria.\n\n---\n\n## 2. Applications in Computer Systems\n\n1. **Translation Lookaside Buffers (TLB):** Fast MMU page-table caching requires $O(1)$ parallel lookup of virtual page numbers $\\to$ physical frame numbers.\n2. **Fully Associative Caches:** Memory addresses are matched across all cache tag lines simultaneously.\n3. **High-Speed Network Routers:** IP routing tables use Ternary CAM (TCAM) for longest-prefix CIDR packet forwarding in $O(1)$ time.\n\n---\n\n## 3. Trade-Off: Speed vs Hardware Cost\n\n- **Pros:** Blazing $O(1)$ parallel search time regardless of memory size.\n- **Cons:** Extremely expensive in silicon real estate and power consumption because **every single memory bit requires extra comparator transistors**. A CAM cell requires ~10-12 transistors compared to 6 transistors for a standard SRAM cell!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Access Paradigm:** Data retrieved by contents, NOT by address.\n- **Search Complexity:** $O(1)$ hardware parallel match.\n- **Primary Use Cases:** TLB, network router IP lookup (TCAM), associative cache tags.\n- **Transistor Overhead:** ~2x silicon area of standard SRAM.\n",
       "questions": [
         {
           "id": "coa-cam-1",
@@ -607,6 +780,33 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "CAM (Associative Memory) accesses storage by content rather than address: every cell has built-in comparison hardware that compares its content with a search pattern in a single clock cycle."
         }
+      ],
+      "prerequisites": [
+        "Cache memory mapping techniques",
+        "Digital logic gates and parallel comparators"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Cache Design and Associative Search",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Associative Memory in Computer Organization",
+          "url": "https://www.geeksforgeeks.org/associative-memory/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: CAM and Fully Associative Cache Design",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -629,7 +829,7 @@ export const COA_CATEGORY: SectionCategory = {
         "Memory-Mapped I/O: Shared address space for memory and I/O (uses normal LOAD/STORE instructions). Isolated I/O: Separate I/O space with special IN/OUT instructions."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=IO+Organization+Programmed+Interrupt+Driven+DMA+Memory+Mapped+Computer+Organization+Architecture+COA+gate+lecture",
-      "notesMarkdown": "# I/O Organization\n\n---\n\n## 1. The Three I/O Transfer Mechanisms\n1. **Programmed I/O:** CPU continuously polls device status bits (Busy-Waiting). Zero CPU utilization efficiency.\n2. **Interrupt-Driven I/O:** CPU issues command, continues executing other processes. Device raises an interrupt when ready.\n3. **Direct Memory Access (DMA):** Hardware DMA controller takes master control of system bus and transfers data blocks directly between I/O and RAM.\n\n---\n\n## 2. Memory-Mapped vs Isolated (Port-Mapped) I/O\n- **Memory-Mapped I/O:** Same address bus for memory and I/O devices. Uses regular `MOV / LOAD / STORE` instructions. Reduces available RAM address space.\n- **Isolated I/O:** Separate address spaces. Uses specialized machine instructions like `IN` and `OUT` in x86.\n",
+      "notesMarkdown": "# I/O Organization: Memory-Mapped I/O vs Isolated I/O and Peripheral Interfaces\n\nThe CPU must interface with a wide diversity of peripheral devices with varying transfer speeds, operating modes, and data formats. An **I/O Interface module** synchronizes data transfers between the system bus and external peripherals.\n\n---\n\n## 1. Memory-Mapped I/O vs Isolated (Port-Mapped) I/O\n\n```\nMEMORY-MAPPED I/O                                ISOLATED (PORT-MAPPED) I/O\nSingle unified address space.                    Separate address spaces for RAM and I/O.\nDevice registers accessed via standard           Requires special CPU instructions\nLOAD and STORE instructions.                     (e.g., IN, OUT in x86).\n(e.g., ARM, RISC-V, MIPS)                        (e.g., Intel x86)\n```\n\n| Dimension | Memory-Mapped I/O | Isolated (Port-Mapped) I/O |\n| :--- | :--- | :--- |\n| **Address Space** | Unified with RAM (I/O registers consume part of RAM address space) | Dedicated I/O address space (e.g., 64KB I/O space in x86) |\n| **Instruction Set** | Uses standard memory instructions (`MOV`, `LOAD`, `STORE`) | Requires special instructions (`IN`, `OUT`) |\n| **Control Signals** | Standard memory read/write lines ($\\text{MEMR}, \\text{MEMW}$) | Separate I/O control lines ($\\text{IOR}, \\text{IOW}$) |\n| **Hardware Complexity**| Simpler CPU bus architecture | Requires extra CPU pins and decoding logic |\n| **Memory Protection** | Enforced by standard hardware MMU page tables | Requires special I/O privilege levels |\n\n---\n\n## 2. Functions of an I/O Interface\n\n1. **Control and Timing:** Coordinates CPU bus transactions with slow external devices.\n2. **Data Buffering:** Bridges speed mismatches between high-speed CPU memory buses and slow peripherals.\n3. **Error Detection:** Generates and validates parity bits or CRC checksums.\n4. **Command Decoding:** Interprets CPU commands (e.g., READ SECTOR, EJECT, RESET).\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **Memory-Mapped I/O:** Any pointer in C can directly read/write hardware device registers (`*(volatile int*)0x4000 = 0x01`).\n- **Isolated I/O:** Requires assembly `in` / `out` opcodes.\n- **Asynchronous Strobe vs Handshaking:** Handshaking uses two-way Request/Acknowledge lines to guarantee safe data latching without timing races.\n",
       "questions": [
         {
           "id": "coa-io-1",
@@ -667,6 +867,33 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In memory-mapped I/O, device registers share the common system memory address space, allowing all regular memory-referencing instructions (MOV, LDR, STR) to communicate directly with peripheral devices."
         }
+      ],
+      "prerequisites": [
+        "Operating system I/O management and system calls",
+        "Computer bus structures and memory addressing"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Memory-Mapped I/O and Device Interfaces",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: I/O Interface (Interrupt and DMA Mode)",
+          "url": "https://www.geeksforgeeks.org/io-interface-interrupt-and-dma-mode/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Memory-Mapped I/O vs Isolated I/O",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -689,7 +916,7 @@ export const COA_CATEGORY: SectionCategory = {
         "DMA Modes: Burst mode (DMA holds bus for entire block) vs Cycle Stealing mode (DMA steals one memory cycle between CPU instruction steps)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Interrupts+and+DMA+Daisy+Chaining+Cycle+Stealing+Burst+Mode+Computer+Organization+Architecture+COA+gate+lecture",
-      "notesMarkdown": "# Interrupts and DMA\n\n---\n\n## 1. Interrupt Types & Handling\n- **Maskable vs Non-Maskable (NMI):** NMI (e.g. power failure, memory parity error) cannot be disabled by CPU flags.\n- **Vectored Interrupt:** Device supplies address vector pointing to Interrupt Vector Table (IVT) containing the **Interrupt Service Routine (ISR)** address.\n- **Daisy Chaining:** Serial priority arbitration where Interrupt Acknowledge signal travels down the chain; closest device has highest priority.\n\n---\n\n## 2. DMA Transfer Modes\n- **Burst Mode:** DMA controller takes control of system bus and transfers entire block without releasing bus.\n- **Cycle Stealing Mode:** DMA controller takes control of bus for single memory cycles between CPU operations, minimizing CPU stalls.\n",
+      "notesMarkdown": "# Interrupts, Interrupt Priority, and Direct Memory Access (DMA) Hardware\n\nInterrupts and Direct Memory Access (DMA) free the CPU from wasting processing cycles continuously polling slow hardware peripherals, enabling asynchronous event-driven computing.\n\n---\n\n## 1. Interrupt Classifications\n\n```\n                             INTERRUPT TAXONOMY\n                                      |\n               +----------------------+----------------------+\n               |                                             |\n       HARDWARE INTERRUPTS                           SOFTWARE INTERRUPTS\n       (External Pins: INTR, NMI)                    (Internal Traps / Exceptions)\n               |                                             |\n       +-------+-------+                             +-------+-------+\n       |               |                             |               |\n   MASKABLE      NON-MASKABLE (NMI)               TRAPS         SYSTEM CALLS\n   (Can be       (Cannot be ignored:          (Div by zero,     (Intentional\n   disabled:     Power failure, bus parity)    Page fault)      syscalls)\n   CLI/STI)\n```\n\n### Vectored vs Non-Vectored Interrupts:\n- **Vectored Interrupt:** The interrupting device supplies an **Interrupt Vector** (address offset into the Interrupt Vector Table - IVT) directly across data lines. The CPU immediately jumps to that specific ISR handler.\n- **Non-Vectored Interrupt:** The CPU jumps to a single hardwired memory address and polls devices sequentially to determine who triggered the interrupt.\n\n---\n\n## 2. Direct Memory Access (DMA) Transfer Modes\n\nThe DMA Controller (DMAC) takes temporary control of the system bus to transfer bulk blocks directly between RAM and peripherals.\n\n```\nCPU                        DMAC                     RAM / Storage\n |                          |                             |\n |-- Hold Request (HRQ) --> |                             |\n |<-- Hold Acknowledge (HLDA)|                            |\n |  (CPU releases bus)      |-- Data Block Transfer ----->|\n |                          |   (Bypasses CPU completely!)|\n```\n\n### The Three DMA Transfer Modes:\n1. **Burst Mode (Block Transfer):** The DMAC gains the bus and transfers the **entire contiguous block of data** without interruption. The CPU is locked out of RAM until transfer finishes.\n2. **Cycle Stealing Mode:** The DMAC \"steals\" control of the system bus for **exactly one bus cycle** per data word, returning the bus to the CPU in between. Balances DMA throughput with CPU responsiveness.\n3. **Transparent Mode:** The DMAC transfers data only during clock cycles when the CPU is executing internal operations and not utilizing the memory bus (zero CPU slowdown).\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **NMI (Non-Maskable Interrupt):** Reserved for catastrophic system events (power failure, RAM parity fault).\n- **IVT (Interrupt Vector Table):** Resides in low memory, maps interrupt numbers $\\to$ 64-bit ISR function pointers.\n- **DMA Advantage:** Offloads block I/O from CPU silicon, maximizing multi-tasking throughput.\n",
       "questions": [
         {
           "id": "coa-int-1",
@@ -727,6 +954,33 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In cycle stealing mode, the DMA controller temporarily steals single bus cycles from the CPU to transfer words, interleaving I/O and CPU computation with minimal latency spikes."
         }
+      ],
+      "prerequisites": [
+        "Operating system interrupts and device drivers",
+        "I/O organization and system bus arbitration"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: Interrupts, Traps, and Direct Memory Access",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Interrupts in Computer Architecture",
+          "url": "https://www.geeksforgeeks.org/interrupts-in-computer-architecture/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Direct Memory Access (DMA) and Cycle Stealing",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -749,7 +1003,7 @@ export const COA_CATEGORY: SectionCategory = {
         "Bus Bandwidth = (Bus Width in bytes) * (Bus Frequency)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Bus+Architecture+Synchronous+Asynchronous+Handshake+COA+Computer+Organization+Architecture+COA+gate+lecture",
-      "notesMarkdown": "# Bus Architecture\n\nA bus is a shared communication pathway connecting two or more subsystem components.\n\n---\n\n## 1. System Bus Components\n- **Address Bus (Unidirectional from CPU):** $k$ lines address $2^k$ distinct memory locations.\n- **Data Bus (Bidirectional):** $w$ lines transfer $w$ bits simultaneously per cycle.\n- **Control Bus:** Carries read/write enable, memory/IO select, interrupt, and clock lines.\n\n---\n\n## 2. Synchronous vs Asynchronous Buses\n- **Synchronous:** Governed by common master clock. High speed, but all devices must match clock cycle constraints.\n- **Asynchronous:** Governed by handshake signals (`Master Ready` and `Slave Ready`). Accommodates slow and fast devices seamlessly.\n",
+      "notesMarkdown": "# System Bus Architecture, Bus Arbitration, and High-Speed Interconnects\n\nA **Bus** is a shared communication pathway consisting of multiple physical wires that connect functional units (CPU, Memory, GPU, Storage controllers) within a computer system.\n\n---\n\n## 1. System Bus Partitioning\n\n```\n+-----------------------------------------------------------+\n|                        SYSTEM BUS                         |\n+-----------------------------------------------------------+\n| 1. Control Bus: R/W commands, Interrupts, Clock, Reset    |\n| 2. Address Bus: Specifies memory/device location (Uni-dir)|\n| 3. Data Bus: Carries actual data words (Bi-directional)   |\n+-----------------------------------------------------------+\n```\n\n- **Address Bus Width ($k$ bits):** Determines the maximum addressable physical memory capacity:\n$$\\mathbf{\\text{Max Addressable Memory} = 2^k \\text{ locations}}$$\n- **Data Bus Width ($w$ bits):** Determines the word size transferred per bus clock cycle (e.g., 64-bit data bus moves 8 bytes per transaction).\n\n---\n\n## 2. Bus Arbitration Schemes\n\nWhen multiple master devices (CPU, DMA controller, GPU) request control of the shared bus simultaneously, **Bus Arbitration** decides which master is granted access.\n\n```\nDAISY CHAINING (Serial Priority):\nBus Arbiter ---- Grant ----> Master 1 ---- Grant ----> Master 2 ----> Master 3\n   ^                            |                         |\n   +------- Bus Request --------+-------------------------+\nMaster closest to Arbiter has HIGHEST PRIORITY!\n```\n\n| Scheme | Hardware Complexity | Priority Structure | Fault Tolerance |\n| :--- | :--- | :--- | :--- |\n| **Daisy Chaining** | **Lowest** (single Grant line chained serially)| Fixed static priority (closest to arbiter wins) | **Poor** (failure in one master breaks the chain) |\n| **Polling Method** | Moderate (Arbiter generates poll addresses) | Dynamic / Flexible (can rotate starting poll address) | Moderate |\n| **Independent Request**| **Highest** (dedicated Request/Grant lines per device)| Software programmable, dynamic priority | **Highest** (failure of one device does not affect others) |\n\n---\n\n## 3. Synchronous vs Asynchronous Buses\n\n- **Synchronous Bus:**\n  - Includes a shared clock signal line. All bus transactions take place at fixed clock intervals.\n  - *Advantage:* Fast and simple control logic.\n  - *Disadvantage:* Must operate at the speed of the slowest device on the bus.\n- **Asynchronous Bus:**\n  - No clock line. Uses a two-way **Handshaking Protocol** (`Ready`, `Acknowledge`).\n  - *Advantage:* Accommodates devices of vastly different speeds.\n  - *Disadvantage:* More complex circuitry and susceptible to handshaking signal noise.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Memory Capacity Formula:** $2^{\\text{Address Bits}} \\times \\text{Data Bus Width}$.\n- **Daisy Chain Priority:** Distance from arbiter dictates priority (can cause starvation for distant masters).\n- **PCIe (PCI Express):** Replaced legacy shared parallel buses with high-speed point-to-point serial differential lanes ($x1, x4, x8, x16$).\n",
       "questions": [
         {
           "id": "coa-bus-1",
@@ -786,6 +1040,33 @@ export const COA_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Daisy-chaining passes bus grants serially from highest-priority device to lowest. If a device breaks the chain, all downstream devices lose access, and devices near the end can suffer starvation."
+        }
+      ],
+      "prerequisites": [
+        "Digital logic circuits and tristate buffers",
+        "CPU memory interfaces and I/O organization"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.004: System Buses and Bus Arbitration",
+          "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Bus Arbitration in Computer Architecture",
+          "url": "https://www.geeksforgeeks.org/bus-arbitration-in-computer-organization/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Bus Arbitration Schemes (Daisy Chaining vs Polling)",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -847,6 +1128,19 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The Program Counter (PC) is a dedicated CPU register that holds the memory address of the instruction that is to be fetched and executed next."
         }
+      ],
+      "prerequisites": [
+        "Instruction Set Architecture (ISA)",
+        "Assembly Syntax Basics"
+      ],
+      "externalResources": [
+        {
+          "title": "RISC vs CISC Architecture Comparison — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/differences-between-risc-and-cisc-architecture/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -906,6 +1200,19 @@ export const COA_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "A Ripple Carry Adder suffers from O(N) carry propagation delay. A Carry Lookahead Adder calculates all carry signals simultaneously via generate (G = A and B) and propagate (P = A xor B) logic, dramatically speeding up multi-bit addition."
+        }
+      ],
+      "prerequisites": [
+        "Two's Complement",
+        "Carry Lookahead Addition and Multiplication"
+      ],
+      "externalResources": [
+        {
+          "title": "ALU Arithmetic Circuits and Fast Adders — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/arithmetic-logic-unit-alu/",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -967,8 +1274,20 @@ export const COA_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By Amdahl's Law: Speedup_max = 1 / (1 - P), where P is the parallel fraction. Here non-parallel fraction (1 - P) = 0.25. Therefore, maximum speedup = 1 / 0.25 = 4x."
         }
+      ],
+      "prerequisites": [
+        "Parallel Speedup Equations",
+        "Amdahl and Gustafson Laws"
+      ],
+      "externalResources": [
+        {
+          "title": "Amdahl's Law and Performance Evaluation — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/amdahls-law-in-computer-organization/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     }
   ]
 };
-

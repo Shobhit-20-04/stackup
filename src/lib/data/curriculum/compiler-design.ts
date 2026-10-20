@@ -26,7 +26,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Pass: One complete traversal of the source program or intermediate representation.",
         "Phase: Logical operational step within the compilation pipeline."
       ],
-      "notesMarkdown": "# Compiler Architecture & Phases\n\n---\n\n## 1. Analysis vs. Synthesis\nA compiler maps high-level source code into low-level machine code through two primary stages:\n1. **Analysis (Front-End / Machine Independent):**\n   - **Lexical Analyzer (Scanner):** Character stream → Token stream.\n   - **Syntax Analyzer (Parser):** Tokens → Parse tree / AST according to Context-Free Grammar.\n   - **Semantic Analyzer:** Type checking, scope resolution, semantic consistency.\n2. **Synthesis (Back-End / Machine Dependent):**\n   - **Intermediate Code Generator (ICG):** Generates machine-neutral Three-Address Code (TAC).\n   - **Code Optimizer:** Eliminates redundancies, dead code, loops optimization to improve speed/space.\n   - **Target Code Generator:** Converts TAC into relocatable machine code or assembly.\n\n---\n\n## 2. Passes vs. Phases\n- **Phase:** A logical organization of the compiler task.\n- **Pass:** A physical reading of the source program or intermediate representation from disk/memory. Multi-pass compilers reduce memory consumption at the cost of disk I/O.\n",
+      "notesMarkdown": "# Compiler Architecture: The Analysis-Synthesis Model and Compilation Phases\n\nA compiler is a complex software system that translates programs written in a high-level source language into equivalent, efficient machine code for a target hardware architecture. The architecture of modern compilers (such as GCC and LLVM) is split into two major phases: the **Analysis Phase (Front End)** and the **Synthesis Phase (Back End)**.\n\n---\n\n## 1. The Two-Phase Compiler Model\n\n```\nSource Code\n    |\n    v\n+-----------------------------------------------------------+\n|              FRONT END (Analysis Phase)                   |\n|  - Language Dependent, Machine Independent                |\n|  1. Lexical Analysis (Scanner)    -> Tokens               |\n|  2. Syntax Analysis (Parser)      -> Parse Tree / AST     |\n|  3. Semantic Analysis (Checker)   -> Annotated AST        |\n|  4. Intermediate Code Generator   -> Intermediate Code    |\n+-----------------------------+-----------------------------+\n                              |\n                     Intermediate Rep (IR)\n                              |\n+-----------------------------v-----------------------------+\n|              BACK END (Synthesis Phase)                   |\n|  - Machine Dependent, Language Independent                |\n|  5. Target-Independent Optimizer  -> Optimized IR         |\n|  6. Code Generator                -> Target Assembly      |\n|  7. Target-Dependent Optimizer    -> Machine Binary       |\n+-----------------------------------------------------------+\n    |                                 ^\n    v                                 |\n+-------------------------------------+---------------------+\n| Symbol Table Manager       |      Error Handler           |\n+-----------------------------------------------------------+\n```\n\n### The $M \\times N$ Engineering Advantage:\nBy decoupling the Front End and Back End via a universal **Intermediate Representation (IR)** (e.g., LLVM IR):\n- Supporting $M$ source languages (C, Rust, Swift, Go) across $N$ hardware targets (x86-64, ARM, RISC-V) requires only $M + N$ compiler components, rather than $M \\times N$ custom compilers!\n\n---\n\n## 2. Compilation Phases Step-by-Step\n\nConsider translating `total = price + rate * 60;`:\n\n1. **Lexical Analysis (Scanner):** Converts stream of characters into linear tokens:\n   $$\\langle \\mathbf{id}, 1 \\rangle \\quad \\langle = \\rangle \\quad \\langle \\mathbf{id}, 2 \\rangle \\quad \\langle + \\rangle \\quad \\langle \\mathbf{id}, 3 \\rangle \\quad \\langle * \\rangle \\quad \\langle \\mathbf{num}, 60 \\rangle \\quad \\langle ; \\rangle$$\n2. **Syntax Analysis (Parser):** Enforces Context-Free Grammar rules and constructs the **Abstract Syntax Tree (AST)** reflecting operator precedence.\n3. **Semantic Analysis (Type Checker):** Enforces language semantics (type checking, scope resolution). If `rate` is float and `60` is integer, injects an implicit conversion node: `inttofloat(60)`.\n4. **Intermediate Code Generation (ICG):** Generates Three-Address Code (TAC):\n   ```\n   t1 = inttofloat(60)\n   t2 = id3 * t1\n   t3 = id2 + t2\n   id1 = t3\n   ```\n5. **Code Optimization:** Eliminates redundant computations (e.g., constant folding if `rate` is known).\n6. **Code Generation:** Maps TAC to physical CPU registers and assembly instructions (`fmul`, `fadd`, `mov`).\n\n---\n\n## 3. High-Yield Interview Traps & Pitfalls\n\n1. **Compiler vs Interpreter:**\n   - A compiler translates the entire source program into machine binary *before* execution.\n   - An interpreter executes source code or bytecode directly line-by-line without pre-compiling native binaries (slower execution, but instant startup).\n2. **Just-In-Time (JIT) Compilers (e.g., JVM, V8):**\n   Combines both paradigms: initially interprets bytecode, identifies \"hot code\" loops via runtime profiling, and dynamically compiles hot sections to optimized native machine code at runtime.\n3. **Single-Pass vs Multi-Pass Compilers:**\n   A single-pass compiler generates target code in a single traversal of the source (requires variables to be declared before use, as in early Pascal). Multi-pass compilers build internal ASTs and perform global cross-function optimizations.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Front End:** Lexical $\\to$ Syntax $\\to$ Semantic $\\to$ Intermediate Code.\n- **Back End:** Optimization $\\to$ Code Generation $\\to$ Target Machine.\n- **Central Data Structures:** Symbol Table (holds identifier types, scopes, offsets) and Abstract Syntax Tree (AST).\n",
       "questions": [
         {
           "id": "cd-arch-1",
@@ -65,7 +65,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "The Symbol Table is the central data repository created by the front-end (lexical/syntax) and queried by subsequent phases to store and retrieve type, scope, and memory location attributes."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Compiler+Architecture+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Compiler+Architecture+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Operating system processes, virtual memory, and assembly instructions",
+        "Programming in C compilation pipeline basics"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Compilers - Architecture and Structure",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Phases of a Compiler",
+          "url": "https://www.geeksforgeeks.org/phases-of-a-compiler/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Compiler Architecture and Multi-Pass Design",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-lexical-analysis",
@@ -125,7 +152,20 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Lexical analyzers (like Lex/Flex) resolve ambiguity via two rules: 1) Longest Match (Maximal Munch) prefers the token consuming the most characters, 2) First Rule in the specification file breaks ties (e.g., 'if' matched as keyword rather than identifier)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Lexical+Analysis+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Lexical+Analysis+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Regular Expressions",
+        "DFA Tokenizers"
+      ],
+      "externalResources": [
+        {
+          "title": "Lexical Analysis and Lexer Generators — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/introduction-of-lexical-analysis/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-syntax-analysis-and-parsing",
@@ -185,7 +225,20 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "In top-down parsing, a rule A -> A alpha forces the parser to recursively call procedure A() immediately before consuming any terminal token, leading to an infinite loop and call stack overflow."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Syntax+Analysis+and+Parsing+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Syntax+Analysis+and+Parsing+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Context-Free Grammars",
+        "Top-Down and Bottom-Up Parsers"
+      ],
+      "externalResources": [
+        {
+          "title": "Syntax Analysis and LR Parsers — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/syntax-analysis-in-compiler-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-first-and-follow-sets",
@@ -206,7 +259,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "If A -> alpha B beta: FOLLOW(B) includes (FIRST(beta) \\ {epsilon}).",
         "If beta ->* epsilon: FOLLOW(B) includes FOLLOW(A)."
       ],
-      "notesMarkdown": "# FIRST and FOLLOW Sets\n\n---\n\n## 1. Computation of FIRST(X)\n1. If $X$ is a terminal, $\\text{FIRST}(X) = \\{X\\}$.\n2. If $X \\to \\epsilon$, then $\\epsilon \\in \\text{FIRST}(X)$.\n3. If $X \\to Y_1 Y_2 \\dots Y_k$:\n   - Add all non-$\\epsilon$ symbols of $\\text{FIRST}(Y_1)$ to $\\text{FIRST}(X)$.\n   - If $Y_1 \\to^* \\epsilon$, add $\\text{FIRST}(Y_2) \\setminus \\{\\epsilon\\}$, and so on.\n   - If all $Y_i \\to^* \\epsilon$, add $\\epsilon$ to $\\text{FIRST}(X)$.\n\n---\n\n## 2. Computation of FOLLOW(A)\n1. Add `$` (input endmarker) to $\\text{FOLLOW}(S)$, where $S$ is start symbol.\n2. For production $A \\to \\alpha B \\beta$:\n   - $\\text{FOLLOW}(B)$ contains $(\\text{FIRST}(\\beta) \\setminus \\{\\epsilon\\})$.\n3. For $A \\to \\alpha B$ OR $A \\to \\alpha B \\beta$ where $\\beta \\to^* \\epsilon$:\n   - Everything in $\\text{FOLLOW}(A)$ is added to $\\text{FOLLOW}(B)$.\n   - **Crucial Rule:** $\\text{FOLLOW}$ sets never contain $\\epsilon$.\n",
+      "notesMarkdown": "# FIRST and FOLLOW Sets in Syntax Analysis and Parsing\n\nFIRST and FOLLOW sets are foundational mathematical functions used in top-down LL(1) parsing table construction and bottom-up SLR(1) conflict resolution. They allow the parser to predict which grammar production rule to apply based on the current lookahead token.\n\n---\n\n## 1. Rules for Computing FIRST Sets\n\n$\\text{FIRST}(\\alpha)$ is the set of all terminal symbols that can appear as the first symbol of a string derived from string of grammar symbols $\\alpha$. If $\\alpha \\implies^* \\epsilon$, then $\\epsilon \\in \\text{FIRST}(\\alpha)$.\n\n### Rules for $\\text{FIRST}(X)$:\n1. **If $X$ is a terminal:**\n   $$\\text{FIRST}(X) = \\{ X \\}$$\n2. **If $X \\to \\epsilon$ is a production:**\n   $$\\text{Add } \\epsilon \\text{ to } \\text{FIRST}(X)$$\n3. **If $X$ is a non-terminal and $X \\to Y_1 Y_2 \\dots Y_k$:**\n   - Add all non-$\\epsilon$ terminals from $\\text{FIRST}(Y_1)$ to $\\text{FIRST}(X)$.\n   - If $\\epsilon \\in \\text{FIRST}(Y_1)$, add non-$\\epsilon$ terminals from $\\text{FIRST}(Y_2)$ to $\\text{FIRST}(X)$, and so forth.\n   - If $\\epsilon \\in \\text{FIRST}(Y_i)$ for **ALL** $i = 1, 2, \\dots, k$, then **add $\\epsilon$ to $\\text{FIRST}(X)$**!\n\n---\n\n## 2. Rules for Computing FOLLOW Sets\n\n$\\text{FOLLOW}(A)$ is the set of all terminal symbols that can appear immediately to the right of non-terminal variable $A$ in some sentential form: $S \\implies^* \\alpha A a \\beta$.\n\n### Rules for $\\text{FOLLOW}(A)$:\n1. **Start Symbol Rule:**\n   For start symbol $S$, add the input endmarker `$` to $\\text{FOLLOW}(S)$:\n   $$\\$ \\in \\text{FOLLOW}(S)$$\n2. **Direct Follow Rule:**\n   If there is a production $A \\to \\alpha B \\beta$:\n   $$\\text{Everything in } \\mathbf{\\text{FIRST}(\\beta) - \\{\\epsilon\\}} \\text{ is in } \\text{FOLLOW}(B)$$\n3. **Transmit Follow Rule:**\n   If there is a production $A \\to \\alpha B$, OR $A \\to \\alpha B \\beta$ where $\\epsilon \\in \\text{FIRST}(\\beta)$:\n   $$\\text{Everything in } \\mathbf{\\text{FOLLOW}(A)} \\text{ is in } \\text{FOLLOW}(B)$$\n\n*(Crucial Invariant: **$\\epsilon$ CAN NEVER BE IN ANY FOLLOW SET!**)*\n\n---\n\n## 3. Worked Step-by-Step Example\n\nConsider the classic non-left-recursive arithmetic grammar:\n1. $E \\to T E'$\n2. $E' \\to + T E' \\mid \\epsilon$\n3. $T \\to F T'$\n4. $T' \\to * F T' \\mid \\epsilon$\n5. $F \\to ( E ) \\mid \\mathbf{id}$\n\n### Computing FIRST Sets:\n- $\\text{FIRST}(F) = \\{ (, \\mathbf{id} \\}$\n- $\\text{FIRST}(T') = \\{ *, \\epsilon \\}$\n- $\\text{FIRST}(T) = \\text{FIRST}(F) = \\{ (, \\mathbf{id} \\}$\n- $\\text{FIRST}(E') = \\{ +, \\epsilon \\}$\n- $\\text{FIRST}(E) = \\text{FIRST}(T) = \\{ (, \\mathbf{id} \\}$\n\n### Computing FOLLOW Sets:\n- $\\text{FOLLOW}(E) = \\{ \\$, ) \\}$ (Rule 1 adds $\\$$, Rule 2 from $F \\to (E)$ adds `$)$`).\n- $\\text{FOLLOW}(E') = \\text{FOLLOW}(E) = \\{ \\$, ) \\}$ (Rule 3 from $E \\to T E'$).\n- $\\text{FOLLOW}(T)$: From $E \\to T E'$, $\\text{FIRST}(E') - \\{\\epsilon\\} = \\{+\\}$. Since $\\epsilon \\in \\text{FIRST}(E')$, add $\\text{FOLLOW}(E) = \\{\\$, )\\}$.\n  $\\implies \\text{FOLLOW}(T) = \\{ +, \\$, ) \\}$.\n- $\\text{FOLLOW}(T') = \\text{FOLLOW}(T) = \\{ +, \\$, ) \\}$.\n- $\\text{FOLLOW}(F)$: From $T \\to F T'$, $\\text{FIRST}(T') - \\{\\epsilon\\} = \\{*\\}$. Since $\\epsilon \\in \\text{FIRST}(T')$, add $\\text{FOLLOW}(T)$.\n  $\\implies \\text{FOLLOW}(F) = \\{ *, +, \\$, ) \\}$.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **$\\text{FIRST}(\\alpha)$:** First terminals derived from $\\alpha$ (can contain $\\epsilon$).\n- **$\\text{FOLLOW}(A)$:** Terminals appearing immediately to the right of $A$ in sentential forms.\n- **Golden Rule:** $\\epsilon \\notin \\text{FOLLOW}(A)$ for any variable $A$.\n- **Endmarker:** $\\$\\in \\text{FOLLOW}(\\text{Start Symbol})$.\n",
       "questions": [
         {
           "id": "cd-ff-1",
@@ -245,7 +298,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "By definition, the input end-marker '$' is always placed in FOLLOW(S) for the grammar start symbol S, representing the end of valid input."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=FIRST+and+FOLLOW+Sets+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=FIRST+and+FOLLOW+Sets+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Context-free grammars, derivations, and parse trees",
+        "Set operations and recursive rules"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: FIRST and FOLLOW Sets Calculation",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: FIRST and FOLLOW in Compiler Design",
+          "url": "https://www.geeksforgeeks.org/first-set-in-syntax-analysis/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: LL(1) Parsing Table and FIRST/FOLLOW Rules",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-ll1-parsing",
@@ -266,7 +346,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Grammars with left recursion (immediate or indirect) can NEVER be LL(1).",
         "Ambiguous grammars can NEVER be LL(1)."
       ],
-      "notesMarkdown": "# LL(1) Predictive Parsing\n\n---\n\n## 1. What does LL(1) mean?\n- **L:** Left-to-right scan of the input.\n- **L:** Leftmost derivation constructed.\n- **1:** 1 token of lookahead used to determine production.\n\n---\n\n## 2. Necessary Conditions for LL(1)\nFor every non-terminal $A$ with productions $A \\to \\alpha \\mid \\beta$:\n1. $\\text{FIRST}(\\alpha) \\cap \\text{FIRST}(\\beta) = \\emptyset$.\n2. At most one of $\\alpha$ or $\\beta$ can derive $\\epsilon$.\n3. If $\\beta \\to^* \\epsilon$, then $\\text{FIRST}(\\alpha) \\cap \\text{FOLLOW}(A) = \\emptyset$.\n\n---\n\n## 3. Eliminating Left Recursion\nImmediate left recursion: $A \\to A\\alpha \\mid \\beta$ (where $\\beta$ does not start with $A$):\nReplace with:\n$$A \\to \\beta A'$$\n$$A' \\to \\alpha A' \\mid \\epsilon$$\n",
+      "notesMarkdown": "# Top-Down Parsing, LL(1) Grammars, and Parsing Table Construction\n\nTop-down parsing attempts to reconstruct the derivation tree starting from the start symbol down to the input string terminals. An **LL(1) Parser** scans input from **L**eft-to-right, produces a **L**eftmost derivation, and uses **1** lookahead symbol of predictive context without backtracking.\n\n---\n\n## 1. Prerequisites for LL(1) Parsing\n\nA grammar **CANNOT be LL(1)** if it contains:\n1. **Left Recursion:** $A \\to A\\alpha \\mid \\beta$.\n   - Must be eliminated into right recursion:\n     $$A \\to \\beta A' \\quad \\text{and} \\quad A' \\to \\alpha A' \\mid \\epsilon$$\n2. **Common Prefixes (Non-Left-Factored):** $A \\to \\alpha \\beta_1 \\mid \\alpha \\beta_2$.\n   - Must be left-factored:\n     $$A \\to \\alpha A' \\quad \\text{and} \\quad A' \\to \\beta_1 \\mid \\beta_2$$\n3. **Ambiguity:** An ambiguous grammar is **never LL($k$) for any $k$**.\n\n---\n\n## 2. LL(1) Mathematical Condition\n\nA context-free grammar is LL(1) if and only if for every pair of distinct productions $A \\to \\alpha \\mid \\beta$:\n1. $\\text{FIRST}(\\alpha) \\cap \\text{FIRST}(\\beta) = \\emptyset$ (Disjoint first sets).\n2. If $\\epsilon \\in \\text{FIRST}(\\beta)$, then $\\text{FIRST}(\\alpha) \\cap \\text{FOLLOW}(A) = \\emptyset$.\n3. At most one of $\\alpha$ or $\\beta$ can derive $\\epsilon$.\n\n---\n\n## 3. Algorithm to Construct the LL(1) Parsing Table $M[A, a]$\n\nFor each production $A \\to \\alpha$ in the grammar:\n1. For each terminal $a \\in \\text{FIRST}(\\alpha)$:\n   $$\\text{Add } A \\to \\alpha \\text{ to table entry } M[A, a]$$\n2. If $\\epsilon \\in \\text{FIRST}(\\alpha)$:\n   - For each terminal $b \\in \\text{FOLLOW}(A)$ (including `$`):\n     $$\\text{Add } A \\to \\alpha \\text{ to table entry } M[A, b]$$\n3. All undefined entries in $M[A, a]$ are flagged as syntax errors.\n\n```\nTheorem:\nA grammar is LL(1) IF AND ONLY IF every cell M[A, a] in the parsing table\ncontains AT MOST ONE production rule!\nIf any cell contains multiple rules -> FIRST/FIRST or FIRST/FOLLOW CONFLICT!\n```\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **LL(1) Meaning:** Left-to-right scan, Leftmost derivation, 1 lookahead.\n- **Conflict Types:**\n  - *FIRST/FIRST Conflict:* Multiple productions share common start terminals.\n  - *FIRST/FOLLOW Conflict:* Non-terminal derives $\\epsilon$ and its FIRST overlaps with its FOLLOW.\n- **Table Size:** $|V| \\times (|T| + 1)$ cells.\n",
       "questions": [
         {
           "id": "cd-ll1-1",
@@ -305,7 +385,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "A grammar is LL(1) iff for all A -> alpha | beta: 1) FIRST(alpha) intersect FIRST(beta) = empty, 2) At most one of alpha, beta can derive epsilon, 3) If beta =>* epsilon, then FIRST(alpha) intersect FOLLOW(A) = empty."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=LL%281%29+Parsing+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=LL%281%29+Parsing+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "FIRST and FOLLOW set calculation",
+        "Context-free grammars and leftmost derivations"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Top-Down LL(1) Parsing",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Construction of LL(1) Parsing Table",
+          "url": "https://www.geeksforgeeks.org/construction-of-ll1-parsing-table/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: LL(1) Parsing Table Conflicts and Grammars",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-lr-slr-clr-and-lalr-parsing",
@@ -326,7 +433,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Merging states in LALR can NEVER produce Shift-Reduce (S-R) conflicts, but MAY introduce Reduce-Reduce (R-R) conflicts.",
         "All LL(1) grammars are LR(1), but not all LR(1) grammars are LL(1)."
       ],
-      "notesMarkdown": "# LR Parsing Family (Shift-Reduce)\n\n---\n\n## 1. LR Parsing Overview\n- **L:** Left-to-right scan.\n- **R:** Rightmost derivation in reverse.\n- **k:** Number of lookahead input symbols.\n\n---\n\n## 2. Comparing the LR Parsers\n| Parser | Items Used | Lookahead for Reduce | State Count |\n|---|---|---|---|\n| **LR(0)** | $[A \\to \\alpha . \\beta]$ | None (reduce in all columns) | $N$ |\n| **SLR(1)** | $[A \\to \\alpha . \\beta]$ | Follow of LHS ($\\text{FOLLOW}(A)$) | $N$ |\n| **CLR(1)** | $[A \\to \\alpha . \\beta, a]$ | Exact propagated lookaheads | Much larger ($M \\gg N$) |\n| **LALR(1)** | Merged CLR items with same core | Merged lookaheads | $N$ (same as SLR) |\n\n---\n\n## 3. LALR Conflict Rule\nWhen merging CLR(1) states with identical LR(0) cores to create LALR(1):\n- **Shift-Reduce conflicts are IMPOSSIBLE** to create.\n- **Reduce-Reduce conflicts CAN arise**.\n",
+      "notesMarkdown": "# Bottom-Up Parsing: Shift-Reduce, LR(0), SLR(1), CLR(1), and LALR(1)\n\nBottom-up parsers reconstruct the parse tree starting from the input terminals and working upward toward the start symbol $S$ by repeatedly finding a **Handle** and reducing it (**Rightmost Derivation in Reverse**). The **LR($k$) family** is the most powerful class of deterministic parsers.\n\n---\n\n## 1. Shift-Reduce Engine Mechanics\n\nA Shift-Reduce parser uses a stack and an input buffer:\n1. **Shift ($s_n$):** Push the next input terminal onto the parser stack.\n2. **Reduce ($r_m$):** Replace a handle $\\beta$ on top of the stack with the variable $A$ according to production $A \\to \\beta$.\n3. **Accept:** Parser successfully reduces the augmented start symbol $S' \\to S$ with empty input.\n4. **Error:** Syntax error discovered.\n\n### Parser Conflicts:\n- **Shift-Reduce (S/R) Conflict:** The parser cannot decide whether to shift the next token or reduce the top of stack.\n- **Reduce-Reduce (R/R) Conflict:** The parser recognizes two distinct valid handles on top of stack and cannot decide which rule to apply.\n\n---\n\n## 2. The Four LR Parser Variants Compared\n\n```\nExpressive Power Hierarchy:\nLR(0)  <   SLR(1)   <   LALR(1)   <   CLR(1) (LR(1))\n         (Same states)  (Same states)\n```\n\n| Parser Type | Item Format | Number of States | Conflict Resolution Strategy |\n| :--- | :--- | :--- | :--- |\n| **LR(0)** | $A \\to \\alpha \\cdot \\beta$ | Base canonical collection | Reduces on **ALL terminals** unconditionally |\n| **SLR(1)** | $A \\to \\alpha \\cdot \\beta$ | Same as LR(0) | Places reduce $A \\to \\alpha$ **ONLY under $\\text{FOLLOW}(A)$** |\n| **CLR(1)** | $[A \\to \\alpha \\cdot \\beta, a]$ | **Largest** (thousands of states) | Carries precise lookahead terminal $a \\in \\Sigma \\cup \\{\\$\\}$ |\n| **LALR(1)** | $[A \\to \\alpha \\cdot \\beta, a]$ | **Same as LR(0) / SLR(1)** | Merges CLR(1) states with identical LR(0) cores |\n\n---\n\n## 3. LALR(1): The Practical Compiler Standard (Yacc / Bison)\n\nCLR(1) provides maximum power but produces state tables with thousands of states.\n- **LALR(1) (Lookahead LR)** merges CLR(1) states that share the identical LR(0) core items.\n- *Conflict Properties of Merging:*\n  - Merging **CAN NEVER produce a Shift-Reduce conflict** (if a shift item didn't conflict with a reduce item before merging, identical cores ensure they won't conflict after).\n  - Merging **CAN produce a Reduce-Reduce (R/R) conflict**!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Handle:** A substring that matches the right-hand side of a production and whose reduction represents one step along the reverse rightmost derivation.\n- **State Count Relationship:** $|\\text{States}(\\text{LR}(0))| = |\\text{States}(\\text{SLR}(1))| = |\\text{States}(\\text{LALR}(1))| \\ll |\\text{States}(\\text{CLR}(1))|$.\n- **Every LL(1) grammar is an LR(1) grammar, but NOT vice-versa!**\n",
       "questions": [
         {
           "id": "cd-lr-1",
@@ -365,7 +472,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Every LR(0) grammar is SLR(1), every SLR(1) grammar is LALR(1), and every LALR(1) grammar is CLR(1). Thus, the strict expressive hierarchy is LR(0) subset of SLR(1) subset of LALR(1) subset of CLR(1)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=LR%2C+SLR%2C+CLR%2C+and+LALR+Parsing+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=LR%2C+SLR%2C+CLR%2C+and+LALR+Parsing+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "FIRST and FOLLOW set calculation",
+        "Context-free grammars and rightmost derivations in reverse"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Bottom-Up LR Parsing",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: LR Parser and SLR vs CLR vs LALR",
+          "url": "https://www.geeksforgeeks.org/slr-clr-and-lalr-parsers/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Shift-Reduce and Reduce-Reduce Conflicts Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-syntax-directed-translation",
@@ -386,7 +520,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "S-Attributed SDD: Uses ONLY synthesized attributes; easily evaluated during bottom-up LR parsing.",
         "L-Attributed SDD: Attributes depend on parent, left siblings, or synthesized attributes of self; evaluated in single left-to-right pass."
       ],
-      "notesMarkdown": "# Syntax-Directed Translation (SDT)\n\n---\n\n## 1. Synthesized vs Inherited Attributes\n- **Synthesized:** Node attribute computed from its children:\n  $$A.val = f(X_1.val, X_2.val, \\dots)$$\n- **Inherited:** Node attribute computed from its parent and/or left siblings:\n  $$X_i.val = f(A.val, X_1.val, \\dots, X_{i-1}.val)$$\n  *(Inherited attributes cannot depend on right siblings in L-attributed definitions).*\n\n---\n\n## 2. S-Attributed vs L-Attributed\n- **S-Attributed:** Only synthesized attributes. Every S-attributed SDD is trivially L-attributed. Can be evaluated during Post-Order traversal or shift-reduce parsing.\n- **L-Attributed:** Attributes can be synthesized or inherited, provided dependencies flow strictly left-to-right (no right-to-left dependencies).\n",
+      "notesMarkdown": "# Syntax-Directed Translation (SDT): S-Attributed and L-Attributed Definitions\n\nSyntax-Directed Translation associates semantic attributes with grammar symbols and semantic action rules with productions, allowing compilers to perform type checking, intermediate code generation, and constant evaluation during parsing.\n\n---\n\n## 1. Syntax-Directed Definitions (SDD): Synthesized vs Inherited Attributes\n\nAn attribute $X.a$ represents semantic values (type, memory address, numerical value).\n\n```\nSYNTHESIZED ATTRIBUTE                     INHERITED ATTRIBUTE\n       Parent A                                  Parent A\n      /    |   \\                                /    |   \\\n     /     |    \\                              /     |    \\\n   X1     X2     X3                          X1 ----> X2   X3\nValue flows UPWARD from children.         Value flows DOWNWARD from parent\nA.val = f(X1.val, X2.val, X3.val)         or SIDEWAYS from left siblings.\n```\n\n- **Synthesized Attribute:** Computed exclusively from the attributes of its children nodes in the parse tree (or from lexical tokens).\n- **Inherited Attribute:** Computed from the attributes of its parent node and/or left-hand sibling nodes in the parse tree.\n\n---\n\n## 2. S-Attributed vs L-Attributed Definitions\n\n### 1. S-Attributed Definitions\n- Uses **ONLY Synthesized Attributes**.\n- Can be evaluated completely **bottom-up during LR parsing** in a single pass without building an explicit parse tree!\n- Evaluated when a reduction occurs on the parse stack.\n\n### 2. L-Attributed Definitions\n- Allows **Synthesized Attributes** AND restricted **Inherited Attributes**.\n- *Restriction:* For production $A \\to X_1 X_2 \\dots X_n$, an inherited attribute of $X_i$ may depend **ONLY on**:\n  1. The inherited attributes of parent $A$.\n  2. The attributes of symbols $X_1, X_2, \\dots, X_{i-1}$ appearing to the **LEFT of $X_i$**.\n- Can be evaluated in a **single left-to-right depth-first traversal** (suited for top-down LL parsers).\n\n```\nHierarchy:\nS-Attributed Definitions  subset of  L-Attributed Definitions\n```\n\n---\n\n## 3. Worked Example: Desk Calculator SDD\n\n```\nProduction               Semantic Rule\n-----------------------------------------------------------\nL -> E \\n                { printf(\"%d\\n\", E.val); }\nE -> E1 + T              { E.val = E1.val + T.val; }\nE -> T                   { E.val = T.val; }\nT -> T1 * F              { T.val = T1.val * F.val; }\nT -> F                   { T.val = F.val; }\nF -> ( E )               { F.val = E.val; }\nF -> digit               { F.val = digit.lexval; }\n```\nBecause all semantic rules compute the left-hand non-terminal exclusively from right-hand children, this SDD is purely **S-Attributed** and can be computed directly during shift-reduce parsing!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Synthesized:** Child $\\to$ Parent (Evaluated Post-Order).\n- **Inherited:** Parent/Left-Sibling $\\to$ Node (Evaluated Pre-Order).\n- **S-Attributed:** Only synthesized $\\implies$ Compatible with Bottom-Up / LR parsers.\n- **L-Attributed:** Synthesized + Left-to-right inherited $\\implies$ Compatible with Top-Down / LL parsers.\n",
       "questions": [
         {
           "id": "cd-sdt-1",
@@ -425,7 +559,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "An S-attributed definition uses strictly synthesized attributes (values computed exclusively from children nodes in the parse tree). It can be directly evaluated during bottom-up LR parsing on reductions."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Syntax-Directed+Translation+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Syntax-Directed+Translation+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Context-free grammars and parse trees",
+        "LR and LL parsing mechanisms"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Syntax-Directed Translation",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Syntax Directed Translation (SDT)",
+          "url": "https://www.geeksforgeeks.org/syntax-directed-translation-in-compiler-design/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: S-Attributed vs L-Attributed Definitions",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-semantic-analysis",
@@ -485,7 +646,20 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Syntax analysis checks grammatical structure (context-free syntax), while semantic analysis checks contextual legality (type consistency, variable declaration before use, function signature matching)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Semantic+Analysis+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Semantic+Analysis+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Parse Trees and ASTs",
+        "Type Checking and Attribute Grammars"
+      ],
+      "externalResources": [
+        {
+          "title": "Semantic Analysis and Type Systems — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/semantic-analysis-in-compiler-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-intermediate-code-generation",
@@ -544,7 +718,20 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Using a machine-independent IR decouples the compiler into front-end and back-end: supporting M languages on N processor architectures requires M + N modules instead of M * N separate compilers."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Intermediate+Code+Generation+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Intermediate+Code+Generation+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Abstract Syntax Trees",
+        "Three-Address Code (TAC) Quadruples"
+      ],
+      "externalResources": [
+        {
+          "title": "Intermediate Code Generation and TAC — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/intermediate-code-generation-in-compiler-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-three-address-code",
@@ -565,7 +752,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Triple: Record with 3 fields (op, arg1, arg2). Results are referenced by position/index.",
         "Indirect Triples: Uses an array of pointers to triples, allowing easy reordering during optimization."
       ],
-      "notesMarkdown": "# Three-Address Code (TAC)\n\n---\n\n## 1. Forms of Three-Address Code\nEach TAC statement contains at most one operator on the right-hand side:\n$$x = y \\text{ op } z$$\nComplex expressions are flattened using compiler-generated temporaries $t_1, t_2, \\dots$.\n\n---\n\n## 2. Quadruples vs. Triples vs. Indirect Triples\n- **Quadruple:** `(op, arg1, arg2, result)`\n  - Explicit temporaries, easy to move code during optimization.\n- **Triple:** `(op, arg1, arg2)`\n  - Refers to intermediate results using statement index `(0)`, `(1)`. Reordering code requires updating all references.\n- **Indirect Triple:** An array of pointers to triples. Code optimization reorders the pointer array without touching the triple memory records.\n",
+      "notesMarkdown": "# Intermediate Code: Three-Address Code (TAC), Quadruples, and Triples\n\nThree-Address Code (TAC) is a linearized intermediate representation where each instruction has at most one operator on the right-hand side and at most **three address locations (operands/results)**.\n\n---\n\n## 1. Syntax and Types of Three-Address Code Instructions\n\nGeneral Form:\n$$x = y \\text{ op } z$$\nwhere $x, y, z$ are names, constants, or compiler-generated temporary variables ($t_1, t_2, \\dots$).\n\n### Common TAC Forms:\n1. **Binary Assignment:** `t1 = a + b`\n2. **Unary Assignment:** `t2 = -c` or `t3 = !d`\n3. **Copy Statement:** `x = y`\n4. **Unconditional Jump:** `goto L`\n5. **Conditional Jump:** `if x relop y goto L` or `ifFalse x goto L`\n6. **Procedure Call:**\n   ```\n   param x1\n   param x2\n   call p, 2\n   ```\n7. **Indexed Copy:** `x = a[i]` (loads from base $a$ offset $i$) and `a[i] = y`.\n\n---\n\n## 2. Implementations of TAC: Quadruples, Triples, and Indirect Triples\n\nConsider expression: $a = b * -c + b * -c$:\n\n### 1. Quadruples (4 fields: `op, arg1, arg2, result`)\n```\nIndex | op    | arg1 | arg2 | result\n------+-------+------+------+-------\n(0)   | uminus| c    |      | t1\n(1)   | *     | b    | t1   | t2\n(2)   | uminus| c    |      | t3\n(3)   | *     | b    | t3   | t4\n(4)   | +     | t2   | t4   | t5\n(5)   | =     | t5   |      | a\n```\n- *Advantage:* Explicit temporary names simplify code optimization and statement reordering.\n\n### 2. Triples (3 fields: `op, arg1, arg2`)\nAvoids temporary variable names by referencing intermediate results by their **statement line numbers**:\n```\nIndex | op    | arg1 | arg2\n------+-------+------+------\n(0)   | uminus| c    |\n(1)   | *     | b    | (0)\n(2)   | uminus| c    |\n(3)   | *     | b    | (2)\n(4)   | +     | (1)  | (3)\n(5)   | =     | a    | (4)\n```\n- *Disadvantage:* Reordering instructions during code optimization breaks positional references `(0)`, `(1)`!\n\n### 3. Indirect Triples\nMaintains an array of pointers to Triples. Optimization reorders only the pointer array without modifying the underlying triple structures!\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **TAC Invariant:** At most 3 memory addresses and 1 operator per instruction.\n- **Quadruple Fields:** `(op, arg1, arg2, result)`.\n- **Triple Fields:** `(op, arg1, arg2)` (uses line number as result).\n- **Control Flow TAC:** `if x < y goto L1` $\\implies$ Direct mapping to machine branch instructions.\n",
       "questions": [
         {
           "id": "cd-tac-1",
@@ -604,7 +791,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Three-address code is conventionally represented in compiler memory as Quadruples (op, arg1, arg2, result), Triples (op, arg1, arg2 with implicit result indices), or Indirect Triples (array of pointers to triples)."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Three-Address+Code+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Three-Address+Code+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Syntax-directed translation and ASTs",
+        "Basic computer organization and registers"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Intermediate Representations and 3AC",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Three Address Code in Compiler Design",
+          "url": "https://www.geeksforgeeks.org/three-address-code-in-compiler/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Intermediate Code Generation Quadruples and Triples",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-runtime-environments",
@@ -625,7 +839,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Dynamic Link (Control Link): Points to the activation record of the caller function.",
         "Static Link (Access Link): Points to the activation record of the lexical (enclosing) parent function."
       ],
-      "notesMarkdown": "# Runtime Environments & Activation Records\n\n---\n\n## 1. Runtime Memory Organization\n```text\n+-----------------------------------+ High Memory\n| Stack (grows downwards)           |\n|   Activation Records              |\n|               v                   |\n|               ^                   |\n| Heap (grows upwards)              |\n|   Dynamic Allocation (malloc)     |\n+-----------------------------------+\n| Static / Global Data              |\n+-----------------------------------+\n| Code Segment (Text)               | Low Memory\n+-----------------------------------+\n```\n\n---\n\n## 2. Activation Record Structure\n1. Return value & Actual parameters\n2. Control link (Dynamic link → caller's AR)\n3. Access link (Static link → lexically enclosing scope's AR)\n4. Saved machine status (Program counter, registers)\n5. Local variables & compiler temporaries\n",
+      "notesMarkdown": "# Runtime Storage Organization, Activation Records, and Scoping Links\n\nThe Runtime Environment is the software infrastructure that manages memory, activation records, and scope resolution while compiled machine code executes on the target processor.\n\n---\n\n## 1. Process Runtime Address Space Layout\n\n```\nHigh Address:\n+-----------------------------------------------------------+\n| Stack (grows DOWNWARD)                                    |\n|   Activation Records: Local variables, saved registers    |\n|               |                                           |\n|               v                                           |\n|                                                           |\n|               ^                                           |\n|               |                                           |\n| Heap (grows UPWARD)                                       |\n|   Dynamically allocated objects (malloc, new)             |\n+-----------------------------------------------------------+\n| Static / Global Data (BSS & Initialized Data)             |\n+-----------------------------------------------------------+\n| Code / Text Segment (Read-Only Machine Instructions)      |\n+-----------------------------------------------------------+\nLow Address:\n```\n\n---\n\n## 2. Anatomy of an Activation Record (Stack Frame)\n\n```\n+-----------------------------------------------------------+\n| Actual Parameters (Passed by caller)                      |\n+-----------------------------------------------------------+\n| Return Value (Location for function result)               |\n+-----------------------------------------------------------+\n| Control Link (Dynamic Link: Points to caller's frame)     |\n+-----------------------------------------------------------+\n| Access Link (Static Link: Points to enclosing scope)      |\n+-----------------------------------------------------------+\n| Saved Machine State (Return address PC, registers)        |\n+-----------------------------------------------------------+\n| Local Data Variables                                      |\n+-----------------------------------------------------------+\n| Temporaries (Evaluation stack workspace)                  |\n+-----------------------------------------------------------+\n```\n\n---\n\n## 3. Control Link (Dynamic Link) vs Access Link (Static Link)\n\n- **Control Link (Dynamic Link):**\n  Points to the activation record of the **Caller function** (the function that invoked this one). Follows dynamic execution history; used to pop stack frames upon return.\n- **Access Link (Static Link):**\n  Points to the activation record of the **lexically enclosing function** in the source code text. Used to resolve non-local variable accesses in languages supporting nested functions (Pascal, Python, JavaScript).\n- **Display Array:** An optimization replacing static chain traversal ($O(k)$ pointer chasing) with a direct array lookup ($O(1)$) indexed by lexical nesting depth.\n\n---\n\n## 4. Parameter Passing Mechanisms\n\n1. **Call by Value:** Callee receives a private copy. Changes do not alter caller's variable.\n2. **Call by Reference:** Callee receives pointer/address of variable. Changes directly mutate caller's variable.\n3. **Call by Value-Result (Copy-in/Copy-out):** Copied in at function start; copied back to caller variable only upon function exit.\n4. **Call by Name (Algol 60):** Evaluated lazily in caller's environment via a compiler-generated parameterless routine called a **Thunk**.\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Dynamic Link:** Traces execution history (who called me?).\n- **Static Link:** Traces lexical text nesting (where was I declared?).\n- **Display Vector:** $O(1)$ static scope resolution mechanism.\n",
       "questions": [
         {
           "id": "cd-rte-1",
@@ -664,7 +878,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "The dynamic link (control link) points to the caller's stack frame, enabling the epilogue code to restore the caller's frame pointer when the callee function returns."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Runtime+Environments+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Runtime+Environments+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Stack frames, call stacks, and assembly calling conventions",
+        "Compiler architecture and symbol tables"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Runtime Storage Organization",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Runtime Environments in Compiler Design",
+          "url": "https://www.geeksforgeeks.org/runtime-environments-in-compiler-design/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Activation Records and Static vs Dynamic Scoping",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-symbol-tables",
@@ -724,7 +965,20 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Production compilers use chained hash tables paired with scope stacks: entering a scope pushes a marker or new table, and exiting pops local symbols, delivering O(1) average-time symbol lookup and insertion."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Symbol+Tables+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Symbol+Tables+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Hash Tables and Scoping",
+        "Lexical Scope Lifetime"
+      ],
+      "externalResources": [
+        {
+          "title": "Symbol Table Organization in Compilers — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/symbol-table-in-compiler/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-memory-allocation",
@@ -745,7 +999,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Heap allocation: Dynamic allocation in arbitrary order; requires explicit free or automated garbage collection.",
         "Garbage collection: Mark-and-sweep, copying collectors, reference counting."
       ],
-      "notesMarkdown": "# Memory Allocation Strategies\n\n---\n\n## 1. Allocation Strategies\n1. **Static Allocation:**\n   - Memory addresses are fixed before program execution.\n   - Disallows recursion (multiple instances of a function would overwrite the same frame).\n2. **Stack Allocation:**\n   - Push frame on call, pop frame on return. Supports recursive calls and dynamic array sizing at invocation time.\n3. **Heap Allocation:**\n   - Memory dynamically allocated and deallocated in arbitrary order. Used when object lifetimes outlive function calls.\n\n---\n\n## 2. Garbage Collection\n- **Reference Counting:** Counts incoming pointers; fails to reclaim cyclic references.\n- **Mark-and-Sweep:** Traverses reachable objects from roots (stack, registers) and marks them; sweeps and frees unmarked heap objects.\n",
+      "notesMarkdown": "# Memory Allocation Strategies and Automatic Garbage Collection\n\nCompilers manage memory through three primary allocation strategies: Static, Stack, and Heap, balancing access speed, memory utilization, and lifetime flexibility.\n\n---\n\n## 1. Storage Allocation Strategies\n\n1. **Static Allocation:**\n   - Memory addresses bound at compile time; fixed throughout execution.\n   - *Limitation:* Disallows recursion (recursive calls would overwrite the single static activation record) and dynamic arrays.\n2. **Stack Allocation:**\n   - Memory allocated and freed in LIFO order matching function call and return lifetimes.\n   - Enables recursion; very fast allocation (single stack pointer increment).\n3. **Heap Allocation:**\n   - Memory allocated and freed at arbitrary times in any order.\n   - Required for dynamic data structures (linked lists, trees) whose lifespans outlive the functions that created them.\n\n---\n\n## 2. Automatic Garbage Collection (GC) Algorithms\n\nGarbage Collection automatically detects and reclaims heap memory that is no longer accessible by the running program.\n\n### 1. Reference Counting\n- Every heap object maintains an integer reference counter incremented on pointer assignment and decremented on pointer removal.\n- When counter reaches `0`, the object is reclaimed immediately.\n- *Fatal Flaw:* **Cannot reclaim cyclic references** (e.g., node $A \\to B$ and $B \\to A$ both retain count $= 1$ forever even when disconnected from the root set!).\n\n### 2. Mark-and-Sweep Tracing Collector\n- **Mark Phase:** Traverses all reachable objects starting from the **Root Set** (CPU registers, stack variables, global pointers) using DFS/BFS, setting a mark bit.\n- **Sweep Phase:** Scans the entire heap linearly; all unmarked objects are returned to the free list.\n- *Advantage:* Handles cyclic data structures seamlessly.\n- *Disadvantage:* Causes execution pauses (\"Stop-the-World\") and leaves heap fragmented.\n\n### 3. Generational Garbage Collection\n- Grounded in the **Weak Generational Hypothesis:** *\"Most allocated objects die young.\"*\n- Partitions the heap into **Young Generation (Eden)** and **Old Generation**.\n- Frequent minor GC runs over the small Young generation, while expensive major GC runs rarely over the Old generation.\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **Root Set:** Registers, stack frame pointers, and global static pointers.\n- **Reference Counting Limitation:** Cyclic garbage leaks memory.\n- **Mark-and-Sweep:** 2-phase tracing collector (Mark reachable $\\to$ Sweep dead).\n- **Generational GC:** Exploits infant mortality hypothesis to slash GC pause times.\n",
       "questions": [
         {
           "id": "cd-mem-1",
@@ -784,7 +1038,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Heap allocation handles dynamically sized objects with arbitrary lifetimes that outlive the activating procedure call, managed via malloc/free or garbage collection."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Memory+Allocation+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Memory+Allocation+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Runtime environments and activation records",
+        "Dynamic heap memory allocation and garbage collection"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Garbage Collection and Heap Management",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Storage Allocation Strategies in Compiler Design",
+          "url": "https://www.geeksforgeeks.org/storage-allocation-strategies-in-compiler-design/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Reference Counting vs Mark and Sweep Garbage Collection",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-code-optimization",
@@ -806,7 +1087,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Loop Invariant Code Motion: Moving computations that do not change inside loop iterations outside the loop.",
         "Strength Reduction: Replacing expensive operations with cheaper ones (e.g. replacing multiplication with addition in loops)."
       ],
-      "notesMarkdown": "# Code Optimization\n\n---\n\n## 1. Basic Blocks & Control Flow Graphs (CFG)\n- **Leader Identification:**\n  1. The first statement of the program is a leader.\n  2. Any statement that is the target of a conditional/unconditional jump is a leader.\n  3. Any statement immediately following a jump is a leader.\n- A **Basic Block** starts at a leader and includes all statements up to (but excluding) the next leader.\n\n---\n\n## 2. Common Optimizations\n- **Constant Folding & Propagation:** Pre-evaluating known constant expressions at compile-time.\n- **Dead Code Elimination:** Removing instructions whose results are never read or utilized.\n- **Loop Invariant Code Motion (Hoisting):** Moving statements whose operands remain unchanged throughout loop iterations outside the loop preheader.\n- **Strength Reduction:** Replacing costly operators with cheaper alternatives (e.g., $i \\times 4$ replaced with iterative addition $+4$).\n",
+      "notesMarkdown": "# Code Optimization: Basic Blocks, Control Flow Graphs, and Transformations\n\nCode optimization transforms intermediate code into a functionally equivalent version that consumes less execution time, less memory, and fewer machine instructions.\n\n---\n\n## 1. Basic Blocks and Control Flow Graphs (CFGs)\n\nA **Basic Block** is a maximal sequence of consecutive instructions with single-entry, single-exit execution:\n- Control enters **only at the first instruction**.\n- Control leaves the block **only at the last instruction** without halting or branching in the middle.\n\n### Algorithm to Partition TAC into Basic Blocks:\n1. **Determine Leaders (First instructions of blocks):**\n   - The very first instruction in the program is a Leader.\n   - Any instruction that is the target of a conditional or unconditional `goto` is a Leader.\n   - Any instruction that immediately follows a conditional or unconditional `goto` is a Leader.\n2. A Basic Block consists of a Leader and all instructions up to (but not including) the next Leader or end of program.\n3. Construct the **Control Flow Graph (CFG)** by adding directed edges between blocks representing branching and fallthrough paths.\n\n---\n\n## 2. Principal Optimization Techniques\n\n### 1. Local and Global Optimizations\n- **Common Subexpression Elimination (CSE):** If an expression $E = a + b$ was previously calculated and its operands have not changed, reuse the previous result.\n- **Constant Folding:** Evaluate constant expressions at compile time:\n  $$\\text{int } x = 3 * 24 \\implies \\text{int } x = 72$$\n- **Constant Propagation:** Replace variables known to hold constant values with those constants directly.\n- **Dead Code Elimination:** Remove instructions whose results are never subsequently read or used.\n\n### 2. Loop Optimizations (Where 90% of execution time is spent!)\n- **Loop Invariant Code Motion (Hoisting):** Move computations whose results do not change across iterations **outside** the loop header.\n- **Strength Reduction:** Replace computationally expensive operations (multiplication) with cheaper operations (addition):\n  ```\n  // Before:\n  for (int i = 0; i < 100; i++) arr[i] = i * 4;\n  \n  // After Strength Reduction:\n  int temp = 0;\n  for (int i = 0; i < 100; i++) { arr[i] = temp; temp += 4; }\n  ```\n- **Loop Unrolling:** Replicates the loop body to reduce branching and loop counter update overhead.\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **Basic Block Invariant:** Single entry at top, single exit at bottom.\n- **Leader Rules:** First statement, branch targets, statements following branches.\n- **Optimization Golden Rule:** Must preserve semantic program equivalence under all valid inputs!\n",
       "questions": [
         {
           "id": "cd-opt-1",
@@ -845,7 +1126,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Loop-invariant code motion (hoisting) identifies computations inside a loop whose operands do not change across iterations and moves them before the loop entry, eliminating redundant computation."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Code+Optimization+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Code+Optimization+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Three-address code and intermediate representations",
+        "Directed graphs and control flow"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Code Optimization and Dataflow Analysis",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Code Optimization in Compiler Design",
+          "url": "https://www.geeksforgeeks.org/code-optimization-in-compiler-design/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Loop Optimization and Common Subexpression Elimination",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cd-target-code-generation",
@@ -866,7 +1174,7 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
         "Graph Coloring: Formulates register allocation as K-coloring of the interference graph (NP-complete).",
         "Peephole Optimization: Local window inspection over small target code chunks to eliminate redundant loads/stores and jumps."
       ],
-      "notesMarkdown": "# Target Code Generation & Register Allocation\n\n---\n\n## 1. Key Challenges in Code Generation\n1. **Instruction Selection:** Choosing appropriate hardware instructions for intermediate TAC operations.\n2. **Register Allocation & Assignment:**\n   - Register Allocation: Decides which variables reside in registers vs. memory.\n   - Register Assignment: Assigns variables to specific physical registers.\n3. **Instruction Scheduling:** Reordering instructions to minimize CPU pipeline stalls.\n\n---\n\n## 2. Register Allocation via Graph Coloring\n- **Interference Graph:** Nodes are variables (live ranges); edges exist between variables that are simultaneously live.\n- Assigning $K$ available registers corresponds to **$K$-coloring the interference graph**. If a graph cannot be $K$-colored, variables must be spilled to RAM.\n\n---\n\n## 3. Peephole Optimization\nA simple yet effective technique that examines a small sliding window (\"peephole\") of generated target instructions:\n- Redundant load/store elimination (`MOV R0, a; MOV a, R0`).\n- Unreachable code elimination.\n- Flow-of-control optimizations (jumps to jumps).\n- Algebraic simplifications ($x \\times 1 \\to x$, $x + 0 \\to x$).\n",
+      "notesMarkdown": "# Target Code Generation, Register Allocation by Graph Coloring, and Peephole Optimization\n\nCode generation is the final phase of compilation. It translates optimized intermediate code into target machine instructions, managing physical CPU register allocation and instruction scheduling.\n\n---\n\n## 1. Primary Challenges in Code Generation\n\n1. **Instruction Selection:** Choosing the best machine instructions to implement intermediate operations (mapping TAC to CISC/RISC opcodes).\n2. **Register Allocation and Assignment:**\n   - *Register Allocation:* Selecting the subset of variables that will reside in high-speed CPU registers rather than RAM.\n   - *Register Assignment:* Picking the specific hardware register (`RAX`, `RBX`, `R1`) for each allocated variable.\n3. **Instruction Ordering:** Scheduling instructions to prevent pipeline stalls and memory bus latency.\n\n---\n\n## 2. Register Allocation via Graph Coloring (Chaitin's Algorithm)\n\nBecause CPUs have a strictly limited number of hardware registers (e.g., 16 general-purpose registers on x86-64), mapping thousands of program variables to $K$ physical registers is mathematically modeled as the **$K$-Coloring of an Interference Graph**.\n\n```\nInterference Graph:\nNodes = Variables\nEdge between (u, v) = Both variables are LIVE SIMULTANEOUSLY!\n```\n\n### Kempe's Heuristic Algorithm:\n1. Construct the **Interference Graph**.\n2. Find a node $v$ with degree $< K$ (fewer than $K$ conflicting neighbors).\n3. Push $v$ onto a stack and remove it from the graph.\n4. Repeat until the graph is empty.\n5. Pop nodes from the stack and assign each node a color (register) distinct from all already-colored neighbors.\n6. **Spilling:** If all remaining nodes have degree $\\ge K$, select a victim variable to \"spill\" to memory (RAM stack frame).\n\n---\n\n## 3. Peephole Optimization\n\nPeephole optimization is an effective local optimization pass applied over a sliding window of a few target instructions (typically 2 to 4 instructions):\n\n1. **Redundant Load/Store Elimination:**\n   ```assembly\n   mov %eax, a\n   mov a, %eax     ; REDUNDANT: %eax already contains 'a'! Deleted!\n   ```\n2. **Unreachable Code Elimination:**\n   ```assembly\n   jmp .L2\n   mov %ebx, 0     ; UNREACHABLE: Never executed! Deleted!\n   .L2:\n   ```\n3. **Flow of Control Optimization:**\n   ```assembly\n   jmp .L1\n   .L1: jmp .L2    ; Optimized directly to: jmp .L2!\n   ```\n4. **Algebraic Simplification and Strength Reduction:**\n   - Replacing `imul $2, %eax` with `shl $1, %eax` (bit shift is faster than multiplication).\n   - Replacing `add $0, %eax` with no-op.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Register Allocation:** Formulated as $K$-Graph Coloring (NP-Complete).\n- **Spill Cost:** Frequency of variable access inside loops determines spill candidates.\n- **Peephole Window:** Examines local sliding window of 2-4 assembly instructions.\n",
       "questions": [
         {
           "id": "cd-tcg-1",
@@ -905,7 +1213,34 @@ export const COMPILER_DESIGN_CATEGORY: SectionCategory = {
           "explanation": "Register allocation maps to Graph Coloring on the Interference Graph: variables with overlapping live ranges are connected by edges, and assigning K physical registers corresponds to finding a valid K-coloring."
         }
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Target+Code+Generation+Compiler+Design+CD+GATE+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Target+Code+Generation+Compiler+Design+CD+GATE+lecture",
+      "prerequisites": [
+        "Code optimization and intermediate representations",
+        "CPU register files and instruction set architectures"
+      ],
+      "externalResources": [
+        {
+          "title": "Stanford CS143: Target Code Generation and Register Allocation",
+          "url": "https://web.stanford.edu/class/cs143/",
+          "provider": "Official Documentation",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Code Generation in Compiler Design",
+          "url": "https://www.geeksforgeeks.org/code-generation-in-compiler-design/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Graph Coloring Register Allocation and Peephole Optimization",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
+      ]
     }
   ]
 };

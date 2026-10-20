@@ -27,7 +27,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Trace of matrix equals the sum of its diagonal elements, which equals the sum of its eigenvalues."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Matrices+and+Determinants+Engineering+Mathematics+GATE+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Matrices, Determinants, and Matrix Algebra\n\nMatrix algebra forms the foundation of graphics, machine learning, and linear systems engineering.\n\n---\n\n## 1. Determinants and Properties\nFor an $n \\times n$ square matrix $A$:\n- $\\det(A^T) = \\det(A)$\n- $\\det(A B) = \\det(A) \\cdot \\det(B)$\n- $\\det(k A) = k^n \\det(A)$ for scalar $k$ *(Classic GATE trap!)*\n- $\\det(A^{-1}) = \\frac{1}{\\det(A)}$ (for non-singular $A$ where $\\det(A) \\ne 0$)\n- If any two rows/columns are identical or proportional, $\\det(A) = 0$.\n- Triangulating a matrix preserves determinant as the product of main diagonal entries:\n  $$\\det(A) = \\prod_{i=1}^n a_{ii}$$\n\n---\n\n## 2. Matrix Inversion & Adjoint\n- **Adjoint:** $\\text{Adj}(A) = (C_{ij})^T$ where $C_{ij}$ is the cofactor $(-1)^{i+j} M_{ij}$.\n- **Inverse:** $A^{-1} = \\frac{\\text{Adj}(A)}{\\det(A)}$.\n- **Key Identities:**\n  $$A \\cdot \\text{Adj}(A) = \\det(A) \\cdot I_n$$\n  $$\\det(\\text{Adj}(A)) = (\\det(A))^{n-1}$$\n  $$\\det(\\text{Adj}(\\text{Adj}(A))) = (\\det(A))^{(n-1)^2}$$\n",
+      "notesMarkdown": "# Matrices, Matrix Algebra, and Properties of Determinants\n\nMatrices are rectangular arrays of numbers that represent linear transformations between vector spaces. Matrix algebra forms the mathematical bedrock of graphics pipelines, machine learning backpropagation, scientific simulations, and relational query cost modeling.\n\n---\n\n## 1. Matrix Classifications\n\n- **Symmetric Matrix:** $A^T = A$ ($a_{ij} = a_{ji}$).\n- **Skew-Symmetric Matrix:** $A^T = -A$ ($a_{ij} = -a_{ji}$; main diagonal elements are **strictly zero**).\n- **Orthogonal Matrix:** $A^T A = A A^T = I \\implies \\mathbf{A^{-1} = A^T}$. (Preserves vector lengths and angles; $\\det(A) = \\pm 1$).\n- **Idempotent Matrix:** $A^2 = A$ (Eigenvalues are exclusively $0$ or $1$).\n- **Nilpotent Matrix:** $A^k = 0$ for some integer $k \\ge 1$ (All eigenvalues are strictly $0$).\n- **Involuntary Matrix:** $A^2 = I \\implies A^{-1} = A$.\n\n---\n\n## 2. Properties of Determinants ($\\det(A)$ or $|A|$)\n\nFor an $n \\times n$ square matrix $A$:\n1. $\\det(A) = \\det(A^T)$.\n2. Swapping two rows (or columns) flips the sign of the determinant: $\\det(A') = -\\det(A)$.\n3. If two rows (or columns) are identical or proportional, $\\det(A) = 0$.\n4. **Scalar Multiplication:** For scalar $k$:\n   $$\\mathbf{\\det(kA) = k^n \\det(A)}$$\n5. **Product Rule:** $\\det(AB) = \\det(A) \\cdot \\det(B)$.\n6. **Inverse Rule:** $\\det(A^{-1}) = \\frac{1}{\\det(A)}$ (Matrix is invertible $\\iff \\det(A) \\ne 0$).\n7. **Triangular Matrix:** The determinant of an upper or lower triangular matrix is simply the **product of its main diagonal entries**:\n   $$\\det(A) = \\prod_{i=1}^n a_{ii}$$\n\n---\n\n## 3. Matrix Inversion via Adjugate\n\nFor non-singular matrix $A$ ($\\det(A) \\ne 0$):\n$$\\mathbf{A^{-1} = \\frac{\\text{Adj}(A)}{\\det(A)}}$$\nwhere $\\text{Adj}(A) = C^T$ (the transpose of the cofactor matrix $C$).\n\n### Crucial Adjugate Identities:\n- $A \\cdot \\text{Adj}(A) = \\text{Adj}(A) \\cdot A = \\det(A) \\cdot I$\n- $\\mathbf{|\\text{Adj}(A)| = |A|^{n-1}}$\n- $|\\text{Adj}(\\text{Adj}(A))| = |A|^{(n-1)^2}$\n- $\\text{Adj}(AB) = \\text{Adj}(B) \\cdot \\text{Adj}(A)$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Scalar Scaling:** $\\det(kA) = k^n \\det(A)$.\n- **Adjugate Determinant:** $|\\text{Adj}(A)| = |A|^{n-1}$.\n- **Orthogonal Invariant:** $A^T A = I \\implies \\det(A) = \\pm 1$.\n- **Skew-Symmetric Determinant:** For odd $n$, $\\det(A) = 0$!\n",
       "questions": [
         {
           "id": "em-mat-1",
@@ -65,6 +65,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Since A * adj(A) = det(A) * I_n, taking determinants gives det(A) * det(adj(A)) = (det(A))^n. Dividing by det(A) yields det(adj(A)) = (det(A))^(n - 1)."
         }
+      ],
+      "prerequisites": [
+        "Basic algebraic manipulation and simultaneous equations",
+        "Cartesian coordinate geometry"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.06: Linear Algebra - Matrices and Determinants",
+          "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Matrix Algebra and Determinant Properties",
+          "url": "https://www.geeksforgeeks.org/properties-of-determinants/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Matrices and Determinants Interview Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -88,7 +115,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Homogeneous system AX = 0 always has trivial zero solution; has non-trivial solution iff det(A) = 0."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Systems+of+Linear+Equations+Rank+Consistency+Unique+Infinite+Solutions+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Systems of Linear Equations\n\nFor a system of $m$ linear equations in $n$ variables: $A X = B$.\n\n---\n\n## 1. Rouché-Capelli Consistency Theorem\nLet $[A | B]$ denote the augmented matrix:\n1. **Inconsistent (No solution):**\n   $$\\text{rank}(A) < \\text{rank}([A | B])$$\n2. **Consistent with Unique Solution:**\n   $$\\text{rank}(A) = \\text{rank}([A | B]) = n \\quad (\\text{number of variables})$$\n3. **Consistent with Infinite Solutions:**\n   $$\\text{rank}(A) = \\text{rank}([A | B]) = r < n \\quad (n - r \\text{ independent free variables})$$\n\n---\n\n## 2. Homogeneous Systems ($A X = 0$)\n- Always consistent (trivial solution $X = 0$).\n- Has non-trivial (infinite) solutions **if and only if** $\\text{rank}(A) < n$ (or $\\det(A) = 0$ for square matrix).\n",
+      "notesMarkdown": "# Systems of Linear Equations, Gaussian Elimination, and Consistency\n\nA system of $m$ linear equations in $n$ unknowns can be represented in matrix form as:\n$$A X = B$$\nwhere $A$ is the $m \\times n$ coefficient matrix, $X$ is the $n \\times 1$ variable vector, and $B$ is the $m \\times 1$ constant vector.\n\n---\n\n## 1. Augmented Matrix and Row Echelon Form (REF)\n\nThe system is investigated by forming the **Augmented Matrix** $[A \\mid B]$ and applying Gaussian elimination using Elementary Row Operations:\n1. Swapping two rows ($R_i \\leftrightarrow R_j$).\n2. Multiplying a row by a non-zero scalar ($R_i \\leftarrow k R_i$).\n3. Adding a multiple of one row to another ($R_i \\leftarrow R_i + k R_j$).\n\n### Row Echelon Form (REF) Criteria:\n- All zero rows are at the bottom.\n- The leading non-zero coefficient (pivot) of each non-zero row is strictly to the right of the leading coefficient of the row above it.\n\n---\n\n## 2. Consistency: The Rouché–Capelli Theorem\n\nA system $AX = B$ is consistent (possesses at least one solution) if and only if the rank of the coefficient matrix equals the rank of the augmented matrix:\n$$\\mathbf{\\text{Rank}(A) = \\text{Rank}(A \\mid B)}$$\n\n```\n                                SYSTEM AX = B\n                                      |\n               +----------------------+----------------------+\n               |                                             |\n     Rank(A) != Rank(A|B)                           Rank(A) == Rank(A|B) == r\n     [ INCONSISTENT ]                                   [ CONSISTENT ]\n     (Zero Solutions!)                                       |\n                                             +---------------+---------------+\n                                             |                               |\n                                           r == n                          r < n\n                                     (r = # of unknowns)              (r < # of unknowns)\n                                     [ UNIQUE SOLUTION ]             [ INFINITELY MANY ]\n                                                                      (n - r free vars)\n```\n\n---\n\n## 3. Homogeneous Linear Systems ($AX = 0$)\n\nIn a homogeneous system, $B = 0$:\n- $\\text{Rank}(A) = \\text{Rank}(A \\mid 0)$ is **always true**, so homogeneous systems are **always consistent**!\n- **Trivial Solution:** $X = 0$ is always a solution.\n- **Non-Trivial (Non-Zero) Solution:**\n  Exists if and only if $\\text{Rank}(A) < n$ (number of unknowns).\n  For a square $n \\times n$ matrix $A$:\n  $$\\mathbf{Non\\text{-}Trivial \\quad Solution \\iff \\det(A) = 0}$$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Consistency Invariant:** $\\text{Rank}(A) = \\text{Rank}(A \\mid B)$.\n- **Unique Solution Condition:** $\\text{Rank}(A) = \\text{Rank}(A \\mid B) = n$.\n- **Infinite Solutions Condition:** $\\text{Rank}(A) = \\text{Rank}(A \\mid B) = r < n$ (with $n - r$ free independent parameters).\n- **Homogeneous Non-Trivial Condition:** Square matrix $\\det(A) = 0$.\n",
       "questions": [
         {
           "id": "em-sle-1",
@@ -126,6 +153,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A system is consistent if Rank(A) = Rank([A|B]). If this rank r is strictly less than the number of unknowns n, there are (n - r) free variables, yielding infinitely many solutions."
         }
+      ],
+      "prerequisites": [
+        "Matrices and determinants fundamentals",
+        "Vector spaces and linear combinations"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.06: Solving Linear Systems Ax = b",
+          "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: System of Linear Equations",
+          "url": "https://www.geeksforgeeks.org/system-of-linear-equations/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Gaussian Elimination and Consistency Tests",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -148,7 +202,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Cayley-Hamilton Theorem: Every square matrix satisfies its own characteristic equation (used to find A^-1 and A^k)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Eigenvalues+and+Eigenvectors+Cayley+Hamilton+Theorem+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Eigenvalues and Eigenvectors\n\n---\n\n## 1. Characteristic Equation\n$$A v = \\lambda v \\iff (A - \\lambda I) v = 0 \\iff \\det(A - \\lambda I) = 0$$\n\n---\n\n## 2. Essential Eigenvalue Properties\n- **Sum of Eigenvalues:** $\\sum \\lambda_i = \\text{Trace}(A) = \\sum a_{ii}$.\n- **Product of Eigenvalues:** $\\prod \\lambda_i = \\det(A)$.\n- If $\\lambda$ is an eigenvalue of $A$:\n  - $A^{-1}$ has eigenvalue $\\frac{1}{\\lambda}$ (if $\\det(A) \\ne 0$).\n  - $A^k$ has eigenvalue $\\lambda^k$.\n  - $A + kI$ has eigenvalue $\\lambda + k$.\n\n---\n\n## 3. Cayley-Hamilton Theorem\nIf characteristic polynomial is $P(\\lambda) = \\lambda^n + c_{n-1} \\lambda^{n-1} + \\dots + c_0 = 0$, then:\n$$A^n + c_{n-1} A^{n-1} + \\dots + c_0 I = 0$$\n",
+      "notesMarkdown": "# Eigenvalues, Eigenvectors, and Matrix Diagonalization\n\nFor a linear transformation represented by matrix $A$, most vectors change direction when multiplied by $A$. An **Eigenvector** is a special non-zero vector whose direction remains invariant under the transformation, being merely scaled by a scalar factor $\\lambda$ called the **Eigenvalue**.\n\n---\n\n## 1. The Fundamental Characteristic Equation\n\n$$A X = \\lambda X \\implies (A - \\lambda I) X = 0$$\nSince an eigenvector $X$ must be non-zero ($X \\ne 0$), the homogeneous system possesses a non-trivial solution if and only if:\n$$\\mathbf{\\det(A - \\lambda I) = 0}$$\nThis determinant expansion yields the **Characteristic Polynomial** of degree $n$, whose roots $\\lambda_1, \\lambda_2, \\dots, \\lambda_n$ are the eigenvalues!\n\n---\n\n## 2. Fundamental Properties of Eigenvalues\n\nFor an $n \\times n$ matrix $A$ with eigenvalues $\\lambda_1, \\lambda_2, \\dots, \\lambda_n$:\n\n1. **Sum of Eigenvalues equals Trace of $A$:**\n   $$\\sum_{i=1}^n \\lambda_i = \\text{Trace}(A) = \\sum_{i=1}^n a_{ii}$$\n2. **Product of Eigenvalues equals Determinant of $A$:**\n   $$\\prod_{i=1}^n \\lambda_i = \\det(A)$$\n3. If $\\lambda$ is an eigenvalue of $A$:\n   - $k\\lambda$ is an eigenvalue of $kA$.\n   - $\\lambda^m$ is an eigenvalue of $A^m$.\n   - $\\frac{1}{\\lambda}$ is an eigenvalue of $A^{-1}$ (if $\\det(A) \\ne 0$).\n4. The eigenvalues of an upper triangular, lower triangular, or diagonal matrix are **simply its main diagonal elements**!\n5. **Real Symmetric Matrix:** All eigenvalues of a real symmetric matrix are **strictly real numbers**, and eigenvectors corresponding to distinct eigenvalues are **mutually orthogonal**.\n\n---\n\n## 3. Matrix Diagonalization\n\nAn $n \\times n$ matrix $A$ is **Diagonalizable** if there exists an invertible matrix $P$ (the modal matrix formed by eigenvectors) and a diagonal matrix $D$ such that:\n$$P^{-1} A P = D \\implies A = P D P^{-1}$$\n- *Condition:* $A$ is diagonalizable if and only if it possesses **$n$ linearly independent eigenvectors**.\n- Power Shortcut: $\\mathbf{A^k = P D^k P^{-1}}$ (computes matrix powers in $O(1)$ scalar exponentiations!).\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Characteristic Equation:** $|A - \\lambda I| = 0$.\n- **Trace Identity:** $\\sum \\lambda_i = \\text{Trace}(A)$.\n- **Determinant Identity:** $\\prod \\lambda_i = \\det(A)$.\n- **Cayley-Hamilton Theorem:** Every square matrix satisfies its own characteristic equation: $P(A) = 0$.\n",
       "questions": [
         {
           "id": "em-eig-1",
@@ -186,6 +240,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By the Spectral Theorem, all eigenvalues of a real symmetric matrix (A = A^T) are guaranteed to be real, and eigenvectors corresponding to distinct eigenvalues are mutually orthogonal."
         }
+      ],
+      "prerequisites": [
+        "Matrix determinants and matrix inverse",
+        "Systems of linear equations"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.06: Eigenvalues and Eigenvectors",
+          "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Eigenvalues and Eigenvectors",
+          "url": "https://www.geeksforgeeks.org/eigen-values-and-eigen-vectors/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Diagonalization and Spectral Theorem Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -208,7 +289,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Rank(AB) <= min(Rank(A), Rank(B)); Rank(A^T) = Rank(A)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Matrix+Rank+Row+Echelon+Form+Rank+Nullity+Theorem+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Matrix Rank, Nullity, and Vector Spaces\n\nThe rank of a matrix describes the dimension of the vector space spanned by its rows or columns.\n\n---\n\n## 1. Rank Definitions and Properties\n- **Row Rank = Column Rank = $\\text{Rank}(A) = \\rho(A)$**: The maximum number of linearly independent rows or columns.\n- For an $m \\times n$ matrix:\n  $$\\rho(A) \\le \\min(m, n)$$\n- **Rank of Product:**\n  $$\\rho(A B) \\le \\min(\\rho(A), \\rho(B))$$\n  $$\\rho(A + B) \\le \\rho(A) + \\rho(B)$$\n- **Sylvester's Law of Nullity:**\n  $$\\text{Rank}(A) + \\text{Nullity}(A) = n \\quad (\\text{where } n \\text{ is number of columns})$$\n\n---\n\n## 2. Row Echelon Form (REF)\n- Elementary row operations (row swapping, scalar multiplication, row addition) preserve rank.\n- **Rank = Number of non-zero rows in Row Echelon Form**.\n",
+      "notesMarkdown": "# Matrix Rank, Nullity, and the Rank-Nullity Theorem\n\nThe **Rank** of a matrix measures the non-degeneracy of the system, representing the dimension of the vector space spanned by its rows or columns.\n\n---\n\n## 1. Formal Definition of Matrix Rank\n\nA matrix $A_{m \\times n}$ has rank $r$ ($\\text{Rank}(A) = r$) if:\n1. There exists at least one $r \\times r$ submatrix with non-zero determinant ($\\det \\ne 0$).\n2. The determinant of **every** $(r+1) \\times (r+1)$ submatrix is zero.\n\n### Row Rank equals Column Rank:\nIn any matrix, the maximum number of **linearly independent rows** is mathematically equal to the maximum number of **linearly independent columns**.\n\n---\n\n## 2. Properties and Bounds on Rank\n\nFor any $m \\times n$ matrix $A$:\n1. $\\mathbf{0 \\le \\text{Rank}(A) \\le \\min(m, n)}$.\n2. $\\text{Rank}(A) = 0 \\iff A$ is the zero matrix.\n3. $\\text{Rank}(A) = \\text{Rank}(A^T) = \\text{Rank}(A A^T) = \\text{Rank}(A^T A)$.\n4. **Rank of a Product:**\n   $$\\text{Rank}(AB) \\le \\min(\\text{Rank}(A), \\text{Rank}(B))$$\n   **Sylvester's Inequality:** $\\text{Rank}(AB) \\ge \\text{Rank}(A) + \\text{Rank}(B) - n$ (for $A_{m \\times n}$ and $B_{n \\times p}$).\n5. **Rank of a Sum:**\n   $$\\text{Rank}(A + B) \\le \\text{Rank}(A) + \\text{Rank}(B)$$\n\n---\n\n## 3. The Rank-Nullity Theorem\n\nFor an $m \\times n$ matrix $A$ representing linear map $T: \\mathbb{R}^n \\to \\mathbb{R}^m$:\n- **Rank ($r$):** Dimension of the Column Space / Range ($\\text{Dim}(\\text{Col}(A))$).\n- **Nullity ($k$):** Dimension of the Null Space / Kernel ($\\text{Dim}(\\text{Null}(A))$, solutions to $AX = 0$).\n\n$$\\mathbf{\\text{Rank}(A) + \\text{Nullity}(A) = n \\quad (\\text{Number of Columns / Dimension of Domain})}$$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Upper Bound:** $\\text{Rank}(A_{m \\times n}) \\le \\min(m, n)$.\n- **Full Rank:** Matrix is non-singular $\\iff \\text{Rank}(A_{n \\times n}) = n$.\n- **Rank-Nullity Equation:** $\\text{Rank} + \\text{Nullity} = n$.\n- **Rank Calculation:** Count non-zero rows in Row Echelon Form!\n",
       "questions": [
         {
           "id": "em-rnk-1",
@@ -246,6 +327,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The Rank-Nullity Theorem establishes that for any linear map from R^n to R^m, the dimension of the column space (rank) plus the dimension of the kernel/nullspace (nullity) equals n (number of columns)."
         }
+      ],
+      "prerequisites": [
+        "Matrices and determinants",
+        "Vector linear independence and basis"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.06: The Four Fundamental Subspaces and Matrix Rank",
+          "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Rank of a Matrix",
+          "url": "https://www.geeksforgeeks.org/rank-of-matrix/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Rank-Nullity Theorem and Dimension Calculation",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -268,7 +376,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Standard limits: lim(x->0) sin(x)/x = 1; lim(x->0) (1 + x)^(1/x) = e; lim(x->inf) (1 + 1/x)^x = e."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Limits+and+Continuity+L+Hopital+Rule+Engineering+Mathematics+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Limits and Continuity in Calculus\n\nLimits analyze the local behavior of functions near isolated domain points.\n\n---\n\n## 1. Limit Theorems and Standard Limits\n- **L'Hôpital's Rule:** If $\\lim_{x \\to c} \\frac{f(x)}{g(x)}$ yields indeterminate forms $\\left[\\frac{0}{0}\\right]$ or $\\left[\\frac{\\infty}{\\infty}\\right]$:\n  $$\\lim_{x \\to c} \\frac{f(x)}{g(x)} = \\lim_{x \\to c} \\frac{f'(x)}{g'(x)}$$\n- **High-Yield Standard Limits:**\n  $$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1, \\quad \\lim_{x \\to 0} \\frac{e^x - 1}{x} = 1, \\quad \\lim_{x \\to 0} \\frac{\\ln(1 + x)}{x} = 1$$\n  $$\\lim_{x \\to \\infty} \\left(1 + \\frac{k}{x}\\right)^x = e^k, \\quad \\lim_{x \\to 0} (1 + kx)^{1/x} = e^k$$\n\n---\n\n## 2. Continuity\n- A function $f(x)$ is continuous at $x = c \\iff$:\n  1. $f(c)$ is defined.\n  2. $\\lim_{x \\to c} f(x)$ exists (i.e. Left Hand Limit = Right Hand Limit).\n  3. $\\lim_{x \\to c} f(x) = f(c)$.\n- **Intermediate Value Theorem (IVT):** If $f$ is continuous on $[a, b]$ and $f(a) \\cdot f(b) < 0$, then $\\exists c \\in (a, b)$ such that $f(c) = 0$ (at least one real root).\n",
+      "notesMarkdown": "# Limits, Continuity, Indeterminate Forms, and L'Hôpital's Rule\n\nLimits describe the behavior of a function near a point rather than at that point. They provide the foundational bedrock upon which derivatives, integrals, and asymptotic algorithm analyses are established.\n\n---\n\n## 1. Formal Definition and Existence of Limits\n\n### $\\epsilon$-$\\delta$ Definition of Limit:\n$$\\lim_{x \\to c} f(x) = L$$\nif $\\forall \\epsilon > 0$, $\\exists \\delta > 0$ such that $0 < |x - c| < \\delta \\implies |f(x) - L| < \\epsilon$.\n\n### Existence Criterion:\nThe two-sided limit exists if and only if both the **Left-Hand Limit (LHL)** and **Right-Hand Limit (RHL)** exist, are finite, and are **strictly equal**:\n$$\\lim_{x \\to c^-} f(x) = \\lim_{x \\to c^+} f(x) = L$$\n\n---\n\n## 2. L'Hôpital's Rule for Indeterminate Forms\n\nIf direct substitution yields indeterminate form $\\frac{0}{0}$ or $\\frac{\\pm \\infty}{\\pm \\infty}$, and $f, g$ are differentiable near $c$:\n$$\\mathbf{\\lim_{x \\to c} \\frac{f(x)}{g(x)} = \\lim_{x \\to c} \\frac{f'(x)}{g'(x)}}$$\n*(Warning: Differentiate numerator and denominator separately! Do NOT apply the quotient rule!).*\n\n### Handling Exponential Indeterminate Forms ($1^\\infty, 0^0, \\infty^0$):\nFor limit of form $\\lim [f(x)]^{g(x)}$ yielding $1^\\infty$:\n$$\\mathbf{\\lim_{x \\to c} [f(x)]^{g(x)} = e^{\\lim_{x \\to c} g(x)[f(x) - 1]}}$$\n*Classic Example:* $\\lim_{x \\to 0} (1 + x)^{1/x} = e^{\\lim \\frac{1}{x}(x)} = e^1 = e$.\n\n---\n\n## 3. Continuity and the Intermediate Value Theorem\n\nA function $f(x)$ is **Continuous at point $c$** if and only if three conditions hold:\n1. $f(c)$ is defined.\n2. $\\lim_{x \\to c} f(x)$ exists.\n3. $\\mathbf{\\lim_{x \\to c} f(x) = f(c)}$.\n\n### Intermediate Value Theorem (IVT):\nIf $f(x)$ is continuous on $[a, b]$, and $u$ is any value between $f(a)$ and $f(b)$, then there exists **at least one $c \\in [a, b]$** such that $f(c) = u$.\n- *Bisection Root Finding Application:* If $f(a)$ and $f(b)$ have opposite signs ($f(a) \\cdot f(b) < 0$), then $f(x) = 0$ has at least one real root in $(a, b)$!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Standard Limits:** $\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1, \\quad \\lim_{x \\to 0} \\frac{e^x - 1}{x} = 1, \\quad \\lim_{x \\to 0} \\frac{\\ln(1+x)}{x} = 1$.\n- **$1^\\infty$ Shortcut:** $\\lim f(x)^{g(x)} = e^{\\lim g(x)(f(x) - 1)}$.\n- **Continuity Condition:** $\\text{LHL} = \\text{RHL} = f(c)$.\n",
       "questions": [
         {
           "id": "em-lim-1",
@@ -306,6 +414,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Using the standard limit identity lim_{x -> inf} (1 + k/x)^x = e^k. With k = 2, the limit is e^2."
         }
+      ],
+      "prerequisites": [
+        "Functions and real numbers",
+        "Cartesian coordinate graphing"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.01: Single Variable Calculus - Limits and Continuity",
+          "url": "https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Limits, Continuity and Differentiability",
+          "url": "https://www.geeksforgeeks.org/limits-continuity-and-differentiability/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: L'Hopital's Rule and Indeterminate Forms",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -328,7 +463,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Definite integral of odd function over symmetric interval [-a, a] is 0."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Calculus+Differentiation+and+Integration+Engineering+Mathematics+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Differentiation, Mean Value Theorems, and Integration\n\nCalculus studies instantaneous rates of change and accumulation.\n\n---\n\n## 1. Mean Value Theorems (MVT)\n- **Rolle's Theorem:** If $f(x)$ is continuous on $[a, b]$, differentiable on $(a, b)$, and $f(a) = f(b)$, then $\\exists c \\in (a, b)$ such that:\n  $$f'(c) = 0$$\n- **Lagrange's Mean Value Theorem:** Under continuity on $[a, b]$ and differentiability on $(a, b)$, $\\exists c \\in (a, b)$ such that:\n  $$f'(c) = \\frac{f(b) - f(a)}{b - a}$$\n- **Cauchy's MVT:** $\\frac{f'(c)}{g'(c)} = \\frac{f(b) - f(a)}{g(b) - g(a)}$.\n\n---\n\n## 2. Definite Integrals and Properties\n- **Fundamental Theorem of Calculus:** $\\frac{d}{dx} \\left[ \\int_{a}^{x} f(t) dt \\right] = f(x)$.\n- **Leibniz Integral Rule:**\n  $$\\frac{d}{dx} \\left[ \\int_{u(x)}^{v(x)} f(t) dt \\right] = f(v(x)) \\cdot v'(x) - f(u(x)) \\cdot u'(x)$$\n- **King's Property:** $\\int_{a}^{b} f(x) dx = \\int_{a}^{b} f(a + b - x) dx$.\n",
+      "notesMarkdown": "# Differentiation, Mean Value Theorems, and Integration Techniques\n\nCalculus studies rates of change (differential calculus) and accumulation of quantities (integral calculus), unified by the **Fundamental Theorem of Calculus**.\n\n---\n\n## 1. Differentiation Rules and Theorems\n\nThe derivative represents instantaneous rate of change:\n$$f'(x) = \\lim_{h \\to 0} \\frac{f(x + h) - f(x)}{h}$$\n\n### Rules:\n- **Product Rule:** $(uv)' = u'v + uv'$.\n- **Quotient Rule:** $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$.\n- **Chain Rule:** $\\frac{d}{dx}[f(g(x))] = f'(g(x)) \\cdot g'(x)$.\n\n### Mean Value Theorems:\n1. **Rolle's Theorem:** If $f(x)$ is continuous on $[a, b]$, differentiable on $(a, b)$, and $f(a) = f(b)$, then $\\exists c \\in (a, b)$ such that $\\mathbf{f'(c) = 0}$.\n2. **Lagrange's Mean Value Theorem (LMVT):** If continuous on $[a, b]$ and differentiable on $(a, b)$:\n   $$\\mathbf{f'(c) = \\frac{f(b) - f(a)}{b - a}}$$\n\n---\n\n## 2. Integration by Parts and Leibniz Rule\n\n### Integration by Parts (ILATE Rule):\n$$\\int u \\, dv = uv - \\int v \\, du$$\nPriority for picking $u$: **I**nverse Trig $\\to$ **L**ogarithmic $\\to$ **A**lgebraic $\\to$ **T**rigonometric $\\to$ **E**xponential.\n\n### Leibniz Integral Rule (Differentiation Under the Integral Sign):\n$$\\frac{d}{dx} \\left[ \\int_{u(x)}^{v(x)} f(t) \\, dt \\right] = f(v(x)) \\cdot v'(x) - f(u(x)) \\cdot u'(x)$$\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **LMVT:** Tangent slope equals secant line slope: $f'(c) = \\frac{f(b)-f(a)}{b-a}$.\n- **Parts Formula:** $\\int u \\, dv = uv - \\int v \\, du$.\n- **Leibniz Derivative:** Substitute upper limit $\\times$ upper derivative $-$ substitute lower limit $\\times$ lower derivative.\n",
       "questions": [
         {
           "id": "em-di-1",
@@ -366,6 +501,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Average rate of change = (f(2) - f(0)) / (2 - 0) = (4 - 0) / 2 = 2. Since f'(x) = 2x, setting f'(c) = 2 gives 2c = 2 => c = 1."
         }
+      ],
+      "prerequisites": [
+        "Limits, continuity, and functions",
+        "Algebraic manipulation"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.01: Single Variable Calculus - Derivatives and Integrals",
+          "url": "https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Calculus - Differentiation and Integration",
+          "url": "https://www.geeksforgeeks.org/calculus-in-engineering-mathematics/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Calculus and Integration by Parts Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -388,7 +550,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "If f''(c) = 0, the second derivative test is inconclusive; use first derivative sign change."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Maxima+and+Minima+First+Second+Derivative+Test+Calculus+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Maxima and Minima: Optimization Techniques\n\nFinding local and global extrema of single and multivariable functions.\n\n---\n\n## 1. Single-Variable Optimization\n- **Critical Points:** Points where $f'(x) = 0$ or $f'(x)$ is undefined.\n- **Second Derivative Test:**\n  - If $f'(c) = 0$ and $f''(c) < 0 \\implies$ Local Maximum at $c$.\n  - If $f'(c) = 0$ and $f''(c) > 0 \\implies$ Local Minimum at $c$.\n  - If $f'(c) = 0$ and $f''(c) = 0 \\implies$ Inconclusive (check higher-order derivatives or sign change of $f'$).\n\n---\n\n## 2. Multivariable Extrema (Hessian Matrix)\nFor $f(x, y)$, stationary points satisfy $f_x = 0$ and $f_y = 0$.\n- Compute discriminant:\n  $$D = f_{xx} f_{yy} - (f_{xy})^2$$\n  1. If $D > 0$ and $f_{xx} > 0 \\implies$ Local Minimum.\n  2. If $D > 0$ and $f_{xx} < 0 \\implies$ Local Maximum.\n  3. If $D < 0 \\implies$ **Saddle Point** (neither maximum nor minimum).\n  4. If $D = 0 \\implies$ Inconclusive.\n",
+      "notesMarkdown": "# Maxima, Minima, Concavity, and Taylor Series Approximations\n\nOptimization is the computational process of finding inputs that maximize throughput or minimize loss, error, or cost functions.\n\n---\n\n## 1. Critical Points and Derivative Tests\n\nA **Critical Point** occurs where $f'(c) = 0$ or $f'(c)$ is undefined.\n\n```\n                  Local Maximum (f' = 0, f'' < 0)\n                            /---\\\\\n                           /     \\\\\n                          /       \\\\\n                         /         \\\\   Point of Inflection (f'' = 0)\n                        /           \\\\      +\n                                     \\\\    /\n                                      \\\\--/\n                             Local Minimum (f' = 0, f'' > 0)\n```\n\n### Second Derivative Test:\n1. Find all roots of $f'(x) = 0$.\n2. Evaluate $f''(x)$ at each root $c$:\n   - If $\\mathbf{f''(c) < 0} \\implies$ **Local Maximum** (concave downward).\n   - If $\\mathbf{f''(c) > 0} \\implies$ **Local Minimum** (concave upward).\n   - If $\\mathbf{f''(c) = 0} \\implies$ Test is inconclusive (apply First Derivative Test or check higher derivatives).\n\n---\n\n## 2. Points of Inflection\n\nA **Point of Inflection** is a point on the curve where the concavity changes (from concave upward to concave downward, or vice versa).\n- Necessary condition: $f''(c) = 0$ or $f''(c)$ does not exist.\n- Sufficient condition: $f''(x)$ changes sign as $x$ passes through $c$.\n\n---\n\n## 3. Taylor and Maclaurin Series\n\nAny smooth infinitely differentiable function $f(x)$ can be approximated around $x = a$ as a polynomial:\n$$f(x) = \\sum_{n=0}^{\\infty} \\frac{f^{(n)}(a)}{n!} (x - a)^n = f(a) + f'(a)(x-a) + \\frac{f''(a)}{2!}(x-a)^2 + \\dots$$\nWhen expanded around $a = 0$, it is called the **Maclaurin Series**:\n- $e^x = 1 + x + \\frac{x^2}{2!} + \\frac{x^3}{3!} + \\dots$\n- $\\sin x = x - \\frac{x^3}{3!} + \\frac{x^5}{5!} - \\dots$\n- $\\cos x = 1 - \\frac{x^2}{2!} + \\frac{x^4}{4!} - \\dots$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Stationary Point:** $f'(x) = 0$.\n- **Local Max:** $f'(x) = 0 \\land f''(x) < 0$.\n- **Local Min:** $f'(x) = 0 \\land f''(x) > 0$.\n- **Inflection Point:** Concavity changes sign ($f''(x) = 0$).\n",
       "questions": [
         {
           "id": "em-mm-1",
@@ -426,6 +588,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "When the discriminant D = f_xx * f_yy - (f_xy)^2 is negative, the surface curves upwards in one direction and downwards in another, creating a saddle point (minimax)."
         }
+      ],
+      "prerequisites": [
+        "Differentiation rules and limits",
+        "Polynomial algebra"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.01: Maxima, Minima, and Curve Sketching",
+          "url": "https://www.ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Maxima and Minima in Engineering Mathematics",
+          "url": "https://www.geeksforgeeks.org/maxima-and-minima-in-calculus/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Optimization, Concavity, and Inflection Points",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -448,7 +637,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Hessian matrix of second partial derivatives determines multivariate extrema via its determinant."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Partial+Derivatives+Gradient+Hessian+Matrix+Engineering+Mathematics+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Partial Derivatives and Vector Calculus\n\nMultivariable calculus extends differentiation across multiple independent spatial dimensions.\n\n---\n\n## 1. Directional Derivatives & Gradient\n- **Gradient Vector ($\\nabla f$):** Points in the direction of **maximum rate of increase**:\n  $$\\nabla f = \\frac{\\partial f}{\\partial x} \\hat{i} + \\frac{\\partial f}{\\partial y} \\hat{j} + \\frac{\\partial f}{\\partial z} \\hat{k}$$\n  - Maximum rate of increase $= |\\nabla f|$.\n  - Directional derivative along unit vector $\\hat{u}$: $D_u f = \\nabla f \\cdot \\hat{u}$.\n\n---\n\n## 2. Divergence and Curl\n- **Divergence ($\\nabla \\cdot \\vec{F}$):** Net outward flux per unit volume.\n  - If $\\nabla \\cdot \\vec{F} = 0 \\implies$ Field is **Solenoidal**.\n- **Curl ($\\nabla \\times \\vec{F}$):** Tendency to rotate about an axis.\n  - If $\\nabla \\times \\vec{F} = \\vec{0} \\implies$ Field is **Irrotational (Conservative)**, and $\\vec{F} = \\nabla \\phi$.\n",
+      "notesMarkdown": "# Partial Derivatives, Gradient Vectors, and Multivariable Extrema\n\nMultivariable calculus extends single-variable analysis to functions of multiple variables ($z = f(x, y)$), providing the mathematical core for gradient descent algorithms in machine learning and neural networks.\n\n---\n\n## 1. Partial Derivatives and Clairaut's Theorem\n\nThe partial derivative $\\frac{\\partial f}{\\partial x}$ evaluates the rate of change with respect to $x$ while treating all other variables as constants.\n- **Clairaut's (Schwarz's) Theorem:**\n  If the mixed partial derivatives are continuous, their evaluation order is commutative:\n  $$\\mathbf{\\frac{\\partial^2 f}{\\partial x \\partial y} = \\frac{\\partial^2 f}{\\partial y \\partial x}}$$\n\n---\n\n## 2. The Gradient Vector ($\\nabla f$) and Directional Derivatives\n\nThe **Gradient** of scalar function $f(x, y, z)$ is a vector pointing in the direction of **maximum rate of increase**:\n$$\\nabla f = \\left\\langle \\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y}, \\frac{\\partial f}{\\partial z} \\right\\rangle$$\n- **Maximum Rate of Increase:** Equals the magnitude of the gradient: $|\\nabla f|$.\n- **Directional Derivative** along unit vector $\\hat{u}$:\n  $$D_{\\hat{u}} f = \\nabla f \\cdot \\hat{u}$$\n\n---\n\n## 3. Multivariable Extrema and the Hessian Matrix\n\nFor function $f(x, y)$, stationary points occur where:\n$$\\frac{\\partial f}{\\partial x} = 0 \\quad \\text{and} \\quad \\frac{\\partial f}{\\partial y} = 0$$\n\nLet:\n$$r = f_{xx}, \\quad s = f_{xy}, \\quad t = f_{yy}, \\quad \\mathbf{\\Delta = rt - s^2} = \\det(\\text{Hessian})$$\n\n### The Second Partials Test:\n1. If $\\mathbf{\\Delta > 0}$ and $\\mathbf{r > 0} \\implies$ **Local Minimum**.\n2. If $\\mathbf{\\Delta > 0}$ and $\\mathbf{r < 0} \\implies$ **Local Maximum**.\n3. If $\\mathbf{\\Delta < 0} \\implies$ **Saddle Point** (surface curves upward in one direction and downward in another!).\n4. If $\\Delta = 0 \\implies$ Test is inconclusive.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Gradient:** $\\nabla f = \\langle f_x, f_y, f_z \\rangle$.\n- **Hessian Discriminant:** $\\Delta = f_{xx} f_{yy} - (f_{xy})^2$.\n- **Saddle Point Condition:** $\\Delta < 0$.\n",
       "questions": [
         {
           "id": "em-pd-1",
@@ -486,6 +675,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The gradient vector grad(f) points in the direction of maximum directional derivative (steepest ascent) at that point, and its magnitude equals this maximum rate of change."
         }
+      ],
+      "prerequisites": [
+        "Single-variable differentiation and integration",
+        "Vector geometry"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.02: Multivariable Calculus - Gradients and Extrema",
+          "url": "https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Partial Derivatives and Multivariable Calculus",
+          "url": "https://www.geeksforgeeks.org/partial-derivatives-in-calculus/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Gradient, Hessian, and Saddle Points Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -508,7 +724,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "Bayes' Theorem updates prior probabilities to posterior probabilities using likelihood evidence."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Conditional+Probability+Bayes+Theorem+Engineering+Mathematics+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Conditional Probability and Bayes' Theorem\n\nBayesian probability updates the likelihood of an hypothesis as more evidence becomes available.\n\n---\n\n## 1. Conditional Probability\nFor events $A$ and $B$ with $P(B) > 0$:\n$$P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}$$\n- If $A$ and $B$ are **independent**: $P(A \\mid B) = P(A)$, which implies $P(A \\cap B) = P(A) \\cdot P(B)$.\n\n---\n\n## 2. Law of Total Probability\nIf $B_1, B_2, \\dots, B_k$ partition sample space $S$ ($B_i \\cap B_j = \\emptyset$, $\\bigcup B_i = S$):\n$$P(A) = \\sum_{i=1}^{k} P(A \\mid B_i) \\cdot P(B_i)$$\n\n---\n\n## 3. Bayes' Theorem\nCalculates posterior probability of cause $B_j$ given observed effect $A$:\n$$P(B_j \\mid A) = \\frac{P(A \\mid B_j) \\cdot P(B_j)}{\\sum_{i=1}^{k} P(A \\mid B_i) \\cdot P(B_i)}$$\n",
+      "notesMarkdown": "# Conditional Probability, Law of Total Probability, and Bayes' Theorem\n\nProbability theory provides the mathematical foundations for modeling uncertainty, randomized algorithms, probabilistic data structures (Bloom filters), and machine learning classification (Naive Bayes).\n\n---\n\n## 1. Conditional Probability and Independent Events\n\nThe **Conditional Probability** of event $A$ occurring given that event $B$ has already occurred ($P(B) > 0$):\n$$\\mathbf{P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}}$$\n\n### Independent Events:\nTwo events $A$ and $B$ are **statistically independent** if and only if the occurrence of one provides zero information about the occurrence of the other:\n$$\\mathbf{P(A \\cap B) = P(A) \\cdot P(B) \\iff P(A \\mid B) = P(A)}$$\n*(Note: Mutually exclusive events with $P > 0$ can NEVER be independent, because if one occurs, the other cannot!).*\n\n---\n\n## 2. Law of Total Probability\n\nLet $B_1, B_2, \\dots, B_n$ form a mutually exclusive and exhaustive partition of sample space $S$ ($\\bigcup B_i = S$ and $B_i \\cap B_j = \\emptyset$).\nFor any event $A$:\n$$\\mathbf{P(A) = \\sum_{i=1}^n P(B_i) \\cdot P(A \\mid B_i)}$$\n\n---\n\n## 3. Bayes' Theorem (Inverse Probability)\n\nBayes' Theorem updates the prior probability of a hypothesis $B_k$ upon observing evidence $A$:\n$$\\mathbf{P(B_k \\mid A) = \\frac{P(B_k) \\cdot P(A \\mid B_k)}{\\sum_{i=1}^n P(B_i) \\cdot P(A \\mid B_i)}}$$\n\n### Numerical Medical Diagnosis Example:\n- A disease affects $1\\%$ of the population: $P(D) = 0.01 \\implies P(\\overline{D}) = 0.99$.\n- Test accuracy: $P(T^+ \\mid D) = 0.95$ (True Positive), $P(T^+ \\mid \\overline{D}) = 0.05$ (False Positive).\n- **Question:** If a person tests positive ($T^+$), what is the probability they actually have the disease?\n$$P(D \\mid T^+) = \\frac{P(D) P(T^+ \\mid D)}{P(D) P(T^+ \\mid D) + P(\\overline{D}) P(T^+ \\mid \\overline{D})} = \\frac{0.01 \\times 0.95}{(0.01 \\times 0.95) + (0.99 \\times 0.05)} = \\frac{0.0095}{0.0095 + 0.0495} = \\frac{0.0095}{0.0590} \\approx \\mathbf{16.1\\%}$$\nEven with a 95% accurate test, because the disease is rare, a positive result indicates only a ~16% chance of infection!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Multiplication Rule:** $P(A \\cap B) = P(B) \\cdot P(A \\mid B)$.\n- **Independence:** $P(A \\cap B) = P(A) P(B)$.\n- **Bayes' Rule:** $\\text{Posterior} = \\frac{\\text{Prior} \\times \\text{Likelihood}}{\\text{Evidence}}$.\n",
       "questions": [
         {
           "id": "em-cp-1",
@@ -545,6 +761,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "By the multiplication rule of conditional probability: P(A n B) = P(A | B) * P(B) = 0.3 * 0.4 = 0.12."
+        }
+      ],
+      "prerequisites": [
+        "Basic set theory and probability spaces",
+        "Venn diagrams and events"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.05: Introduction to Probability and Statistics",
+          "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2014/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Bayes' Theorem in Engineering Mathematics",
+          "url": "https://www.geeksforgeeks.org/bayes-theorem-in-probability/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Conditional Probability and Bayes' Rule Calculations",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -606,6 +849,26 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By the fundamental axiom of probability, the total probability over the entire support must equal 1: integral from -infinity to +infinity of f(x) dx = 1."
         }
+      ],
+      "prerequisites": [
+        "Sample Space and Probability Events",
+        "Calculus Integrals and Summations"
+      ],
+      "externalResources": [
+        {
+          "title": "Random Variables and Probability Functions — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/random-variables-in-probability/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Probabilistic Systems Analysis (6.041) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-041-probabilistic-systems-analysis-and-applied-probability-fall-2010/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -666,6 +929,26 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A distinctive mathematical property of the Poisson distribution is that its expected value (mean) and its variance are identical and equal to parameter lambda."
         }
+      ],
+      "prerequisites": [
+        "Random Variables",
+        "Permutations and Combinations"
+      ],
+      "externalResources": [
+        {
+          "title": "Standard Probability Distributions — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/probability-distributions-in-statistics/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Applied Probability & Distributions (6.041) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-041-probabilistic-systems-analysis-and-applied-probability-fall-2010/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -688,7 +971,7 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
         "For independent variables X and Y: Var(X + Y) = Var(X) + Var(Y)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Mean+Variance+Standard+Deviation+Properties+Probability+Engineering+Mathematics+gate+lecture",
-      "notesMarkdown": "# Mean, Variance, and Standard Deviation\n\nMeasures of central tendency and dispersion characterize random variable distributions.\n\n---\n\n## 1. Expectation and Mean\n$$\\mu = E[X] = \\begin{cases} \\sum x_i P(x_i) & (\\text{discrete}) \\\\ \\int_{-\\infty}^{\\infty} x f(x) dx & (\\text{continuous}) \\end{cases}$$\n- **Linearity of Expectation (Always holds regardless of independence):**\n  $$E[aX + bY + c] = a E[X] + b E[Y] + c$$\n\n---\n\n## 2. Variance and Standard Deviation\n$$\\text{Var}(X) = \\sigma^2 = E[(X - \\mu)^2] = E[X^2] - (E[X])^2$$\n$$\\text{SD}(X) = \\sigma = \\sqrt{\\text{Var}(X)}$$\n- **Properties:**\n  - $\\text{Var}(aX + b) = a^2 \\text{Var}(X)$\n  - If $X$ and $Y$ are **independent**: $\\text{Var}(X + Y) = \\text{Var}(X) + \\text{Var}(Y)$.\n  - In general: $\\text{Var}(X + Y) = \\text{Var}(X) + \\text{Var}(Y) + 2 \\text{Cov}(X, Y)$.\n",
+      "notesMarkdown": "# Random Variables, Expectation, Variance, and Classical Distributions\n\nRandom variables map outcomes of random phenomena into real numbers, allowing statistical modeling of execution latencies, network packet arrivals, and stochastic algorithmic performance.\n\n---\n\n## 1. Expected Value (Mean $\\mu$) and Variance ($\\sigma^2$)\n\n### Expected Value $E[X]$:\nThe probability-weighted average of all possible values:\n- **Discrete:** $E[X] = \\sum x_i \\cdot P(X = x_i)$.\n- **Continuous:** $E[X] = \\int_{-\\infty}^{\\infty} x \\cdot f(x) \\, dx$.\n- **Linearity of Expectation (Holds ALWAYS, even if variables are dependent!):**\n  $$\\mathbf{E[aX + bY] = aE[X] + bE[Y]}$$\n\n### Variance $\\text{Var}(X)$ and Standard Deviation ($\\sigma$):\nMeasures dispersion around the mean:\n$$\\mathbf{\\text{Var}(X) = \\sigma^2 = E[(X - \\mu)^2] = E[X^2] - (E[X])^2}$$\n- **Variance Scaling:** $\\text{Var}(aX + b) = a^2 \\text{Var}(X)$.\n- **Sum of Independent Variables:** $\\text{Var}(X + Y) = \\text{Var}(X) + \\text{Var}(Y)$ (if $X, Y$ independent).\n- **Standard Deviation:** $\\sigma = \\sqrt{\\text{Var}(X)}$.\n\n---\n\n## 2. Classical Probability Distributions\n\n### 1. Binomial Distribution ($X \\sim B(n, p)$)\nNumber of successes in $n$ independent Bernoulli trials:\n- PMF: $P(X = k) = \\binom{n}{k} p^k (1 - p)^{n - k}$.\n- **Mean:** $\\mu = np$.\n- **Variance:** $\\sigma^2 = np(1 - p)$.\n\n### 2. Poisson Distribution ($X \\sim \\text{Poisson}(\\lambda)$)\nModels rare events occurring at a constant average rate $\\lambda$ per unit interval (e.g., web server request arrivals):\n- PMF: $P(X = k) = \\frac{e^{-\\lambda} \\lambda^k}{k!}$.\n- **Mean = Variance = $\\lambda$**!\n\n### 3. Normal (Gaussian) Distribution ($X \\sim N(\\mu, \\sigma^2)$)\nContinuous bell-curve governed by the Central Limit Theorem:\n- **Empirical 68-95-99.7 Rule:**\n  - $68.2\\%$ of data falls within $\\mu \\pm 1\\sigma$.\n  - $95.4\\%$ of data falls within $\\mu \\pm 2\\sigma$.\n  - $99.7\\%$ of data falls within $\\mu \\pm 3\\sigma$.\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **Variance Formula:** $\\text{Var}(X) = E[X^2] - (E[X])^2$.\n- **Linearity of Expectation:** $E[X + Y] = E[X] + E[Y]$ (always).\n- **Poisson Unique Identity:** $\\text{Mean} = \\text{Variance} = \\lambda$.\n- **Binomial Moments:** $\\text{Mean} = np, \\quad \\text{Variance} = npq$.\n",
       "questions": [
         {
           "id": "em-mvs-1",
@@ -725,6 +1008,33 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Using variance properties: Var(aX + b) = a^2 * Var(X). Here a = 3 and b = 5: Var(3X + 5) = 3^2 * Var(X) = 9 * 9 = 81."
+        }
+      ],
+      "prerequisites": [
+        "Probability basics and discrete random variables",
+        "Summations and integrals"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.05: Random Variables, Expectation, and Variance",
+          "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2014/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Mean, Variance and Standard Deviation",
+          "url": "https://www.geeksforgeeks.org/mean-variance-and-standard-deviation/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Probability Distributions (Binomial, Poisson, Normal)",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -786,6 +1096,19 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Linearity of expectation holds universally for any random variables regardless of whether they are independent or correlated: E[aX + bY + c] = aE[X] + bE[Y] + c."
         }
+      ],
+      "prerequisites": [
+        "Discrete and Continuous Random Variables",
+        "Linearity of Expectation"
+      ],
+      "externalResources": [
+        {
+          "title": "Mathematical Expectation, Variance and Covariance — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/expectation-and-variance/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -845,6 +1168,19 @@ export const ENGINEERING_MATH_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "The Secant Method approximates derivatives with finite differences, achieving a superlinear order of convergence equal to the golden ratio phi = (1 + sqrt(5)) / 2 approx 1.618."
+        }
+      ],
+      "prerequisites": [
+        "Differential Calculus",
+        "Matrix Gaussian Elimination"
+      ],
+      "externalResources": [
+        {
+          "title": "Numerical Methods: Root Finding & Quadrature — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/program-for-newton-raphson-method/",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     }

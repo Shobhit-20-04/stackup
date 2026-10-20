@@ -13,7 +13,7 @@ export const OOPS_CATEGORY: SectionCategory = {
       "title": "The 4 Pillars of OOP & Polymorphism",
       "description": "Encapsulation, Abstraction, Inheritance, Compile-time vs Runtime Polymorphism, and Virtual Tables.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# The 4 Core Pillars of OOP\n\n---\n\n## 1. Encapsulation\nBundling data (attributes) and methods that operate on that data into a single unit (class), while restricting direct access using access specifiers (`private`, `protected`, `public`).\n\n---\n\n## 2. Abstraction\nHiding internal implementation details and exposing only the essential interface to the user. Achieved via **Abstract Classes** and **Interfaces**.\n\n---\n\n## 3. Inheritance\nMechanism where a subclass inherits properties and behaviors from a parent class (IS-A relationship), promoting code reuse.\n\n---\n\n## 4. Polymorphism\nAbility of an object to take on many forms:\n- **Compile-time (Static) Polymorphism:** Method Overloading and Operator Overloading. Resolved at compile time.\n- **Run-time (Dynamic) Polymorphism:** Method Overriding. Resolved at runtime using **vtable (Virtual Method Table)** and **vptr**.\n",
+      "notesMarkdown": "# The 4 Pillars of Object-Oriented Programming & Polymorphic Dispatch\n\nObject-Oriented Programming (OOP) is an architectural paradigm that structures software as networks of collaborating objects encapsulating state, behavior, and identity.\n\n---\n\n## 1. Architectural Overview & The 4 Pillars\n\n```\n+--------------------------------------------------------------------------+\n|                        THE 4 FOUNDATIONAL PILLARS                        |\n+--------------------------------------------------------------------------+\n| 1. Encapsulation   | Data hiding + bundling data with operations         |\n| 2. Abstraction     | Contract definitions; hiding procedural complexity  |\n| 3. Inheritance     | Subtyping (\"IS-A\") and behavioral specialization    |\n| 4. Polymorphism    | Dynamic dispatch; unified interfaces for behaviors  |\n+--------------------------------------------------------------------------+\n```\n\n### Pillar 1: Encapsulation (Information Hiding)\nEncapsulation groups mutable state together with the operations permitted to mutate that state, restricting direct external mutation through explicit access boundaries (`private`, `protected`, `public`, `package-private`).\n\n- **Internal Invariant Protection:** External callers cannot place an entity into an invalid state (e.g., negative balance, invalid date).\n- **Access Modifiers Contract:**\n  - `private`: Accessible exclusively within the lexical scope of the defining class.\n  - `protected`: Accessible within defining class, derived subclasses, and same-package units.\n  - `public`: Unrestricted universal access.\n\n```java\npublic class BankAccount {\n    private double balance; // Hidden internal state\n\n    public BankAccount(double initialDeposit) {\n        if (initialDeposit < 0) throw new IllegalArgumentException(\"Deposit cannot be negative\");\n        this.balance = initialDeposit;\n    }\n\n    public synchronized void withdraw(double amount) {\n        if (amount <= 0 || amount > balance) {\n            throw new InsufficientFundsException(\"Invalid withdrawal: \" + amount);\n        }\n        this.balance -= amount;\n    }\n\n    public double getBalance() { return balance; } // Read-only accessor\n}\n```\n\n### Pillar 2: Abstraction (Interface Segregation & Complexity Reduction)\nAbstraction models essential domain features while omitting underlying hardware or execution details. It establishes a declarative contract between caller and callee.\n- **Abstract Classes:** Classes that cannot be directly instantiated and may provide partial implementation along with pure abstract method hooks.\n- **Interfaces:** Pure behavioral contracts defining method signatures that adhering concrete classes must implement.\n\n### Pillar 3: Inheritance (Hierarchical Subtyping & Code Reuse)\nInheritance allows a derived class (child/subclass) to inherit attributes and methods from an ancestor class (parent/superclass), modeling an **IS-A** relationship.\n\n```\n       +-----------------------+\n       |     PaymentGateway    |  (Abstract Base)\n       +-----------------------+\n                   ^\n         +---------+---------+\n         |                   |\n+-----------------+ +-----------------+\n|  StripeGateway  | |  PayPalGateway  |  (Concrete Implementations)\n+-----------------+ +-----------------+\n```\n\n#### Pitfalls of Deep Inheritance & The Diamond Problem\nWhen multiple inheritance allows a class to inherit from two parent classes that share a common ancestor:\n```\n       [ Class A ]\n       /         \\\n   [ Class B ]  [ Class C ]\n       \\         /\n       [ Class D ]  <-- Which copy of Class A's fields/methods does D inherit?\n```\n- Languages like C++ resolve this using **Virtual Base Classes** (`virtual public A`).\n- Modern languages like Java, C#, and Go forbid multiple class inheritance, allowing only multiple interface implementation to eliminate state ambiguity.\n- **Architectural Directive:** *\"Favor Object Composition over Class Inheritance.\"* Inheritance creates tight compile-time coupling; composition (HAS-A) permits runtime component swappability.\n\n### Pillar 4: Polymorphism (Static vs. Dynamic Dispatch)\nPolymorphism allows objects belonging to disparate classes to be manipulated through a unified uniform interface.\n\n```\n+--------------------+--------------------------------+--------------------------------+\n| Dimension          | Compile-Time (Static Binding)  | Runtime (Dynamic Binding)      |\n+--------------------+--------------------------------+--------------------------------+\n| Mechanism          | Method Overloading / Generics  | Method Overriding (Inheritance)|\n| Resolution Time    | Compilation phase              | Execution phase via vtable     |\n| Performance Cost   | Zero runtime lookup overhead   | Pointer dereference overhead   |\n| Flexibility        | Fixed signature variations     | Dynamic runtime dispatch       |\n+--------------------+--------------------------------+--------------------------------+\n```\n\n---\n\n## 2. Low-Level Mechanics: Virtual Table (`vtable`) & Virtual Pointer (`vptr`)\n\nWhen a class declares or overrides a virtual function in C++ or any non-final method in Java, the compiler injects runtime type information structures:\n\n```\nObject Instance in Heap:                     Class VTABLE in Text/Data Segment:\n+------------------------+                  +--------------------------------+\n|  vptr (hidden pointer) | ---------------> | Index 0: &Shape::draw()        |\n+------------------------+                  | Index 1: &Circle::area()       |\n|  radius = 5.0          |                  | Index 2: &Circle::perimeter()  |\n+------------------------+                  +--------------------------------+\n```\n\n1. **`vtable` (Virtual Method Table):** An immutable, per-class static array of function pointers storing addresses of the most derived method implementations.\n2. **`vptr` (Virtual Table Pointer):** A hidden pointer injected by the compiler as the first field (offset 0) of every object instance of a polymorphic class, pointing to that class's `vtable`.\n3. **Dispatch Operation:** Calling `shapePtr->draw()` translates in machine code to:\n   ```c\n   // 1. Dereference object to get vtable address\n   void** vtable = *(void***)shapePtr;\n   // 2. Index into vtable to find function pointer for draw() (offset 0)\n   typedef void (*DrawFunc)(Shape*);\n   DrawFunc fn = (DrawFunc)vtable[0];\n   // 3. Execute function passing 'this' pointer as first argument\n   fn(shapePtr);\n   ```\n\n---\n\n## 3. High-Frequency Interview Comparison: Overloading vs Overriding\n\n| Characteristic | Method Overloading | Method Overriding |\n| :--- | :--- | :--- |\n| **Pillar Category** | Static / Compile-Time Polymorphism | Dynamic / Runtime Polymorphism |\n| **Scope** | Same class | Base class and Derived class |\n| **Method Name** | Must be identical | Must be identical |\n| **Parameter List** | **Must differ** in type, number, or order | **Must be strictly identical** |\n| **Return Type** | Can be different | Must match or be covariant (sub-type) |\n| **Private Methods** | Can overload private methods | Cannot override private methods (hidden) |\n| **Static Methods** | Can overload static methods | Cannot override static methods (method hiding) |\n\n---\n\n## 4. Key Architectural Anti-Patterns to Avoid\n\n1. **God Object (Monolithic Class):** Aggregating unrelated domain logic into a single class, violating single responsibility.\n2. **Fragile Base Class Problem:** Changes made to a superclass inadvertently breaking assumptions and logic in deeply nested subclasses.\n3. **Object Slicing:** Occurs when passing a derived class instance by value into a parameter expecting a base class object; derived member fields are sliced off.\n",
       "questions": [
         {
           "id": "oop-1",
@@ -65,7 +65,34 @@ export const OOPS_CATEGORY: SectionCategory = {
         "Inheritance: IS-A relationship; favor Composition (HAS-A) for flexible architectures.",
         "Polymorphism: Compile-time (Overloading) vs Run-time (Overriding / Virtual dispatch)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=The+4+Pillars+of+OOP+%26+Polymorphism+OOPs+%26+Design+Patterns+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=The+4+Pillars+of+OOP+%26+Polymorphism+OOPs+%26+Design+Patterns+lecture",
+      "prerequisites": [
+        "Basic Class and Object Syntax",
+        "Procedural vs Object-Oriented Paradigms"
+      ],
+      "externalResources": [
+        {
+          "title": "Object-Oriented Programming Concepts — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Java Object-Oriented Programming — W3Schools",
+          "provider": "W3Schools",
+          "url": "https://www.w3schools.com/java/java_oop.asp",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Software Construction in Java: OOP — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-005-software-construction-spring-2016/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "solid-principles",
@@ -73,7 +100,7 @@ export const OOPS_CATEGORY: SectionCategory = {
       "title": "SOLID Design Principles with Code Patterns",
       "description": "Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "\n# SOLID Design Principles\n\nFive essential principles for architecting maintainable, scalable object-oriented software.\n\n---\n\n## 1. Single Responsibility Principle (SRP)\nA class should have **one, and only one, reason to change**. Avoid \"God Objects\".\n\n---\n\n## 2. Open/Closed Principle (OCP)\nSoftware entities should be **open for extension, but closed for modification**. Use polymorphism and interfaces instead of sprawling `if/switch` branches.\n\n---\n\n## 3. Liskov Substitution Principle (LSP)\nSubtypes must be substitutable for their base types without altering program correctness (e.g. Classic violation: `Square` subclassing `Rectangle`).\n\n---\n\n## 4. Interface Segregation Principle (ISP)\nClients should not be forced to depend upon interfaces that they do not use. Prefer many small, cohesive interfaces over one fat interface.\n\n---\n\n## 5. Dependency Inversion Principle (DIP)\nHigh-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details.\n",
+      "notesMarkdown": "# SOLID Principles of Object-Oriented Software Architecture\n\nThe SOLID principles are five foundational design guidelines formulated by Robert C. Martin (\"Uncle Bob\") to create understandable, flexible, and maintainable software systems that adapt gracefully to evolving requirements.\n\n---\n\n## 1. Overview of the 5 Principles\n\n```\n+--------------------------------------------------------------------------+\n|                             SOLID PRINCIPLES                             |\n+--------------------------------------------------------------------------+\n| S - Single Responsibility Principle (SRP)                                |\n|     A class should have one, and only one, reason to change.             |\n|                                                                          |\n| O - Open/Closed Principle (OCP)                                          |\n|     Software entities should be open for extension, closed for mod.      |\n|                                                                          |\n| L - Liskov Substitution Principle (LSP)                                  |\n|     Subtypes must be substitutable for their base types seamlessly.       |\n|                                                                          |\n| I - Interface Segregation Principle (ISP)                                |\n|     Clients should not be forced to depend upon methods they do not use. |\n|                                                                          |\n| D - Dependency Inversion Principle (DIP)                                 |\n|     High-level modules must depend on abstractions, not concretions.     |\n+--------------------------------------------------------------------------+\n```\n\n---\n\n## 2. In-Depth Principle Breakdown with Code Examples\n\n### 1. Single Responsibility Principle (SRP)\n> *\"A class should have one, and only one, reason to change.\"*\n\n- **The Problem:** A class that handles user business logic, generates PDF reports, and manages SQL database writes has three actors/reasons to change. Modifying the PDF layout risks breaking user authentication or database transactions.\n- **Refactoring:** Decouple into discrete cohesive units: `UserService`, `UserPdfReportGenerator`, and `UserRepository`.\n\n```java\n// VIOLATION: Mixed responsibilities\nclass UserAccount {\n    public void registerUser() { /* business logic */ }\n    public void saveToDatabase() { /* SQL persistence logic */ }\n    public void sendWelcomeEmail() { /* SMTP network protocol */ }\n}\n\n// COMPLIANT: Segregated responsibilities\nclass UserAccount { /* Core domain state & invariants */ }\nclass UserRepository { public void save(UserAccount user) { /* DB */ } }\nclass NotificationService { public void sendWelcomeEmail(UserAccount user) { /* Mail */ } }\n```\n\n---\n\n### 2. Open/Closed Principle (OCP)\n> *\"Software entities (classes, modules, functions) should be open for extension, but closed for modification.\"*\n\n- **The Problem:** Using giant `switch(type)` or `if-else` chains. Adding a new payment provider requires editing and risking regressions across existing battle-tested code.\n- **Refactoring:** Leverage polymorphism with strategy interfaces.\n\n```java\n// COMPLIANT: Open for new gateways via extension, closed for modification\npublic interface PaymentStrategy {\n    void processPayment(double amount);\n}\n\npublic class CreditCardPayment implements PaymentStrategy {\n    public void processPayment(double amount) { /* Card gateway */ }\n}\n\npublic class CryptoPayment implements PaymentStrategy {\n    public void processPayment(double amount) { /* Web3 blockchain */ }\n}\n\npublic class CheckoutService {\n    public void completeOrder(PaymentStrategy payment, double amount) {\n        payment.processPayment(amount); // Agnostic of concrete payment type\n    }\n}\n```\n\n---\n\n### 3. Liskov Substitution Principle (LSP)\n> *\"Subtypes must be substitutable for their base types without altering program correctness.\"*\n\n- **Formal Definition (Barbara Liskov):** If $S$ is a subtype of $T$, then objects of type $T$ in a program may be replaced with objects of type $S$ without altering any of the desirable properties of that program.\n- **The Classic Square-Rectangle Violation:**\n  ```java\n  class Rectangle {\n      protected int width, height;\n      public void setWidth(int w) { this.width = w; }\n      public void setHeight(int h) { this.height = h; }\n      public int getArea() { return width * height; }\n  }\n\n  class Square extends Rectangle {\n      @Override public void setWidth(int w) { this.width = this.height = w; }\n      @Override public void setHeight(int h) { this.width = this.height = h; }\n  }\n  ```\n  If client code assumes:\n  ```java\n  void resize(Rectangle r) {\n      r.setWidth(5);\n      r.setHeight(10);\n      assert r.getArea() == 50; // FAILS FOR SQUARE (Area becomes 100)!\n  }\n  ```\n- **Correction:** `Square` should not inherit from `Rectangle` if dimension independence is an invariant. Both can implement a common `Shape` interface providing `int getArea()`.\n\n---\n\n### 4. Interface Segregation Principle (ISP)\n> *\"Clients should not be forced to depend upon interfaces that they do not use.\"*\n\n- **The Problem (\"Fat Interface\"):** An interface with 20 methods forcing lightweight implementers to write empty dummy stubs (`throw new UnsupportedOperationException()`).\n- **Refactoring:** Decompose into lean, role-focused interfaces.\n\n```java\n// Fat interface violation\ninterface MultiFunctionPrinter {\n    void print();\n    void scan();\n    void fax();\n}\n\n// Segregated interfaces\ninterface Printer { void print(); }\ninterface Scanner { void scan(); }\ninterface Fax { void fax(); }\n\nclass SimplePrinter implements Printer {\n    public void print() { System.out.println(\"Printing...\"); }\n}\n```\n\n---\n\n### 5. Dependency Inversion Principle (DIP)\n> *\"High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.\"*\n\n```\nTraditional Bad Coupling:\n[ High-Level Business Logic ] ----> [ Low-Level MySQL Driver ]  (Fragile)\n\nDIP Inversion:\n[ High-Level Business Logic ] ----> [ Repository Interface ]  (Abstraction)\n                                              ^\n[ Low-Level MySQL / Mongo ] ------------------+              (Implementation)\n```\n\n- **Dependency Injection (DI):** The technique by which instances of dependency implementations are supplied (injected via constructor or setter) into client classes by an external container (e.g. Spring, Guice) rather than being instantiated using `new MySqlDriver()`.\n\n---\n\n## 3. High-Yield Architectural Summary Cheatsheet\n\n| Principle | Primary Goal | Smells & Symptoms of Violation |\n| :--- | :--- | :--- |\n| **SRP** | High Cohesion | Monolithic 2000-line \"Manager\" or \"God\" classes with many unrelated imports. |\n| **OCP** | Seamless Extensibility | Cascading `switch(type)` or `instanceof` blocks that require manual edits on every new feature. |\n| **LSP** | True Behavioral Subtyping | Overridden methods throwing `NotSupportedException` or overriding base class invariants. |\n| **ISP** | Decoupled Interfaces | Implementing classes leaving half the methods blank with empty bodies. |\n| **DIP** | Loose Coupling | Widespread direct instantiation with `new ConcreteService()` making unit testing and mocking impossible. |\n",
       "questions": [
         {
           "id": "oop-2",
@@ -126,7 +153,27 @@ export const OOPS_CATEGORY: SectionCategory = {
         "Interface Segregation: Clients should not be forced to depend on interfaces they do not use.",
         "Dependency Inversion: High-level modules should depend on abstractions, not concrete implementations."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=SOLID+Design+Principles+with+Code+Patterns+OOPs+%26+Design+Patterns+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=SOLID+Design+Principles+with+Code+Patterns+OOPs+%26+Design+Patterns+lecture",
+      "prerequisites": [
+        "The 4 Pillars of OOP",
+        "Interfaces and Abstract Classes"
+      ],
+      "externalResources": [
+        {
+          "title": "SOLID Principles in Software Design — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/solid-principles-in-software-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Software Engineering Design Principles — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-005-software-construction-spring-2016/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "design-patterns",
@@ -134,7 +181,7 @@ export const OOPS_CATEGORY: SectionCategory = {
       "title": "Essential Gang of Four (GoF) Design Patterns",
       "description": "Singleton (thread safety), Factory Method, Observer (Pub/Sub), Adapter, and Strategy patterns.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# High-Frequency Design Patterns\n\n---\n\n## 1. Creational Patterns\n- **Singleton:** Guarantees a class has only one instance and provides a global point of access. (Use double-checked locking with `volatile` in multi-threaded Java).\n- **Factory Method:** Defines an interface for creating objects, letting subclasses decide which class to instantiate.\n\n---\n\n## 2. Structural Patterns\n- **Adapter:** Converts the interface of a class into another interface clients expect (wrapper).\n- **Decorator:** Attaches additional responsibilities to an object dynamically without subclassing.\n\n---\n\n## 3. Behavioral Patterns\n- **Observer:** One-to-many dependency where state changes automatically notify all subscribed dependents (event emitters).\n- **Strategy:** Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.\n",
+      "notesMarkdown": "# Essential Gang of Four (GoF) Design Patterns\n\nDesign patterns represent proven, battle-tested architectural templates for solving recurring software engineering challenges in object-oriented system design.\n\n---\n\n## 1. The Gang of Four (GoF) Taxonomy\n\n```\n+--------------------------------------------------------------------------+\n|                        THE 3 PATTERN CATEGORIES                          |\n+--------------------------------------------------------------------------+\n| 1. Creational    | Abstract the instantiation process; control creation  |\n|                  | (Singleton, Factory Method, Abstract Factory, Builder)|\n|                                                                          |\n| 2. Structural    | Compose classes and objects into larger structures    |\n|                  | (Adapter, Decorator, Facade, Proxy, Composite)        |\n|                                                                          |\n| 3. Behavioral    | Organize object interaction, algorithms & control flow|\n|                  | (Observer, Strategy, Command, State, Iterator)        |\n+--------------------------------------------------------------------------+\n```\n\n---\n\n## 2. Core Creational Patterns\n\n### Singleton Pattern\nGuarantees a class has **strictly one instance** throughout the application lifecycle and provides a global access point.\n\n- **Thread-Safe Double-Checked Locking in Java:**\n```java\npublic class DatabaseManager {\n    // volatile ensures write is visible across threads before read\n    private static volatile DatabaseManager instance;\n\n    private DatabaseManager() {\n        // Prevent reflection instantiation attack\n        if (instance != null) throw new RuntimeException(\"Use getInstance()\");\n    }\n\n    public static DatabaseManager getInstance() {\n        if (instance == null) { // 1st check (avoids synchronization cost once initialized)\n            synchronized (DatabaseManager.class) {\n                if (instance == null) { // 2nd check (ensures thread-safety)\n                    instance = new DatabaseManager();\n                }\n            }\n        }\n        return instance;\n    }\n}\n```\n- **Interview Critique:** Singletons create global shared mutable state, act as hidden dependencies, and make isolated unit testing difficult (mocking challenges). Prefer Dependency Injection singletons managed by an IoC container.\n\n---\n\n## 3. Core Structural Patterns\n\n### Adapter Pattern (Wrapper)\nConverts the interface of a legacy or third-party class into an interface expected by the client, allowing incompatible interfaces to collaborate.\n\n```\n+---------------+        +-------------------+        +--------------------+\n| Client Code   | -----> | <<Target>> Target |        | Adaptee (Legacy)   |\n+---------------+        +-------------------+        +--------------------+\n                                   ^                            ^\n                                   | implements                 | delegates\n                         +-------------------+                  |\n                         | Adapter           | -----------------+\n                         +-------------------+\n```\n\n### Facade Pattern\nProvides a unified, simplified high-level interface to a complex subsystem of interacting classes, libraries, or microservices.\n- **Example:** An `OrderPlacementFacade` coordinates inventory reservation, payment charging, shipping label generation, and confirmation email dispatch through a single method: `placeOrder(orderId)`.\n\n### Decorator Pattern\nAttaches additional responsibilities and behaviors to an object dynamically at runtime without modifying the underlying class or using subclass inheritance.\n- **Example:** Java's `InputStream`:\n  ```java\n  InputStream stream = new BufferedInputStream(new GZIPInputStream(new FileInputStream(\"data.gz\")));\n  ```\n\n---\n\n## 4. Core Behavioral Patterns\n\n### Observer Pattern (Publisher-Subscriber)\nDefines a one-to-many relationship where when one subject object changes state, all registered observers are automatically notified and updated.\n\n```\n       +-----------------------+\n       |   Subject (Publisher) |\n       +-----------------------+\n       | +attach(Observer)     |\n       | +notifyObservers()    |\n       +-----------------------+\n                   | notifies\n         +---------+---------+\n         |                   |\n+-----------------+ +-----------------+\n| EmailNotifier   | | PushNotifier    |  (Concrete Observers)\n+-----------------+ +-----------------+\n```\n\n### Strategy Pattern\nDefines a family of interchangeable algorithms, encapsulates each one into a standalone class, and makes them swappable at runtime based on context.\n\n- **Example:** Route navigation in a GPS application: selecting `DrivingStrategy`, `WalkingStrategy`, or `PublicTransitStrategy` without changing the navigator UI.\n\n---\n\n## 5. Architectural Pattern Decision Matrix\n\n| Requirement / Scenario | Recommended Pattern | Category |\n| :--- | :--- | :--- |\n| Constructing an object with 15+ optional configuration parameters | **Builder** | Creational |\n| Decoupling object creation logic from concrete class types | **Factory Method** | Creational |\n| Interfacing with a third-party payment API whose method names differ | **Adapter** | Structural |\n| Adding logging, metrics, or caching around a service call transparently | **Proxy / Decorator** | Structural |\n| Simplifying a multi-step checkout workflow involving 5 microservices | **Facade** | Structural |\n| Implementing real-time event distribution to decoupled UI listeners | **Observer** | Behavioral |\n| Dynamically switching sorting or compression algorithms at runtime | **Strategy** | Behavioral |\n| Implementing an undo/redo stack for text editing or transaction rollback | **Command** | Behavioral |\n",
       "questions": [
         {
           "id": "oop-3",
@@ -185,7 +232,27 @@ export const OOPS_CATEGORY: SectionCategory = {
         "Structural: Deal with object composition and structure (Adapter, Decorator, Facade, Proxy).",
         "Behavioral: Deal with communication and responsibility between objects (Observer, Strategy, State)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Essential+Gang+of+Four+%28GoF%29+Design+Patterns+OOPs+%26+Design+Patterns+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Essential+Gang+of+Four+%28GoF%29+Design+Patterns+OOPs+%26+Design+Patterns+lecture",
+      "prerequisites": [
+        "The 4 Pillars of OOP",
+        "SOLID Principles"
+      ],
+      "externalResources": [
+        {
+          "title": "Software Design Patterns — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/software-design-patterns/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Design Patterns and Object-Oriented Design — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-005-software-construction-spring-2016/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "creational-patterns",
@@ -193,7 +260,7 @@ export const OOPS_CATEGORY: SectionCategory = {
       "title": "Creational Design Patterns: Factory, Builder & Singleton",
       "description": "Object instantiation abstraction, thread-safe Singleton, Builder pattern, and Factory Method.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "# Creational Design Patterns\n\nCreational design patterns abstract the instantiation process, making systems independent of how their objects are created, composed, and represented.\n\n---\n\n## 1. Singleton Pattern\nEnsures a class has only one instance and provides a global access point to it.\n```java\npublic class DatabaseConnection {\n    private static volatile DatabaseConnection instance;\n    private DatabaseConnection() {}\n    public static DatabaseConnection getInstance() {\n        if (instance == null) {\n            synchronized (DatabaseConnection.class) {\n                if (instance == null) {\n                    instance = new DatabaseConnection();\n                }\n            }\n        }\n        return instance;\n    }\n}\n```\n\n## 2. Factory Method\nDefines an interface for creating an object, but lets subclasses decide which class to instantiate.\n\n## 3. Builder Pattern\nSeparates the construction of a complex object from its representation so that the same construction process can create different representations.\n",
+      "notesMarkdown": "# Creational Design Patterns: Factory, Builder, Singleton & Prototype\n\nCreational design patterns abstract the object instantiation process, decoupling systems from how objects are created, configured, and represented in memory.\n\n---\n\n## 1. Why Creational Abstraction Matters\n\nDirect instantiation using `new ConcreteClass()` binds client code tightly to a specific concrete implementation, violating the Dependency Inversion Principle and creating testing roadblocks.\n\n```\nTight Coupling (Anti-Pattern):\nClient Class ------------------> new MySQLConnection()\n\nCreational Abstraction:\nClient Class ----> ConnectionFactory ----> <<Connection>> (Interface)\n                                                ^\n                                                |\n                                        MySQLConnection\n```\n\n---\n\n## 2. In-Depth Examination of Core Patterns\n\n### 1. Singleton Pattern\nEnsures a class has only one instance and provides a global point of access.\n\n- **Meyers Singleton (Thread-safe in C++11 and later):**\n  ```cpp\n  class Singleton {\n  public:\n      static Singleton& getInstance() {\n          static Singleton instance; // Initialized exactly once in a thread-safe manner\n          return instance;\n      }\n      Singleton(const Singleton&) = delete;\n      Singleton& operator=(const Singleton&) = delete;\n  private:\n      Singleton() = default;\n  };\n  ```\n\n### 2. Factory Method vs. Abstract Factory\n- **Factory Method:** Relies on inheritance; subclasses override the factory method to create specific product instances.\n- **Abstract Factory:** Relies on composition; provides an interface to create entire families of related or dependent objects without specifying their concrete classes.\n\n```\nAbstract Factory Hierarchy:\n                       +-----------------------+\n                       |    UIFactory (IFace)  |\n                       +-----------------------+\n                       | +createButton()       |\n                       | +createCheckbox()     |\n                       +-----------------------+\n                                   ^\n            +----------------------+----------------------+\n            |                                             |\n+-----------------------+                     +-----------------------+\n|   WindowsUIFactory    |                     |     MacUIFactory      |\n+-----------------------+                     +-----------------------+\n| creates WindowsButton |                     | creates MacButton     |\n| creates WindowsCheck  |                     | creates MacCheck      |\n+-----------------------+                     +-----------------------+\n```\n\n### 3. Builder Pattern\nSolves the **Telescoping Constructor Anti-Pattern** (constructors with 10+ overloaded arguments) and mutable setter anti-patterns.\n\n```java\npublic class HttpRequest {\n    private final String url;\n    private final String method;\n    private final Map<String, String> headers;\n    private final int timeoutMs;\n\n    private HttpRequest(Builder b) {\n        this.url = b.url;\n        this.method = b.method;\n        this.headers = b.headers;\n        this.timeoutMs = b.timeoutMs;\n    }\n\n    public static class Builder {\n        private final String url; // Mandatory\n        private String method = \"GET\"; // Default\n        private Map<String, String> headers = new HashMap<>();\n        private int timeoutMs = 5000;\n\n        public Builder(String url) { this.url = url; }\n        public Builder method(String method) { this.method = method; return this; }\n        public Builder header(String k, String v) { this.headers.put(k, v); return this; }\n        public Builder timeout(int ms) { this.timeoutMs = ms; return this; }\n        public HttpRequest build() { return new HttpRequest(this); }\n    }\n}\n\n// Fluent Invocation:\nHttpRequest req = new HttpRequest.Builder(\"https://api.stackup.com/v1/users\")\n    .method(\"POST\")\n    .header(\"Authorization\", \"Bearer token123\")\n    .timeout(3000)\n    .build();\n```\n\n---\n\n## 3. Creational Patterns Comparison Matrix\n\n| Pattern | Creational Mechanism | Primary Use Case | Key Trade-off |\n| :--- | :--- | :--- | :--- |\n| **Singleton** | Static factory + private constructor | Global shared hardware/driver access | Difficult unit testing / global mutable state |\n| **Factory Method** | Subclass polymorphism | Decoupling caller from product subclasses | Proliferation of subclass boilerplate |\n| **Abstract Factory** | Object composition | Cross-platform UI widget suites | Adding new product types alters every factory |\n| **Builder** | Step-by-step assembly | Complex objects with many optional configs | Additional Builder inner class overhead |\n| **Prototype** | Cloning (`clone()` / serialization) | Expensive initialization (e.g. 3D meshes) | Deep copy vs shallow copy complexities |\n",
       "questions": [
         {
           "id": "dp-1",
@@ -244,7 +311,27 @@ export const OOPS_CATEGORY: SectionCategory = {
         "Builder: Separates the construction of a complex object from its representation (fluent API).",
         "Prototype: Creates new objects by cloning an existing instance."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Creational+Design+Patterns%3A+Factory%2C+Builder+%26+Singleton+OOPs+%26+Design+Patterns+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Creational+Design+Patterns%3A+Factory%2C+Builder+%26+Singleton+OOPs+%26+Design+Patterns+lecture",
+      "prerequisites": [
+        "Object-Oriented Programming Fundamentals",
+        "Memory Management and Constructors"
+      ],
+      "externalResources": [
+        {
+          "title": "Creational Design Patterns — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/creational-design-patterns/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Factory and Builder Design Patterns — W3Schools",
+          "provider": "W3Schools",
+          "url": "https://www.w3schools.com/java/java_oop.asp",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "structural-patterns",
@@ -252,7 +339,7 @@ export const OOPS_CATEGORY: SectionCategory = {
       "title": "Structural Design Patterns: Adapter, Decorator, Facade & Proxy",
       "description": "Object composition, interface adaptation, dynamic responsibility decoration, and surrogate proxy controls.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "# Structural Design Patterns\n\nStructural design patterns explain how to assemble objects and classes into larger structures while keeping these structures flexible and efficient.\n\n---\n\n## 1. Adapter Pattern (Wrapper)\nAllows incompatible interfaces to work together. Converts the interface of an existing class into another interface expected by clients.\n- **Real-World Analogy:** Power socket converter when traveling abroad.\n- **Use Case:** Wrapping legacy third-party payment gateways with your standard internal `PaymentProcessor` interface.\n\n## 2. Decorator Pattern\nAttaches new behaviors to objects dynamically by placing them inside special wrapper objects that contain the behaviors.\n- **Alternative to:** Class inheritance explosion (subclassing for every combination of features).\n- **Example:** Java I/O streams (`new BufferedReader(new FileReader(\"file.txt\"))`) or adding toppings to a Pizza order.\n\n## 3. Facade Pattern\nProvides a simplified, high-level interface to a complex subsystem with many moving parts.\n- **Use Case:** Placing an order via a single `OrderFacade.placeOrder()` that coordinates Inventory, Payment, Shipping, and Email notification subsystems internally.\n\n## 4. Proxy Pattern\nProvides a surrogate or placeholder for another object to control access to it.\n- **Virtual Proxy:** Lazy initialization of expensive heavy objects (e.g. high-resolution image loading on scroll).\n- **Protection Proxy:** Checks caller permissions before forwarding requests (access control).\n- **Remote Proxy:** Encapsulates network communication to remote services (RPC/RMI).\n",
+      "notesMarkdown": "# Structural Design Patterns: Adapter, Facade, Decorator & Proxy\n\nStructural design patterns explain how to assemble objects and classes into larger structures while keeping these structures flexible and efficient.\n\n---\n\n## 1. Adapter Pattern (Wrapper)\n\nThe Adapter pattern acts as a translator between two incompatible interfaces.\n\n```\n+-------------+         +---------------------+         +--------------------+\n| Client Code | ------> | <<Target Interface>>|         | Adaptee (Legacy)   |\n+-------------+         +---------------------+         +--------------------+\n                                   ^                               ^\n                                   | implements                    | calls internally\n                        +----------------------+                   |\n                        | Concrete Adapter     | ------------------+\n                        +----------------------+\n```\n\n### Types of Adapters:\n1. **Object Adapter (Composition-based):** Holds an instance of the Adaptee inside the Adapter (`has-a`). Compatible with all programming languages and works with Adaptee subclasses.\n2. **Class Adapter (Inheritance-based):** Multiple-inherits from both Target interface and Adaptee class. Requires multiple inheritance support (e.g. C++).\n\n---\n\n## 2. Facade Pattern (Subsystem Simplifier)\n\nA Facade provides a simple, unified interface to a complex subsystem containing dozens of interdependent classes, network calls, or third-party SDKs.\n\n- **Real-World System Design Scenario:** Ordering an item in e-commerce:\n  ```java\n  public class OrderProcessingFacade {\n      private InventoryService inventory;\n      private PaymentProcessor payment;\n      private ShippingService shipping;\n      private AnalyticsService analytics;\n\n      public OrderResult placeOrder(String userId, String itemId, PaymentDetails pd) {\n          if (!inventory.checkStock(itemId)) return OrderResult.OUT_OF_STOCK;\n          inventory.lockStock(itemId);\n          PaymentResult pr = payment.charge(userId, pd);\n          if (!pr.isSuccessful()) {\n              inventory.unlockStock(itemId);\n              return OrderResult.PAYMENT_FAILED;\n          }\n          String trackingId = shipping.generateLabel(userId, itemId);\n          analytics.logEvent(\"order_completed\", userId, itemId);\n          return OrderResult.success(trackingId);\n      }\n  }\n  ```\n\n---\n\n## 3. Decorator Pattern (Dynamic Behavior Augmentation)\n\nExtends functionality dynamically at runtime by wrapping the original object inside a decorator object that implements the same interface.\n\n```\n       +-----------------------+\n       |   <<VisualComponent>> |\n       +-----------------------+\n                   ^\n         +---------+---------+\n         |                   |\n+-----------------+ +-----------------------+\n|  TextView       | |  DecoratorBase        |  (has-a VisualComponent)\n+-----------------+ +-----------------------+\n                               ^\n                     +---------+---------+\n                     |                   |\n            +-----------------+ +-----------------+\n            | BorderDecorator | | ScrollDecorator |\n            +-----------------+ +-----------------+\n```\n\n- **Decorator vs Inheritance:** Subclassing adds behavior statically at compile time for the entire class. Decorators add behavior dynamically at runtime to individual object instances without class explosion ($2^N$ subclass combinations avoided).\n\n---\n\n## 4. Proxy Pattern (Surrogate & Access Controller)\n\nProvides a surrogate or placeholder for another object to control access, perform lazy loading, manage remote calls, or execute cross-cutting concerns.\n\n### Proxy Variants:\n1. **Virtual Proxy:** Defers expensive object creation until the first actual method call (e.g., loading high-resolution image only when scrolled into view).\n2. **Protection Proxy:** Enforces role-based permissions before forwarding calls to the underlying sensitive service.\n3. **Remote Proxy:** Marshals arguments over TCP/RPC to represent an object residing in a different address space (e.g. Java RMI, gRPC stubs).\n4. **Caching Proxy:** Intercepts identical read queries and returns cached responses without invoking the backend database.\n",
       "questions": [
         {
           "id": "struct-1",
@@ -288,7 +375,7 @@ export const OOPS_CATEGORY: SectionCategory = {
             "They are identical in design and purpose"
           ],
           "correct_option": 0,
-          "explanation": "While both wrap an underlying target object, Decorator\u2019s intent is to augment functionality dynamically, whereas Proxy\u2019s intent is to control, defer, or restrict access to the target."
+          "explanation": "While both wrap an underlying target object, Decorator’s intent is to augment functionality dynamically, whereas Proxy’s intent is to control, defer, or restrict access to the target."
         }
       ],
       "difficulty": "Hard",
@@ -303,7 +390,20 @@ export const OOPS_CATEGORY: SectionCategory = {
         "Decorator: Attaches additional responsibilities dynamically to an object without subclassing.",
         "Proxy: Provides a placeholder or surrogate for another object to control access (lazy loading, security)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Structural+Design+Patterns%3A+Adapter%2C+Decorator%2C+Facade+%26+Proxy+OOPs+%26+Design+Patterns+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Structural+Design+Patterns%3A+Adapter%2C+Decorator%2C+Facade+%26+Proxy+OOPs+%26+Design+Patterns+lecture",
+      "prerequisites": [
+        "Object-Oriented Interfaces",
+        "Composition vs Inheritance"
+      ],
+      "externalResources": [
+        {
+          "title": "Structural Design Patterns — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/structural-design-patterns/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "behavioral-patterns",
@@ -311,7 +411,7 @@ export const OOPS_CATEGORY: SectionCategory = {
       "title": "Behavioral Design Patterns: Strategy, Observer, Command & State",
       "description": "Algorithms as interchangeable strategies, pub/sub event distribution, command encapsulation, and finite state machines.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "# Behavioral Design Patterns\n\nBehavioral design patterns identify common communication patterns between objects and distribute responsibility cleanly.\n\n---\n\n## 1. Strategy Pattern\nDefines a family of algorithms, encapsulates each one in a separate class, and makes their objects interchangeable at runtime.\n- **Example:** A navigation app switching routes dynamically between `CarRouteStrategy`, `WalkingRouteStrategy`, and `PublicTransitStrategy`.\n- **Replaces:** Messy nested `switch` or `if-else` branches.\n\n## 2. Command Pattern\nEncapsulates a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.\n- **Components:** `Command` interface, `ConcreteCommand`, `Invoker` (UI button), `Receiver` (business service).\n- **Key Superpower:** Transactional history, batch execution, and reversible `undo()` / `redo()`.\n\n## 3. State Pattern\nAllows an object to alter its behavior when its internal state changes. The object will appear to change its class.\n- **Example:** TCP connection state (`Closed`, `Listen`, `Established`) or Media Player state (`Playing`, `Paused`, `Stopped`).\n- **Contrast with Strategy:** In State pattern, the states themselves know about transitions to other states; in Strategy, strategies are generally unaware of each other.\n",
+      "notesMarkdown": "# Behavioral Design Patterns: Strategy, Observer, Command & State\n\nBehavioral design patterns are concerned with algorithms and the assignment of responsibilities between objects, characterizing complex control flow and message passing.\n\n---\n\n## 1. Strategy Pattern (Interchangeable Algorithms)\n\nDefines a family of algorithms, encapsulates each algorithm into a standalone class, and makes them interchangeable at runtime based on caller parameters.\n\n```java\npublic interface CompressionStrategy {\n    byte[] compress(byte[] data);\n}\n\npublic class ZipCompression implements CompressionStrategy {\n    public byte[] compress(byte[] data) { /* Deflate algorithm */ return data; }\n}\n\npublic class ZstdCompression implements CompressionStrategy {\n    public byte[] compress(byte[] data) { /* Zstandard algorithm */ return data; }\n}\n\npublic class FileArchiver {\n    private CompressionStrategy strategy;\n    public void setStrategy(CompressionStrategy s) { this.strategy = s; }\n    public void archive(File file) {\n        byte[] compressed = strategy.compress(file.readBytes());\n        // write to disk...\n    }\n}\n```\n\n---\n\n## 2. Observer Pattern (Event Emitter / Pub-Sub)\n\nDefines a subscription mechanism to notify multiple objects simultaneously about events happening to the object they are observing.\n\n- **Pull vs. Push Model:**\n  - *Push Model:* Subject broadcasts detailed event payload in the notification call. Observers receive everything directly, but coupling increases.\n  - *Pull Model:* Subject sends minimal notification; observer queries subject for specific fields needed. Loose coupling, but requires extra round-trip queries.\n\n---\n\n## 3. Command Pattern (Request Encapsulation & Undo/Redo)\n\nEncapsulates a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.\n\n```java\npublic interface Command {\n    void execute();\n    void undo();\n}\n\npublic class CopyTextCommand implements Command {\n    private final TextEditor editor;\n    private String backup;\n\n    public CopyTextCommand(TextEditor editor) { this.editor = editor; }\n    public void execute() {\n        backup = editor.getSelectedText();\n        Clipboard.set(backup);\n    }\n    public void undo() { /* no mutation to undo */ }\n}\n\npublic class CommandHistory {\n    private final Stack<Command> history = new Stack<>();\n    public void push(Command cmd) { cmd.execute(); history.push(cmd); }\n    public void undo() {\n        if (!history.isEmpty()) history.pop().undo();\n    }\n}\n```\n\n---\n\n## 4. State Pattern (Dynamic Behavior Transitions)\n\nAllows an object to alter its behavior when its internal state changes. The object will appear to change its class.\n\n- **Finite State Machine (FSM) Implementation:** Instead of gigantic `switch(state)` statements in every method, delegate method execution to a current `State` object.\n- **Example:** TCP Connection Lifecycle (`ListenState`, `SynSentState`, `EstablishedState`, `ClosedState`).\n",
       "questions": [
         {
           "id": "behav-1",
@@ -335,7 +435,7 @@ export const OOPS_CATEGORY: SectionCategory = {
             "Visitor Pattern"
           ],
           "correct_option": 0,
-          "explanation": "The Strategy pattern enables selecting an algorithm\u2019s implementation at runtime (e.g., choosing between PaymentStrategy: CreditCard, PayPal, UPI)."
+          "explanation": "The Strategy pattern enables selecting an algorithm’s implementation at runtime (e.g., choosing between PaymentStrategy: CreditCard, PayPal, UPI)."
         },
         {
           "id": "bp-3",
@@ -362,7 +462,20 @@ export const OOPS_CATEGORY: SectionCategory = {
         "Observer: Defines a one-to-many dependency between objects so when one changes state, all dependents are notified.",
         "Command: Encapsulates a request as an object, allowing parameterizing clients with queues, logs, and undo operations."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Behavioral+Design+Patterns%3A+Strategy%2C+Observer%2C+Command+%26+State+OOPs+%26+Design+Patterns+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Behavioral+Design+Patterns%3A+Strategy%2C+Observer%2C+Command+%26+State+OOPs+%26+Design+Patterns+lecture",
+      "prerequisites": [
+        "Polymorphism and Dynamic Dispatch",
+        "SOLID Principles"
+      ],
+      "externalResources": [
+        {
+          "title": "Behavioral Design Patterns — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/behavioral-design-patterns/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     }
   ]
 };
@@ -380,7 +493,7 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
       "title": "Scaling Strategies & Load Balancing",
       "description": "Vertical vs Horizontal scaling, stateless architecture, Layer 4 vs Layer 7 load balancers, and Consistent Hashing.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "\n# Scaling & Load Balancing Fundamentals\n\n---\n\n## 1. Vertical vs. Horizontal Scaling\n- **Vertical Scaling (Scale-Up):** Adding more CPU/RAM to a single machine. Hard hardware ceiling and single point of failure (SPOF).\n- **Horizontal Scaling (Scale-Out):** Adding more commodity machines to the pool. Requires stateless application tiers.\n\n---\n\n## 2. Load Balancers (L4 vs L7)\n- **Layer 4 (Transport):** Routes traffic based on IP address and port (TCP/UDP level) without inspecting application payloads. Ultra-low latency.\n- **Layer 7 (Application):** Inspects HTTP headers, cookies, and URL paths. Can route `/api/video` and `/api/auth` to specialized worker clusters.\n\n---\n\n## 3. Consistent Hashing\nMaps servers and keys to a virtual ring ($0 \\dots 2^{32}-1$). When a server node is added or removed, only $K/N$ keys need remapping on average, preventing cache stampedes.\n",
+      "notesMarkdown": "# Scaling Strategies, Load Balancing & Consistent Hashing\n\nScalability measures a system's ability to handle growing workloads gracefully by provisioning additional computational resources without redesigning core architecture.\n\n---\n\n## 1. Vertical vs. Horizontal Scaling\n\n```\nVertical Scaling (Scale-Up):               Horizontal Scaling (Scale-Out):\n+-------------------------------+          +-------------+  +-------------+  +-------------+\n|        Monolithic Host        |          |  Server 1   |  |  Server 2   |  |  Server 3   |\n|  64 Cores, 512GB RAM, 10TB SSD|          | 8 Cores 32G |  | 8 Cores 32G |  | 8 Cores 32G |\n+-------------------------------+          +-------------+  +-------------+  +-------------+\n- Hardware ceiling (maximum physical specs) - Near linear capacity expansion\n- Extreme cost curve (specialized hardware)  - Commodity cloud virtual machines\n- Single Point of Failure (SPOF)            - High availability & redundancy\n```\n\n### Invariant for Horizontal Scaling: Stateless Application Tiers\nFor web application servers to scale horizontally behind a load balancer, individual servers must not store stateful user sessions (e.g., HTTP session memory). Sessions must be offloaded to distributed stores (Redis, Memcached) or client-side signed tokens (JWTs).\n\n---\n\n## 2. Load Balancer Taxonomy: Layer 4 vs. Layer 7\n\nLoad balancers distribute incoming client traffic evenly across an upstream cluster of target servers.\n\n```\n                  +----------------------------------+\n                  |         Incoming Traffic         |\n                  +----------------------------------+\n                                    |\n                  +----------------------------------+\n                  |      Load Balancer Tier          |\n                  +----------------------------------+\n                   /                |               \\\n        /api/users/            /api/video/          /static/\n           v                        v                   v\n+---------------------+  +---------------------+  +---------------------+\n| User Microservice   |  | Video Transcoder    |  | Object CDN Storage  |\n+---------------------+  +---------------------+  +---------------------+\n```\n\n### Comprehensive Comparison Matrix: L4 vs L7\n\n| Attribute | Layer 4 (Transport Layer) | Layer 7 (Application Layer) |\n| :--- | :--- | :--- |\n| **Inspection Depth** | IP addresses, TCP/UDP ports | Full HTTP/HTTPS request (Headers, URL, Cookies, Body) |\n| **Routing Decisions** | Packet source & destination | Content-aware (URL paths, Host headers, JWT claims) |\n| **Latency & Overhead** | Ultra-low (sub-millisecond wire speed) | Higher (must terminate TCP, decrypt TLS, parse HTTP) |\n| **TLS/SSL Termination**| TCP passthrough (encrypted to backend) | Can terminate SSL/TLS at edge, offloading servers |\n| **Smart Routing** | Cannot inspect path or auth tokens | Can route `/checkout` to high-memory cluster |\n| **Prominent Examples** | AWS NLB, Linux IPVS, HAProxy (TCP mode)| AWS ALB, Nginx, Envoy, Traefik, HAProxy (HTTP mode) |\n\n---\n\n## 3. Load Balancing Scheduling Algorithms\n\n1. **Round Robin:** Cycles sequentially through upstream servers ($S_1, S_2, S_3, S_1 \\dots$). Best when all requests and servers have identical capacities.\n2. **Weighted Round Robin:** Assigns requests proportionally based on server hardware capacity weights.\n3. **Least Connections:** Forwards traffic to the server currently maintaining the fewest active open connections. Best for long-lived sessions (WebSockets, database transactions).\n4. **Weighted Least Connections:** Combines connection count with configured server capability weights.\n5. **IP Hash (Source Affinity):** Hashes client IP to assign fixed servers, creating pseudo-sticky sessions (disrupted by NAT gateways).\n\n---\n\n## 4. Consistent Hashing & Virtual Nodes\n\nIn traditional modulo hashing, a key is mapped to server index:\n$$\\text{server\\_idx} = \\text{hash}(\\text{key}) \\pmod N$$\n\n### The Modulo Re-hashing Disaster\nIf the cluster grows from $N$ to $N+1$ servers (or one fails), almost **100% of keys change server destinations**:\n$$\\text{Keys moved} = \\frac{N}{N+1} \\approx 99\\% \\text{ for large } N$$\nThis triggers a catastrophic **Cache Stampede**, crashing backend databases.\n\n### The Consistent Hashing Ring\nConsistent Hashing maps both **Servers** and **Data Keys** to a shared $32$-bit or $64$-bit integer ring ($0 \\dots 2^{32}-1$):\n\n```\n                       Hash Ring (0 to 2^32 - 1)\n                               [ Node A ]\n                              /          \\\n                       (Key 1)            [ Node B ]\n                             |                 |\n                         [ Node C ] ------- (Key 2)\n```\n\n1. **Routing Rule:** To locate a key, calculate $\\text{hash}(\\text{key})$ and walk clockwise along the ring until encountering the first server node.\n2. **Addition/Removal Impact:** When a node is added or removed, **only $\\frac{K}{N}$ keys are relocated on average** ($K = \\text{total keys}$, $N = \\text{servers}$).\n3. **Hotspots & Virtual Nodes (Vnodes):**\n   - Non-uniform hash distributions can create massive data imbalances (hotspots).\n   - **Solution:** Each physical server is assigned $V$ virtual positions along the ring (e.g., `NodeA#1`, `NodeA#2` $\\dots$ `NodeA#100`). This ensures uniform key distribution (standard deviation $< 5\\%$) and graceful rebalancing.\n",
       "questions": [
         {
           "id": "sd-1",
@@ -432,7 +545,35 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
         "Load balancing algorithms: Round Robin, Least Connections, IP Hash, Weighted Round Robin.",
         "Consistent Hashing minimizes key redistribution when nodes are added or removed (only K/N keys remapped)."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Scaling+Strategies+%26+Load+Balancing+System+Design+Fundamentals+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Scaling+Strategies+%26+Load+Balancing+System+Design+Fundamentals+lecture",
+      "prerequisites": [
+        "Client-Server Architecture",
+        "TCP/IP Networking Basics",
+        "DNS Resolution"
+      ],
+      "externalResources": [
+        {
+          "title": "Scalability and Load Balancing in System Design — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/load-balancing-in-system-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Consistent Hashing Fundamentals — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/consistent-hashing/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Distributed Systems: Scalability — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "caching-strategies",
@@ -440,7 +581,7 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
       "title": "Caching Strategies & Eviction Policies",
       "description": "Cache-Aside, Write-Through, Write-Behind, eviction policies (LRU, LFU), and Redis in-memory storage.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "\n# Caching Strategies & Eviction Policies\n\n---\n\n## 1. Caching Access Patterns\n- **Cache-Aside (Lazy Loading):** App queries cache first. On miss, queries DB, populates cache, and returns. Good for read-heavy workloads.\n- **Write-Through:** App writes to cache, and cache synchronously writes to DB before returning success. Higher write latency, but ensures consistency.\n- **Write-Behind (Write-Back):** App writes to cache immediately; cache asynchronously batches updates to DB. Fastest writes, risk of data loss on crash.\n\n---\n\n## 2. Eviction Policies\n- **LRU (Least Recently Used):** Discards least recently accessed items using a Doubly Linked List + HashMap.\n- **LFU (Least Frequently Used):** Discards items with the lowest access count frequency.\n- **TTL (Time to Live):** Keys expire after a predefined duration.\n",
+      "notesMarkdown": "# Caching Strategies, Eviction Policies & High-Concurrency Patterns\n\nCaching stores high-frequency or computationally expensive data in high-speed volatile storage (DRAM, SRAM) to reduce read latency from tens of milliseconds (disk/network) to sub-millisecond ranges.\n\n---\n\n## 1. Latency Hierarchy & Caching Tiers\n\n```\nStorage Medium        | Typical Access Latency | Bandwidth\n----------------------|------------------------|----------------\nL1/L2/L3 CPU Cache    | 0.5 - 10 ns            | 1000+ GB/s\nMain Memory (DRAM)    | 50 - 100 ns            | 50 - 100 GB/s\nDistributed Cache     | 0.5 - 2 ms (Redis)     | Network bound\nNVMe Solid State Disk | 20 - 100 μs            | 3 - 7 GB/s\nRelational DB Disk IO | 5 - 50 ms              | Disk head bound\n```\n\n---\n\n## 2. Core Caching Architectural Patterns\n\n```\n1. Cache-Aside (Lazy):       2. Write-Through:            3. Write-Behind (Write-Back):\n   App ---> Cache (Miss)        App ---> Cache               App ---> Cache (Ack)\n    |                             \\        \\                            \\\n    v (DB read)                    v        v                            v (Async batch)\n   Database                        Database (Sync write)                 Database\n```\n\n### 1. Cache-Aside (Lazy Loading)\n- **Read Path:** Application queries cache. On hit, return data. On miss, application queries database, stores result in cache with a TTL, and returns data to client.\n- **Write Path:** Application updates database, then explicitly invalidates/deletes the cached key.\n- **Trade-offs:** Highly resilient (cache crash does not stop reads); cold-start latency penalty on new records; potential stale reads between DB write and cache eviction.\n\n### 2. Read-Through\n- Application treats cache as the primary data store. The cache engine itself intercepts misses, transparently fetches from the database, updates itself, and returns data.\n\n### 3. Write-Through\n- Application writes directly to cache. The cache engine synchronously writes to the backing database before acknowledging success to the caller.\n- **Advantage:** Cache is guaranteed to stay synchronized with the database; zero stale reads.\n- **Disadvantage:** Write latency is high (sum of cache write + synchronous database disk flush).\n\n### 4. Write-Behind (Write-Back)\n- Application writes to cache, which acknowledges immediately. The cache asynchronously batches and flushes writes to the database in background worker queues.\n- **Advantage:** Ultra-fast write throughput; write absorption (multiple updates to same key merged into single DB write).\n- **Disadvantage:** **Risk of permanent data loss** if volatile cache instances crash before flushing to persistent disk.\n\n---\n\n## 3. Cache Eviction Policies\n\nWhen memory capacity limit is reached (`maxmemory`), the cache must evict entries:\n\n| Eviction Policy | Data Structure | Best Used For |\n| :--- | :--- | :--- |\n| **LRU (Least Recently Used)** | HashMap + Doubly Linked List ($O(1)$) | General web workloads; access recency correlates with future access |\n| **LFU (Least Frequently Used)** | Frequency Buckets + Doubly Linked Lists | Stable workloads with distinct hot power-law distributions |\n| **FIFO (First In, First Out)** | Queue ($O(1)$) | Simple sequential logging / pipeline processing |\n| **TTL / Random Eviction** | Min-Heap / Random sampling | Ephemeral tokens, sessions with natural expiration |\n\n---\n\n## 4. Concurrency Pitfalls in High-Traffic Caches\n\n### 1. Cache Stampede (Thundering Herd)\n- **Symptom:** A popular hot key (e.g., breaking news article) expires. Tens of thousands of concurrent requests miss cache simultaneously and slam the database.\n- **Mitigation:**\n  - **Distributed Mutex Lock:** The first missing thread acquires a lock to recompute; other threads wait or return slightly stale cached data.\n  - **Probabilistic Early Expiration (XFetch Algorithm):** Background threads randomly recompute keys slightly before TTL expiration based on request frequency:\n    $$\\Delta \\cdot \\beta \\cdot \\ln(\\text{rand}()) > \\text{expiry} - \\text{now}$$\n\n### 2. Cache Penetration\n- **Symptom:** Malicious or buggy clients query non-existent IDs (e.g. `userId=-9999`). Every request bypasses cache and hits the database.\n- **Mitigation:**\n  - **Bloom Filters:** A space-efficient probabilistic filter at cache entry. If the Bloom filter says the key does not exist, return 404 immediately.\n  - **Cache Null Values:** Store `key: null` in cache with a short TTL (e.g., 60 seconds).\n\n### 3. Cache Avalanche\n- **Symptom:** Hundreds of thousands of cached items expire at the exact same second (e.g., midnight batch sync), knocking down the database tier.\n- **Mitigation:** Add random jitter to key TTLs:\n  $$\\text{Actual TTL} = \\text{Base TTL} + \\text{rand}(0, 300) \\text{ seconds}$$\n",
       "questions": [
         {
           "id": "sd-2",
@@ -492,7 +633,27 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
         "Write-Back (Write-Behind): App writes to cache; cache asynchronously writes to DB in batches.",
         "Thundering Herd / Cache Stampede: Millions of concurrent requests hit DB simultaneously when popular cache key expires."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Caching+Strategies+%26+Eviction+Policies+System+Design+Fundamentals+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Caching+Strategies+%26+Eviction+Policies+System+Design+Fundamentals+lecture",
+      "prerequisites": [
+        "Scaling Strategies & Load Balancing",
+        "Database Indexing and I/O Latency"
+      ],
+      "externalResources": [
+        {
+          "title": "Caching Strategies and System Design — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/caching-system-design-concept-for-interviews/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Redis In-Memory Architecture Documentation",
+          "provider": "Official Documentation",
+          "url": "https://redis.io/docs/latest/develop/get-started/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "db-sharding-replication",
@@ -500,7 +661,7 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
       "title": "Database Sharding, Partitioning & Replication",
       "description": "Horizontal sharding, shard keys, master-replica replication lag, read/write splitting, and rebalancing strategies.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "# Database Sharding, Partitioning & Replication\n\nWhen a single database node reaches CPU, memory, or disk storage limits, distributed data strategies allow horizontal scaling.\n\n---\n\n## 1. Sharding vs. Partitioning\n- **Vertical Partitioning:** Splitting a table by columns (e.g. separating frequently queried user profile info from heavy biographical blobs).\n- **Horizontal Partitioning (Sharding):** Splitting rows of a table across multiple distinct physical database servers.\n\n## 2. Sharding Strategies\n- **Hash-Based Sharding:** `shard = hash(shard_key) % num_shards`. Provides uniform data distribution, but resharding when adding nodes requires expensive rehash (solved by Consistent Hashing).\n- **Range-Based Sharding:** Data partitioned by value ranges (e.g. IDs 1-10,000 on Node 1; 10,001-20,000 on Node 2). Prone to **hotspots** if newer data receives all traffic.\n- **Directory-Based Sharding:** Lookup service maintains mapping of shard keys to database nodes. Flexible, but adds a network hop and potential single point of failure.\n\n## 3. Master-Replica Replication\n- **Primary (Master):** Handles all write queries (`INSERT`, `UPDATE`, `DELETE`). Logs mutations to WAL.\n- **Secondary (Replica):** Asynchronously copies WAL from primary and services read queries (`SELECT`).\n- **Replication Lag:** Delay between write committing on primary and updating on replicas. Reading immediately after writing can return stale data (read-your-own-writes inconsistency).\n",
+      "notesMarkdown": "# Database Sharding, Replication & Distributed Partitioning\n\nWhen data volumes and transaction concurrency exceed the storage and IOPS limits of a single enterprise server, database architectures partition and replicate data across distributed clusters.\n\n---\n\n## 1. Database Replication Strategies\n\n```\nPrimary-Replica (Single Master):             Multi-Primary (Multi-Master):\n+-------------------+                        +-------------------+       +-------------------+\n|   Primary (Write) |                        |  Primary Node A   | <---> |  Primary Node B   |\n+-------------------+                        +-------------------+       +-------------------+\n    | WAL replication                            \\                       /\n    v                                             \\                     /\n+-------------------+                              v                   v\n|  Replica (Read)   |                             Conflict Resolution Engine\n+-------------------+                             (Last-Write-Wins / CRDTs)\n```\n\n### Primary-Replica (Leader-Follower)\n- All writes are processed by the single Primary node and recorded to a Write-Ahead Log (WAL). Replicas apply WAL streams to serve read queries.\n- **Replication Lag:** Asynchronous replication allows read replicas to fall hundreds of milliseconds behind the primary, resulting in **Eventual Consistency** (reading stale data immediately after a write).\n- **Read-Your-Own-Writes Guarantee:** Route reads for a specific user to the primary for 5 seconds after they perform a mutation.\n\n---\n\n## 2. Partitioning vs. Horizontal Sharding\n\n```\nVertical Partitioning:                        Horizontal Sharding:\nSplitting columns across tables               Splitting rows across separate database nodes\n+--------------------+--------------------+   +--------------------+  +--------------------+\n| Table 1: Core User | Table 2: User Blob |   | Shard 1 (ID 1-1M)  |  | Shard 2 (ID 1M-2M) |\n| id, email, pass    | bio, avatar_binary |   | id, name, balance  |  | id, name, balance  |\n+--------------------+--------------------+   +--------------------+  +--------------------+\n```\n\n---\n\n## 3. Sharding Strategies & Key Selection\n\n### 1. Range-Based Sharding\n- Rows partitioned based on discrete contiguous ranges of a key (e.g., `userId` 1–10,000,000 $\\to$ Shard 1; 10,000,001–20,000,000 $\\to$ Shard 2).\n- **Pitfall:** Severe write hotspots on the latest range (e.g., auto-incrementing IDs or timestamps always hit the newest shard).\n\n### 2. Hash-Based Sharding\n- Shard determined by hashing key: $\\text{Shard} = \\text{hash}(\\text{key}) \\pmod N$.\n- **Advantage:** Perfectly uniform distribution of data and write IOPS.\n- **Disadvantage:** Range queries (`SELECT WHERE age BETWEEN 20 AND 30`) require scatter-gather queries across **all** shards.\n\n### 3. Directory-Based (Lookup) Sharding\n- A centralized lookup service maps entity IDs to specific physical database nodes. Allows dynamic partition movement without changing sharding algorithms.\n\n---\n\n## 4. Distributed Sharding Challenges\n\n1. **Cross-Shard Joins:** Relational SQL joins between tables partitioned on different keys require fetching datasets across the network into application memory, destroying performance.\n2. **Distributed Transactions (Two-Phase Commit - 2PC):** Coordinating atomic updates across multiple physical database instances requires 2PC coordinators, introducing blocking locks and high latency.\n3. **Resharding:** Splitting an overloaded shard into two without taking the cluster offline requires live CDC (Change Data Capture) replication and dual-writing.\n",
       "questions": [
         {
           "id": "shard-1",
@@ -551,7 +712,27 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
         "Sharding: Horizontal partitioning of table rows across different database instances using a shard key.",
         "Split-Brain: When network partition causes two nodes to both believe they are the active leader."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Database+Sharding%2C+Partitioning+%26+Replication+System+Design+Fundamentals+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Database+Sharding%2C+Partitioning+%26+Replication+System+Design+Fundamentals+lecture",
+      "prerequisites": [
+        "Relational Database Management Systems",
+        "ACID Transactions and Indexing"
+      ],
+      "externalResources": [
+        {
+          "title": "Database Sharding and Replication — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/database-sharding-system-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "CAP Theorem and Distributed Databases — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "message-queues-kafka",
@@ -559,7 +740,7 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
       "title": "Message Queues & Event-Driven Architecture (Kafka vs. RabbitMQ)",
       "description": "Decoupled asynchronous processing, publish-subscribe, consumer groups, Kafka partition offsets, and Dead-Letter Queues (DLQ).",
       "estimatedMinutes": 22,
-      "notesMarkdown": "# Message Queues & Event-Driven Architecture\n\nSynchronous HTTP requests couple services and create cascading timeouts. Asynchronous message brokers decouple producers from consumers, absorb traffic spikes (buffering), and guarantee eventual consistency.\n\n---\n\n## 1. RabbitMQ vs. Apache Kafka\n| Feature | RabbitMQ (Message Broker) | Apache Kafka (Distributed Event Log) |\n| :--- | :--- | :--- |\n| **Model** | Smart broker, dumb consumer (AMQP exchanges & queues) | Dumb broker, smart consumer (Distributed commit log) |\n| **Persistence** | Messages deleted once acknowledged | Messages retained on disk by retention policy (days/weeks) |\n| **Replayability** | No (messages disappear after consumption) | Yes (consumers can reset offset to replay historic events) |\n| **Throughput** | ~10k-50k msgs/sec | >1,000,000 msgs/sec (zero-copy OS transfer) |\n\n## 2. Kafka Partitions & Ordering Guarantees\n- A Kafka **Topic** is divided into multiple **Partitions** for horizontal scalability.\n- Messages with the **same partition key** are guaranteed to land on the same partition and be consumed in **strict FIFO order**.\n- Within a **Consumer Group**, each partition is consumed by exactly one consumer thread at any given time.\n\n## 3. Delivery Semantics & Dead-Letter Queues (DLQ)\n- **At-most-once:** Message acknowledged before processing. No duplicates, but risk of lost data.\n- **At-least-once:** Message acknowledged only after successful processing. No lost data, but requires **idempotent consumers** to handle retries.\n- **Dead-Letter Queue (DLQ):** Unprocessable \"poison pill\" messages that exhaust retry attempts are shunted to a DLQ for isolated debugging without blocking the main event pipeline.\n",
+      "notesMarkdown": "# Distributed Message Queues & Event Streaming: RabbitMQ & Apache Kafka\n\nMessage queues and distributed event streaming platforms decouple producer and consumer services, absorb high-traffic spikes (load leveling), and guarantee reliable asynchronous communication.\n\n---\n\n## 1. Message Queue vs. Distributed Event Log\n\n```\nTraditional Message Queue (e.g., RabbitMQ):\nProducer ---> [ Broker Queue ] ---> Consumer A\n                               ---> Consumer B (Message consumed & DELETED)\n\nDistributed Append-Only Commit Log (e.g., Apache Kafka):\nProducer ---> [ Partition Log: [0|1|2|3|4|5|6...] ] (PERSISTED ON DISK)\n                               ^           ^\n                        Consumer Group 1   Consumer Group 2 (Offset tracking)\n```\n\n| Dimension | Message Queue (RabbitMQ) | Distributed Event Log (Apache Kafka) |\n| :--- | :--- | :--- |\n| **Model** | Smart broker, dumb consumer | Dumb broker, smart consumer |\n| **Persistence** | Messages deleted upon consumer ack | Messages retained on disk according to retention policy (days/weeks)|\n| **Replayability** | Cannot replay consumed messages | Consumers can rewind offsets to replay historical events |\n| **Ordering** | FIFO within single queue | Strictly ordered **within a single partition** |\n| **Throughput** | 10k - 50k msgs/sec | 1,000,000+ msgs/sec via zero-copy OS disk writes |\n\n---\n\n## 2. Apache Kafka Architectural Core\n\n1. **Topic & Partitions:** A topic is split into multiple parallel partitions. Partitions represent the fundamental unit of parallelism and horizontal scalability.\n2. **Partition Keys:** Producers provide a key with each record:\n   $$\\text{Partition} = \\text{hash}(\\text{key}) \\pmod{\\text{NumPartitions}}$$\n   Records sharing the same key are guaranteed to land on the same partition, preserving **strict FIFO sequence order**.\n3. **Consumer Groups:** Multiple worker instances belong to a single consumer group. Each partition in a topic is assigned to strictly one consumer within a group.\n4. **Offsets:** Consumers maintain a sequentially increasing integer pointer (offset) representing their progress through the partition log.\n\n---\n\n## 3. Message Delivery Semantics\n\n```\n1. At-Most-Once:\n   Consumer commits offset BEFORE processing message. Crash => Message LOST.\n\n2. At-Least-Once (Most Common):\n   Consumer processes message, THEN commits offset. Crash => Message REPROCESSED.\n   *Requirement: Consumers must be IDEMPOTENT.*\n\n3. Exactly-Once Processing (EOS):\n   Requires transactional producers + atomic read-process-write state commits (Kafka Streams/Flink).\n```\n\n### Designing Idempotent Consumers\nSince network timeouts can duplicate messages during delivery, consumers must handle repeated deliveries without side-effects:\n- **Idempotency Key:** Producers generate a UUID with each transaction. The consumer stores processed keys in an atomic Redis/SQL table (`INSERT ... ON CONFLICT DO NOTHING`).\n",
       "questions": [
         {
           "id": "mq-1",
@@ -610,7 +791,27 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
         "Delivery semantics: At-most-once (zero duplicates, possible loss), At-least-once (no loss, possible duplicates), Exactly-once (idempotent producer + transactional API).",
         "Consumer groups allow multiple workers to consume partitions in parallel."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Message+Queues+%26+Event-Driven+Architecture+%28Kafka+vs.+RabbitMQ%29+System+Design+Fundamentals+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Message+Queues+%26+Event-Driven+Architecture+%28Kafka+vs.+RabbitMQ%29+System+Design+Fundamentals+lecture",
+      "prerequisites": [
+        "Publish-Subscribe Architectural Pattern",
+        "Concurrency and Threading"
+      ],
+      "externalResources": [
+        {
+          "title": "Message Queues and Event Streaming — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/message-queues-system-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Apache Kafka Architecture Documentation",
+          "provider": "Official Documentation",
+          "url": "https://kafka.apache.org/documentation/",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "rate-limiting",
@@ -618,7 +819,7 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
       "title": "Rate Limiting & Throttling Algorithms",
       "description": "Protecting microservices from DDoS and abuse using Token Bucket, Leaky Bucket, Sliding Window Log, and distributed Redis counters.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "# Rate Limiting & Throttling Algorithms\n\nRate limiting protects backend APIs against denial-of-service (DDoS) attacks, brute-force credential stuffing, noisy neighbors, and runaway cascading failures.\n\n---\n\n## 1. Common Rate Limiting Algorithms\n\n### A. Token Bucket\n- Tokens added to bucket at constant refill rate $r$ up to capacity $b$.\n- Each request consumes 1 token. If bucket is empty, request dropped (HTTP 429 Too Many Requests).\n- **Pros:** Allows sudden **bursts** of traffic up to capacity $b$, simple and memory efficient.\n\n### B. Leaky Bucket\n- Requests enter a FIFO queue. Requests leak out of the queue at a **constant, smooth rate**.\n- If queue is full, incoming requests overflow and are dropped.\n- **Pros:** Guarantees completely smooth, non-bursty downstream traffic flow.\n\n### C. Fixed Window Counter\n- Divides timeline into fixed intervals (e.g. 1 minute). Counts requests in window.\n- **Weakness (Boundary Burst):** A client can send $N$ requests at second 59 and $N$ requests at second 01 of the next minute, resulting in $2N$ requests in a 2-second span.\n\n### D. Sliding Window Log / Counter\n- Tracks timestamped requests in a sorted set (Redis ZSET) or blends weighted counts from current and previous window.\n- Prevents boundary burst spikes while keeping memory usage bounded.\n\n## 2. Distributed Rate Limiting with Redis\nIn multi-instance microservices, rate limits are enforced centrally via Redis using atomic **Lua scripts** or `INCR` + `EXPIRE` transactions to eliminate race conditions between servers.\n",
+      "notesMarkdown": "# API Rate Limiting & Traffic Shaping Algorithms\n\nRate limiting controls the rate of traffic sent or received by an API network interface, protecting upstream services against DoS attacks, brute-force credential stuffing, resource starvation, and billing spikes.\n\n---\n\n## 1. The 5 Classic Rate Limiting Algorithms\n\n```\n1. Token Bucket:              2. Leaky Bucket:             3. Sliding Window Counter:\n+-------------------+         +-------------------+        +--------------------+\n| Capacity: B tokens|         | Constant leak rate|        | Prev Win  | Curr Win|\n| Refill: R / sec   |         | Overflow dropped  |        | 70 reqs   | 30 reqs |\n+-------------------+         +-------------------+        +--------------------+\n```\n\n### 1. Token Bucket\n- A bucket holds up to $B$ tokens. Tokens are continuously added at a fixed rate of $R$ tokens/sec.\n- Incoming request consumes 1 token. If tokens available, request passes; otherwise rejected with `HTTP 429 Too Many Requests`.\n- **Advantage:** Allows sudden bursts of traffic up to bucket capacity $B$ while maintaining average rate $R$.\n\n### 2. Leaky Bucket\n- Incoming requests enter a FIFO buffer of fixed size. Requests are pulled and processed at a constant strictly regulated rate.\n- **Advantage:** Smooths out traffic spikes; perfect for systems requiring predictable downstream throughput.\n\n### 3. Fixed Window Counter\n- Divides timeline into fixed 1-minute blocks (e.g., 12:00:00–12:01:00). Counter tracks requests per window.\n- **Vulnerability (Boundary Burst Problem):** An attacker sends 100 requests at 12:00:59 and another 100 at 12:01:01. Both windows record 100 requests (under limit), but 200 requests hit within a 2-second span (2x burst).\n\n### 4. Sliding Window Log\n- Stores timestamp of every request in a sorted set (e.g., Redis ZSET). On each request, remove timestamps older than $(\\text{now} - \\text{window})$.\n- **Disadvantage:** Memory prohibitive at scale (storing millions of timestamps).\n\n### 5. Sliding Window Counter (Industry Standard)\n- Approximates traffic rate by blending counts from current and previous windows:\n  $$\\text{Estimated Rate} = \\text{PrevCount} \\times (1 - \\text{Weight}) + \\text{CurrCount}$$\n  Where $\\text{Weight} = \\frac{\\text{Time elapsed in current window}}{\\text{Window duration}}$.\n\n---\n\n## 2. Distributed Rate Limiting with Redis & Lua Scripts\n\nIn distributed systems, race conditions occur if multiple API gateways read and write rate limit keys concurrently.\n- **Solution:** Execute rate limit checks atomically inside Redis using a single **Lua Script**, eliminating network round-trips and race conditions.\n\n---\n\n## 3. Standard HTTP Headers for Rate Limiting\n\n- `X-RateLimit-Limit`: Maximum requests permitted within window.\n- `X-RateLimit-Remaining`: Remaining request quota in current window.\n- `X-RateLimit-Reset`: Unix timestamp when the quota resets.\n- `Retry-After`: Number of seconds to wait before retrying when receiving `HTTP 429`.\n",
       "questions": [
         {
           "id": "rl-1",
@@ -670,7 +871,20 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
         "Sliding Window Log: Precise timestamp tracking; high memory overhead.",
         "Sliding Window Counter: Combines fixed window counters with weighted ratio for smooth, low-memory rate limiting."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Rate+Limiting+%26+Throttling+Algorithms+System+Design+Fundamentals+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Rate+Limiting+%26+Throttling+Algorithms+System+Design+Fundamentals+lecture",
+      "prerequisites": [
+        "HTTP Headers and Status Codes",
+        "Redis Key-Value Operations"
+      ],
+      "externalResources": [
+        {
+          "title": "API Rate Limiting Algorithms — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/rate-limiting-system-design/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "api-paradigms",
@@ -678,7 +892,7 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
       "title": "API Architectures: REST vs. GraphQL vs. gRPC vs. WebSockets",
       "description": "Network communication protocols, over-fetching vs under-fetching, Protocol Buffers binary serialization, HTTP/2 multiplexing, and bi-directional real-time duplex.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "# API Architectures: REST, GraphQL, gRPC & WebSockets\n\nSelecting the appropriate communication protocol is foundational to latency, client bandwidth, and system evolution.\n\n---\n\n## 1. Architectural Comparison\n\n| Attribute | REST | GraphQL | gRPC | WebSockets |\n| :--- | :--- | :--- | :--- | :--- |\n| **Protocol** | HTTP/1.1 or HTTP/2 | HTTP/1.1 or HTTP/2 | HTTP/2 (Multiplexed) | TCP (Full-duplex) |\n| **Payload** | JSON / XML (Text) | JSON (Text) | Protocol Buffers (Binary) | Raw Text / Binary |\n| **Flexibility** | Fixed endpoints (`GET /users`) | Client queries exact fields | Strict contract (`.proto` schema) | Bi-directional streams |\n| **Best For** | Public web APIs, CRUD | Mobile apps, diverse UI clients | Inter-microservice RPC | Live chat, stocks, gaming |\n\n## 2. Over-Fetching & Under-Fetching in REST\n- **Over-Fetching:** Client needs only a username, but `GET /users/42` returns 40 fields including address, billing, and settings.\n- **Under-Fetching:** Client needs user and recent orders; must make separate calls to `GET /users/42` and `GET /users/42/orders` (the $N+1$ API problem). Solved by GraphQL in a single query.\n\n## 3. Why gRPC for Internal Microservices?\n1. **Protocol Buffers:** Compact binary format, 5-10x smaller and 7x faster serialization than JSON.\n2. **HTTP/2 Transport:** Multiplexes dozens of concurrent requests over a single TCP connection, eliminating connection handshake overhead.\n3. **Code Generation:** Native client/server stubs generated automatically in Go, Java, Python, and TypeScript from a single `.proto` definition.\n",
+      "notesMarkdown": "# Modern API Architectures: REST, GraphQL, gRPC & WebSockets\n\nModern distributed systems select API communication paradigms based on latency budgets, network constraints, payload size, client diversity, and real-time streaming requirements.\n\n---\n\n## 1. Architectural Comparison Matrix\n\n| Dimension | REST | GraphQL | gRPC | WebSockets |\n| :--- | :--- | :--- | :--- | :--- |\n| **Transport Protocol**| HTTP/1.1 or HTTP/2 | HTTP/1.1 or HTTP/2 | HTTP/2 (Multiplexed) | TCP (Full-duplex WebSocket) |\n| **Data Format** | JSON, XML | JSON | Protocol Buffers (Binary) | Text (JSON) or Binary |\n| **Contract / Schema** | OpenAPI / Swagger | GraphQL Schema (SDL) | `.proto` Definition | Custom framing protocol |\n| **Over/Under-Fetching**| Common (Fixed schemas)| Eliminated (Client selects fields) | Solved by specific RPC calls | Irrelevant (Event streams) |\n| **Streaming Support** | Polling / SSE | Subscriptions | Unary, Client, Server, Bi-directional | Full Bi-directional duplex |\n| **Primary Domain** | Public Web APIs / CRUD | Mobile frontends / Aggregators | Internal Microservices | Real-time chat / Trading |\n\n---\n\n## 2. In-Depth Architectural Evaluation\n\n### 1. REST (Representational State Transfer)\n- **Core Principles (Roy Fielding):** Stateless, client-server, cacheable, uniform interface, resource-oriented URIs (`GET /users/123/orders`).\n- **Strengths:** Universally supported across every programming language, browser, and CDN; native HTTP caching (`Cache-Control`, `ETags`).\n- **Weaknesses:** Over-fetching (fetching 50 unused fields) and Under-fetching (requiring 5 serial HTTP roundtrips to assemble a dashboard).\n\n### 2. GraphQL\n- Allows clients to declare the exact shape and fields of data required in a single request query:\n  ```graphql\n  query {\n    user(id: \"123\") {\n      name\n      orders(limit: 3) { id total status }\n    }\n  }\n  ```\n- **Strengths:** Solves frontend over/under-fetching; ideal for bandwidth-constrained mobile apps.\n- **Weaknesses:** Complex server-side query parsing; susceptible to $N+1$ database query traps (mitigated with Facebook DataLoader); hard to cache at HTTP CDN layer.\n\n### 3. gRPC (Google Remote Procedure Call)\n- High-performance, low-latency framework using **Protocol Buffers (Protobuf)** over HTTP/2 multiplexed streams.\n- **Strengths:** Compact binary payloads (up to 10x smaller and 7x faster serialization than JSON); compile-time type-safe code generation for 12+ languages; built-in streaming.\n- **Weaknesses:** Limited direct web browser support without gRPC-Web proxy; binary payloads are not human-readable without schema.\n\n### 4. WebSockets\n- Upgrades an HTTP connection to a persistent, bi-directional, full-duplex TCP socket connection.\n- **Strengths:** Near-zero per-message framing overhead (2–10 bytes vs 1KB HTTP headers); instantaneous push capability.\n- **Use Cases:** Live financial ticker updates, collaborative real-time document editing, multiplayer gaming, chat messaging.\n",
       "questions": [
         {
           "id": "api-1",
@@ -730,7 +944,27 @@ export const SYSTEM_DESIGN_CATEGORY: SectionCategory = {
         "gRPC: Protocol Buffers over HTTP/2, high performance binary serialization, streaming.",
         "WebSockets: Full-duplex persistent bidirectional TCP connection for real-time events."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=API+Architectures%3A+REST+vs.+GraphQL+vs.+gRPC+vs.+WebSockets+System+Design+Fundamentals+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=API+Architectures%3A+REST+vs.+GraphQL+vs.+gRPC+vs.+WebSockets+System+Design+Fundamentals+lecture",
+      "prerequisites": [
+        "HTTP/1.1 and HTTP/2 Protocols",
+        "JSON and Serialization Formats"
+      ],
+      "externalResources": [
+        {
+          "title": "REST vs GraphQL vs gRPC — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/rest-vs-graphql-vs-grpc-which-api-architecture-to-choose/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "MDN Web Docs: WebSockets API",
+          "provider": "MDN Web Docs",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     }
   ]
 };
@@ -748,7 +982,7 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
       "title": "Git Internals, Object Graph & Branching Workflows",
       "description": "Blob, Tree, Commit, Tag objects, HEAD pointer, Fast-Forward Merge vs Rebase, Cherry-Pick, and resolving conflicts.",
       "estimatedMinutes": 20,
-      "notesMarkdown": "# Git Internals & Branching Strategies\n\nGit is a distributed content-addressable storage system that models repository history as a **Directed Acyclic Graph (DAG)** of immutable snapshot objects.\n\n---\n\n## 1. The 4 Git Internal Objects\nEvery object in `.git/objects/` is identified by a 40-character SHA-1 hash:\n1. **Blob (Binary Large Object):** Stores raw file contents (does not store file name or permissions).\n2. **Tree:** Represents a directory. Stores file names, permissions, and hashes pointing to Blobs or child Trees.\n3. **Commit:** Stores pointer to the root Tree, parent commit hashes, author/committer info, timestamp, and commit message.\n4. **Annotated Tag:** Permanent reference pointing directly to a specific commit object with tagger notes.\n\n## 2. Git Merge vs. Git Rebase\n- **`git merge`:**\n  - Preserves exact historical chronology.\n  - Creates a **3-way merge commit** with two parents when branches diverge.\n  - Non-destructive: never alters existing commits.\n- **`git rebase`:**\n  - Replays feature branch commits one-by-one on top of the target base branch.\n  - Produces a clean, strictly **linear history** without extra merge commits.\n  - **Golden Rule:** Never rebase commits that have already been pushed to a shared public branch.\n\n## 3. Essential Troubleshooting Commands\n- `git cherry-pick <commit>`: Applies the diff of a specific commit onto the current branch.\n- `git reset --soft HEAD~1`: Undoes the last commit but keeps staged changes.\n- `git reset --hard HEAD~1`: Discards the last commit and all working tree changes.\n- `git reflog`: Shows all reference movements, allowing recovery of \"lost\" deleted commits.\n",
+      "notesMarkdown": "# Git Internals, Object Storage & Branching Workflows\n\nGit is a distributed version control system architected as a content-addressable directed acyclic graph (DAG) filesystem.\n\n---\n\n## 1. Git's 4 Core Object Types\n\nAll objects in `.git/objects/` are compressed with zlib and addressed by their 40-character SHA-1 (or SHA-256) hash:\n\n```\n+--------------------------------------------------------------------------+\n|                             GIT OBJECT DAG                               |\n+--------------------------------------------------------------------------+\n| 1. Blob      | Stores raw file contents (NO filename, NO permissions)   |\n| 2. Tree      | Directory structure: maps filenames to Blob or Tree SHA1s |\n| 3. Commit    | Points to top-level Tree, Parent Commit SHA1, Author, Msg |\n| 4. Tag       | Permanent pointer to a specific commit with GPG signature |\n+--------------------------------------------------------------------------+\n```\n\n```\nCommit Object (SHA: a1b2c3)\n  ├── tree: 7d8e9f (Root Tree)\n  │     ├── blob 4a5b6c: index.html\n  │     └── tree 1f2e3d: src/\n  │           └── blob 9c8b7a: app.js\n  └── parent: 0e9d8c (Previous Commit)\n```\n\n---\n\n## 2. Git Architecture: The Three Trees\n\n```\n+--------------------+      git add      +--------------------+      git commit    +--------------------+\n|  Working Directory | ----------------> |  Staging Area      | -----------------> |    Git Repository  |\n|  (Local disk files)|                   |  (Index file)      |                    |    (Commit History)|\n+--------------------+ <---------------- +--------------------+ <----------------- +--------------------+\n                            git checkout                             git reset\n```\n\n---\n\n## 3. High-Frequency Branching Operations: Merge vs. Rebase\n\n| Characteristic | `git merge` | `git rebase` |\n| :--- | :--- | :--- |\n| **History Style** | Preserves exact chronological timeline with merge commits | Creates a clean, linear, flat commit history |\n| **Commit Hashes** | Original commit hashes remain unchanged | **Rewrites commit hashes** for rebased commits |\n| **Golden Rule** | Safe on public shared branches | **NEVER rebase a public/shared branch!** |\n| **Conflict Resolution**| Resolve all conflicts once in the merge commit | Resolve conflicts step-by-step for each replayed commit |\n\n---\n\n## 4. Branching Strategies: GitFlow vs. GitHub Flow vs. Trunk-Based\n\n- **GitFlow:** Strict model with long-lived branches (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`). Best for scheduled enterprise releases.\n- **GitHub Flow:** Simple, lightweight model with only `main` and short-lived feature branches merged via Pull Requests. Best for web apps.\n- **Trunk-Based Development:** Engineers merge small, frequent commits directly into the `main` branch multiple times a day behind feature flags. Required for elite DevOps velocity (DORA metrics).\n",
       "questions": [
         {
           "id": "git-1",
@@ -799,7 +1033,27 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
         "Git merge preserves branch history with a merge commit; Git rebase rewrites commit history on top of base.",
         "git cherry-pick applies the changes from an existing commit onto the current branch."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Git+Internals%2C+Object+Graph+%26+Branching+Workflows+Software+Engineering%2C+Git+%26+Version+Control+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Git+Internals%2C+Object+Graph+%26+Branching+Workflows+Software+Engineering%2C+Git+%26+Version+Control+lecture",
+      "prerequisites": [
+        "Command Line Interface Basics",
+        "Hashing and SHA Algorithms"
+      ],
+      "externalResources": [
+        {
+          "title": "Git Internals and Architecture — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/git-internals/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Pro Git Book (Official Free Edition)",
+          "provider": "Official Documentation",
+          "url": "https://git-scm.com/book/en/v2",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "agile-scrum-sdlc",
@@ -807,7 +1061,7 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
       "title": "Agile, Scrum & Software Development Life Cycles (SDLC)",
       "description": "Waterfall vs Agile, Scrum roles (Product Owner, Scrum Master), Sprint ceremonies, Story points, and Kanban flow.",
       "estimatedMinutes": 16,
-      "notesMarkdown": "# Agile, Scrum & SDLC Methodologies\n\nSoftware engineering teams use structured methodologies to deliver software reliably while adapting to shifting product requirements.\n\n---\n\n## 1. Waterfall vs. Agile\n- **Waterfall:** Sequential phases (Requirements -> Design -> Implementation -> Verification -> Maintenance). Rigorous documentation, but rigid and slow to adapt.\n- **Agile:** Iterative, incremental cycles producing working software every 1-4 weeks. Emphasizes customer collaboration over rigid plans.\n\n## 2. Scrum Framework\n- **The 3 Roles:**\n  1. **Product Owner:** Defines product vision, prioritizes the Product Backlog, represents stakeholder value.\n  2. **Scrum Master:** Facilitates process, removes team blockers, protects the team from external distractions.\n  3. **Development Team:** Cross-functional engineers responsible for delivering sprint increments.\n- **The 4 Core Ceremonies:**\n  1. **Sprint Planning:** Commit to backlog user stories for the upcoming sprint.\n  2. **Daily Standup:** 15-minute sync (What did I do yesterday? What will I do today? Any blockers?).\n  3. **Sprint Review / Demo:** Showcase working software increment to stakeholders.\n  4. **Sprint Retrospective:** Inspect team process and agree on improvements for next cycle.\n\n## 3. Kanban vs Scrum\n- **Scrum:** Fixed time-boxed sprints, commit to batch scope.\n- **Kanban:** Continuous flow, visual board (To Do, In Progress, Done), strictly enforces **WIP (Work In Progress) Limits** to prevent team overload.\n",
+      "notesMarkdown": "# Agile Methodologies, Scrum Framework & SDLC Models\n\nThe Software Development Life Cycle (SDLC) defines the structured sequence of stages through which software applications are conceptualized, built, verified, and maintained.\n\n---\n\n## 1. Waterfall vs. Agile Paradigm Shift\n\n```\nWaterfall Model (Sequential & Rigid):\n[ Requirements ] -> [ Architecture ] -> [ Implementation ] -> [ Verification ] -> [ Deployment ]\n- High risk: Late client feedback; changes late in development are exponentially expensive.\n\nAgile Framework (Iterative & Empirical):\nSprint 1: [ Plan -> Build -> Test -> Review ] -> Incremental Shippable Product\nSprint 2: [ Plan -> Build -> Test -> Review ] -> Incremental Shippable Product\n- High adaptability: Rapid feedback cycles, continuous requirement refinement.\n```\n\n---\n\n## 2. The Scrum Framework: Roles, Artifacts & Ceremonies\n\n### The 3 Core Roles\n1. **Product Owner (PO):** Defines product vision, prioritizes the Product Backlog based on business ROI, and accepts/rejects work outputs.\n2. **Scrum Master:** Servant leader who facilitates ceremonies, protects the team from external distractions, and removes organizational impediments.\n3. **Development Team:** Cross-functional, self-organizing engineers responsible for delivering a potentially shippable increment each sprint.\n\n### The 4 Scrum Ceremonies\n1. **Sprint Planning:** Team commits to a set of backlog items for the upcoming sprint (typically 1–4 weeks).\n2. **Daily Standup (Daily Scrum):** 15-minute timeboxed synchronization answering:\n   - What did I accomplish yesterday?\n   - What will I accomplish today?\n   - Are there any blockers or impediments?\n3. **Sprint Review:** Live demo of the working product increment to stakeholders for feedback.\n4. **Sprint Retrospective:** Continuous improvement meeting focusing on team processes, communication, and tooling.\n\n---\n\n## 3. Agile Metrics & Story Points\n\n- **Story Points:** Relative measure of effort, complexity, and uncertainty, commonly estimated using the Fibonacci sequence ($1, 2, 3, 5, 8, 13$).\n- **Velocity:** The average number of story points completed by the engineering team per sprint.\n- **Burndown Chart:** Visual plot comparing remaining sprint work against time, tracking whether the sprint commitment will be completed on schedule.\n",
       "questions": [
         {
           "id": "scrum-1",
@@ -858,7 +1112,19 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
         "Sprint backlog is owned by the developers; Product backlog is prioritized by the Product Owner.",
         "Definition of Done (DoD) specifies quality criteria for a story to be considered shippable."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Agile%2C+Scrum+%26+Software+Development+Life+Cycles+%28SDLC%29+Software+Engineering%2C+Git+%26+Version+Control+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Agile%2C+Scrum+%26+Software+Development+Life+Cycles+%28SDLC%29+Software+Engineering%2C+Git+%26+Version+Control+lecture",
+      "prerequisites": [
+        "Software Engineering Lifecycle Fundamentals"
+      ],
+      "externalResources": [
+        {
+          "title": "Agile Methodologies and Scrum Framework — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/scrum-in-software-engineering/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "testing-code-quality",
@@ -866,7 +1132,7 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
       "title": "Software Testing Methodologies, TDD & Code Coverage",
       "description": "Test Pyramid (Unit, Integration, E2E), Test-Driven Development (Red-Green-Refactor), Mocks vs Stubs, and code coverage metrics.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "# Software Testing Methodologies & Code Quality\n\nAutomated testing ensures software works as expected and prevents regressions during refactoring.\n\n---\n\n## 1. The Martin Fowler Test Pyramid\n- **Unit Tests (Base - ~70%):** Test single functions/classes in isolation. Fast execution (milliseconds), highly deterministic.\n- **Integration Tests (Middle - ~20%):** Verify interaction between modules (e.g. Service + Database queries, HTTP handlers).\n- **End-to-End (E2E) Tests (Peak - ~10%):** Simulate real user journeys across the entire deployed system. High confidence, but slow and prone to flaky failures.\n\n## 2. Test-Driven Development (TDD)\nTDD follows the **Red-Green-Refactor** cycle:\n1. **Red:** Write a failing automated unit test before writing production code.\n2. **Green:** Write minimal code necessary to make the test pass.\n3. **Refactor:** Clean up code, remove duplication, and optimize architecture while keeping tests green.\n\n## 3. Test Doubles: Mocks vs. Stubs\n- **Stub:** Provides predetermined, canned answers to calls made during the test (state verification).\n- **Mock:** Registers expectations on which methods will be called and with what parameters. Verifies behavioral interactions (behavior verification).\n- **Fake:** Working implementation with a shortcut (e.g. in-memory SQLite database instead of PostgreSQL).\n",
+      "notesMarkdown": "# Software Testing Pyramid, TDD & Code Quality Metrics\n\nEffective automated testing enables teams to refactor fearlessly, ship features at high velocity, and maintain production reliability.\n\n---\n\n## 1. The Automated Testing Pyramid (Mike Cohn)\n\n```\n             / \\\n            /   \\\n           / E2E \\         End-to-End Tests (Cypress, Playwright)\n          /-------\\        - Slow, brittle, expensive, tests full user journeys\n         /  Integ  \\       Integration Tests (Database, API endpoints)\n        /-----------\\      - Verifies inter-component collaboration\n       /    Unit     \\     Unit Tests (Jest, Vitest, JUnit)\n      /---------------\\    - Fast (milliseconds), isolated, highly deterministic\n```\n\n---\n\n## 2. Test Doubles: Mocks, Stubs, and Fakes\n\nWhen testing in isolation, external dependencies (databases, network APIs) are replaced with test doubles:\n\n- **Dummy:** Passed around but never actually used (e.g., filling parameter lists).\n- **Stub:** Returns hardcoded canned answers to method calls without logic.\n- **Mock:** Pre-programmed with expectations regarding calls it should receive; verifies behavioral interactions.\n- **Fake:** Working implementation with a shortcut that makes it unsuitable for production (e.g., In-Memory H2 DB instead of PostgreSQL).\n\n---\n\n## 3. Test-Driven Development (TDD) Cycle\n\n```\n+------------+       Write failing test       +------------+\n|  RED       | -----------------------------> |   GREEN    |  Write minimal code to pass\n+------------+                                +------------+\n      ^                                             |\n      |             Clean code, preserve passing    v\n      +--------------------------------------- +------------+\n                                               |  REFACTOR  |\n                                               +------------+\n```\n\n---\n\n## 4. Code Quality & Static Analysis\n\n1. **Code Coverage:**\n   - **Line Coverage:** Percentage of executable lines invoked by test suite.\n   - **Branch Coverage:** Percentage of conditional decision paths (if/else true and false) evaluated.\n   - *Rule of Thumb:* 80% branch coverage is typically healthy; 100% line coverage does not prevent logical edge-case bugs.\n2. **Cyclomatic Complexity (Thomas McCabe):**\n   $$M = E - N + 2P$$\n   Measures the number of linearly independent paths through program code. Complexity $> 10$ indicates high defect probability and requires refactoring.\n",
       "questions": [
         {
           "id": "test-1",
@@ -917,7 +1183,20 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
         "TDD cycle: Red (write failing test) -> Green (write minimal code to pass) -> Refactor.",
         "Code coverage measures executed code paths; 100% coverage does NOT prove absence of logical bugs."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=Software+Testing+Methodologies%2C+TDD+%26+Code+Coverage+Software+Engineering%2C+Git+%26+Version+Control+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=Software+Testing+Methodologies%2C+TDD+%26+Code+Coverage+Software+Engineering%2C+Git+%26+Version+Control+lecture",
+      "prerequisites": [
+        "Modular Programming",
+        "Debugging Fundamentals"
+      ],
+      "externalResources": [
+        {
+          "title": "Software Testing Pyramid and Methodologies — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/types-software-testing/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     },
     {
       "id": "cicd-devops-basics",
@@ -925,7 +1204,7 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
       "title": "CI/CD Pipelines, DevOps & Containerization Basics",
       "description": "Continuous Integration vs Continuous Delivery/Deployment, GitHub Actions, Docker containers vs Virtual Machines, Blue-Green deployments.",
       "estimatedMinutes": 18,
-      "notesMarkdown": "# CI/CD Pipelines & Containerization Basics\n\nDevOps bridges software development and IT operations to deliver frequent, high-reliability releases.\n\n---\n\n## 1. CI vs. CD\n- **Continuous Integration (CI):** Developers frequently merge code into a shared repository. Every push triggers automated builds, linters, and unit/integration tests.\n- **Continuous Delivery (CD):** Validated code is automatically packaged and staged in a deployable state for production; release requires one manual approval click.\n- **Continuous Deployment:** Every code change passing all test gates is deployed directly to production automatically without human intervention.\n\n## 2. Docker Containers vs. Virtual Machines\n- **Virtual Machines (VMs):** Emulate full hardware. Run a complete guest OS on top of a hypervisor. Heavyweight (gigabytes), slower startup.\n- **Containers (Docker):** Package application and its dependencies, sharing the **host OS kernel**. Isolated via Linux **namespaces** (PID, NET) and **cgroups** (CPU/RAM limits). Lightweight (megabytes), sub-second boot.\n\n## 3. Zero-Downtime Deployment Strategies\n- **Blue-Green Deployment:** Two identical production environments. Blue is live; Green receives the new release. Once tested, router/load balancer instantly flips traffic to Green. Rollback is instant.\n- **Canary Deployment:** Rolls out the update to a small subset of servers (e.g. 5% of users), monitors error rates and latency, and gradually scales to 100%.\n",
+      "notesMarkdown": "# CI/CD Pipelines, Containerization & Zero-Downtime Deployments\n\nContinuous Integration and Continuous Deployment (CI/CD) automates the path from code commit to production release.\n\n---\n\n## 1. CI vs. CD Pipeline Stages\n\n```\n[ Developer Commit ]\n         |\n         v\n+------------------+\n|    CI STAGE      | -> 1. Build Compilation\n|  (Verification)  | -> 2. Linting & Formatting Check\n|                  | -> 3. Automated Unit & Integration Tests\n|                  | -> 4. Docker Image Container Build\n+------------------+\n         |\n         v\n+------------------+\n|    CD STAGE      | -> Continuous Delivery: Deploys automatically to Staging;\n|   (Deployment)   |                         Manual gate to Production.\n|                  | -> Continuous Deployment: Fully automated push to Production.\n+------------------+\n```\n\n---\n\n## 2. Zero-Downtime Deployment Strategies\n\n### 1. Blue-Green Deployment\n- Maintains two identical production environments: **Blue** (active live traffic) and **Green** (idle standby).\n- New version deployed and tested on Green. Once verified, router/load balancer switches traffic from Blue to Green instantaneously.\n- **Rollback:** Instantaneous switch back to Blue if errors are detected.\n\n### 2. Canary Deployment\n- Routes a small percentage of real production traffic (e.g. 2% $\\to$ 10% $\\to$ 50% $\\to$ 100%) to the new version while monitoring error rates and latency metrics.\n\n### 3. Rolling Deployment\n- Progressively replaces instances of previous application versions with new version across the server fleet one node at a time.\n",
       "questions": [
         {
           "id": "cicd-1",
@@ -976,7 +1255,20 @@ export const SWE_GIT_CATEGORY: SectionCategory = {
         "Continuous Delivery (CD): Code is automatically tested and ready to release to production at any time.",
         "Continuous Deployment: Every change that passes automated tests is automatically deployed to production without manual gate."
       ],
-      "youtube_url": "https://www.youtube.com/results?search_query=CI%2FCD+Pipelines%2C+DevOps+%26+Containerization+Basics+Software+Engineering%2C+Git+%26+Version+Control+lecture"
+      "youtube_url": "https://www.youtube.com/results?search_query=CI%2FCD+Pipelines%2C+DevOps+%26+Containerization+Basics+Software+Engineering%2C+Git+%26+Version+Control+lecture",
+      "prerequisites": [
+        "Git Workflows",
+        "Linux Shell Scripting Basics"
+      ],
+      "externalResources": [
+        {
+          "title": "CI/CD Pipeline Architecture — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/continuous-integration-and-continuous-deployment-ci-cd/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
+      ]
     }
   ]
 };

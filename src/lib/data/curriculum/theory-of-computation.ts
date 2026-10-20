@@ -27,7 +27,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Positive Closure (Sigma+): Sigma* \\ {epsilon} (all non-empty strings)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Alphabets+Strings+Languages+Kleene+Star+TOC+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Alphabets, Strings, and Languages\n\n---\n\n## 1. Fundamentals\n- **Alphabet ($\\Sigma$):** A finite, non-empty set of symbols (e.g. $\\Sigma = \\{0, 1\\}$).\n- **String ($w$):** A finite sequence of symbols chosen from $\\Sigma$. $|w|$ denotes length.\n- **Empty String ($\\epsilon$):** String of length $0$. $|\\epsilon| = 0$.\n\n---\n\n## 2. Kleene Star vs Positive Closure\n- **$\\Sigma^*$ (Kleene Star):** All possible strings of any length $\\ge 0$ over $\\Sigma$.\n  $$\\Sigma^* = \\Sigma^0 \\cup \\Sigma^1 \\cup \\Sigma^2 \\cup \\dots = \\{\\epsilon, 0, 1, 00, 01, \\dots\\}$$\n- **$\\Sigma^+$ (Positive Closure):** All strings of length $\\ge 1$. $\\Sigma^+ = \\Sigma^* \\setminus \\{\\epsilon\\}$.\n- A **Language** $L$ over $\\Sigma$ is simply any subset of $\\Sigma^*$ ($L \\subseteq \\Sigma^*$).\n",
+      "notesMarkdown": "# Alphabets, Strings, Operations, and Formal Languages\n\nTheoretical computer science investigates the fundamental mathematical capabilities and limitations of computation. Before defining abstract computing machines (automata), we establish the formal alphabet, string, and language primitives upon which all computational models operate.\n\n---\n\n## 1. Mathematical Definitions: Symbols, Alphabets, and Strings\n\n- **Symbol:** An atomic, indivisible entity (e.g., characters `0, 1`, letters `a, b`).\n- **Alphabet ($\\Sigma$):** A non-empty, **finite set** of symbols.\n  - Binary Alphabet: $\\Sigma = \\{0, 1\\}$.\n  - English Alphabet: $\\Sigma = \\{a, b, \\dots, z\\}$.\n- **String (Word):** A finite sequence of symbols chosen from an alphabet $\\Sigma$.\n  - Example over $\\Sigma = \\{0, 1\\}$: $w = 01101$.\n- **Empty String ($\\epsilon$ or $\\lambda$):** The unique string containing zero symbols. Length: $|\\epsilon| = 0$.\n\n---\n\n## 2. Fundamental Operations on Strings\n\n1. **Length of a String ($|w|$):** The total number of symbol occurrences in $w$.\n   - If $w = 1011$, then $|w| = 4$. $|\\epsilon| = 0$.\n2. **String Reversal ($w^R$):** The string written in reverse order.\n   - If $w = \\text{\"cat\"}$, then $w^R = \\text{\"tac\"}$. Formally: $(uv)^R = v^R u^R$.\n3. **String Concatenation ($uv$ or $u \\cdot v$):** Appending string $v$ to string $u$.\n   - Length rule: $|u \\cdot v| = |u| + |v|$.\n   - Identity: $w \\cdot \\epsilon = \\epsilon \\cdot w = w$.\n4. **String Exponentiation ($w^k$):** Concatenating string $w$ with itself $k$ times:\n   - $w^0 = \\epsilon$.\n   - $w^{k} = w \\cdot w^{k-1}$.\n5. **Prefix, Suffix, and Substring:**\n   - For string $w = xyz$: $x$ is a prefix, $y$ is a substring, and $z$ is a suffix.\n   - Proper prefix: A prefix $x \\ne w$.\n   - Total substrings of a string of length $n$ with all distinct symbols: $\\frac{n(n+1)}{2} + 1$ (including $\\epsilon$).\n\n---\n\n## 3. Kleene Star ($\\Sigma^*$) vs Positive Closure ($\\Sigma^+$)\n\n- **Powers of an Alphabet ($\\Sigma^k$):** The set of all strings over $\\Sigma$ of exact length $k$.\n  - If $\\Sigma = \\{0, 1\\}$: $\\Sigma^0 = \\{\\epsilon\\}$, $\\Sigma^1 = \\{0, 1\\}$, $\\Sigma^2 = \\{00, 01, 10, 11\\}$.\n  - $|\\Sigma^k| = |\\Sigma|^k$.\n- **Kleene Star ($\\Sigma^*$):** The set of all possible strings of **any finite length** (including $\\epsilon$):\n  $$\\Sigma^* = \\Sigma^0 \\cup \\Sigma^1 \\cup \\Sigma^2 \\cup \\Sigma^3 \\dots = \\bigcup_{i=0}^{\\infty} \\Sigma^i$$\n  *Property:* $\\Sigma^*$ is always an **infinitely countable set** for any non-empty $\\Sigma$.\n- **Positive Closure ($\\Sigma^+$):** Excludes the empty string:\n  $$\\Sigma^+ = \\Sigma^1 \\cup \\Sigma^2 \\cup \\Sigma^3 \\dots \\implies \\Sigma^* = \\Sigma^+ \\cup \\{\\epsilon\\}$$\n\n---\n\n## 4. Formal Languages\n\nA **Language ($L$)** over an alphabet $\\Sigma$ is any subset of $\\Sigma^*$:\n$$L \\subseteq \\Sigma^*$$\n- **Empty Language ($\\emptyset$ or $\\{\\}$):** Contains zero strings ($|\\emptyset| = 0$).\n- **Language containing only empty string ($\\{\\epsilon\\}$):** Contains exactly one string ($|\\{\\epsilon\\}| = 1$).\n  *(Crucial distinction: $\\emptyset \\ne \\{\\epsilon\\}$!)*\n- **Complement of Language ($\\overline{L}$):** $\\overline{L} = \\Sigma^* - L$.\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Substrings of string of length $n$ (distinct chars):** $\\frac{n(n+1)}{2} + 1$.\n- **Reversal Identity:** $(uv)^R = v^R u^R$.\n- **Kleene Star:** $\\Sigma^* = \\bigcup_{i=0}^{\\infty} \\Sigma^i$ (contains $\\epsilon$).\n- **Positive Closure:** $\\Sigma^+ = \\Sigma^* - \\{\\epsilon\\}$ (if $\\epsilon \\notin \\Sigma$).\n- **Empty Set vs Empty String:** $|\\emptyset| = 0$ while $|\\{\\epsilon\\}| = 1$.\n",
       "questions": [
         {
           "id": "toc-asl-1",
@@ -65,6 +65,33 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "For an alphabet of size |Sigma| = k, the number of distinct strings of length n is k^n. Here 2^3 = 8."
         }
+      ],
+      "prerequisites": [
+        "Discrete mathematics: Set theory, Cartesian products, and relations",
+        "Mathematical induction basics"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Theory of Computation - Formal Languages",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Introduction to Theory of Computation",
+          "url": "https://www.geeksforgeeks.org/introduction-of-theory-of-computation/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Automata Theory Alphabets and Languages",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     },
     {
@@ -87,7 +114,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Empty language phi vs empty string epsilon: phi* = {epsilon}; phi . L = phi."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Regular+Expressions+Ardens+Theorem+TOC+Theory+of+Computation+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Regular Expressions and Formal Language Operators\n\nRegular expressions (RE) provide algebraic syntax describing the family of regular languages over alphabet $\\Sigma$.\n\n---\n\n## 1. Inductive Definition of Regular Expressions\n1. $\\emptyset$ is a regular expression denoting $\\emptyset$.\n2. $\\epsilon$ is a regular expression denoting $\\{\\epsilon\\}$.\n3. For each $a \\in \\Sigma$, $a$ is a regular expression denoting $\\{a\\}$.\n4. If $r$ and $s$ are regular expressions:\n   - **Union (Alternation):** $r + s$ or $r \\mid s \\implies L(r) \\cup L(s)$.\n   - **Concatenation:** $r \\cdot s \\implies L(r) \\cdot L(s)$.\n   - **Kleene Star (Closure):** $r^* = \\bigcup_{i=0}^{\\infty} r^i = \\{\\epsilon\\} \\cup r \\cup rr \\cup \\dots$\n\n---\n\n## 2. Algebraic Identities (Arden's Theorem)\n- **Arden's Theorem:** If $P$ and $Q$ are regular expressions over $\\Sigma$ and $\\epsilon \\notin P$, then the equation:\n  $$R = Q + R P$$\n  has a unique solution given by:\n  $$R = Q P^*$$\n  *(Used to convert finite automata transition equations directly into regular expressions!)*\n- **Identities:**\n  - $(r^*)^* = r^*$\n  - $(r + s)^* = (r^* s^*)^* = (r^* + s^*)^*$\n  - $(r s)^* r = r (s r)^*$\n",
+      "notesMarkdown": "# Regular Expressions, Algebraic Identities, and Arden's Theorem\n\nA Regular Expression (RegEx) is an algebraic notation used to specify and describe regular languages. Regular expressions define the lexical patterns recognized by lexers, tokenizers, search utilities (`grep`), and finite-state automata.\n\n---\n\n## 1. Inductive Definition of Regular Expressions\n\nGiven an alphabet $\\Sigma$, a regular expression $R$ and its corresponding language $L(R)$ are defined recursively:\n\n### Base Cases:\n1. $\\emptyset$: $L(\\emptyset) = \\emptyset$ (Empty language).\n2. $\\epsilon$: $L(\\epsilon) = \\{\\epsilon\\}$ (Language containing only the empty string).\n3. $a$ (for each $a \\in \\Sigma$): $L(a) = \\{a\\}$.\n\n### Inductive Steps:\nIf $R_1$ and $R_2$ are regular expressions:\n4. **Union ($R_1 + R_2$ or $R_1 \\mid R_2$):** $L(R_1 + R_2) = L(R_1) \\cup L(R_2)$.\n5. **Concatenation ($R_1 \\cdot R_2$):** $L(R_1 \\cdot R_2) = L(R_1) \\cdot L(R_2)$.\n6. **Kleene Star ($R_1^*$):** $L(R_1^*) = (L(R_1))^*$.\n\nOperator Precedence: **Kleene Star ($*$) > Concatenation ($\\cdot$) > Union ($+$)**.\n\n---\n\n## 2. Fundamental Algebraic Identities\n\n- $R + \\emptyset = R$\n- $R \\cdot \\emptyset = \\emptyset \\cdot R = \\emptyset$\n- $R \\cdot \\epsilon = \\epsilon \\cdot R = R$\n- $\\epsilon^* = \\epsilon, \\quad \\emptyset^* = \\epsilon$\n- $R + R = R$ (Idempotent)\n- $R^* R^* = R^*$\n- $(R^*)^* = R^*$\n- $(a + b)^* = (a^* b^*)^* = (a^* + b^*)^* = (a + ba^*)^*$\n- $a(ba)^* = (ab)^* a$\n\n---\n\n## 3. Arden's Theorem (Converting State Transitions to Regex)\n\nArden's Theorem provides a systematic method to solve recursive language equations and extract the regular expression of a finite automaton directly from its state transition equations.\n\n```\nArden's Theorem Statement:\nLet P and Q be two regular expressions over Sigma.\nIf P does not contain the empty string epsilon (epsilon not in L(P)),\nthen the equation:\n               R = Q + RP\nhas a UNIQUE solution given by:\n               R = Q P*\n```\n\n### Application to Finite Automata:\nFor each state $q_i$, express its incoming transitions as:\n$$q_i = \\sum_{j} q_j \\cdot a_{ji} + (\\epsilon \\text{ if } q_i \\text{ is the start state})$$\nSolve the simultaneous equations using substitution and Arden's theorem until the final accepting state expression is isolated!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Empty Set vs Epsilon:** $\\emptyset^* = \\{\\epsilon\\}$, but $\\emptyset \\cdot R = \\emptyset$.\n- **Arden's Form:** $R = Q + RP \\implies R = QP^*$.\n- **Universal Binary String:** $(0 + 1)^*$.\n- **Even Number of 0s:** $(1^* 0 1^* 0 1^*)^*$.\n",
       "questions": [
         {
           "id": "toc-re-1",
@@ -125,6 +152,33 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The identity (R + S)* = R* + S* is false because (R + S)* allows arbitrary interleaved combinations of strings from R and S (e.g. 'rs'), whereas R* + S* only permits strings composed entirely of R or entirely of S."
         }
+      ],
+      "prerequisites": [
+        "Alphabets, strings, and language operations",
+        "Set operations and inductive definitions"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Regular Expressions and Regular Languages",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Regular Expressions in Automata",
+          "url": "https://www.geeksforgeeks.org/regular-expressions-regular-grammar-and-regular-languages/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Regular Expression Identities and Arden's Theorem",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -147,7 +201,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "DFA and NFA have equal computational power; both recognize precisely the class of Regular Languages."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Finite+Automata+DFA+NFA+Definition+Language+Acceptance+TOC+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Finite Automata: Deterministic and Non-deterministic Models\n\nFinite Automata are 5-tuple state-transition machines with strictly finite internal memory.\n\n---\n\n## 1. Mathematical Formalism\nA Finite Automaton is a 5-tuple:\n$$M = (Q, \\Sigma, \\delta, q_0, F)$$\n- $Q$: Finite set of states.\n- $\\Sigma$: Finite input alphabet.\n- $q_0 \\in Q$: Initial starting state.\n- $F \\subseteq Q$: Set of accepting / final states.\n- **Transition Function $\\delta$:**\n  - **DFA (Deterministic):** $\\delta: Q \\times \\Sigma \\to Q$ (exactly one transition per symbol from every state).\n  - **NFA (Nondeterministic):** $\\delta: Q \\times \\Sigma \\to 2^Q$ (set of next states).\n  - **$\\epsilon$-NFA:** $\\delta: Q \\times (\\Sigma \\cup \\{\\epsilon\\}) \\to 2^Q$.\n\n---\n\n## 2. Equivalence Theorem\n- Every NFA with or without $\\epsilon$-transitions can be converted to an equivalent DFA recognizing the exact same language (**Subset Construction / Powerset Construction**).\n- For an NFA with $n$ states, the equivalent minimal DFA has at most $2^n$ states in the worst case.\n",
+      "notesMarkdown": "# Finite Automata: Formal 5-Tuple, Transition Diagrams, and Languages\n\nA Finite Automaton (FA) is the simplest abstract model of computation. It possesses a finite set of internal states, receives a sequence of input symbols, and either accepts or rejects the input string without auxiliary external memory.\n\n---\n\n## 1. Formal 5-Tuple Definition of a Deterministic Finite Automaton (DFA)\n\nA DFA $M$ is formally defined by a 5-tuple:\n$$M = (Q, \\Sigma, \\delta, q_0, F)$$\n1. **$Q$:** A finite, non-empty set of internal **States**.\n2. **$\\Sigma$:** A finite, non-empty set of input symbols (**Alphabet**).\n3. **$\\delta$:** The **Transition Function**:\n   $$\\delta: Q \\times \\Sigma \\to Q$$\n   *(For every state and every symbol, there is EXACTLY ONE deterministic next state!)*\n4. **$q_0$:** The designated initial **Start State** ($q_0 \\in Q$).\n5. **$F$:** The set of **Final / Accepting States** ($F \\subseteq Q$).\n\n---\n\n## 2. Transition Diagrams and Transition Tables\n\n```\nState Transition Diagram for strings over {0,1} ending in '1':\n               0\n             +---+\n             |   |\n             v   |\n   -----> ( q0 ) ------- 1 -------> (( q1 )) <---+\n            ^                          |         |\n            |                          |         | 1\n            +------------ 0 -----------+         |\n                                       +---------+\n```\n\n### Transition Table Representation:\n| State | Input `0` | Input `1` |\n| :---: | :---: | :---: |\n| $\\to q_0$ | $q_0$ | $q_1^*$ |\n| $*q_1$ | $q_0$ | $q_1^*$ |\n\n---\n\n## 3. Extended Transition Function ($\\delta^*$) and Language Acceptance\n\nThe extended transition function $\\delta^*$ processes entire strings recursively:\n- **Base Case:** $\\delta^*(q, \\epsilon) = q$.\n- **Inductive Step:** For string $w = xa$ (where $x \\in \\Sigma^*$ and $a \\in \\Sigma$):\n  $$\\delta^*(q, xa) = \\delta(\\delta^*(q, x), a)$$\n\n### Language Accepted by $M$:\nThe language $L(M)$ accepted by a DFA is the set of all strings that drive the machine from the initial state $q_0$ into some final state in $F$:\n$$L(M) = \\{ w \\in \\Sigma^* \\mid \\delta^*(q_0, w) \\in F \\}$$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **DFA 5-Tuple:** $(Q, \\Sigma, \\delta, q_0, F)$.\n- **Deterministic Requirement:** Every state must have exactly one outgoing edge for each alphabet symbol.\n- **Dead / Trap State:** A non-accepting state from which there is no escape path to any final state.\n- **Regular Language Definition:** A language $L$ is regular $\\iff$ there exists some DFA $M$ such that $L = L(M)$.\n",
       "questions": [
         {
           "id": "toc-fa-1",
@@ -184,6 +238,33 @@ export const TOC_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "By the subset (powerset) construction, every DFA state corresponds to a subset of the NFA states. A set of n elements has 2^n subsets, giving an upper bound of 2^n states."
+        }
+      ],
+      "prerequisites": [
+        "Alphabets, strings, and regular expressions",
+        "Directed graphs and discrete state transitions"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Deterministic Finite Automata (DFA)",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Introduction of Finite Automata",
+          "url": "https://www.geeksforgeeks.org/introduction-of-finite-automata/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Finite State Automata and Transition Functions",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -245,6 +326,26 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A DFA recognizing strings ending with '01' requires 3 states: q0 (start / default), q1 (last bit was 0), q2 (last two bits were 01, accepting state)."
         }
+      ],
+      "prerequisites": [
+        "Sets, Alphabets, and Strings",
+        "State Transition Diagrams"
+      ],
+      "externalResources": [
+        {
+          "title": "Deterministic and Non-Deterministic Finite Automata — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/introduction-of-finite-automata/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Theory of Computation (18.404J) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -267,7 +368,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Myhill-Nerode Theorem: Number of states in minimal DFA equals the number of equivalence classes of right invariant relation R_L."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=NFA+to+DFA+Conversion+Subset+Construction+DFA+Minimization+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# NFA to DFA Conversion & Minimization\n\n---\n\n## 1. Subset Construction\nGiven NFA $M = (Q, \\Sigma, \\delta, q_0, F)$:\n- Equivalent DFA has states $Q' \\subseteq 2^Q$.\n- Maximum possible states $= 2^n$ where $|Q| = n$.\n- Start state $= \\epsilon\\text{-closure}(q_0)$.\n- Accepting states $= \\{S \\subseteq Q \\mid S \\cap F \\ne \\emptyset\\}$.\n\n---\n\n## 2. Table-Filling Algorithm (Myhill-Nerode Minimization)\n1. Mark all pairs $(p, q)$ where $p \\in F$ and $q \\notin F$ (distinct by $\\epsilon$).\n2. For unmarked pairs $(p, q)$, if for some input $a$, the pair $(\\delta(p, a), \\delta(q, a))$ is already marked, mark $(p, q)$.\n3. Repeat until no more pairs can be marked. Unmarked pairs are equivalent and merged.\n",
+      "notesMarkdown": "# Non-Deterministic Finite Automata (NFA) to DFA Conversion: Subset Construction\n\nWhile a DFA restricts each state to exactly one transition per symbol, a Non-Deterministic Finite Automaton (NFA) permits zero, one, or multiple transitions per symbol, as well as spontaneous transitions without consuming input ($\\epsilon$-transitions).\n\n---\n\n## 1. NFA vs DFA Formal Comparison\n\n| Feature | Deterministic FA (DFA) | Non-Deterministic FA (NFA / $\\epsilon$-NFA) |\n| :--- | :--- | :--- |\n| **Transition Function ($\\delta$)** | $\\delta: Q \\times \\Sigma \\to Q$ | $\\delta: Q \\times (\\Sigma \\cup \\{\\epsilon\\}) \\to 2^Q$ (Power set of states) |\n| **Branching** | Exactly 1 path per input | Multiple concurrent computational branches |\n| **$\\epsilon$-Transitions** | Strictly Forbidden | Permitted (state changes without reading input) |\n| **Expressive Power** | Recognizes Regular Languages | Recognizes Regular Languages (**Identical expressive power!**) |\n| **Implementation Complexity** | Trivial hardware/software mapping | Requires backtracking, simulation, or compilation to DFA |\n\n---\n\n## 2. The Subset (Powerset) Construction Algorithm\n\nRabin and Scott (1959) proved that **every NFA can be converted into an equivalent DFA** that recognizes the exact same language.\n\n### Algorithm Steps:\nLet NFA be $N = (Q_N, \\Sigma, \\delta_N, q_0, F_N)$. The equivalent DFA is $D = (Q_D, \\Sigma, \\delta_D, q_D0, F_D)$:\n\n1. **$\\epsilon$-Closure ($\\epsilon\\text{-close}(q)$):**\n   The set of all states reachable from state $q$ following zero or more $\\epsilon$-transitions.\n2. **Start State of DFA:**\n   $$q_{D0} = \\epsilon\\text{-close}(q_0)$$\n3. **Transition Function of DFA:**\n   For each DFA state $S = \\{q_1, q_2, \\dots, q_k\\} \\subseteq Q_N$ and each symbol $a \\in \\Sigma$:\n   $$\\delta_D(S, a) = \\epsilon\\text{-close}\\left( \\bigcup_{q \\in S} \\delta_N(q, a) \\right)$$\n4. **Final States of DFA ($F_D$):**\n   Any subset state $S \\in Q_D$ that contains **at least one final state** of the NFA:\n   $$F_D = \\{ S \\in Q_D \\mid S \\cap F_N \\ne \\emptyset \\}$$\n\n---\n\n## 3. State Explosion Bounds\n\nIf an NFA has $n$ states:\n- The theoretical maximum number of states in the equivalent minimized DFA is:\n$$\\mathbf{|Q_D| \\le 2^n}$$\n- *Worst-Case Example:* The language of strings over $\\{0, 1\\}$ whose $n$-th symbol from the end is `1`:\n  - NFA requires **$n + 1$ states**.\n  - Any equivalent DFA requires **$2^n$ states**!\n\n---\n\n## 4. DFA State Minimization (Table-Filling / Myhill-Nerode)\n\nMinimizes redundant states in $O(n^2)$ time:\n1. Eliminate all states unreachable from the start state.\n2. Create a grid of all state pairs $(p, q)$.\n3. Mark pair $(p, q)$ as distinguishable if $p \\in F$ and $q \\notin F$.\n4. Repeatedly mark unmarked pairs $(p, q)$ if for some symbol $a$, the next-state pair $(\\delta(p, a), \\delta(q, a))$ is already marked.\n5. Merge all unmarked pairs into single equivalent consolidated states.\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Subset Construction Invariant:** DFA states represent subsets of NFA states ($2^Q$).\n- **Maximum DFA States:** $2^n$ for an $n$-state NFA.\n- **Equivalence Theorem:** $\\text{Class}(L_{\\text{DFA}}) = \\text{Class}(L_{\\text{NFA}}) = \\text{Class}(L_{\\epsilon\\text{-NFA}}) = \\text{Regular Languages}$.\n",
       "questions": [
         {
           "id": "toc-nd-1",
@@ -304,6 +405,33 @@ export const TOC_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "The Subset Construction (also known as Powerset Construction) algorithm constructs DFA states representing sets of NFA states reachable on given inputs."
+        }
+      ],
+      "prerequisites": [
+        "Finite automata and DFA definitions",
+        "Power sets and set unions"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: NFA to DFA Subset Construction",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Conversion from NFA to DFA",
+          "url": "https://www.geeksforgeeks.org/conversion-from-nfa-to-dfa/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: NFA to DFA Conversion and State Minimization",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -365,6 +493,19 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "The language {a^n b^n | n >= 0} requires unbounded counting memory to ensure the count of a's matches the count of b's, which violates the finite memory limitation of finite automata."
         }
+      ],
+      "prerequisites": [
+        "DFA / NFA Equivalence",
+        "Pigeonhole Principle"
+      ],
+      "externalResources": [
+        {
+          "title": "Pumping Lemma for Regular Languages — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/pumping-lemma-in-theory-of-computation/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -425,6 +566,19 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Chomsky Normal Form strictly restricts all productions to either a non-terminal yielding exactly two non-terminals (A -> BC) or a non-terminal yielding a single terminal (A -> a)."
         }
+      ],
+      "prerequisites": [
+        "Context-Free Production Rules",
+        "Parse Trees and Derivations"
+      ],
+      "externalResources": [
+        {
+          "title": "Context-Free Grammars and Ambiguity — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/context-free-grammar-introduction/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -447,7 +601,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Greibach Normal Form (GNF): All rules are A -> a alpha (terminal followed by non-terminals)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Parse+Trees+Chomsky+Normal+Form+CNF+Greibach+GNF+CYK+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Parse Trees, Derivations, and Ambiguity in CFGs\n\nContext-Free Grammars generate strings through sequential substitution of non-terminals.\n\n---\n\n## 1. Derivations\n- **Leftmost Derivation (LMD):** The leftmost non-terminal is replaced at every substitution step.\n- **Rightmost Derivation (RMD / Canonical):** The rightmost non-terminal is replaced at every step.\n- Every valid parse tree corresponds to a unique LMD and a unique RMD.\n\n---\n\n## 2. Grammar Ambiguity\n- A CFG is **ambiguous** if there exists at least one string $w \\in L(G)$ with:\n  - Two or more distinct parse trees, OR\n  - Two or more distinct leftmost derivations.\n- **Inherent Ambiguity:** A Context-Free Language $L$ is *inherently ambiguous* if **every** possible grammar generating $L$ is ambiguous (e.g. $L = \\{a^i b^j c^k \\mid i = j \\lor j = k\\}$).\n",
+      "notesMarkdown": "# Context-Free Grammars, Derivations, Parse Trees, and Ambiguity\n\nContext-Free Grammars (CFGs) generate languages that possess nested or hierarchically balanced structures (such as balanced parentheses `(()())` or nested programming language blocks) which cannot be recognized by finite automata.\n\n---\n\n## 1. Formal Definition of a Context-Free Grammar (CFG)\n\nA CFG $G$ is formally defined by a 4-tuple:\n$$G = (V, T, P, S)$$\n1. **$V$ (Variables / Non-terminals):** Finite set of syntactic variables (e.g., $S, A, B$).\n2. **$T$ (Terminals):** Finite set of literal alphabet characters (e.g., $a, b, +, *$). $V \\cap T = \\emptyset$.\n3. **$P$ (Production Rules):** Finite set of rewriting rules of the form:\n   $$A \\to \\alpha \\quad \\text{where } A \\in V \\text{ and } \\alpha \\in (V \\cup T)^*$$\n4. **$S$ (Start Symbol):** The distinguished starting variable ($S \\in V$).\n\n---\n\n## 2. Derivations: Leftmost vs Rightmost\n\nA **Derivation** is a sequence of production rule applications transforming start symbol $S$ into a string of terminals.\n\n- **Leftmost Derivation (LMD):** At each derivation step, the **leftmost non-terminal variable** is replaced first.\n- **Rightmost Derivation (RMD):** At each derivation step, the **rightmost non-terminal variable** is replaced first.\n\n```\nGrammar: E -> E + E | E * E | id\nString: id + id * id\n\nLeftmost Derivation:\nE => E + E\n  => id + E\n  => id + E * E\n  => id + id * E\n  => id + id * id\n\nRightmost Derivation:\nE => E + E\n  => E + E * E\n  => E + E * id\n  => E + id * id\n  => id + id * id\n```\n\n---\n\n## 3. Parse Trees and Ambiguity\n\nA **Parse Tree (Concrete Syntax Tree)** is a graphical tree representation of a derivation:\n- **Root:** Start symbol $S$.\n- **Internal Nodes:** Variables ($V$).\n- **Leaf Nodes:** Terminals ($T$) or $\\epsilon$, read left-to-right to form the derived string (the yield).\n\n### Ambiguity in CFGs:\nA grammar $G$ is **Ambiguous** if there exists at least one string $w \\in L(G)$ for which there are:\n1. **Two or more distinct Parse Trees**, OR\n2. **Two or more distinct Leftmost Derivations**, OR\n3. **Two or more distinct Rightmost Derivations**.\n\n```\nTwo Distinct Parse Trees for \"id + id * id\":\n       Tree 1: (+ evaluates first)             Tree 2: (* evaluates first)\n                 E                                       E\n               / | \\                                   / | \\\n              E  +  E                                 E  +  E\n             /     /|\\                               /     /|\\\n            id    E * E                             id    E * E\n                 /     \\                                 /     \\\n                id     id                               id     id\n```\nIn compilers, ambiguity is unacceptable because the syntax tree dictates the semantic meaning and execution order of expressions!\n\n### Inherent Ambiguity:\nA context-free language $L$ is **Inherently Ambiguous** if *every possible* CFG generating $L$ is ambiguous.\n- *Classic Example:* $L = \\{ a^n b^n c^m d^m \\mid n, m \\ge 1 \\} \\cup \\{ a^n b^m c^m d^n \\mid n, m \\ge 1 \\}$.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **CFG 4-Tuple:** $(V, T, P, S)$.\n- **LMD vs RMD:** Leftmost vs Rightmost variable substitution order.\n- **Ambiguity Criterion:** $\\ge 2$ distinct parse trees for the identical string.\n- **Disambiguation Techniques:** Introduce stratified grammar levels to enforce operator precedence and associativity (e.g., Expression $\\to$ Term $\\to$ Factor).\n",
       "questions": [
         {
           "id": "toc-pt-1",
@@ -485,6 +639,33 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Ambiguity in a CFG is defined by the existence of at least one string that possesses two or more distinct parse trees (or distinct leftmost / rightmost derivations)."
         }
+      ],
+      "prerequisites": [
+        "Alphabets, strings, and regular expressions",
+        "Tree data structures and recursive rules"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Context-Free Grammars and Ambiguity",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Parse Trees and Ambiguity in Context-Free Grammars",
+          "url": "https://www.geeksforgeeks.org/ambiguous-grammar/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Derivations, Parse Trees, and Inherent Ambiguity",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -507,7 +688,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "NPDA is strictly MORE powerful than DPDA! (e.g. Even palindromes {w w^R} accepted by NPDA but NOT by any DPDA)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Pushdown+Automata+PDA+DPDA+NPDA+Stack+Acceptance+TOC+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Pushdown Automata (PDA)\n\nA Pushdown Automaton extends a finite automaton with an external infinite-capacity **LIFO stack**.\n\n---\n\n## 1. Formal 7-Tuple Definition\n$$M = (Q, \\Sigma, \\Gamma, \\delta, q_0, z_0, F)$$\n- $\\Gamma$: Stack alphabet\n- $z_0 \\in \\Gamma$: Initial stack symbol\n- **Transition Function:** $\\delta: Q \\times (\\Sigma \\cup \\{\\epsilon\\}) \\times \\Gamma \\to \\mathcal{P}(Q \\times \\Gamma^*)$\n\n---\n\n## 2. Deterministic (DPDA) vs Nondeterministic (NPDA)\n- **Unlike finite automata, NPDA $\\ne$ DPDA!**\n- **DCPDA (Deterministic CFLs):** Accepted by DPDA (subset of CFLs; includes all programming language grammars used by LR parsers).\n- **CFLs:** Accepted by NPDA.\n- Example: $L = \\{w w^R \\mid w \\in \\{0, 1\\}^*\\}$ is accepted by an NPDA, but **cannot** be accepted by any DPDA because the midpoint cannot be detected without non-determinism.\n",
+      "notesMarkdown": "# Pushdown Automata (PDA), Stack Operations, and DPDA vs NPDA\n\nA Pushdown Automaton (PDA) is an abstract computational model that extends a finite-state machine with an unbounded **Last-In, First-Out (LIFO) Stack memory**. PDAs are the exact machine equivalence of Context-Free Languages.\n\n---\n\n## 1. Formal 7-Tuple Definition of a PDA\n\nA PDA $M$ is defined by a 7-tuple:\n$$M = (Q, \\Sigma, \\Gamma, \\delta, q_0, Z_0, F)$$\n1. **$Q$:** Finite set of internal states.\n2. **$\\Sigma$:** Finite set of input symbols (Input Alphabet).\n3. **$\\Gamma$:** Finite set of stack symbols (Stack Alphabet).\n4. **$\\delta$:** Transition function:\n   $$\\delta: Q \\times (\\Sigma \\cup \\{\\epsilon\\}) \\times \\Gamma \\to 2^{Q \\times \\Gamma^*}$$\n5. **$q_0$:** Initial start state ($q_0 \\in Q$).\n6. **$Z_0$:** Initial start symbol on the stack ($Z_0 \\in \\Gamma$).\n7. **$F$:** Set of final / accepting states ($F \\subseteq Q$).\n\n---\n\n## 2. Stack Transition Semantics\n\nA transition is denoted:\n$$a, X \\to \\alpha$$\n*\"Read input symbol $a$, pop symbol $X$ from top of stack, and push string $\\alpha$ onto the stack.\"*\n- If $\\alpha = \\epsilon$: Pop operation (removes $X$).\n- If $\\alpha = X$: Stack unchanged.\n- If $\\alpha = YX$: Push operation (pushes $Y$ above $X$).\n\n---\n\n## 3. Acceptance Modes: Final State vs Empty Stack\n\n1. **Acceptance by Final State ($L(M)$):**\n   The string is accepted if after reading all input symbols, the PDA enters an accepting state $q \\in F$ (regardless of stack contents).\n2. **Acceptance by Empty Stack ($N(M)$):**\n   The string is accepted if after reading all input symbols, the stack is completely empty (regardless of final state).\n- **Equivalence Theorem:** The class of languages accepted by final state is **mathematically identical** to the class accepted by empty stack!\n\n---\n\n## 4. Deterministic PDA (DPDA) vs Non-Deterministic PDA (NPDA)\n\nUnlike finite automata where DFA and NFA have identical power, **NPDA is strictly more powerful than DPDA**!\n\n```\n+-----------------------------------------------------------+\n|                   NPDA (All CFLs)                         |\n|   Accepts all Context-Free Languages                      |\n|   e.g., Palindromes of even length: L = { w w^R }         |\n|                                                           |\n|   +---------------------------------------------------+   |\n|   |            DPDA (Deterministic CFLs)              |   |\n|   |   Accepts Deterministic CFLs (DCFLs)              |   |\n|   |   e.g., Balanced brackets, L = { a^n b^n }        |   |\n|   +---------------------------------------------------+   |\n+-----------------------------------------------------------+\n```\n\n- **Why $\\{ w w^R \\}$ cannot be recognized by a DPDA:** A deterministic machine has no way to guess where the center midpoint of string $w$ occurs without non-deterministic branching!\n- **Grammar Equivalence:** DPDAs recognize the class of languages parsed by unambiguous **LR($k$) parsers** in compilers.\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **PDA 7-Tuple:** $(Q, \\Sigma, \\Gamma, \\delta, q_0, Z_0, F)$.\n- **Memory Model:** Finite State Control $+$ Unbounded LIFO Stack.\n- **Power Inequality:** $\\text{Language}(\\text{DPDA}) \\subset \\text{Language}(\\text{NPDA}) = \\text{Context-Free Languages}$.\n- **Center-Marker Palindrome:** $\\{ w c w^R \\}$ is a DCFL (deterministic); $\\{ w w^R \\}$ is a non-deterministic CFL.\n",
       "questions": [
         {
           "id": "toc-pda-1",
@@ -545,6 +726,33 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A Pushdown Automaton extends a finite state machine with a single unbounded LIFO (Last-In, First-Out) stack memory, enabling the recognition of nested and counted patterns like balanced parentheses."
         }
+      ],
+      "prerequisites": [
+        "Context-free grammars and parse trees",
+        "Finite automata and stack data structures"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Pushdown Automata (PDA)",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Pushdown Automata in Theory of Computation",
+          "url": "https://www.geeksforgeeks.org/pushdown-automata-in-toc/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: DPDA vs NPDA and Acceptance Criteria",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -567,7 +775,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Classic non-CFL: {a^n b^n c^n | n >= 0} and {a^n b^n c^n d^n}."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Pumping+Lemma+for+Context+Free+Languages+CFL+Closure+Properties+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Context-Free Languages and Pumping Lemma\n\n---\n\n## 1. Closure Properties of CFLs\n- **CLOSED under:** Union ($L_1 \\cup L_2$), Concatenation ($L_1 L_2$), Kleene Star ($L^*$), and **Intersection with a Regular Language** ($L_{\\text{CFL}} \\cap L_{\\text{Reg}} \\in \\text{CFL}$).\n- **NOT CLOSED under:**\n  - **Intersection:** $L_1 \\cap L_2$ (e.g. $\\{a^n b^n c^m\\} \\cap \\{a^m b^n c^n\\} = \\{a^n b^n c^n\\} \\notin \\text{CFL}$).\n  - **Complementation:** $\\overline{L}$.\n\n---\n\n## 2. Pumping Lemma for CFLs\nIf $L$ is a CFL, there exists pumping length $p$ such that any $s \\in L$ with $|s| \\ge p$ can be written as $s = u v x y z$ where:\n1. $|v x y| \\le p$\n2. $|v y| \\ge 1$ ($v$ and $y$ not both empty)\n3. $\\forall i \\ge 0, \\; u v^i x y^i z \\in L$\n",
+      "notesMarkdown": "# The Pumping Lemma for Context-Free Languages and Non-CFL Proofs\n\nJust as the Regular Pumping Lemma proves a language cannot be recognized by a finite automaton, the **Pumping Lemma for Context-Free Languages** (Bar-Hillel Lemma) provides a rigorous technique to prove that a language is **NOT context-free** (cannot be generated by any CFG or recognized by any PDA).\n\n---\n\n## 1. Formal Statement of the CFL Pumping Lemma\n\nIf $L$ is a Context-Free Language, then there exists a **pumping length $p \\ge 1$** such that any string $s \\in L$ with length $|s| \\ge p$ can be divided into five pieces:\n$$s = u v x y z$$\nsatisfying the following **three mandatory conditions**:\n\n1. **Length of pump substring:** $|vxy| \\le p$\n2. **Non-empty pump pieces:** $|vy| \\ge 1$ (at least one of $v$ or $y$ is non-empty)\n3. **Pumping property:** For all $i \\ge 0$, $\\mathbf{u v^i x y^i z \\in L}$\n\n```\n                  Parse Tree Repeating Variable A:\n                               S\n                             / | \\\n                            /  |  \\\n                           u   A   z\n                             / | \\\n                            v  A  y   <-- Variable A repeats due to Pigeonhole!\n                              / \\\\\n                             x   x\n```\n\n---\n\n## 2. Adversarial Game Proof Structure (Contradiction)\n\nTo prove language $L$ is NOT context-free:\n1. **Assume** $L$ is context-free (for contradiction).\n2. The adversary gives us pumping length $p$.\n3. We select a clever string $s \\in L$ with $|s| \\ge p$ written in terms of $p$.\n4. The adversary divides $s = uvxyz$ satisfying $|vxy| \\le p$ and $|vy| \\ge 1$.\n5. We show that for some value of $i$ (typically $i = 0$ or $i = 2$), $u v^i x y^i z \\notin L$, reaching a contradiction!\n\n---\n\n## 3. Classic Proof: $L = \\{ a^n b^n c^n \\mid n \\ge 1 \\}$ is NOT Context-Free\n\n1. Assume $L$ is CFL with pumping length $p$.\n2. Choose string $s = a^p b^p c^p \\in L$. Length $|s| = 3p \\ge p$.\n3. Condition 1 mandates $|vxy| \\le p$.\n   - Because $|vxy| \\le p$, the substring $vxy$ **cannot contain occurrences of all three symbols $a, b,$ and $c$ simultaneously**!\n   - $vxy$ can contain at most two distinct symbols (either only $a$'s, $a$'s and $b$'s, only $b$'s, $b$'s and $c$'s, or only $c$'s).\n4. Now pump with $i = 2$: $s' = u v^2 x y^2 z$.\n   - The number of symbols contained in $vy$ increases, but the third symbol not present in $vxy$ remains unchanged at $p$ occurrences!\n   - Thus, the counts of $a$, $b$, and $c$ in $s'$ are no longer equal!\n   - Therefore, $s' \\notin L$, contradicting the assumption.\n5. $\\implies L = \\{ a^n b^n c^n \\}$ is **NOT Context-Free**!\n\n---\n\n## 4. Closure Properties of Context-Free Languages\n\n| Operation | Context-Free Languages (CFL) | Deterministic CFL (DCFL) |\n| :--- | :--- | :--- |\n| **Union ($L_1 \\cup L_2$)** | **CLOSED** | **NOT CLOSED** |\n| **Concatenation ($L_1 \\cdot L_2$)** | **CLOSED** | **NOT CLOSED** |\n| **Kleene Star ($L^*$)** | **CLOSED** | **NOT CLOSED** |\n| **Intersection ($L_1 \\cap L_2$)** | **NOT CLOSED** | **NOT CLOSED** |\n| **Complement ($\\overline{L}$)** | **NOT CLOSED** | **CLOSED** |\n| **Intersection with Regular ($L \\cap R$)** | **CLOSED** | **CLOSED** |\n\n*(Crucial Interview Note: CFLs are NOT closed under intersection because $\\{a^n b^n c^m\\} \\cap \\{a^m b^n c^n\\} = \\{a^n b^n c^n\\}$ which is not a CFL!)*\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **CFL Partition:** $s = uvxyz$ with $|vxy| \\le p$ and $|vy| \\ge 1$.\n- **Not Context-Free Classic Languages:**\n  - $\\{ a^n b^n c^n \\mid n \\ge 1 \\}$ (three-count matching).\n  - $\\{ w w \\mid w \\in \\{0, 1\\}^* \\}$ (exact repetition).\n  - $\\{ a^p \\mid p \\text{ is prime} \\}$.\n- **CFL Closure Trap:** Closed under Union/Concat/Star; NOT closed under Intersection or Complement!\n",
       "questions": [
         {
           "id": "toc-cfl-1",
@@ -604,6 +812,33 @@ export const TOC_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "The CFL Pumping Lemma states that string s decomposes into five substrings uvxyz such that |vxy| <= p, |vy| >= 1, and u v^i x y^i z belongs to L for all integers i >= 0."
+        }
+      ],
+      "prerequisites": [
+        "Context-free grammars and parse tree height",
+        "Pumping lemma for regular languages"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Pumping Lemma for Context-Free Languages",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Pumping Lemma for Context Free Languages",
+          "url": "https://www.geeksforgeeks.org/pumping-lemma-for-context-free-languages-cfl/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Proving Non-CFL Languages via Pumping Lemma",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Advanced",
+          "isFree": true
         }
       ]
     },
@@ -665,6 +900,26 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A language is Turing-decidable (Recursive) if there exists a decider Turing machine that halts on every possible input, accepting valid strings and rejecting invalid strings. A language is merely recognizable (RE) if the TM halts and accepts strings in the language, but may loop indefinitely on strings not in the language."
         }
+      ],
+      "prerequisites": [
+        "Pushdown Automata",
+        "Infinite Tape and Transition Functions"
+      ],
+      "externalResources": [
+        {
+          "title": "Turing Machines and Decidability — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/turing-machine-in-toc/",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "Turing Machines & The Halting Problem — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
       ]
     },
     {
@@ -687,7 +942,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Rice's Theorem: ANY non-trivial semantic property of the language recognized by a Turing machine is undecidable."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Decidability+Undecidability+Halting+Problem+Rices+Theorem+PCP+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Decidability and Undecidability\n\n---\n\n## 1. The Halting Problem ($A_{\\text{TM}}$)\n$$A_{\\text{TM}} = \\{ \\langle M, w \\rangle \\mid M \\text{ is a TM that accepts } w \\}$$\n- **Alan Turing's Proof (1936):** $A_{\\text{TM}}$ is **Undecidable**. If a hypothetical decider $H$ exists, we can construct machine $D$ that contradicts $H(D, \\langle D \\rangle)$.\n\n---\n\n## 2. Rice's Theorem\nLet $P$ be a property of the languages recognized by Turing machines. If:\n1. $P$ is **non-trivial** (some TMs have it, some do not), and\n2. $P$ is a **semantic property** (depends only on the language $L(M)$, not syntactic code),\n**Then deciding whether $L(M)$ satisfies $P$ is strictly UNDECIDABLE!**\n\nExamples of Undecidable Properties by Rice's Theorem:\n- Is $L(M)$ empty?\n- Is $L(M)$ finite?\n- Is $L(M)$ regular?\n",
+      "notesMarkdown": "# Decidability, Undecidability, the Halting Problem, and Rice's Theorem\n\nComputability theory explores the ultimate limits of algorithms. A problem is decidable if there exists an algorithm (a Turing Machine that halts on all inputs) that answers yes or no correctly in finite time. Alan Turing proved in 1936 that fundamental computational questions are mathematically **Undecidable**.\n\n---\n\n## 1. Decision Problems: Decidable vs Undecidable\n\n- **Decision Problem:** A computational question with a binary Yes/No answer, formalized as testing membership of a string $w$ in a language $L$.\n- **Decidable (Recursive / Computable):** There exists a Turing Machine $M$ (a **Decider**) that halts on every input $w \\in \\Sigma^*$:\n  - If $w \\in L \\implies M$ halts and **Accepts**.\n  - If $w \\notin L \\implies M$ halts and **Rejects**.\n- **Undecidable:** No algorithm exists that is guaranteed to halt in finite time with the correct answer for all possible inputs.\n\n---\n\n## 2. Alan Turing's Halting Problem ($A_{\\text{TM}}$ / $HALT_{\\text{TM}}$)\n\nCan we write a program `halts(program, input)` that determines whether an arbitrary program will eventually finish running or loop infinitely?\n\n### Proof by Diagonalization and Contradiction:\n1. Assume there exists a decider $H$:\n   $$H(\\langle M, w \\rangle) = \\begin{cases} \\text{Accept} & \\text{if } M \\text{ halts on input } w \\\\ \\text{Reject} & \\text{if } M \\text{ loops forever on input } w \\end{cases}$$\n2. Construct a pathological adversarial program $D$ that takes the source code of program $M$ as input:\n   ```python\n   def D(M):\n       if H(M, M) == Accept:\n           while True: pass # Loop forever!\n       else:\n           return True      # Halt immediately!\n   ```\n3. What happens when we run $D$ with its own source code as input: $D(D)$?\n   - If $D(D)$ halts $\\implies H(D, D)$ outputs `Accept` $\\implies D$ enters an infinite loop! (**Contradiction!**)\n   - If $D(D)$ loops forever $\\implies H(D, D)$ outputs `Reject` $\\implies D$ halts immediately! (**Contradiction!**)\n4. Both cases yield a logical impossibility. Thus, decider $H$ **cannot exist**.\n$\\implies$ **The Halting Problem is Undecidable!**\n\n---\n\n## 3. Rice's Theorem\n\nRice's Theorem is a powerful meta-theorem stating that **any non-trivial semantic property of the language recognized by a Turing Machine is Undecidable**.\n\n```\nRice's Theorem Criteria:\nLet P be a property of languages recognized by Turing Machines.\nIf:\n1. P is NON-TRIVIAL:\n   - There exists at least one TM whose language has property P, AND\n   - There exists at least one TM whose language does NOT have property P.\n2. P is a SEMANTIC PROPERTY (depends on language L(M), NOT internal syntax).\nTHEN:\n   The problem \"Does L(M) satisfy property P?\" is UNDECIDABLE!\n```\n\n### Examples of Undecidable Problems via Rice's Theorem:\n- Is $L(M)$ empty? ($L(M) = \\emptyset$) $\\to$ **Undecidable**.\n- Is $L(M)$ regular? $\\to$ **Undecidable**.\n- Is $L(M)$ context-free? $\\to$ **Undecidable**.\n- Does $L(M)$ contain the string `\"hello\"`? $\\to$ **Undecidable**.\n- Does $L(M) = \\Sigma^*$? $\\to$ **Undecidable**.\n\n---\n\n## 4. Decidable vs Undecidable Summary Table\n\n| Question / Problem | Regular Languages | Context-Free Languages | Turing Machines (RE) |\n| :--- | :---: | :---: | :---: |\n| **Membership ($w \\in L$)** | **Decidable** (Run DFA) | **Decidable** (CYK algorithm) | **Undecidable** ($A_{\\text{TM}}$) |\n| **Emptiness ($L = \\emptyset$)** | **Decidable** (Graph reachability)| **Decidable** (Grammar test) | **Undecidable** (Rice's Theorem) |\n| **Finiteness ($L$ is finite)** | **Decidable** (Cycle check) | **Decidable** | **Undecidable** |\n| **Equivalence ($L_1 = L_2$)** | **Decidable** ($L_1 \\triangle L_2 = \\emptyset$)| **Undecidable** | **Undecidable** |\n| **Universal ($L = \\Sigma^*$)**| **Decidable** | **Undecidable** | **Undecidable** |\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Halting Problem:** Undecidable (proved via Cantor's diagonalization).\n- **Rice's Theorem Rule:** Any non-trivial language property of a TM is undecidable.\n- **Post Correspondence Problem (PCP):** An undecidable puzzle problem over tile pairs used to prove grammar ambiguities undecidable.\n",
       "questions": [
         {
           "id": "toc-und-1",
@@ -725,6 +980,33 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Alan Turing proved in 1936 that the Halting Problem (determining whether an arbitrary Turing Machine halts on a given input) is undecidable using a self-referential diagonal contradiction."
         }
+      ],
+      "prerequisites": [
+        "Turing machines and language recognition",
+        "Diagonalization and mathematical logic proofs"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Decidability, Undecidability, and Reducibility",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Decidability and Undecidability in TOC",
+          "url": "https://www.geeksforgeeks.org/decidability-in-theory-of-computation/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: The Halting Problem and Rice's Theorem Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
       ]
     },
     {
@@ -747,7 +1029,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Chomsky Hierarchy: Regular (Type 3) subset of CFL (Type 2) subset of CSL (Type 1) subset of Recursive subset of RE (Type 0)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Recursive+Recursively+Enumerable+Languages+Chomsky+Hierarchy+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Recursive and Recursively Enumerable Languages\n\n---\n\n## 1. Classification\n1. **Recursive (Decidable):** A Turing Machine exists that halts on **every** input and produces an accept/reject decision.\n2. **Recursively Enumerable (Turing-Recognizable):** A Turing Machine exists that halts and accepts if $w \\in L$, but may **loop forever** if $w \\notin L$.\n\n---\n\n## 2. Duality Theorem\nA language $L$ is **Recursive** if and only if **both $L$ and its complement $\\overline{L}$ are Recursively Enumerable**.\n- If $L \\in RE$ and $\\overline{L} \\in RE$, run TMs for $L$ and $\\overline{L}$ in parallel (dovetailing). One will halt, guaranteeing decision.\n\n---\n\n## 3. Chomsky Hierarchy Summary\n$$\\text{Regular (Type 3)} \\subset \\text{DCFL} \\subset \\text{CFL (Type 2)} \\subset \\text{CSL (Type 1)} \\subset \\text{Recursive} \\subset \\text{RE (Type 0)}$$\n",
+      "notesMarkdown": "# Recursive vs Recursively Enumerable (RE) Languages and the Chomsky Hierarchy\n\nIn the upper tier of the computational hierarchy, languages are categorized according to whether a Turing Machine can decide them (guaranteed to halt) or merely recognize them (may loop indefinitely on non-member inputs).\n\n---\n\n## 1. Recursive (Turing-Decidable) vs Recursively Enumerable (Turing-Recognizable)\n\n```\n+-----------------------------------------------------------+\n|      NON-RECURSIVELY ENUMERABLE LANGUAGES (Non-RE)        |\n|      (e.g., Complement of Halting Problem: ~A_TM)         |\n|                                                           |\n|   +---------------------------------------------------+   |\n|   |   RECURSIVELY ENUMERABLE (RE / Turing-Recognizable)|  |\n|   |   Recognized by a TM (Halts on yes, may loop on no)   |\n|   |   (e.g., Halting Problem A_TM)                    |   |\n|   |                                                   |   |\n|   |   +-------------------------------------------+   |   |\n|   |   |   RECURSIVE (Decidable / Turing-Decidable)|   |   |\n|   |   |   Halt GUARANTEED on ALL inputs!          |   |   |\n|   |   +-------------------------------------------+   |   |\n|   +---------------------------------------------------+   |\n+-----------------------------------------------------------+\n```\n\n- **Recursive Language ($L \\in \\text{REC}$):**\n  There exists a Turing Machine $M$ that **halts on every input string**:\n  - If $w \\in L \\implies$ Halts and Accepts.\n  - If $w \\notin L \\implies$ Halts and Rejects.\n- **Recursively Enumerable Language ($L \\in \\text{RE}$):**\n  There exists a Turing Machine $M$ that recognizes $L$:\n  - If $w \\in L \\implies M$ halts in finite time and Accepts.\n  - If $w \\notin L \\implies M$ **may reject OR loop forever**!\n\n---\n\n## 2. The Fundamental Complement Theorem\n\n```\nTheorem:\nA language L is RECURSIVE (Decidable) IF AND ONLY IF\nBOTH L is Recursively Enumerable (RE) AND its complement ~L is Recursively Enumerable!\n```\n$$\\mathbf{L \\in \\text{REC} \\iff (L \\in \\text{RE} \\land \\overline{L} \\in \\text{RE})}$$\n\n### Proof Construction:\nRun two Turing machines in parallel (interleaved execution): $M_1$ for $L$ and $M_2$ for $\\overline{L}$.\nBecause every string $w$ is either in $L$ or in $\\overline{L}$, **one of the two machines is mathematically guaranteed to halt in finite time!**\n- If $M_1$ halts $\\implies$ Accept!\n- If $M_2$ halts $\\implies$ Reject!\nHence, the parallel system is a guaranteed **Decider**!\n\n### Corollary:\nSince the Halting Problem $A_{\\text{TM}}$ is known to be **RE but NOT Recursive**, its complement $\\overline{A_{\\text{TM}}}$ **CANNOT be Recursively Enumerable (is strictly Non-RE)**!\n\n---\n\n## 3. The Complete Chomsky Hierarchy\n\nNoam Chomsky (1956) organized formal languages into four hierarchical levels based on grammar production constraints and machine models:\n\n| Type | Language Class | Machine Model | Grammar Production Constraints |\n| :--- | :--- | :--- | :--- |\n| **Type 3** | **Regular** | Deterministic / Non-Deterministic Finite Automata (DFA/NFA) | $A \\to aB$ or $A \\to a$ (Right-Linear) |\n| **Type 2** | **Context-Free** | Non-Deterministic Pushdown Automata (NPDA) | $A \\to \\alpha$ where $A \\in V$ |\n| **Type 1** | **Context-Sensitive**| Linear Bounded Automata (LBA - bounded tape) | $\\alpha A \\beta \\to \\alpha \\gamma \\beta$ with $|\\gamma| \\ge |A|$ |\n| **Type 0** | **Recursively Enumerable**| Turing Machine (Unbounded Tape) | $\\alpha \\to \\beta$ (Unrestricted: $\\alpha \\ne \\epsilon$) |\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Chomsky Hierarchy Inclusions:** $\\text{Regular} \\subset \\text{Context-Free} \\subset \\text{Context-Sensitive} \\subset \\text{Recursive} \\subset \\text{Recursively Enumerable}$.\n- **Complement Invariant:** $L \\in \\text{REC} \\iff L \\in \\text{RE} \\land \\overline{L} \\in \\text{RE}$.\n- **Semi-Decidable:** Another standard name for Recursively Enumerable languages.\n",
       "questions": [
         {
           "id": "toc-rec-1",
@@ -785,6 +1067,33 @@ export const TOC_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Post's theorem states that a language L is recursive if and only if both L and its complement are recursively enumerable (run two TMs in parallel; one is guaranteed to accept and halt)."
         }
+      ],
+      "prerequisites": [
+        "Decidability and Turing machines",
+        "Chomsky hierarchy and formal grammars"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Recursive and Recursively Enumerable Languages",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Recursive and Recursively Enumerable Languages",
+          "url": "https://www.geeksforgeeks.org/recursive-and-recursively-enumerable-languages-in-toc/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Chomsky Hierarchy and Decidability Classification",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Advanced",
+          "isFree": true
+        }
       ]
     },
     {
@@ -807,7 +1116,7 @@ export const TOC_CATEGORY: SectionCategory = {
         "Savitch's Theorem: NSPACE(f(n)) subset of DSPACE(f(n)^2) -> PSPACE = NPSPACE."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Complexity+Classes+P+NP+NP+Complete+PSPACE+Savitch+Theorem+Theory+of+Computation+TOC+gate+lecture",
-      "notesMarkdown": "# Complexity Classes: P, NP, NP-Complete, and NP-Hard\n\nComputational complexity categorizes decision problems by the resource limits (time, memory) of Turing machines.\n\n---\n\n## 1. Definitions\n- **Class P:** Decision problems solvable by a **Deterministic Turing Machine** in polynomial time $O(n^k)$.\n- **Class NP (Nondeterministic Polynomial):** Decision problems solvable by a **Nondeterministic Turing Machine** in polynomial time, or equivalently, problems whose solutions can be **verified** in polynomial time by a DTM.\n- **NP-Hard:** Problem $H$ is NP-hard if every problem in NP reduces to $H$ in polynomial time ($L \\le_p H, \\forall L \\in \\text{NP}$).\n- **NP-Complete:** $X$ is NP-Complete $\\iff X \\in \\text{NP}$ AND $X$ is NP-Hard.\n\n---\n\n## 2. The Cook-Levin Theorem & Classic NP-Complete Problems\n- **Cook-Levin Theorem (1971):** The Boolean Satisfiability Problem (SAT) is NP-Complete.\n- **Classic Reductions:**\n  $$\\text{SAT} \\le_p \\text{3-SAT} \\le_p \\text{Clique} \\le_p \\text{Vertex Cover} \\le_p \\text{Hamiltonian Cycle} \\le_p \\text{TSP (Decision)}$$\n",
+      "notesMarkdown": "# Computational Complexity: P, NP, NP-Complete, and NP-Hard\n\nComputational complexity theory classifies decidable problems according to the resources (time and memory space) required to solve them as input size $n$ scales.\n\n---\n\n## 1. Definitions of Complexity Classes: P vs NP\n\n```\n                           +-------------------------------+\n                           |            NP-HARD            |\n                           |   (At least as hard as the    |\n                           |    hardest problems in NP)    |\n                           |   +-----------------------+   |\n                           |   |      NP-COMPLETE      |   |\n                           |   | (In NP AND NP-Hard)   |   |\n                           |   +-----------+-----------+   |\n                           +---------------|---------------+\n                                           |\n                           +---------------+---------------+\n                           |               NP              |\n                           |   (Verifiable in Poly Time)   |\n                           |   +-----------------------+   |\n                           |   |           P           |   |\n                           |   | (Solvable in PolyTime)|   |\n                           |   +-----------------------+   |\n                           +-------------------------------+\n                                 (Assuming P != NP)\n```\n\n- **Class P (Polynomial Time):** The set of decision problems solvable by a **Deterministic Turing Machine** in $O(n^k)$ time for some constant $k$. Considered mathematically tractable (e.g., Shortest Path Dijkstra, Sorting, Linear Programming).\n- **Class NP (Nondeterministic Polynomial Time):** The set of decision problems solvable by a **Non-deterministic Turing Machine** in polynomial time.\n  - *Equivalent Definition:* Problems whose proposed solution certificate can be **verified by a Deterministic Turing Machine in polynomial time**.\n  - Example: Traveling Salesperson Problem (TSP), Boolean Satisfiability (SAT), Clique, Subset Sum.\n\n---\n\n## 2. Polynomial-Time Reduction ($A \\le_p B$)\n\nA problem $A$ reduces to problem $B$ in polynomial time ($A \\le_p B$) if there exists a polynomial-time computable function $f$ such that:\n$$w \\in A \\iff f(w) \\in B$$\n*Meaning:* Problem $B$ is **at least as hard as problem $A$**. If you have an efficient solver for $B$, you can solve $A$ efficiently!\n\n---\n\n## 3. NP-Complete (NPC) and NP-Hard\n\n### NP-Hard:\nA problem $H$ is **NP-Hard** if every problem $L \\in \\text{NP}$ can be reduced to $H$ in polynomial time:\n$$\\forall L \\in \\text{NP}, \\quad L \\le_p H$$\n*(NP-Hard problems do NOT need to be in NP; they do not even need to be decidable! E.g., the Halting Problem is NP-Hard!).*\n\n### NP-Complete (NPC):\nA problem $C$ is **NP-Complete** if and only if:\n1. $C \\in \\text{NP}$ (verifiable in polynomial time), AND\n2. $C$ is **NP-Hard** ($L \\le_p C$ for all $L \\in \\text{NP}$).\n- NP-Complete problems are the **hardest problems in NP**.\n- **The Golden Consequence:** If ANY single NP-Complete problem is proven to have a polynomial-time algorithm, then **EVERY problem in NP can be solved in polynomial time, proving $P = NP$!**\n\n---\n\n## 4. The Cook-Levin Theorem and Classical NP-Complete Problems\n\nStephen Cook (1971) and Leonid Levin (1973) proved the foundational theorem:\n$$\\mathbf{Boolean \\quad Satisfiability \\quad (SAT) \\quad is \\quad NP-Complete}$$\nBy reducing SAT to 3-SAT, and 3-SAT to graph and combinatorial problems (Richard Karp's 21 NP-Complete problems), scientists established that:\n- 3-SAT\n- Vertex Cover\n- Hamiltonian Cycle & Traveling Salesperson (Decision)\n- Independent Set\n- Clique\n- Subset Sum\n- Graph Coloring\nare all **NP-Complete**!\n\n---\n\n## 5. Summary Cheatsheet & Key Formulas\n\n- **Class P:** Solvable in polynomial time $O(n^k)$.\n- **Class NP:** Verifiable in polynomial time $O(n^k)$.\n- **NP-Complete:** In NP $\\land$ NP-Hard.\n- **Proving a new problem $X$ is NP-Complete:**\n  1. Prove $X \\in \\text{NP}$ (show polynomial verifier).\n  2. Select a known NP-Complete problem $Y$ (e.g., 3-SAT).\n  3. Show $Y \\le_p X$ (reduce known NPC problem to new problem).\n",
       "questions": [
         {
           "id": "toc-cc-1",
@@ -844,6 +1153,33 @@ export const TOC_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "NP stands for Nondeterministic Polynomial time. It represents all decision problems whose candidate solutions ('certificates') can be verified in polynomial time by a Deterministic Turing Machine."
+        }
+      ],
+      "prerequisites": [
+        "Decidability and Turing machines",
+        "Asymptotic Big-O algorithmic analysis"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 18.404J: Time Complexity, P, NP, and NP-Completeness",
+          "url": "https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Advanced",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: P, NP, NP-Complete and NP-Hard",
+          "url": "https://www.geeksforgeeks.org/types-of-complexity-classes-p-np-co-np-np-hard-np-complete/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: NP-Completeness and Reduction Guide",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Advanced",
+          "isFree": true
         }
       ]
     }

@@ -18,7 +18,9 @@ import {
   Building2,
   Zap,
   Sparkles,
-  Video
+  Video,
+  ExternalLink,
+  Compass
 } from 'lucide-react';
 import type { Topic } from '@/lib/data/curriculum';
 import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
@@ -304,6 +306,21 @@ export default function TopicNotes({
         </div>
       </div>
 
+      {/* Prerequisites Banner */}
+      {topic.prerequisites && topic.prerequisites.length > 0 && (
+        <div className="p-4 sm:p-5 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-wrap items-center gap-2 text-xs">
+          <span className="font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider flex items-center space-x-1.5">
+            <Compass className="w-4 h-4 text-indigo-500" />
+            <span>Recommended Prerequisites:</span>
+          </span>
+          {topic.prerequisites.map((prereq, pIdx) => (
+            <span key={pIdx} className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700/80 font-medium text-slate-700 dark:text-zinc-200">
+              {prereq}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Key Takeaways & Cheat Formulas Banner */}
       {topic.keyTakeaways && topic.keyTakeaways.length > 0 && (
         <div className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-3">
@@ -424,7 +441,49 @@ export default function TopicNotes({
             </div>
           </div>
         ) : (
-          /* Bottom Sequential Navigation Bar */
+          <>
+            {/* Curated External Resources (Benchmarked & Verified Free) */}
+          {topic.externalResources && topic.externalResources.length > 0 && (
+            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300">
+                  <ExternalLink className="w-4 h-4 text-indigo-500" />
+                  <span>Curated Free Benchmark References &amp; Further Learning</span>
+                </div>
+                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full self-start sm:self-auto">
+                  100% Free Access Verified
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {topic.externalResources.map((res, rIdx) => (
+                  <a
+                    key={rIdx}
+                    href={res.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3.5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#151D35] hover:border-indigo-500/50 hover:bg-white dark:hover:bg-zinc-800/80 transition-all flex items-start justify-between gap-3 group"
+                  >
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                          {res.provider}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">
+                          {res.difficulty}
+                        </span>
+                      </div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {res.title}
+                      </div>
+                    </div>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500 shrink-0 mt-1" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Bottom Sequential Navigation Bar */}
           <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {prevTopic ? (
               <button
@@ -469,6 +528,7 @@ export default function TopicNotes({
               <div />
             )}
           </div>
+          </>
         )}
       </div>
     </div>

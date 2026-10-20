@@ -65,6 +65,26 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By material implication, P -> Q is logically equivalent to (not P or Q). Its contrapositive (not Q -> not P) is also equivalent, while converse (Q -> P) is not."
         }
+      ],
+      "prerequisites": [
+        "Basic Propositional Truth Tables",
+        "Elementary Symbolic Logic"
+      ],
+      "externalResources": [
+        {
+          "title": "Propositional and First-Order Logic — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/propositional-logic/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Mathematics for Computer Science (6.042J) — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -124,6 +144,26 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "A relation from A to B is any subset of the Cartesian product A x B. Since |A x B| = m * n, the power set has 2^(m * n) subsets, representing 2^(m * n) relations."
+        }
+      ],
+      "prerequisites": [
+        "Set Notation and Venn Diagrams",
+        "Cartesian Products"
+      ],
+      "externalResources": [
+        {
+          "title": "Set Theory, Relations, and Injective/Surjective Functions — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/set-theory/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Discrete Mathematics Proofs and Sets — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -185,6 +225,19 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A lattice is an algebraic structure and POSET in which any two elements a and b possess a unique join (supremum / least upper bound) and meet (infimum / greatest lower bound)."
         }
+      ],
+      "prerequisites": [
+        "Relations and Cartesian Products",
+        "Reflexive/Symmetric/Transitive Properties"
+      ],
+      "externalResources": [
+        {
+          "title": "Equivalence Classes, Partial Orders, and Hasse Diagrams — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/relations-and-their-types/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -207,7 +260,7 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         "Crucial for proving correctness of recursive algorithms and asymptotic bounds."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Mathematical+Induction+Proofs+Weak+Strong+Induction+Discrete+Mathematics+gate+lecture",
-      "notesMarkdown": "# Mathematical Induction: Principles and Proof Methods\n\nMathematical induction is a foundational proof technique for demonstrating that a statement $P(n)$ is true for all natural numbers $n \\ge n_0$.\n\n---\n\n## 1. Weak Induction (First Principle)\n1. **Base Case:** Prove $P(n_0)$ is true (usually $n_0 = 0$ or $1$).\n2. **Induction Hypothesis:** Assume $P(k)$ is true for an arbitrary integer $k \\ge n_0$.\n3. **Inductive Step:** Prove that $P(k + 1)$ must follow from the truth of $P(k)$.\n4. **Conclusion:** $\\forall n \\ge n_0, P(n)$ is true.\n\n- **Classic Example:**\n  $$1 + 2 + 3 + \\dots + n = \\frac{n(n + 1)}{2}$$\n\n---\n\n## 2. Strong Induction (Second Principle)\n- **Induction Hypothesis:** Assume that $P(n_0), P(n_0 + 1), \\dots, P(k)$ are **all** true.\n- **Inductive Step:** Use this broader premise to prove $P(k + 1)$ is true.\n- **Equivalence:** Weak induction, strong induction, and the **Well-Ordering Principle** (every non-empty set of positive integers has a least element) are logically equivalent.\n- **Application:** Proving the Fundamental Theorem of Arithmetic (every integer $> 1$ factors into primes) and analyzing divide-and-conquer runtimes.\n",
+      "notesMarkdown": "# Mathematical Induction: Weak Induction, Strong Induction, and the Well-Ordering Principle\n\nMathematical induction is a foundational proof technique used across discrete mathematics, algorithm correctness proofs (loop invariants), and recursive data structure verification.\n\n---\n\n## 1. The Principle of Mathematical Induction (Weak Induction)\n\nTo prove that a predicate statement $P(n)$ is true for all integers $n \\ge n_0$:\n\n```\n               [ 1. BASE STEP ]\n               Prove P(n0) is true (usually n0 = 1 or 0).\n                      |\n                      v\n          [ 2. INDUCTIVE HYPOTHESIS ]\n          Assume P(k) is true for arbitrary integer k >= n0.\n                      |\n                      v\n             [ 3. INDUCTIVE STEP ]\n             Prove that P(k) implies P(k + 1) is true!\n                      |\n                      v\n             CONCLUSION: P(n) is true for all n >= n0!\n             (Domino effect: P(1) falls -> P(2) falls -> P(3)...)\n```\n\n---\n\n## 2. Strong (Complete) Mathematical Induction\n\nIn **Strong Induction**, the inductive hypothesis assumes that the proposition holds true for **all integers from the base case up to $k$**:\n$$\\mathbf{[P(n_0) \\land P(n_0 + 1) \\land \\dots \\land P(k)] \\implies P(k + 1)}$$\n- *When to Use Strong Induction:* When decomposing $k + 1$ relies on smaller subproblems other than strictly $k$ (e.g., Fundamental Theorem of Arithmetic: factoring an integer $n = a \\cdot b$ where $1 < a, b < n$).\n- *Equivalence Theorem:* Weak Induction, Strong Induction, and the **Well-Ordering Principle of Integers** (every non-empty set of non-negative integers contains a unique least element) are mathematically equivalent!\n\n---\n\n## 3. Worked Example: Sum of First $n$ Odd Integers\n\n**Proposition:** $P(n): 1 + 3 + 5 + \\dots + (2n - 1) = n^2$ for all $n \\ge 1$.\n1. **Base Step ($n = 1$):** LHS $= 2(1) - 1 = 1$. RHS $= 1^2 = 1$. True!\n2. **Inductive Hypothesis:** Assume $P(k)$ holds for $k \\ge 1$:\n   $$1 + 3 + 5 + \\dots + (2k - 1) = k^2$$\n3. **Inductive Step ($n = k + 1$):**\n   $$\\text{LHS} = [1 + 3 + \\dots + (2k - 1)] + (2(k + 1) - 1) = k^2 + (2k + 1) = (k + 1)^2 = \\text{RHS}$$\n   Since $P(k) \\implies P(k + 1)$ is true, $P(n)$ holds for all $n \\ge 1$.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Weak Induction Step:** $P(k) \\implies P(k + 1)$.\n- **Strong Induction Step:** $\\forall i \\le k, P(i) \\implies P(k + 1)$.\n- **Well-Ordering Principle:** Every non-empty subset of $\\mathbb{N}$ has a least element.\n",
       "questions": [
         {
           "id": "dm-ind-1",
@@ -245,6 +298,33 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "In strong mathematical induction, the inductive hypothesis assumes that P(i) holds for all integers i in the range base_case <= i <= k (i.e. P(1) and P(2) and ... and P(k)), which is then used to deduce P(k + 1)."
         }
+      ],
+      "prerequisites": [
+        "Basic algebra, sequences, and series",
+        "Propositional logic and predicates"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.042J: Mathematics for Computer Science - Induction",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Mathematical Induction in Discrete Mathematics",
+          "url": "https://www.geeksforgeeks.org/mathematical-induction-in-discrete-mathematics/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Strong Induction and Proof Techniques",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -267,7 +347,7 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         "Derangements (permutations where no element appears in original position): D(n) = n! * sum((-1)^k / k!)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Combinatorics+Inclusion+Exclusion+Principle+Derangements+Discrete+Mathematics+gate+lecture",
-      "notesMarkdown": "# Combinatorics and Fundamental Counting Principles\n\nCombinatorics provides formal mathematical rules for counting arrangements, selections, and configurations.\n\n---\n\n## 1. Rule of Sum and Rule of Product\n- **Sum Rule (Disjoint Sets):** If task $A$ can be done in $m$ ways and task $B$ in $n$ ways, and they cannot be done together, then task \"$A$ OR $B$\" can be done in $m + n$ ways.\n- **Product Rule (Independent Stages):** If task $A$ has $m$ outcomes and task $B$ has $n$ outcomes, then sequential procedure \"$A$ AND $B$\" has $m \\times n$ outcomes.\n\n---\n\n## 2. Principle of Inclusion-Exclusion (PIE)\nFor finite sets $A, B, C$:\n- Two sets:\n  $$|A \\cup B| = |A| + |B| - |A \\cap B|$$\n- Three sets:\n  $$|A \\cup B \\cup C| = |A| + |B| + |C| - (|A \\cap B| + |B \\cap C| + |A \\cap C|) + |A \\cap B \\cap C|$$\n\n---\n\n## 3. Derangements\nA derangement ($D_n$ or $!n$) is a permutation of $n$ elements where no element appears in its original position:\n$$D_n = n! \\sum_{k=0}^{n} \\frac{(-1)^k}{k!} \\approx \\left[\\frac{n!}{e}\\right]$$\n- $D_1 = 0, D_2 = 1, D_3 = 2, D_4 = 9, D_5 = 44$.\n",
+      "notesMarkdown": "# Combinatorics, Rule of Sum/Product, and the Principle of Inclusion-Exclusion\n\nCombinatorics is the branch of discrete mathematics concerning the enumeration, counting, and arrangement of finite discrete sets.\n\n---\n\n## 1. Fundamental Rules of Counting\n\n- **Rule of Sum (Addition Principle):** If task $A$ can be done in $m$ ways and task $B$ in $n$ ways, and they **cannot be done simultaneously** (mutually disjoint):\n  $$\\text{Ways to do } A \\text{ OR } B = m + n$$\n- **Rule of Product (Multiplication Principle):** If task $A$ can be done in $m$ ways and, for each way, task $B$ can be done in $n$ ways:\n  $$\\text{Ways to do } A \\text{ AND } B = m \\times n$$\n\n---\n\n## 2. The Principle of Inclusion-Exclusion (PIE)\n\nWhen counting elements across intersecting sets, adding sizes counts overlapping intersections multiple times.\n\n### For Two Sets:\n$$|A \\cup B| = |A| + |B| - |A \\cap B|$$\n\n### For Three Sets:\n$$|A \\cup B \\cup C| = |A| + |B| + |C| - (|A \\cap B| + |B \\cap C| + |A \\cap C|) + |A \\cap B \\cap C|$$\n\n---\n\n## 3. Derangements ($D_n$ / Subfactorial $!n$)\n\nA **Derangement** is a permutation of $n$ elements such that **no element appears in its original natural position** (e.g., distributing letters into envelopes such that nobody receives their own letter).\n\n$$\\mathbf{D_n = n! \\sum_{k=0}^n \\frac{(-1)^k}{k!} = n! \\left( 1 - \\frac{1}{1!} + \\frac{1}{2!} - \\frac{1}{3!} + \\dots + \\frac{(-1)^n}{n!} \\right)}$$\n- As $n \\to \\infty$, the fraction of permutations that are derangements approaches:\n$$\\lim_{n \\to \\infty} \\frac{D_n}{n!} = \\frac{1}{e} \\approx 36.787\\%$$\n- Values: $D_1 = 0, \\quad D_2 = 1, \\quad D_3 = 2, \\quad D_4 = 9, \\quad D_5 = 44$.\n- Recurrence: $D_n = (n - 1)(D_{n-1} + D_{n-2})$.\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Rule of Sum:** Independent disjoint events $\\implies$ Add.\n- **Rule of Product:** Sequential combined events $\\implies$ Multiply.\n- **Inclusion-Exclusion:** Alternate adding odd-sized intersections and subtracting even-sized intersections.\n- **Derangement Limit:** $\\lim \\frac{D_n}{n!} = \\frac{1}{e}$.\n",
       "questions": [
         {
           "id": "dm-cnt-1",
@@ -305,6 +385,33 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "Using the derangement formula D(n) = n! * Sigma (-1)^k / k!: D(4) = 4! * (1/0! - 1/1! + 1/2! - 1/3! + 1/4!) = 24 * (1 - 1 + 1/2 - 1/6 + 1/24) = 24 * (9/24) = 9."
         }
+      ],
+      "prerequisites": [
+        "Set theory unions and intersections",
+        "Basic algebraic equations"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.042J: Counting and Combinatorics",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Combinatorics and Inclusion-Exclusion Principle",
+          "url": "https://www.geeksforgeeks.org/principle-of-inclusion-and-exclusion-pie/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Derangements and Counting Interview Problems",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -327,7 +434,7 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         "Stars and Bars: Distributing n identical items into k distinct bins = C(n + k - 1, k - 1)."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Permutations+and+Combinations+Discrete+Mathematics+Discrete+Mathematics+gate+lecture",
-      "notesMarkdown": "# Permutations and Combinations\n\nCombinatorial selections and orderings form the bedrock of probability and discrete counting.\n\n---\n\n## 1. Formulations\n- **Permutations ($P(n, r)$):** Order matters (arrangements):\n  $$P(n, r) = \\frac{n!}{(n - r)!}$$\n- **Combinations ($C(n, r)$ or $\\binom{n}{r}$):** Order does NOT matter (selections):\n  $$\\binom{n}{r} = \\frac{n!}{r!(n - r)!}$$\n\n---\n\n## 2. Fundamental Identities\n- **Symmetry:** $\\binom{n}{r} = \\binom{n}{n - r}$\n- **Pascal's Identity:** $\\binom{n}{r} = \\binom{n - 1}{r - 1} + \\binom{n - 1}{r}$\n- **Binomial Theorem:**\n  $$(x + y)^n = \\sum_{k=0}^{n} \\binom{n}{k} x^{n - k} y^k$$\n- **Sum of Binomial Coefficients:** $\\sum_{k=0}^{n} \\binom{n}{k} = 2^n$\n\n---\n\n## 3. Combinations with Repetition (Stars and Bars)\nNumber of ways to distribute $n$ identical items into $r$ distinct bins (non-negative integer solutions to $x_1 + x_2 + \\dots + x_r = n$):\n$$N = \\binom{n + r - 1}{r - 1}$$\n",
+      "notesMarkdown": "# Permutations, Combinations, Stars and Bars, and Binomial Identities\n\nPermutations (where order matters) and Combinations (where order does not matter) form the basis of algorithm complexity calculations and discrete mathematical reasoning.\n\n---\n\n## 1. Permutations ($P$) vs Combinations ($C$)\n\n| Category | Without Repetition | With Repetition Allowed |\n| :--- | :--- | :--- |\n| **Permutation (Order Matters)** | $\\mathbf{P(n, r) = \\frac{n!}{(n - r)!}}$ | $n^r$ |\n| **Combination (Order Does NOT Matter)**| $\\mathbf{C(n, r) = \\binom{n}{r} = \\frac{n!}{r!(n - r)!}}$ | $\\mathbf{\\binom{n + r - 1}{r}}$ (Stars and Bars) |\n\n---\n\n## 2. Stars and Bars Theorem (Combinations with Repetition)\n\nThe number of ways to distribute $r$ identical items among $n$ distinct bins (or non-negative integer solutions to $x_1 + x_2 + \\dots + x_n = r$):\n$$\\mathbf{\\text{Solutions} = \\binom{n + r - 1}{r} = \\binom{n + r - 1}{n - 1}}$$\n\n*Positive Integer Solutions ($x_i \\ge 1$):*\nSubstitute $y_i = x_i - 1 \\implies \\mathbf{\\binom{r - 1}{n - 1}}$.\n\n---\n\n## 3. Core Combinatorial Identities\n\n1. **Symmetry:** $\\binom{n}{r} = \\binom{n}{n - r}$.\n2. **Pascal's Identity:**\n   $$\\mathbf{\\binom{n}{r} = \\binom{n - 1}{r - 1} + \\binom{n - 1}{r}}$$\n3. **Sum of Binomial Coefficients:**\n   $$\\sum_{k=0}^n \\binom{n}{k} = 2^n$$\n4. **Vandermonde's Identity:**\n   $$\\binom{m + n}{r} = \\sum_{k=0}^r \\binom{m}{k} \\binom{n}{r - k}$$\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Order Matters:** Permutations $P(n, r) = \\frac{n!}{(n-r)!}$.\n- **Order Does Not Matter:** Combinations $\\binom{n}{r} = \\frac{n!}{r!(n-r)!}$.\n- **Identical Items into Distinct Bins:** $\\binom{n + r - 1}{r}$.\n- **Pascal's Triangle:** $\\binom{n}{r} = \\binom{n-1}{r-1} + \\binom{n-1}{r}$.\n",
       "questions": [
         {
           "id": "dm-pc-1",
@@ -365,6 +472,33 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By stars and bars theorem, the number of non-negative solutions to x1 + ... + xr = n is C(n + r - 1, r - 1). Here n = 10, r = 4: C(10 + 4 - 1, 4 - 1) = C(13, 3) = (13 * 12 * 11) / (3 * 2 * 1) = 286."
         }
+      ],
+      "prerequisites": [
+        "Factorials and counting principles",
+        "Combinatorics basics"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.042J: Permutations, Combinations, and Binomial Theorem",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Permutations and Combinations",
+          "url": "https://www.geeksforgeeks.org/permutations-and-combinations/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Stars and Bars Method and Combinatorial Identities",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -387,7 +521,7 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         "Classic applications: Handshakes at parties, birthday paradox bounds, sum subsets."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Pigeonhole+Principle+Discrete+Mathematics+Problems+Discrete+Mathematics+gate+lecture",
-      "notesMarkdown": "# The Pigeonhole Principle (Dirichlet's Box Principle)\n\nIf $k$ items are put into $m$ containers and $k > m$, at least one container must contain more than one item.\n\n---\n\n## 1. Generalized Pigeonhole Principle\nIf $N$ objects are placed into $k$ boxes, then at least one box contains at least:\n$$\\left\\lceil \\frac{N}{k} \\right\\rceil \\text{ objects}$$\nAnd at least one box contains at most:\n$$\\left\\lfloor \\frac{N}{k} \\right\\rfloor \\text{ objects}$$\n\n---\n\n## 2. Classic Problem Archetypes\n- **Handshakes in a Party:** In any gathering of $n \\ge 2$ people, at least two people have shaken hands with the exact same number of people.\n- **Repeated Subsets / Sums:** Among any 6 integers chosen from $\\{1, 2, \\dots, 9\\}$, at least two must sum to 10.\n- **Ramsey Theory Basics:** In any group of 6 people, there are either 3 mutual friends or 3 mutual strangers ($R(3, 3) = 6$).\n",
+      "notesMarkdown": "# The Pigeonhole Principle: Basic, Generalized, and Classical Proofs\n\nThe Pigeonhole Principle (Dirichlet's Drawer Principle) states a seemingly obvious observation that yields profound non-constructive existence proofs in combinatorics, hashing collision theorems, and computational geometry.\n\n---\n\n## 1. Basic vs Generalized Pigeonhole Principle\n\n### Basic Pigeonhole Principle:\nIf $k + 1$ or more pigeons are placed into $k$ pigeonholes, then **at least one pigeonhole must contain two or more pigeons**.\n- *Function Formulation:* If $f: A \\to B$ where $|A| > |B|$, then $f$ **cannot be injective (one-to-one)**!\n\n### Generalized Pigeonhole Principle:\nIf $N$ objects are placed into $k$ boxes, then **at least one box must contain at least**:\n$$\\mathbf{\\left\\lceil \\frac{N}{k} \\right\\rceil \\quad \\text{objects}}$$\n*(And at least one box must contain at most $\\lfloor \\frac{N}{k} \\rfloor$ objects).*\n\n---\n\n## 2. Classical Problems and Proof Patterns\n\n1. **Birthday Matching:**\n   How many people must be gathered in a room to guarantee that at least two share the same birth month?\n   - Pigeons $= N$, Holes $= 12$ months.\n   - We need $\\lceil N / 12 \\rceil \\ge 2 \\implies N = 12 + 1 = \\mathbf{13\\text{ people}}$.\n2. **Sock Drawer Problem:**\n   A drawer contains 10 black socks and 10 white socks. What is the minimum number of socks drawn in the dark to guarantee a matching pair?\n   - Colors (holes) $= 2$.\n   - By PHP, picking $\\mathbf{2 + 1 = 3\\text{ socks}}$ guarantees at least one pair of the same color!\n3. **Hash Table Collisions:**\n   If a hash table has $M$ slots and $M + 1$ keys are inserted, **a collision is 100% mathematically inevitable**!\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **Basic PHP:** $N > k \\implies$ at least one box has $\\ge 2$ items.\n- **Generalized PHP:** At least one box contains $\\ge \\lceil \\frac{N}{k} \\rceil$ items.\n- **Minimum $N$ for $\\ge M$ items in a box:** $N = k(M - 1) + 1$.\n",
       "questions": [
         {
           "id": "dm-php-1",
@@ -425,6 +559,33 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "There are 4 suits (pigeonholes). By generalized pigeonhole principle, we want ceil(N / 4) = 3. Worst-case distribution is 2 cards of each of the 4 suits = 8 cards. The 9th card guarantees a suit with 3 cards: ceil(9/4) = 3."
         }
+      ],
+      "prerequisites": [
+        "Set theory and counting principles",
+        "Functions: injective (one-to-one) maps"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.042J: The Pigeonhole Principle and Applications",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: The Pigeonhole Principle in Discrete Mathematics",
+          "url": "https://www.geeksforgeeks.org/pigeonhole-principle/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Pigeonhole Principle Proofs and Problem Patterns",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -447,7 +608,7 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         "Repeated root r of multiplicity m -> general solution includes (A_0 + A_1*n + ... + A_(m-1)*n^(m-1)) * r^n."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Recurrence+Relations+Characteristic+Equation+Discrete+Mathematics+Discrete+Mathematics+gate+lecture",
-      "notesMarkdown": "# Recurrence Relations and Characteristic Equations\n\nRecurrence relations define sequences where each term is a function of preceding terms.\n\n---\n\n## 1. Linear Homogeneous Recurrence Relations with Constant Coefficients (LHRR)\nGeneral form:\n$$a_n = c_1 a_{n-1} + c_2 a_{n-2} + \\dots + c_k a_{n-k}$$\n- **Characteristic Equation:**\n  $$r^k - c_1 r^{k-1} - c_2 r^{k-2} - \\dots - c_k = 0$$\n\n### Roots & General Solutions:\n1. **Distinct Real Roots ($r_1 \\ne r_2$):**\n   $$a_n = A r_1^n + B r_2^n$$\n2. **Repeated Roots ($r_1 = r_2 = r$):**\n   $$a_n = (A + B n) r^n$$\n3. **Roots with Multiplicity $m$:**\n   $$a_n = (A_0 + A_1 n + \\dots + A_{m-1} n^{m-1}) r^n$$\n\n---\n\n## 2. Generating Functions\nThe ordinary generating function for sequence $\\{a_n\\}$ is $G(x) = \\sum_{n=0}^{\\infty} a_n x^n$.\n- Transforms recurrence relations into algebraic equations solvable via partial fractions.\n",
+      "notesMarkdown": "# Linear Recurrence Relations, Characteristic Equations, and Generating Functions\n\nA recurrence relation expresses the $n$-th term of a sequence as a mathematical function of preceding terms, modeling the runtime complexity of recursive algorithms and combinatorial counting problems.\n\n---\n\n## 1. Linear Homogeneous Recurrence Relations with Constant Coefficients\n\nGeneral form of degree $k$:\n$$a_n = c_1 a_{n-1} + c_2 a_{n-2} + \\dots + c_k a_{n-k}$$\n\n### Characteristic Equation Method:\nSubstitute trial solution $a_n = r^n$:\n$$\\mathbf{r^k - c_1 r^{k-1} - c_2 r^{k-2} - \\dots - c_k = 0}$$\n\n### Solution Cases Based on Roots:\n1. **Distinct Real Roots ($r_1, r_2, \\dots, r_k$):**\n   $$a_n = \\alpha_1 (r_1)^n + \\alpha_2 (r_2)^n + \\dots + \\alpha_k (r_k)^n$$\n2. **Repeated Root ($r$ with multiplicity $m$):**\n   $$a_n = (\\alpha_1 + \\alpha_2 n + \\alpha_3 n^2 + \\dots + \\alpha_m n^{m-1}) r^n$$\n\n---\n\n## 2. Worked Example: Closed-Form Fibonacci Sequence\n\n$$F_n = F_{n-1} + F_{n-2} \\quad \\text{with } F_0 = 0, F_1 = 1$$\n1. Characteristic Equation: $r^2 - r - 1 = 0$.\n2. Roots via quadratic formula:\n   $$r_1 = \\frac{1 + \\sqrt{5}}{2} = \\phi \\quad (\\text{Golden Ratio}), \\quad r_2 = \\frac{1 - \\sqrt{5}}{2}$$\n3. General Solution: $F_n = \\alpha_1 (\\frac{1+\\sqrt{5}}{2})^n + \\alpha_2 (\\frac{1-\\sqrt{5}}{2})^n$.\n4. Apply base cases ($F_0=0, F_1=1$) to find constants $\\alpha_1 = \\frac{1}{\\sqrt{5}}, \\alpha_2 = -\\frac{1}{\\sqrt{5}}$.\n5. **Binet's Formula:**\n   $$\\mathbf{F_n = \\frac{1}{\\sqrt{5}} \\left[ \\left(\\frac{1+\\sqrt{5}}{2}\\right)^n - \\left(\\frac{1-\\sqrt{5}}{2}\\right)^n \\right]}$$\n\n---\n\n## 3. Summary Cheatsheet & Key Formulas\n\n- **Homogeneous Trial:** $a_n = r^n$.\n- **Repeated Root Factor:** Multiply by polynomial powers of $n$: $(\\alpha_0 + \\alpha_1 n) r^n$.\n- **Master Theorem:** Preferred shortcut for divide-and-conquer recurrences ($T(n) = aT(n/b) + f(n)$).\n",
       "questions": [
         {
           "id": "dm-rec-1",
@@ -484,6 +645,33 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "This is a first-order linear homogeneous recurrence with common ratio r = 2. Unrolling gives a_1 = 3 * 2, a_2 = 3 * 2^2, ..., a_n = a_0 * 2^n = 3 * 2^n."
+        }
+      ],
+      "prerequisites": [
+        "Mathematical induction and sequence limits",
+        "Polynomial roots and quadratic formulas"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.042J: Recurrence Relations and Generating Functions",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Solving Linear Recurrence Relations",
+          "url": "https://www.geeksforgeeks.org/solving-linear-recurrence-relations/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Recurrence Relations in Algorithm Complexity",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -545,6 +733,26 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By Euler's planar formula: V - E + F = 2 => 10 - E + 7 = 2 => 17 - E = 2 => E = 15 edges."
         }
+      ],
+      "prerequisites": [
+        "Sets and Degree Sequences",
+        "Handshaking Lemma"
+      ],
+      "externalResources": [
+        {
+          "title": "Graph Theory Definitions and Properties — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "Graph Theory for Computer Science — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -567,7 +775,7 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
         "A bridge is an edge whose removal increases the number of connected components."
       ],
       "youtube_url": "https://www.youtube.com/results?search_query=Trees+and+Connectivity+Cayleys+Formula+Cut+Vertices+Bridges+Discrete+Mathematics+gate+lecture",
-      "notesMarkdown": "# Trees and Graph Connectivity\n\nA tree is an undirected connected acyclic graph.\n\n---\n\n## 1. Equivalent Definitions of a Tree\nFor an undirected graph $T = (V, E)$ with $|V| = n$:\n1. $T$ is connected and acyclic.\n2. $T$ is connected and has exactly $n - 1$ edges ($|E| = n - 1$).\n3. $T$ is acyclic and has exactly $n - 1$ edges.\n4. There is a unique simple path between any pair of vertices in $T$.\n5. Adding any edge to $T$ creates exactly one cycle.\n\n---\n\n## 2. Spanning Trees & Cayley's Formula\n- **Cayley's Formula:** The number of labeled trees on $n$ vertices is:\n  $$n^{n - 2}$$\n- Every connected graph with $n$ vertices and $m$ edges contains at least one spanning tree with $n - 1$ edges; the number of cut edges removed is $m - n + 1$ (the cycle rank).\n",
+      "notesMarkdown": "# Graph Connectivity, Articulation Points, Bridges, and Planar Graphs\n\nGraph connectivity studies paths, network vulnerability, and topological structures in connected and disconnected networks.\n\n---\n\n## 1. Fundamental Tree Characterization Theorems\n\nFor an undirected graph $G = (V, E)$ with $n$ vertices, the following statements are **mutually equivalent**:\n1. $G$ is a **Tree**.\n2. $G$ is **connected and contains no cycles (acyclic)**.\n3. $G$ is **connected and has exactly $n - 1$ edges**: $|E| = n - 1$.\n4. $G$ is **acyclic and has exactly $n - 1$ edges**.\n5. There exists a **unique simple path** between every pair of vertices in $G$.\n6. Adding any new edge to $G$ creates **exactly one simple cycle**.\n\n---\n\n## 2. Network Vulnerability: Cut Vertices (Articulation Points) and Bridges\n\n- **Cut Vertex (Articulation Point):** A vertex whose removal (along with all incident edges) **increases the number of connected components** in the graph. Disconnects communication between subgraphs.\n- **Bridge (Cut Edge):** An edge whose removal increases the number of connected components.\n  - *Theorem:* An edge $e$ is a bridge if and only if $e$ **does NOT belong to any simple cycle**!\n\n---\n\n## 3. Planar Graphs and Euler's Formula\n\nA graph is **Planar** if it can be drawn in a 2D plane such that no two edges cross each other.\n\n### Euler's Formula for Connected Planar Graphs:\n$$\\mathbf{V - E + F = 2}$$\nwhere $V$ is vertices, $E$ is edges, and $F$ is faces/regions (including the infinite outer region).\n\n### Planar Edge Upper Bounds:\nFor any simple connected planar graph with $V \\ge 3$:\n$$\\mathbf{E \\le 3V - 6}$$\n- **Kuratowski's Theorem:** A graph is planar if and only if it contains **no subgraph homeomorphic to $K_5$ (complete graph on 5 vertices) or $K_{3,3}$ (complete bipartite utility graph)**!\n\n---\n\n## 4. Summary Cheatsheet & Key Formulas\n\n- **Tree Equivalence:** Connected $\\land$ Acyclic $\\iff$ Connected with $n-1$ edges.\n- **Euler's Formula:** $V - E + F = 2$.\n- **Planar Edge Bound:** $E \\le 3V - 6$ (if triangle-free, $E \\le 2V - 4$).\n- **Non-Planar Benchmarks:** $K_5$ and $K_{3,3}$.\n",
       "questions": [
         {
           "id": "dm-tc-1",
@@ -604,6 +812,33 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Cayley's formula states that the number of labeled trees on n vertices is n^(n - 2). For n = 4: 4^(4 - 2) = 4^2 = 16 distinct labeled trees."
+        }
+      ],
+      "prerequisites": [
+        "Graph representations: adjacency lists and matrices",
+        "Graph traversals (BFS and DFS)"
+      ],
+      "externalResources": [
+        {
+          "title": "MIT 6.042J: Graph Theory, Connectivity, and Trees",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "provider": "MIT OpenCourseWare",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "GeeksforGeeks: Connectivity in a Graph and Bridges",
+          "url": "https://www.geeksforgeeks.org/connectivity-in-a-graph/",
+          "provider": "GeeksforGeeks",
+          "difficulty": "Beginner",
+          "isFree": true
+        },
+        {
+          "title": "InterviewBit: Planar Graphs, Euler's Formula, and Cut Vertices",
+          "url": "https://www.interviewbit.com/technical-interview-questions/",
+          "provider": "InterviewBit",
+          "difficulty": "Intermediate",
+          "isFree": true
         }
       ]
     },
@@ -663,6 +898,19 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           ],
           "correct_option": 0,
           "explanation": "Kuratowski's theorem states a graph is planar if and only if it does not contain a subgraph homeomorphic to K_5 or K_{3,3}."
+        }
+      ],
+      "prerequisites": [
+        "Graph Theory Fundamentals",
+        "Euler's Polyhedral Formula"
+      ],
+      "externalResources": [
+        {
+          "title": "Planar Graphs, Kuratowski's Theorem, and Coloring — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/planar-graphs-and-graph-coloring/",
+          "difficulty": "Advanced",
+          "isFree": true
         }
       ]
     },
@@ -725,6 +973,26 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "A set G with binary operation * is a Group if it satisfies: 1) Closure, 2) Associativity, 3) Existence of Identity element e, and 4) Existence of Inverse a^(-1) for all elements."
         }
+      ],
+      "prerequisites": [
+        "Binary Operations",
+        "Set Closure and Invertibility"
+      ],
+      "externalResources": [
+        {
+          "title": "Group Theory, Subgroups, and Cosets — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/group-theory-in-discrete-mathematics/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        },
+        {
+          "title": "Principles of Discrete Applied Mathematics — MIT OpenCourseWare",
+          "provider": "MIT OpenCourseWare",
+          "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/",
+          "difficulty": "Intermediate",
+          "isFree": true
+        }
       ]
     },
     {
@@ -785,8 +1053,20 @@ export const DISCRETE_MATH_CATEGORY: SectionCategory = {
           "correct_option": 0,
           "explanation": "By the Consensus Theorem, in AB + A'C + BC, the variable A appears in true form in AB and complemented form in A'C. The product of the remaining variables (BC) is the consensus term and is mathematically redundant: AB + A'C + BC = AB + A'C."
         }
+      ],
+      "prerequisites": [
+        "Propositional Connectives",
+        "Logic Gates"
+      ],
+      "externalResources": [
+        {
+          "title": "Boolean Algebra Laws, Duality, and Logic Minimization — GeeksforGeeks",
+          "provider": "GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/boolean-algebra-in-digital-logic/",
+          "difficulty": "Beginner",
+          "isFree": true
+        }
       ]
     }
   ]
 };
-
