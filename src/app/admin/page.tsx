@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback, useId } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { maskEmail } from '@/lib/security/sanitize';
+import CredentialsModal from '@/components/CredentialsModal';
 import {
   ShieldCheck,
   FileText,
@@ -191,6 +192,7 @@ export default function AdminDashboardPage() {
 
   // Change Admin Passcode Modal state
   const [changeKeyModalOpen, setChangeKeyModalOpen] = useState(false);
+  const [credentialsModalOpen, setCredentialsModalOpen] = useState(false);
   const [newPasscode, setNewPasscode] = useState('');
   const [confirmNewPasscode, setConfirmNewPasscode] = useState('');
   const [changeKeyLoading, setChangeKeyLoading] = useState(false);
@@ -1092,6 +1094,15 @@ export default function AdminDashboardPage() {
               >
                 <KeyRound className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                 <span>Change Key</span>
+              </button>
+
+              <button
+                onClick={() => setCredentialsModalOpen(true)}
+                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
+                title="Supabase and Claude API Integrations"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                <span className="hidden sm:inline">Integrations</span>
               </button>
 
               <button
@@ -2337,6 +2348,12 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
+
+      {/* MODAL: SUPABASE & CLAUDE INTEGRATIONS */}
+      <CredentialsModal
+        isOpen={credentialsModalOpen}
+        onClose={() => setCredentialsModalOpen(false)}
+      />
     </div>
   );
 }

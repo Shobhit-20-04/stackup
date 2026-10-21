@@ -7,13 +7,14 @@ import {
   validateFileMagic,
   verifyCsrfOrigin,
   maskEmail,
+  sanitizeRedirectPath,
 } from '@/lib/security/sanitize';
 import {
   timingSafeCompare,
   createAdminSessionToken,
   verifyAdminSessionToken,
 } from '@/lib/security/admin-auth';
-import { checkRateLimit } from '@/lib/services/rate-limit';
+import { checkRateLimit, sanitizeIp } from '@/lib/services/rate-limit';
 
 describe('Security: Input Sanitization & XSS Defense', () => {
   it('strips script tags and HTML entities from user input', () => {
@@ -199,4 +200,76 @@ describe('Security: Email Masking & PII Protection', () => {
     expect(maskEmail(undefined)).toBe('••••••');
   });
 });
+
+describe('Security: Open Redirect Defense & Target Path Validation', () => {
+  it('allows valid internal application paths', () => {
+    expect(sanitizeRedirectPath('/profile')).toBe('/profile');
+    expect(sanitizeRedirectPath('/dsa')).toBe('/dsa');
+    expect(sanitizeRedirectPath('/resume-checker')).toBe('/resume-checker');
+    expect(sanitizeRedirectPath('/admin')).toBe('/admin');
+  });
+
+  it('preserves query parameters and hash fragments for valid internal routes', () => {
+    expect(sanitizeRedirectPath('/dsa?topic=array#solution')).toBe('/dsa?topic=array#solution');
+    expect(sanitizeRedirectPath('/profile?tab=quizzes')).toBe('/profile?tab=quizzes');
+  });
+
+  it('blocks protocol-relative URLs (//attacker.com)', () => {
+    expect(sanitizeRedirectPath('//attacker.com')).toBe('/profile');
+    expect(sanitizeRedirectPath('//attacker.com/evil')).toBe('/profile');
+    expect(sanitizeRedirectPath('//google.com')).toBe('/profile');
+  });
+
+  it('blocks backslash traversal and evasion tricks (/\\attacker.com, \\evil.com)', () => {
+    expect(sanitizeRedirectPath('/\\attacker.com')).toBe('/profile');
+    expect(sanitizeRedirectPath('\\attacker.com')).toBe('/profile');
+    expect(sanitizeRedirectPath('/evil\\page')).toBe('/profile');
+  });
+
+  it('blocks absolute external URLs and non-http schemes', () => {
+    expect(sanitizeRedirectPath('https://evil.com')).toBe('/profile');
+    expect(sanitizeRedirectPath('http://malicious.org/phish')).toBe('/profile');
+    expect(sanitizeRedirectPath('javascript:alert(1)')).toBe('/profile');
+    expect(sanitizeRedirectPath('data:text/html,<script>alert(1)</script>')).toBe('/profile');
+  });
+
+  it('blocks CRLF and newline characters in redirect targets', () => {
+    expect(sanitizeRedirectPath('/profile\r\nSet-Cookie:session=evil')).toBe('/profile');
+    expect(sanitizeRedirectPath('/profile\nLocation:https://evil.com')).toBe('/profile');
+  });
+
+  it('falls back to custom fallback path when provided', () => {
+    expect(sanitizeRedirectPath('https://evil.com', '/dsa')).toBe('/dsa');
+    expect(sanitizeRedirectPath(null, '/login')).toBe('/login');
+    expect(sanitizeRedirectPath(undefined, '/aptitude')).toBe('/aptitude');
+    expect(sanitizeRedirectPath('', '/core-cs')).toBe('/core-cs');
+  });
+});
+
+describe('Security: Client IP & Rate Limit Key Sanitization', () => {
+  it('allows valid IPv4 and IPv6 addresses', () => {
+    expect(sanitizeIp('192.168.1.1')).toBe('192.168.1.1');
+    expect(sanitizeIp('10.0.0.254')).toBe('10.0.0.254');
+    expect(sanitizeIp('2001:0db8:85a3:0000:0000:8a2e:0370:7334')).toBe('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
+    expect(sanitizeIp('::1')).toBe('::1');
+  });
+
+  it('strips illegal characters and control sequences from IP headers', () => {
+    expect(sanitizeIp('192.168.1.1\r\nX-Bad-Header:evil')).toBe('192.168.1.1');
+    expect(sanitizeIp('192.168.1.1<script>')).toBe('127.0.0.1');
+    expect(sanitizeIp('client-ip; rm -rf /')).toBe('127.0.0.1');
+  });
+
+  it('enforces maximum character length of 45 characters', () => {
+    const longString = '192.168.1.1.' + '1'.repeat(100);
+    const cleaned = sanitizeIp(longString);
+    expect(cleaned.length).toBeLessThanOrEqual(45);
+  });
+
+  it('falls back to localhost when input is empty or invalid', () => {
+    expect(sanitizeIp('')).toBe('127.0.0.1');
+    expect(sanitizeIp('???$$$%%%')).toBe('127.0.0.1');
+  });
+});
+
 

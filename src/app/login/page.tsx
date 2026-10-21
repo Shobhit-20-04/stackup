@@ -4,6 +4,7 @@ import React, { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { setDemoUserSession } from '@/lib/auth/session';
+import { sanitizeRedirectPath } from '@/lib/security/sanitize';
 import { 
   Layers, 
   Mail, 
@@ -21,7 +22,10 @@ import {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || searchParams.get('next') || '/profile';
+  const redirectPath = sanitizeRedirectPath(
+    searchParams.get('redirect') || searchParams.get('next'),
+    '/profile'
+  );
   const urlError = searchParams.get('error');
 
   // Mode: Sign In vs Sign Up

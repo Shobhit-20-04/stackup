@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { recordLoginAudit } from '@/lib/services/login-audit';
+import { sanitizeRedirectPath } from '@/lib/security/sanitize';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/profile';
+  const next = sanitizeRedirectPath(searchParams.get('next'), '/profile');
   const oauthError = searchParams.get('error');
   const oauthErrorDesc = searchParams.get('error_description');
 

@@ -17,13 +17,20 @@ export async function updateSession(request: NextRequest) {
   const isAuthPage = pathname.startsWith('/login');
   const isProtectedPath = pathname.startsWith('/profile');
 
-  // Verify demo cookie format safely
+  // Verify authenticated session cookie format safely (reject default guest/demo accounts)
   const demoCookie = request.cookies.get('sb-demo-user');
   let hasUser = false;
   if (demoCookie?.value) {
     try {
       const parsed = JSON.parse(decodeURIComponent(demoCookie.value));
-      if (parsed && typeof parsed.id === 'string' && typeof parsed.email === 'string') {
+      if (
+        parsed &&
+        typeof parsed.id === 'string' &&
+        typeof parsed.email === 'string' &&
+        !parsed.isDemo &&
+        parsed.id !== 'student-demo' &&
+        parsed.email !== 'guest@stackup.xyz'
+      ) {
         hasUser = true;
       }
     } catch {

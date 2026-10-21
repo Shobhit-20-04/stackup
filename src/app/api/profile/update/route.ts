@@ -37,7 +37,24 @@ export async function POST(request: Request) {
       );
     }
 
-    const effectiveUserId = user?.id || (typeof explicitUserId === 'string' ? explicitUserId.trim() : null);
+    let demoUserId: string | null = null;
+    if (!user) {
+      // Allow demo session updates only if caller presents authentic sb-demo-user cookie
+      const cookieHeader = request.headers.get('cookie') || '';
+      const match = cookieHeader.match(/sb-demo-user=([^;]+)/);
+      if (match) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(match[1]));
+          if (parsed && typeof parsed.id === 'string' && (!explicitUserId || parsed.id === explicitUserId)) {
+            demoUserId = parsed.id;
+          }
+        } catch {
+          demoUserId = null;
+        }
+      }
+    }
+
+    const effectiveUserId = user?.id || demoUserId;
 
     if (!effectiveUserId) {
       return NextResponse.json({ error: 'Authentication required to update profile.' }, { status: 401 });

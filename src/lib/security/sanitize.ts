@@ -224,6 +224,36 @@ export function verifyCsrfOrigin(req: Request): boolean {
 }
 
 /**
+ * Validates and sanitizes a redirect target path, preventing open redirect vulnerabilities.
+ * Ensures the target starts with a single forward slash, does not contain backslashes,
+ * does not start with protocol-relative '//', and resolves strictly within internal application routes.
+ */
+export function sanitizeRedirectPath(target: unknown, fallback = '/profile'): string {
+  if (typeof target !== 'string') return fallback;
+  const trimmed = target.trim();
+  if (!trimmed) return fallback;
+
+  // Must begin with single '/' and not '//' (protocol-relative) or contain backslash / CR / LF
+  if (
+    trimmed.startsWith('/') &&
+    !trimmed.startsWith('//') &&
+    !trimmed.startsWith('/\\') &&
+    !/[\r\n\t\\]/.test(trimmed)
+  ) {
+    try {
+      const parsed = new URL(trimmed, 'https://stackup-internal.local');
+      if (parsed.origin === 'https://stackup-internal.local') {
+        return parsed.pathname + parsed.search + parsed.hash;
+      }
+    } catch {
+      return fallback;
+    }
+  }
+
+  return fallback;
+}
+
+/**
  * Securely masks an email address to prevent PII exposure in UIs, logs, and public views.
  * e.g., "shobhitagrawal2004@gmail.com" -> "s••••••••••4@gmail.com"
  */

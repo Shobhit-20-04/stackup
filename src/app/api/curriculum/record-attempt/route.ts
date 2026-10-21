@@ -42,12 +42,13 @@ export async function POST(request: Request) {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
-        // Enforce user ownership: If user is authenticated, only allow their own user.id
+        // Enforce user ownership: Authenticated user can only submit for their own id.
+        // Unauthenticated callers cannot forge a userId to mutate remote database records.
         if (user && explicitUserId && user.id !== explicitUserId) {
           return NextResponse.json({ error: 'Forbidden: Cannot submit attempt for another user.' }, { status: 403 });
         }
 
-        const effectiveUserId = user?.id || (typeof explicitUserId === 'string' && /^[0-9a-f-]{1,64}$/i.test(explicitUserId) ? explicitUserId : null);
+        const effectiveUserId = user?.id || null;
 
         if (effectiveUserId) {
           // 1. Resolve section ID from sections table if available
