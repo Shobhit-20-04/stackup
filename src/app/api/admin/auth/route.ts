@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  getAdminPasscode,
   getAdminEmail,
-  timingSafeCompare,
+  verifyAdminPassword,
   setAdminSessionCookie,
   clearAdminSessionCookie,
   verifyAdminRequest,
@@ -30,7 +29,7 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST: Authenticates administrator using passkey and issues signed HttpOnly session cookie.
- * Defends against brute force via IP-based rate limiting (5 attempts / 15 minutes).
+ * Defends against brute force via IP-based rate limiting (10 attempts / 5 minutes).
  */
 export async function POST(req: NextRequest) {
   try {
@@ -63,15 +62,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const activePasscode = getAdminPasscode();
-    const isValid = timingSafeCompare(passcode, activePasscode);
+    const isValid = verifyAdminPassword(passcode);
 
     if (!isValid) {
       return NextResponse.json(
         { 
-          error: 'Invalid security key. Please try again.',
+          error: 'Invalid security key. Please check your credentials and try again.',
           code: 'INVALID_CREDENTIALS',
-          attemptsRemaining: rateCheck.remaining
+          attemptsRemaining: rateCheck.remaining,
         }, 
         { status: 401 }
       );

@@ -177,6 +177,7 @@ export default function AdminDashboardPage() {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError, setResetError] = useState('');
   const [resetSuccess, setResetSuccess] = useState('');
+  const [resetEmailDispatched, setResetEmailDispatched] = useState<boolean>(true);
 
   // Primary tab view: 'workspace', 'table', 'users', 'skills', 'logins'
   const [activeTab, setActiveTab] = useState<'workspace' | 'table' | 'users' | 'skills' | 'logins'>('workspace');
@@ -349,7 +350,8 @@ export default function AdminDashboardPage() {
         setResetError(resJson.error || 'Unable to process reset request.');
         return;
       }
-      setResetSuccess(resJson.message || 'Password recovery email dispatched. Please check your inbox.');
+      setResetSuccess(resJson.message || 'Password recovery instructions processed.');
+      setResetEmailDispatched(resJson.emailDispatched !== false);
       setAuthView('reset-verify');
     } catch {
       setResetError('Network error. Unable to connect to reset service.');
@@ -850,7 +852,7 @@ export default function AdminDashboardPage() {
                     Your administrator identity has been authenticated. Set your new Master Security Key below to complete reset.
                   </p>
                 </div>
-              ) : (
+              ) : resetEmailDispatched ? (
                 <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-indigo-800 dark:text-indigo-200 text-xs space-y-1.5">
                   <div className="flex items-center space-x-2 font-semibold text-indigo-900 dark:text-indigo-300">
                     <Key className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
@@ -861,6 +863,19 @@ export default function AdminDashboardPage() {
                   </p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     <strong>Tip:</strong> Tap the &quot;Reset password&quot; button in your email to reset instantly, or enter your 6-digit code below.
+                  </p>
+                </div>
+              ) : (
+                <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-200 text-xs space-y-1.5">
+                  <div className="flex items-center space-x-2 font-semibold text-amber-900 dark:text-amber-300">
+                    <Key className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                    <span>Recovery Code Generated</span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Notice: Outbound SMTP email delivery service is currently unconfigured in this environment.
+                  </p>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Please enter your 6-digit administrator verification code or master emergency recovery code directly below.
                   </p>
                 </div>
               )}
@@ -2250,7 +2265,7 @@ export default function AdminDashboardPage() {
             {/* Security Notice */}
             <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#0B1020]/90 border border-slate-200 dark:border-zinc-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               <span className="font-bold text-slate-900 dark:text-white block mb-1">Server-Side Admin Security</span>
-              Your portal authenticates against <code className="text-indigo-600 dark:text-indigo-400 bg-slate-200 dark:bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> defined in your server environment variables. Entering a new passcode below updates the runtime server passcode. For permanent persistence across redeployments, update <code className="text-indigo-600 dark:text-indigo-400 bg-slate-200 dark:bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSCODE</code> in your Vercel project settings.
+              Your portal authenticates against cryptographic salted scrypt hashes in server environment configuration. Entering a new passcode below updates the runtime server passcode. For permanent persistence across redeployments, update <code className="text-indigo-600 dark:text-indigo-400 bg-slate-200 dark:bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSWORD_HASH</code> in your hosting environment variables.
             </div>
 
             {changeKeyErr && (

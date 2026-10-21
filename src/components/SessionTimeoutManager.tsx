@@ -12,6 +12,7 @@ interface SessionStatusResponse {
   remainingAbsoluteMs?: number;
   shouldWarn?: boolean;
   warningThresholdMs?: number;
+  role?: string;
 }
 
 export default function SessionTimeoutManager() {
@@ -28,6 +29,7 @@ export default function SessionTimeoutManager() {
   // Refs for state without triggering re-renders
   const lastActiveRef = useRef<number>(Date.now());
   const isAuthenticatedRef = useRef<boolean>(false);
+  const userRoleRef = useRef<string>('student');
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -48,7 +50,11 @@ export default function SessionTimeoutManager() {
 
       // Broadcast logout to all other open tabs
       try {
-        broadcastChannelRef.current?.postMessage({ type: 'SESSION_LOGGED_OUT', reason });
+        broadcastChannelRef.current?.postMessage({
+          type: 'SESSION_LOGGED_OUT',
+          reason,
+          role: userRoleRef.current,
+        });
       } catch {
         // ignore broadcast error
       }
@@ -63,7 +69,23 @@ export default function SessionTimeoutManager() {
         // ignore network error
       }
 
+      // If user is admin or on /admin, also revoke admin session
+      if (userRoleRef.current === 'admin' || pathname.startsWith('/admin')) {
+        try {
+          await fetch('/api/admin/auth', { method: 'DELETE' });
+        } catch {
+          // ignore
+        }
+      }
+
       await signOutUser();
+
+      // Route to admin or login depending on role
+      if (userRoleRef.current === 'admin' || pathname.startsWith('/admin')) {
+        router.push(`/admin?reason=${reason}`);
+        router.refresh();
+        return;
+      }
 
       // Only redirect if current path is not already login
       if (!pathname.startsWith('/login')) {
@@ -139,7 +161,30 @@ export default function SessionTimeoutManager() {
         return;
       }
 
-      // Check client session
+      // Verify with server session status first (handles both student & admin roles)
+      try {
+        const res = await fetch('/api/auth/session/status');
+        if (res.ok && mounted) {
+          const data: SessionStatusResponse = await res.json();
+          if (data.authenticated) {
+            isAuthenticatedRef.current = true;
+            userRoleRef.current = data.role || (pathname.startsWith('/admin') ? 'admin' : 'student');
+            if (data.shouldWarn && typeof data.remainingInactivityMs === 'number') {
+              setShowWarning(true);
+              setSecondsRemaining(Math.max(1, Math.round(data.remainingInactivityMs / 1000)));
+            }
+            return;
+          } else {
+            isAuthenticatedRef.current = false;
+            setShowWarning(false);
+            return;
+          }
+        }
+      } catch {
+        // network failure, fallback to client tracking
+      }
+
+      // Fallback: Check client session
       const user = await getCurrentUser();
       if (!mounted) return;
 
@@ -150,22 +195,7 @@ export default function SessionTimeoutManager() {
       }
 
       isAuthenticatedRef.current = true;
-
-      // Verify with server session status
-      try {
-        const res = await fetch('/api/auth/session/status');
-        if (res.ok && mounted) {
-          const data: SessionStatusResponse = await res.json();
-          if (!data.authenticated) {
-            isAuthenticatedRef.current = false;
-          } else if (data.shouldWarn && typeof data.remainingInactivityMs === 'number') {
-            setShowWarning(true);
-            setSecondsRemaining(Math.max(1, Math.round(data.remainingInactivityMs / 1000)));
-          }
-        }
-      } catch {
-        // network failure, keep client tracking active
-      }
+      userRoleRef.current = 'student';
     }
 
     checkAuthStatus();
@@ -183,7 +213,7 @@ export default function SessionTimeoutManager() {
       broadcastChannelRef.current = channel;
 
       channel.onmessage = (event) => {
-        const { type } = event.data || {};
+        const { type, role } = event.data || {};
         if (type === 'SESSION_EXTENDED') {
           lastActiveRef.current = Date.now();
           setShowWarning(false);
@@ -192,7 +222,10 @@ export default function SessionTimeoutManager() {
           isAuthenticatedRef.current = false;
           setShowWarning(false);
           clearCountdown();
-          if (!pathname.startsWith('/login')) {
+          if (role === 'admin' || pathname.startsWith('/admin')) {
+            router.push('/admin?reason=inactivity');
+            router.refresh();
+          } else if (!pathname.startsWith('/login')) {
             router.push('/login?reason=inactivity');
             router.refresh();
           }
@@ -212,7 +245,10 @@ export default function SessionTimeoutManager() {
               isAuthenticatedRef.current = false;
               setShowWarning(false);
               clearCountdown();
-              if (!pathname.startsWith('/login')) {
+              if (data.role === 'admin' || pathname.startsWith('/admin')) {
+                router.push('/admin?reason=inactivity');
+                router.refresh();
+              } else if (!pathname.startsWith('/login')) {
                 router.push('/login?reason=inactivity');
                 router.refresh();
               }

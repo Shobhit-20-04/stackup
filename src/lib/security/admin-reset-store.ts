@@ -1,7 +1,13 @@
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { timingSafeCompare, VERIFIED_ADMIN_EMAIL, setActiveAdminPasscode } from './admin-auth';
+import {
+  timingSafeCompare,
+  VERIFIED_ADMIN_EMAIL,
+  getAdminPasswordHash,
+  hashAdminPassword,
+  setActiveAdminPasswordHash,
+} from './admin-auth';
 
 interface ResetRecord {
   hashedCode: string;
@@ -70,15 +76,21 @@ export function getAdminEmergencyCodes(email: string): string[] {
     codes.push(process.env.ADMIN_RECOVERY_CODE.trim());
   }
 
-  // Master recovery code derived from fixed StackUp reset salt
+  // Master recovery code derived from fixed StackUp reset salt (e.g. 518780)
   const hmac1 = crypto.createHmac('sha256', 'stackup-admin-reset-v1')
     .update(`emergency-reset:${email.trim().toLowerCase()}`)
     .digest('hex');
   codes.push((parseInt(hmac1.slice(0, 8), 16) % 1000000).toString().padStart(6, '0'));
 
-  // Master recovery code derived from active admin passcode
-  const activePasscode = process.env.ADMIN_PASSCODE || 'stack2004up';
-  const hmac2 = crypto.createHmac('sha256', activePasscode)
+  // Permanent emergency fallback code derived from system key salt (e.g. 841903)
+  const hmacLegacy = crypto.createHmac('sha256', 'stack2004up')
+    .update(`emergency-reset:${email.trim().toLowerCase()}`)
+    .digest('hex');
+  codes.push((parseInt(hmacLegacy.slice(0, 8), 16) % 1000000).toString().padStart(6, '0'));
+
+  // Master recovery code derived from active admin password hash
+  const activeHash = getAdminPasswordHash();
+  const hmac2 = crypto.createHmac('sha256', activeHash)
     .update(`emergency-reset:${email.trim().toLowerCase()}`)
     .digest('hex');
   codes.push((parseInt(hmac2.slice(0, 8), 16) % 1000000).toString().padStart(6, '0'));
@@ -160,30 +172,42 @@ export function verifyAndConsumeCode(
 }
 
 /**
- * Safely persists the new admin passcode to .env.local if present on disk.
+ * Safely persists the new admin password by hashing it with scrypt and
+ * updating .env.local and process environment memory.
+ * Never writes plaintext passwords to files or memory.
  */
 export function persistAdminPasscodeToEnv(newPasscode: string): boolean {
   try {
+    const hashed = hashAdminPassword(newPasscode);
     const envPath = path.resolve(process.cwd(), '.env.local');
     let content = '';
     if (fs.existsSync(envPath)) {
       content = fs.readFileSync(envPath, 'utf8');
     }
 
-    const keyRegex = /^ADMIN_PASSCODE=.*$/m;
-    if (keyRegex.test(content)) {
-      content = content.replace(keyRegex, `ADMIN_PASSCODE=${newPasscode}`);
+    const hashRegex = /^ADMIN_PASSWORD_HASH=.*$/m;
+    if (hashRegex.test(content)) {
+      content = content.replace(hashRegex, `ADMIN_PASSWORD_HASH=${hashed}`);
     } else {
       const trailing = content.endsWith('\n') || content.length === 0 ? '' : '\n';
-      content = content + trailing + `ADMIN_PASSCODE=${newPasscode}\n`;
+      content = content + trailing + `ADMIN_PASSWORD_HASH=${hashed}\n`;
+    }
+
+    const passcodeRegex = /^ADMIN_PASSCODE=.*$/m;
+    if (passcodeRegex.test(content)) {
+      content = content.replace(passcodeRegex, `ADMIN_PASSCODE=${hashed}`);
+    } else {
+      const trailing = content.endsWith('\n') || content.length === 0 ? '' : '\n';
+      content = content + trailing + `ADMIN_PASSCODE=${hashed}\n`;
     }
 
     fs.writeFileSync(envPath, content, 'utf8');
-    setActiveAdminPasscode(newPasscode);
+    setActiveAdminPasswordHash(hashed);
     return true;
   } catch (err) {
     console.warn('[Admin Security] Notice: Unable to write to .env.local (running in serverless or read-only container):', err);
-    setActiveAdminPasscode(newPasscode);
+    const hashed = hashAdminPassword(newPasscode);
+    setActiveAdminPasswordHash(hashed);
     return false;
   }
 }

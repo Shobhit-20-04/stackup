@@ -38,9 +38,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 });
     }
 
-    const genericSuccessMessage =
-      'If the provided email belongs to an authorized administrator, password recovery instructions have been dispatched. Please check your inbox.';
-
     // 3. Strict Server-Side Role and Eligibility Restriction
     const isEligible = isEligibleAdminEmail(cleanEmail);
 
@@ -48,7 +45,7 @@ export async function POST(req: NextRequest) {
       // Return generic response to prevent account enumeration
       return NextResponse.json({
         success: true,
-        message: genericSuccessMessage,
+        message: 'If the provided address is registered as an administrator, password recovery instructions have been processed.',
       });
     }
 
@@ -87,6 +84,7 @@ export async function POST(req: NextRequest) {
         }
       } catch (err: unknown) {
         console.warn('[Admin Reset] Supabase mail dispatch notice:', err);
+        providerNotice = err instanceof Error ? err.message : 'Mail service unreachable';
       }
     }
 
@@ -95,12 +93,21 @@ export async function POST(req: NextRequest) {
       console.log(`[Admin Security Audit] Password reset code generated for ${maskEmail(cleanEmail)}: [${code}] (Valid until ${new Date(expiresAt).toLocaleTimeString()})`);
     }
 
+    if (emailDispatched) {
+      return NextResponse.json({
+        success: true,
+        message: `Password recovery email dispatched to ${maskEmail(cleanEmail)}. Please check your inbox for the reset link or 6-digit code.`,
+        maskedEmail: maskEmail(cleanEmail),
+        emailDispatched: true,
+      });
+    }
+
     return NextResponse.json({
       success: true,
-      message: genericSuccessMessage,
+      message: `Recovery code generated for ${maskEmail(cleanEmail)}. Note: Outbound email service is not configured in this environment. Please enter your administrator verification code directly.`,
       maskedEmail: maskEmail(cleanEmail),
-      emailDispatched,
-      providerNotice: providerNotice ? `Email service note: ${providerNotice}` : undefined,
+      emailDispatched: false,
+      providerNotice: providerNotice || 'Outbound email delivery provider is not configured.',
     });
   } catch (err: unknown) {
     console.error('Password reset request error:', err);

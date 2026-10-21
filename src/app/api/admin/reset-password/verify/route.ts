@@ -7,6 +7,10 @@ import {
   persistAdminPasscodeToEnv 
 } from '@/lib/security/admin-reset-store';
 import { setAdminSessionCookie } from '@/lib/security/admin-auth';
+import {
+  createSessionToken,
+  setSessionCookie,
+} from '@/lib/security/session-manager';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export const runtime = 'nodejs';
@@ -159,13 +163,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 6. Issue Authorized Admin Session Cookie
+    // 6. Issue Authorized Admin Session Cookie & General Session Cookie
     const res = NextResponse.json({
       success: true,
       message: 'Administrator security key updated successfully! Session authorized.',
     });
 
+    const { token: sessionToken } = createSessionToken({
+      userId: 'admin-master',
+      email: cleanEmail,
+      role: 'admin',
+      rememberMe: false,
+    });
+
     setAdminSessionCookie(res);
+    setSessionCookie(res, sessionToken, false);
     return res;
   } catch (err: unknown) {
     console.error('Password reset verification error:', err);
