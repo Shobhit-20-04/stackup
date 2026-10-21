@@ -129,6 +129,16 @@ export async function signOutUser(): Promise<void> {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(DEMO_STORAGE_KEY);
     document.cookie = `${COOKIE_KEY}=; path=/; max-age=0; SameSite=Lax`;
+    document.cookie = `stackup_session_meta=; path=/; max-age=0; SameSite=Lax`;
+    try {
+      fetch('/api/auth/session/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      // ignore
+    }
   }
 
   try {

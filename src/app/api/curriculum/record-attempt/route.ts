@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server';
 import { SECTION_TOTAL_ITEMS } from '@/lib/services/progress';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { sanitizeText, verifyCsrfOrigin } from '@/lib/security/sanitize';
+import { SESSION_CONFIG } from '@/lib/security/session-config';
+import { validateSessionToken } from '@/lib/security/session-manager';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +43,19 @@ export async function POST(request: Request) {
       try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
+
+        // Check server session validity if session token cookie is present
+        const cookieHeader = request.headers.get('cookie') || '';
+        const sessionMatch = cookieHeader.match(new RegExp(`${SESSION_CONFIG.cookieName}=([^;]+)`));
+        if (sessionMatch) {
+          const validation = validateSessionToken(sessionMatch[1]);
+          if (!validation.valid) {
+            return NextResponse.json(
+              { error: 'Session expired due to inactivity. Please log in again.', code: validation.reason },
+              { status: 401 }
+            );
+          }
+        }
 
         // Enforce user ownership: Authenticated user can only submit for their own id.
         // Unauthenticated callers cannot forge a userId to mutate remote database records.

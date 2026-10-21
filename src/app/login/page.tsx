@@ -16,7 +16,8 @@ import {
   Lock,
   Sparkles,
   Eye,
-  EyeOff
+  EyeOff,
+  Clock
 } from 'lucide-react';
 
 function LoginForm() {
@@ -27,6 +28,17 @@ function LoginForm() {
     '/profile'
   );
   const urlError = searchParams.get('error');
+  const sessionReason = searchParams.get('reason');
+
+  // Derive initial session notice
+  const sessionNotice =
+    sessionReason === 'inactivity'
+      ? 'You were signed out after 30 minutes of inactivity for your security. Please sign in to resume your session.'
+      : sessionReason === 'expired'
+        ? 'Your 24-hour session reached its maximum duration. Please sign in again.'
+        : sessionReason === 'logged_out'
+          ? 'You were signed out from another tab or window.'
+          : '';
 
   // Mode: Sign In vs Sign Up
   const [isSignUp, setIsSignUp] = useState(false);
@@ -37,6 +49,7 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Status state
   const [loading, setLoading] = useState(false);
@@ -151,6 +164,7 @@ function LoginForm() {
             fullName: studentName,
             userId: `usr-${Date.now()}`,
             authMethod: isSignUp ? 'Email & Password (New Registration)' : 'Email & Password',
+            rememberMe,
           }),
         }).catch(() => {});
 
@@ -222,6 +236,7 @@ function LoginForm() {
               fullName: data.user.user_metadata?.full_name || email.split('@')[0],
               userId: data.user.id,
               authMethod: 'Email & Password',
+              rememberMe,
             }),
           }).catch(() => {});
         }
@@ -297,6 +312,17 @@ function LoginForm() {
 
         {/* Card */}
         <div className="p-6 sm:p-7 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs">
+          {/* Session Expiry Notice */}
+          {sessionNotice && !errorMsg && !successMsg && (
+            <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-600 dark:text-amber-400 flex items-start space-x-2.5">
+              <Clock className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-500" />
+              <div className="space-y-0.5">
+                <span className="font-bold block">Session Timed Out</span>
+                <span className="text-[11px] leading-relaxed block">{sessionNotice}</span>
+              </div>
+            </div>
+          )}
+
           {/* Notifications */}
           {errorMsg && (
             <div className="mb-4 p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-500 flex items-start space-x-2.5">
@@ -431,6 +457,20 @@ function LoginForm() {
                 </button>
               </div>
             </div>
+
+            {!isSignUp && (
+              <div className="flex items-center justify-between text-xs pt-0.5 pb-1">
+                <label className="flex items-center space-x-2 text-[var(--foreground-muted)] hover:text-[var(--foreground)] cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-3.5 h-3.5 rounded border-[var(--border-subtle)] text-indigo-600 focus:ring-0 cursor-pointer"
+                  />
+                  <span>Remember me for 7 days</span>
+                </label>
+              </div>
+            )}
 
             <button
               type="submit"

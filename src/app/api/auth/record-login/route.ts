@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { recordLoginAudit } from '@/lib/services/login-audit';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { sanitizeEmail, sanitizeText, verifyCsrfOrigin } from '@/lib/security/sanitize';
+import { createSessionToken, setSessionCookie } from '@/lib/security/session-manager';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -46,7 +47,18 @@ export async function POST(req: NextRequest) {
       userAgent: cleanUserAgent,
     });
 
-    return NextResponse.json({ success: true, logId: recorded.id });
+    const isRememberMe = Boolean(body?.rememberMe);
+    const effectiveUid = cleanUserId || `usr-${Date.now()}`;
+    const { token } = createSessionToken({
+      userId: effectiveUid,
+      email: cleanEmail,
+      role: 'student',
+      rememberMe: isRememberMe,
+    });
+
+    const res = NextResponse.json({ success: true, logId: recorded.id });
+    setSessionCookie(res, token, isRememberMe);
+    return res;
   } catch (err: unknown) {
     console.error('Failed to record login audit:', err);
     return NextResponse.json({ error: 'Failed to record login audit due to an unexpected server error.' }, { status: 500 });

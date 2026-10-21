@@ -1,5 +1,21 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { SESSION_CONFIG, inspectSessionExpiry } from '@/lib/security/session-config';
+
+function clearEdgeSessionCookies(res: NextResponse): void {
+  const isProd = process.env.NODE_ENV === 'production';
+  for (const name of [SESSION_CONFIG.cookieName, 'sb-demo-user', 'stackup_admin_session']) {
+    res.cookies.set({
+      name,
+      value: '',
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 0,
+    });
+  }
+}
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -16,11 +32,55 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isAuthPage = pathname.startsWith('/login');
   const isProtectedPath = pathname.startsWith('/profile');
+  const isProtectedApi = pathname.startsWith('/api/profile') || pathname.startsWith('/api/admin/');
+
+  // 1. Server-Side Session Token Verification & Inactivity Enforcement
+  const sessionToken = request.cookies.get(SESSION_CONFIG.cookieName)?.value;
+  let sessionValid = false;
+  let sessionInvalidReason: string | undefined;
+
+  if (sessionToken) {
+    const inspection = inspectSessionExpiry(sessionToken);
+    if (inspection.valid && inspection.payload) {
+      sessionValid = true;
+    } else {
+      sessionValid = false;
+      sessionInvalidReason = inspection.reason;
+    }
+  }
+
+  // If a session token exists but is expired/invalid, reject immediately on protected targets
+  if (sessionToken && !sessionValid) {
+    clearEdgeSessionCookies(supabaseResponse);
+
+    if (isProtectedPath) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      const reason = sessionInvalidReason === 'expired_absolute' ? 'expired' : 'inactivity';
+      url.searchParams.set('reason', reason);
+      url.searchParams.set('redirect', pathname);
+      const redirectRes = NextResponse.redirect(url);
+      clearEdgeSessionCookies(redirectRes);
+      return redirectRes;
+    }
+
+    if (isProtectedApi) {
+      const apiRes = NextResponse.json(
+        {
+          error: 'Session expired due to inactivity. Please log in again.',
+          code: sessionInvalidReason || 'expired_inactivity',
+        },
+        { status: 401 }
+      );
+      clearEdgeSessionCookies(apiRes);
+      return apiRes;
+    }
+  }
 
   // Verify authenticated session cookie format safely (reject default guest/demo accounts)
   const demoCookie = request.cookies.get('sb-demo-user');
-  let hasUser = false;
-  if (demoCookie?.value) {
+  let hasUser = sessionValid;
+  if (!hasUser && demoCookie?.value) {
     try {
       const parsed = JSON.parse(decodeURIComponent(demoCookie.value));
       if (

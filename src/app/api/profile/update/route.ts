@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { sanitizeText, sanitizeUrl, verifyCsrfOrigin } from '@/lib/security/sanitize';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+import { SESSION_CONFIG } from '@/lib/security/session-config';
+import { validateSessionToken, clearSessionCookies } from '@/lib/security/session-manager';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,24 @@ export async function POST(request: Request) {
         { error: `Too many profile updates. Please retry in ${rateCheck.resetInSeconds} seconds.` },
         { status: 429 }
       );
+    }
+
+    // 3. Server-Side Session Validity Enforcement
+    const cookieHeader = request.headers.get('cookie') || '';
+    const sessionMatch = cookieHeader.match(new RegExp(`${SESSION_CONFIG.cookieName}=([^;]+)`));
+    if (sessionMatch) {
+      const validation = validateSessionToken(sessionMatch[1]);
+      if (!validation.valid) {
+        const res = NextResponse.json(
+          {
+            error: 'Session expired due to inactivity. Please log in again.',
+            code: validation.reason || 'expired_inactivity',
+          },
+          { status: 401 }
+        );
+        clearSessionCookies(res);
+        return res;
+      }
     }
 
     const body = await request.json().catch(() => ({}));

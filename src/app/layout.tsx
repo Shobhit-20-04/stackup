@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ClientChatWidget from '@/components/ClientChatWidget';
+import SessionTimeoutManager from '@/components/SessionTimeoutManager';
 import './globals.css';
 
 const geistSans = Geist({
@@ -59,6 +60,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <ClientChatWidget />
+        <SessionTimeoutManager />
       </body>
     </html>
   );
