@@ -14,49 +14,39 @@ import {
   Check, 
   X, 
   Loader2, 
-  TrendingUp, 
   ChevronRight,
   BookmarkPlus,
   Lock,
-  Copy
+  Copy,
+  Briefcase,
+  GraduationCap,
+  Target,
+  ShieldAlert,
+  ChevronDown,
+  ChevronUp,
+  Info
 } from 'lucide-react';
 import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/client';
-
-interface AnalysisResult {
-  filename: string;
-  ats_score: number;
-  grade: 'A+' | 'A' | 'B' | 'C' | 'D';
-  breakdown: {
-    contact_score: number;
-    experience_score: number;
-    skills_score: number;
-    formatting_score: number;
-  };
-  summary: string;
-  matched_keywords: string[];
-  missing_keywords: string[];
-  formatting_issues: string[];
-  section_suggestions: {
-    contact: string[];
-    experience: string[];
-    skills: string[];
-    projects: string[];
-  };
-  bullet_rewrites: {
-    original: string;
-    improved: string;
-    reason: string;
-  }[];
-}
+import { TARGET_ROLE_PRESETS } from '@/lib/services/resume/role-presets';
+import type { 
+  ResumeAnalysisResult, 
+  ExperienceLevel, 
+  ScoringDimension 
+} from '@/lib/services/resume/types';
 
 export default function ResumeCheckerPage() {
   const [file, setFile] = useState<File | null>(null);
+  const [targetRole, setTargetRole] = useState<string>('');
+  const [jobDescription, setJobDescription] = useState<string>('');
+  const [showJdInput, setShowJdInput] = useState<boolean>(false);
+  const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>('student_fresher');
   const [analyzing, setAnalyzing] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [copiedReport, setCopiedReport] = useState(false);
-  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [result, setResult] = useState<ResumeAnalysisResult | null>(null);
+  const [expandedDimension, setExpandedDimension] = useState<string | null>('jd-alignment');
   const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
   const [authLoading, setAuthLoading] = useState(() => (typeof window !== 'undefined' ? !getFastCachedUser() : true));
 
@@ -108,7 +98,7 @@ export default function ResumeCheckerPage() {
 
     const ext = selectedFile.name.toLowerCase();
     if (!ext.endsWith('.pdf') && !ext.endsWith('.docx') && !ext.endsWith('.txt')) {
-      setErrorMsg('Unsupported format. Please upload a PDF (.pdf) or Word document (.docx).');
+      setErrorMsg('Unsupported format. Please upload a PDF (.pdf), Word (.docx), or Text document (.txt).');
       return;
     }
 
@@ -138,6 +128,13 @@ export default function ResumeCheckerPage() {
     try {
       const formData = new FormData();
       formData.append('file', file);
+      if (targetRole) {
+        formData.append('targetRole', targetRole);
+      }
+      if (jobDescription.trim()) {
+        formData.append('jobDescription', jobDescription.trim());
+      }
+      formData.append('experienceLevel', experienceLevel);
 
       const res = await fetch('/api/resume-analysis', {
         method: 'POST',
@@ -149,7 +146,7 @@ export default function ResumeCheckerPage() {
         throw new Error(errData.error || 'Failed to analyze resume.');
       }
 
-      const data: AnalysisResult = await res.json();
+      const data: ResumeAnalysisResult = await res.json();
       setResult(data);
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Analysis failed. Please try again.');
@@ -198,19 +195,26 @@ export default function ResumeCheckerPage() {
 
       setSavedSuccess(true);
     } catch {
-      setSavedSuccess(true); // local is saved regardless
+      setSavedSuccess(true);
     }
   };
 
   const handleCopyReport = () => {
     if (!result) return;
+    const dims = result.dimensions;
     const reportText = `📄 StackUp ATS Resume Report: ${result.filename}
 🎯 Overall ATS Score: ${result.ats_score}/100 (Grade: ${result.grade})
-📊 Breakdown:
-  • Contact & Links: ${result.breakdown.contact_score}%
-  • Technical Skills: ${result.breakdown.skills_score}%
-  • Experience & Impact: ${result.breakdown.experience_score}%
-  • ATS Layout: ${result.breakdown.formatting_score}%
+Mode: ${result.isGeneralQualityScore ? 'General Resume Quality (Rebalanced Weights)' : `Target Role Alignment (${result.jobDescriptionMatch.targetRoleTitle || 'Custom JD'})`}
+Experience Level: ${result.experienceLevel}
+
+📊 7-Dimension ATS Scoring:
+  1. Job-Description Alignment: ${dims.jobDescriptionAlignment.score}% (Weight: ${dims.jobDescriptionAlignment.weightPct}%, Contribution: ${dims.jobDescriptionAlignment.weightedScore} pts)
+  2. Skills & Qualifications: ${dims.skillsAndQualifications.score}% (Weight: ${dims.skillsAndQualifications.weightPct}%, Contribution: ${dims.skillsAndQualifications.weightedScore} pts)
+  3. Experience & Projects: ${dims.experienceAndProjects.score}% (Weight: ${dims.experienceAndProjects.weightPct}%, Contribution: ${dims.experienceAndProjects.weightedScore} pts)
+  4. Impact & Achievements: ${dims.impactAndAchievements.score}% (Weight: ${dims.impactAndAchievements.weightPct}%, Contribution: ${dims.impactAndAchievements.weightedScore} pts)
+  5. Structure & Readability: ${dims.structureAndReadability.score}% (Weight: ${dims.structureAndReadability.weightPct}%, Contribution: ${dims.structureAndReadability.weightedScore} pts)
+  6. ATS Compatibility: ${dims.atsCompatibility.score}% (Weight: ${dims.atsCompatibility.weightPct}%, Contribution: ${dims.atsCompatibility.weightedScore} pts)
+  7. Education & Credentials: ${dims.educationAndCredentials.score}% (Weight: ${dims.educationAndCredentials.weightPct}%, Contribution: ${dims.educationAndCredentials.weightedScore} pts)
 
 ✅ Matched Keywords (${result.matched_keywords.length}):
 ${result.matched_keywords.join(', ') || 'None detected'}
@@ -218,8 +222,11 @@ ${result.matched_keywords.join(', ') || 'None detected'}
 ⚠️ Suggested Keywords to Add (${result.missing_keywords.length}):
 ${result.missing_keywords.join(', ') || 'None needed'}
 
-⭐ STAR Bullet Rewrites:
-${result.bullet_rewrites.map((b, i) => `${i + 1}. Before: "${b.original}"\n   After: "${b.improved}"\n   Reason: ${b.reason}`).join('\n\n')}
+⭐ Fact-Preserving Google XYZ Bullet Rewrites:
+${result.bullet_rewrites.map((b, i) => `${i + 1}. Before: "${b.original}"\n   After: "${b.improved}"\n   Rationale: ${b.reason}`).join('\n\n')}
+
+📌 Prioritized Recommendations:
+${result.recommendations.map((r, i) => `${i + 1}. [${r.priority}] ${r.section}: ${r.issue} -> ${r.howToFix}`).join('\n')}
 
 Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
@@ -234,6 +241,123 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
     setErrorMsg('');
     setSavedSuccess(false);
     setCopiedReport(false);
+    setExpandedDimension('jd-alignment');
+  };
+
+  const renderDimensionCard = (dimension: ScoringDimension, num: string) => {
+    const isExpanded = expandedDimension === dimension.id;
+    return (
+      <div 
+        key={dimension.id}
+        className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] overflow-hidden transition-all"
+      >
+        <button
+          onClick={() => setExpandedDimension(isExpanded ? null : dimension.id)}
+          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-[var(--surface-sunken)]/50 transition-colors cursor-pointer"
+        >
+          <div className="flex items-center space-x-3.5">
+            <span className="font-mono text-xs font-bold text-[var(--brand-primary)] bg-[var(--surface-sunken)] px-2 py-1 rounded border border-[var(--border-subtle)]">
+              {num}
+            </span>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h4 className="text-sm font-semibold text-[var(--foreground)]">
+                  {dimension.name}
+                </h4>
+                <span className="text-[11px] font-mono text-[var(--foreground-muted)]">
+                  ({dimension.weightPct}% weight)
+                </span>
+              </div>
+              <p className="text-xs text-[var(--foreground-muted)] mt-0.5">
+                Contribution: <span className="font-mono font-semibold text-[var(--foreground)]">{dimension.weightedScore} / {dimension.maxWeightedScore}</span> pts
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <div className="text-right">
+              <span className={`text-sm sm:text-base font-mono font-bold ${
+                dimension.score >= 80 ? 'text-emerald-500' : dimension.score >= 60 ? 'text-amber-500' : 'text-rose-500'
+              }`}>
+                {dimension.score}%
+              </span>
+            </div>
+            {isExpanded ? (
+              <ChevronUp className="w-4 h-4 text-[var(--foreground-muted)]" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-[var(--foreground-muted)]" />
+            )}
+          </div>
+        </button>
+
+        {isExpanded && (
+          <div className="p-4 sm:p-5 pt-0 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]/30 space-y-4 animate-in fade-in duration-150">
+            {/* Progress bar */}
+            <div className="mt-3">
+              <div className="w-full bg-[var(--surface-sunken)] h-2 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                <div 
+                  className={`h-full rounded-full transition-all duration-300 ${
+                    dimension.score >= 80 ? 'bg-emerald-500' : dimension.score >= 60 ? 'bg-amber-500' : 'bg-rose-500'
+                  }`} 
+                  style={{ width: `${dimension.score}%` }} 
+                />
+              </div>
+            </div>
+
+            {/* Observable Evidence */}
+            {dimension.observableEvidence.length > 0 && (
+              <div>
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-500 block mb-1.5">
+                  ✓ Observable Evidence Found
+                </span>
+                <ul className="space-y-1">
+                  {dimension.observableEvidence.map((ev, i) => (
+                    <li key={i} className="text-xs text-[var(--foreground-muted)] flex items-start space-x-2">
+                      <span className="text-emerald-500 font-bold">•</span>
+                      <span>{ev}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Deductions */}
+            {dimension.deductions.length > 0 && (
+              <div>
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-500 block mb-1.5">
+                  ⚠️ Point Deductions &amp; Gaps
+                </span>
+                <ul className="space-y-1.5">
+                  {dimension.deductions.map((d, i) => (
+                    <li key={i} className="text-xs text-[var(--foreground-muted)] flex items-start space-x-2">
+                      <span className="text-rose-500 font-mono text-[11px] shrink-0 font-bold">-{d.points} pts</span>
+                      <span>{d.reason}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Improvement Opportunities */}
+            {dimension.improvementOpportunities.length > 0 && (
+              <div>
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)] block mb-1.5">
+                  💡 Actionable Improvement Steps
+                </span>
+                <ul className="space-y-1">
+                  {dimension.improvementOpportunities.map((imp, i) => (
+                    <li key={i} className="text-xs text-[var(--foreground-muted)] flex items-start space-x-2">
+                      <span className="text-[var(--brand-primary)] font-bold">→</span>
+                      <span>{imp}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -245,20 +369,19 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             <div>
               <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] mb-3">
                 <FileCheck2 className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                <span>ATS Technical Diagnostic</span>
+                <span>Production-Ready ATS Engine</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-[var(--foreground)] tracking-tight">
-                Resume ATS Evaluator
+                Software Engineering Resume ATS Evaluator
               </h1>
               <p className="mt-2 text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
-                Parse and benchmark your software engineering resume against modern applicant tracking systems. Detect missing technical keywords, formatting obstacles, and weak action bullet points.
+                Benchmark your engineering resume with transparent 7-dimension scoring, job-description alignment, scanned PDF detection, and fact-preserving Google XYZ bullet point rewrites.
               </p>
             </div>
 
-            {/* Upload Specs Tag */}
             <div className="flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] shrink-0 self-start md:self-auto">
               <UploadCloud className="w-4 h-4 text-[var(--brand-primary)]" />
-              <span>Formats: PDF, DOCX, TXT • Max 5MB</span>
+              <span>PDF, DOCX, TXT • Max 5MB • No Fabricated Facts</span>
             </div>
           </div>
         </div>
@@ -292,10 +415,10 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 Authentication Required
               </span>
               <h3 className="text-xl font-bold text-[var(--foreground)]">
-                Sign in to analyze and store your resume
+                Sign in to analyze and benchmark your resume
               </h3>
               <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-1.5 mb-6 leading-relaxed">
-                Resume scanning, keyword matching, and line-by-line STAR rewrites require an active student account to save scores to your preparation profile.
+                Resume scanning, 7-dimension scoring, job description matching, and XYZ bullet optimization require an active student account to save scores to your preparation profile.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <Link
@@ -315,8 +438,143 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             </div>
           </div>
         ) : !result ? (
-          /* Upload State (Only for Signed-In Students) */
+          /* Configuration & Upload State */
           <div className="space-y-6">
+            {/* 1. Target Role & Experience Level Config */}
+            <div className="p-5 sm:p-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-5">
+              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                <div className="flex items-center space-x-2">
+                  <Target className="w-4 h-4 text-[var(--brand-primary)]" />
+                  <h3 className="text-sm font-semibold text-[var(--foreground)]">
+                    Target Role &amp; Evaluation Mode
+                  </h3>
+                </div>
+                <span className="text-[11px] font-mono text-[var(--foreground-muted)]">
+                  Step 1 of 2
+                </span>
+              </div>
+
+              {/* Experience Level Selector */}
+              <div>
+                <label className="text-xs font-semibold text-[var(--foreground)] block mb-2">
+                  Candidate Experience Level:
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setExperienceLevel('student_fresher')}
+                    className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                      experienceLevel === 'student_fresher'
+                        ? 'border-[var(--brand-primary)] bg-[var(--surface-sunken)] shadow-xs'
+                        : 'border-[var(--border-subtle)] hover:border-[var(--foreground-muted)]/50'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <GraduationCap className="w-4 h-4 text-[var(--brand-primary)]" />
+                      <span className="text-xs font-bold text-[var(--foreground)]">Student / Fresher</span>
+                    </div>
+                    <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                      Projects &amp; coursework weighted equally; zero employment penalty.
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExperienceLevel('junior')}
+                    className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                      experienceLevel === 'junior'
+                        ? 'border-[var(--brand-primary)] bg-[var(--surface-sunken)] shadow-xs'
+                        : 'border-[var(--border-subtle)] hover:border-[var(--foreground-muted)]/50'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Briefcase className="w-4 h-4 text-emerald-500" />
+                      <span className="text-xs font-bold text-[var(--foreground)]">Junior (1–3 yrs)</span>
+                    </div>
+                    <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                      Balances personal applications and commercial software experience.
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExperienceLevel('mid_senior')}
+                    className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                      experienceLevel === 'mid_senior'
+                        ? 'border-[var(--brand-primary)] bg-[var(--surface-sunken)] shadow-xs'
+                        : 'border-[var(--border-subtle)] hover:border-[var(--foreground-muted)]/50'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <span className="text-xs font-bold text-[var(--foreground)]">Mid / Senior (3+ yrs)</span>
+                    </div>
+                    <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                      Focuses on commercial system scale, leadership, and production scope.
+                    </p>
+                  </button>
+                </div>
+              </div>
+
+              {/* Target Role Preset Dropdown */}
+              <div>
+                <label className="text-xs font-semibold text-[var(--foreground)] block mb-1.5">
+                  Target Software Engineering Role:
+                </label>
+                <select
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  className="w-full text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-[var(--foreground)] focus:outline-hidden focus:border-[var(--brand-primary)]"
+                >
+                  <option value="">General Resume Quality Mode (No specific target role)</option>
+                  {TARGET_ROLE_PRESETS.map((preset) => (
+                    <option key={preset.id} value={preset.id}>
+                      {preset.title}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                  Selecting a target role activates 30% role-specific keyword matching and responsibility alignment.
+                </p>
+              </div>
+
+              {/* Custom Job Description Toggle & Textarea */}
+              <div className="pt-2 border-t border-[var(--border-subtle)]">
+                <button
+                  type="button"
+                  onClick={() => setShowJdInput(!showJdInput)}
+                  className="text-xs font-medium text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1 cursor-pointer"
+                >
+                  <span>{showJdInput ? '− Hide Custom Job Description' : '+ Paste Custom Job Description'}</span>
+                </button>
+
+                {showJdInput && (
+                  <div className="mt-3 space-y-2 animate-in fade-in duration-150">
+                    <textarea
+                      value={jobDescription}
+                      onChange={(e) => setJobDescription(e.target.value)}
+                      rows={4}
+                      placeholder="Paste the job description (responsibilities, required qualifications, tools) to evaluate precise alignment against that specific opening..."
+                      className="w-full text-xs font-mono bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--foreground)] focus:outline-hidden focus:border-[var(--brand-primary)]"
+                    />
+                    <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)]">
+                      <span>{jobDescription.length} characters</span>
+                      {jobDescription && (
+                        <button
+                          type="button"
+                          onClick={() => setJobDescription('')}
+                          className="text-rose-500 hover:underline cursor-pointer"
+                        >
+                          Clear JD
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 2. File Upload Box */}
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
@@ -381,12 +639,12 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                     {analyzing ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Parsing and Benchmarking...</span>
+                        <span>Benchmarking 7 Dimensions...</span>
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4" />
-                        <span>Analyze Resume</span>
+                        <span>Run ATS Diagnostic</span>
                       </>
                     )}
                   </button>
@@ -398,75 +656,59 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                       <div className="h-full bg-[var(--brand-primary)] animate-pulse w-full rounded-full" />
                     </div>
                     <p className="text-[11px] text-[var(--foreground-muted)] text-center">
-                      Parsing document sections, keywords, and metrics...
+                      Extracting text layers, checking encoding, and scoring rubric...
                     </p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* ATS Diagnostic Evaluation Rubric */}
+            {/* ATS Diagnostic Evaluation Rubric Overview */}
             <div className="border border-[var(--border-subtle)] bg-[var(--surface-card)] rounded-xl p-5">
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-subtle)]">
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
-                    Diagnostic Evaluation Rubric
+                    Transparent 7-Dimension Rubric
                   </h4>
                   <p className="text-[11px] text-[var(--foreground-muted)] mt-0.5">
-                    What our parser benchmarks against when evaluating engineering resumes
+                    Configurable weights adapt automatically when a job description is provided
                   </p>
                 </div>
                 <span className="text-[10px] font-mono text-[var(--foreground-muted)] uppercase">
-                  4 Rubric Criteria
+                  100% Deterministic
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
-                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
-                    01 • CONTACT &amp; IDENTITY
-                  </div>
-                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
-                    Links &amp; Header Parsing
-                  </div>
-                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
-                    Evaluates clean placement of email, phone, GitHub profile, and LinkedIn URL without nested header tables.
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
+                <div className="p-3 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <span className="text-[10px] font-mono font-bold text-[var(--brand-primary)]">01 • 30% WEIGHT</span>
+                  <div className="font-semibold text-[var(--foreground)] mt-0.5">JD &amp; Role Alignment</div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                    Matches mandatory qualifications, preferred skills, and core responsibilities.
                   </p>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
-                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
-                    02 • TECH VOCABULARY
-                  </div>
-                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
-                    Skill Keyword Extraction
-                  </div>
-                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
-                    Scans against 30+ canonical SWE skills across languages, frameworks, cloud infrastructure, and databases.
+                <div className="p-3 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <span className="text-[10px] font-mono font-bold text-emerald-500">02 • 20% WEIGHT</span>
+                  <div className="font-semibold text-[var(--foreground)] mt-0.5">Skills &amp; Evidence</div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                    Extracts technical skills with sentence evidence; guards against keyword stuffing.
                   </p>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
-                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
-                    03 • QUANTIFIED IMPACT
-                  </div>
-                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
-                    STAR Bullet Quality
-                  </div>
-                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
-                    Flags passive wording and measures quantified metrics, latency improvements, user scale, and cost reductions.
+                <div className="p-3 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <span className="text-[10px] font-mono font-bold text-amber-500">03 • 15% WEIGHT</span>
+                  <div className="font-semibold text-[var(--foreground)] mt-0.5">Experience &amp; Projects</div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                    Candidate-level aware: rewards freshers for deep projects without penalizing tenure.
                   </p>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
-                  <div className="text-[11px] font-mono font-semibold text-[var(--brand-primary)] mb-1">
-                    04 • ATS READABILITY
-                  </div>
-                  <div className="text-xs font-medium text-[var(--foreground)] mb-1">
-                    Format &amp; Layout Safety
-                  </div>
-                  <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
-                    Checks single-column reading hierarchy, standard section names, and avoids unparseable graphic columns.
+                <div className="p-3 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                  <span className="text-[10px] font-mono font-bold text-teal-500">04 • 10% WEIGHT</span>
+                  <div className="font-semibold text-[var(--foreground)] mt-0.5">Impact &amp; Metrics</div>
+                  <p className="text-[11px] text-[var(--foreground-muted)] mt-1">
+                    Authoritative action verbs, throughput metrics, latency reductions, and cost cuts.
                   </p>
                 </div>
               </div>
@@ -475,11 +717,37 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
         ) : (
           /* Scorecard Result View */
           <div className="space-y-6">
+            {/* Scanned Document Warning Banner (if image-only PDF detected) */}
+            {result.parsingReport.isScanned && (
+              <div className="p-4 sm:p-5 rounded-xl bg-amber-500/10 border-2 border-amber-500/40 text-amber-600 dark:text-amber-400 space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-sm">
+                  <ShieldAlert className="w-5 h-5 shrink-0" />
+                  <span>Scanned Document Alert: OCR Required for Commercial ATS</span>
+                </div>
+                <p className="text-xs leading-relaxed text-[var(--foreground)]">
+                  This document appears to be an <strong>image-only scanned PDF</strong> without an underlying selectable text layer. Enterprise applicant tracking systems (Workday, Greenhouse, Taleo) cannot read text inside images and will register a blank application.
+                </p>
+                <div className="text-xs font-medium text-[var(--foreground-muted)] pt-1">
+                  <strong>Recommended Remedy:</strong> Export your resume directly from Microsoft Word, Google Docs, or LaTeX using &quot;File &gt; Download / Save As PDF&quot; rather than scanning a printed sheet.
+                </div>
+              </div>
+            )}
+
+            {/* Keyword Stuffing Warning (if detected) */}
+            {result.keyword_stuffing_detected && (
+              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 flex items-start space-x-3 text-xs">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold">Keyword Stuffing Detected: </span>
+                  Certain skills repeat 7+ times in your document. Modern ATS systems and human recruiters penalize artificial keyword repetition. Feature skills 2-3 times max with concrete contextual accomplishments.
+                </div>
+              </div>
+            )}
+
             {/* Top Score Summary Banner */}
             <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xs">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:space-x-5">
-                  {/* Clean High-Contrast Score Badge */}
                   <div className={`w-20 h-20 sm:w-22 sm:h-22 rounded-xl flex flex-col items-center justify-center text-white shrink-0 ${
                     result.ats_score >= 80 
                       ? 'bg-emerald-600 border border-emerald-500/50' 
@@ -499,9 +767,12 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                       <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-[var(--surface-sunken)] text-[var(--foreground)] border border-[var(--border-subtle)]">
                         Grade {result.grade}
                       </span>
+                      <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]">
+                        {result.isGeneralQualityScore ? 'General Quality Mode' : (result.jobDescriptionMatch.targetRoleTitle || 'Role Alignment Mode')}
+                      </span>
                     </div>
-                    <p className="text-xs text-[var(--foreground-muted)] mt-1 break-all">
-                      File: <span className="font-mono text-[var(--foreground)]">{result.filename}</span>
+                    <p className="text-xs text-[var(--foreground-muted)] mt-1.5 break-all">
+                      File: <span className="font-mono text-[var(--foreground)]">{result.filename}</span> • {result.parsingReport.wordCount} words • Quality: {result.parsingReport.confidence}
                     </p>
                   </div>
                 </div>
@@ -562,81 +833,118 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 {result.summary}
               </p>
 
-              {/* 4-Part Category Breakdown */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5 pt-5 border-t border-[var(--border-subtle)]">
-                <div>
-                  <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-[var(--foreground-muted)] font-medium">Contact &amp; Links</span>
-                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.contact_score}%</span>
-                  </div>
-                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
-                    <div className="bg-[var(--brand-primary)] h-full rounded-full" style={{ width: `${result.breakdown.contact_score}%` }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-[var(--foreground-muted)] font-medium">Tech Skills</span>
-                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.skills_score}%</span>
-                  </div>
-                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
-                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${result.breakdown.skills_score}%` }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-[var(--foreground-muted)] font-medium">Experience &amp; Impact</span>
-                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.experience_score}%</span>
-                  </div>
-                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
-                    <div className="bg-[var(--brand-primary)] h-full rounded-full" style={{ width: `${result.breakdown.experience_score}%` }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-[var(--foreground-muted)] font-medium">ATS Layout</span>
-                    <span className="font-mono font-semibold text-[var(--foreground)]">{result.breakdown.formatting_score}%</span>
-                  </div>
-                  <div className="w-full bg-[var(--surface-sunken)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
-                    <div className="bg-teal-500 h-full rounded-full" style={{ width: `${result.breakdown.formatting_score}%` }} />
-                  </div>
-                </div>
+              {/* Educational Disclaimer */}
+              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex items-start space-x-2 text-[11px] text-[var(--foreground-muted)]">
+                <Info className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                <span>{result.disclaimer}</span>
               </div>
             </div>
 
-            {/* Restricted Content Lock for Visitors */}
-            {!currentUser ? (
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-8 text-center shadow-xs space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] border border-[var(--border-subtle)] flex items-center justify-center mx-auto mb-2">
-                  <Lock className="w-6 h-6" />
+            {/* Job Description Alignment Panel (if target JD or preset was provided) */}
+            {result.jobDescriptionMatch.hasJobDescription && (
+              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+                  <div className="flex items-center space-x-2">
+                    <Target className="w-4 h-4 text-[var(--brand-primary)]" />
+                    <h3 className="text-sm font-semibold text-[var(--foreground)]">
+                      Role Match: {result.jobDescriptionMatch.targetRoleTitle || 'Target Job Description'}
+                    </h3>
+                  </div>
+                  <span className="font-mono text-sm font-bold text-emerald-500">
+                    {result.jobDescriptionMatch.matchScore}% Match
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--foreground)]">
-                  Detailed Keyword Gap Audit &amp; STAR Bullet Rewrites Locked
-                </h3>
-                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] max-w-xl mx-auto leading-relaxed">
-                  Sign in or create a free account to unlock your complete keyword gap analysis, custom section recommendations, line-by-line STAR bullet rewrites, and save your resume to your personal dashboard.
-                </p>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                  <Link
-                    href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center space-x-2"
-                  >
-                    <span>Sign In to Unlock Full Report</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                  <Link
-                    href={`/login?redirect=${encodeURIComponent('/resume-checker')}`}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground)] font-medium text-xs sm:text-sm hover:bg-[var(--surface-card)] transition-colors"
-                  >
-                    Create Free Account
-                  </Link>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Required Skills Matched vs Missing */}
+                  <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-500 block mb-2">
+                      Mandatory Skills Matched ({result.jobDescriptionMatch.requiredSkillsMatched.length})
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {result.jobDescriptionMatch.requiredSkillsMatched.length === 0 ? (
+                        <span className="text-xs text-[var(--foreground-muted)]">No mandatory skills matched.</span>
+                      ) : (
+                        result.jobDescriptionMatch.requiredSkillsMatched.map((s) => (
+                          <span key={s.name} className="px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                            ✓ {s.name}
+                          </span>
+                        ))
+                      )}
+                    </div>
+
+                    {result.jobDescriptionMatch.requiredSkillsMissing.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-[var(--border-subtle)]">
+                        <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-500 block mb-1.5">
+                          Missing Required Skills ({result.jobDescriptionMatch.requiredSkillsMissing.length})
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {result.jobDescriptionMatch.requiredSkillsMissing.map((s) => (
+                            <span key={s} className="px-2 py-0.5 rounded text-[11px] font-mono bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                              ✗ {s}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Preferred Skills */}
+                  <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)] block mb-2">
+                      Preferred / Bonus Skills Matched ({result.jobDescriptionMatch.preferredSkillsMatched.length})
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {result.jobDescriptionMatch.preferredSkillsMatched.length === 0 ? (
+                        <span className="text-xs text-[var(--foreground-muted)]">No preferred skills matched.</span>
+                      ) : (
+                        result.jobDescriptionMatch.preferredSkillsMatched.map((s) => (
+                          <span key={s.name} className="px-2 py-0.5 rounded text-[11px] font-mono bg-[var(--surface-card)] text-[var(--foreground)] border border-[var(--border-subtle)]">
+                            + {s.name}
+                          </span>
+                        ))
+                      )}
+                    </div>
+
+                    {result.jobDescriptionMatch.preferredSkillsMissing.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-[var(--border-subtle)]">
+                        <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-500 block mb-1.5">
+                          Missing Preferred Skills ({result.jobDescriptionMatch.preferredSkillsMissing.slice(0, 4).length})
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {result.jobDescriptionMatch.preferredSkillsMissing.slice(0, 4).map((s) => (
+                            <span key={s} className="px-2 py-0.5 rounded text-[11px] font-mono bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                              ○ {s}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            ) : (
-              <>
+            )}
+
+            {/* 7-Dimension Explanatory Breakdown Accordion */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]">
+                  7-Dimension Rubric Scoring &amp; Observable Evidence
+                </h3>
+                <span className="text-xs text-[var(--foreground-muted)]">
+                  Click any dimension to inspect evidence &amp; deductions
+                </span>
+              </div>
+
+              {renderDimensionCard(result.dimensions.jobDescriptionAlignment, '01')}
+              {renderDimensionCard(result.dimensions.skillsAndQualifications, '02')}
+              {renderDimensionCard(result.dimensions.experienceAndProjects, '03')}
+              {renderDimensionCard(result.dimensions.impactAndAchievements, '04')}
+              {renderDimensionCard(result.dimensions.structureAndReadability, '05')}
+              {renderDimensionCard(result.dimensions.atsCompatibility, '06')}
+              {renderDimensionCard(result.dimensions.educationAndCredentials, '07')}
+            </div>
+
             {/* Keyword Analysis Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Matched Keywords */}
@@ -644,13 +952,13 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 <div className="flex items-center space-x-2 mb-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">
-                    Matched Tech Keywords ({result.matched_keywords.length})
+                    Identified Tech Skills ({result.matched_keywords.length})
                   </h3>
                 </div>
                 <p className="text-xs text-[var(--foreground-muted)] mb-3.5">
-                  Verified technical skills successfully identified in document:
+                  Verified technical skills identified across your sections:
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto">
                   {result.matched_keywords.length === 0 ? (
                     <span className="text-xs text-[var(--foreground-muted)]">No technical keywords detected.</span>
                   ) : (
@@ -671,13 +979,13 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 <div className="flex items-center space-x-2 mb-2">
                   <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">
-                    Suggested Keywords to Add ({result.missing_keywords.length})
+                    Recommended Keywords to Consider ({result.missing_keywords.length})
                   </h3>
                 </div>
                 <p className="text-xs text-[var(--foreground-muted)] mb-3.5">
-                  High-frequency SWE recruiter terms not found in your resume:
+                  Key software engineering terms not found in your document:
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto">
                   {result.missing_keywords.length === 0 ? (
                     <span className="text-xs text-[var(--foreground-muted)]">Comprehensive keyword coverage.</span>
                   ) : (
@@ -694,20 +1002,20 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
             </div>
 
-            {/* Bullet Point Optimization */}
+            {/* Fact-Preserving Google XYZ Bullet Point Rewrites */}
             {result.bullet_rewrites && result.bullet_rewrites.length > 0 && (
-              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
-                <div className="flex items-center space-x-2 mb-1.5">
+              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5 space-y-3">
+                <div className="flex items-center space-x-2 mb-1">
                   <Sparkles className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">
-                    STAR Bullet Point Rewrites
+                    Fact-Preserving Google XYZ Bullet Rewrites
                   </h3>
                 </div>
-                <p className="text-xs text-[var(--foreground-muted)] mb-4">
-                  Compare generic descriptions with high-impact, quantified engineering bullets:
+                <p className="text-xs text-[var(--foreground-muted)]">
+                  StackUp uses Google&apos;s formula (&quot;Accomplished [X] as measured by [Y], by doing [Z]&quot;) while strictly preserving candidate facts. Replace bracketed placeholders with your genuine metrics.
                 </p>
 
-                <div className="space-y-3">
+                <div className="space-y-3 pt-2">
                   {result.bullet_rewrites.map((rewrite, idx) => (
                     <div key={idx} className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-2">
                       <div className="flex items-start space-x-2">
@@ -721,14 +1029,14 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
                       <div className="flex items-start space-x-2">
                         <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0 mt-0.5">
-                          STAR Rewrite
+                          XYZ Improved
                         </span>
-                        <p className="text-xs font-medium text-[var(--foreground)]">
+                        <p className="text-xs font-medium text-[var(--foreground)] leading-relaxed">
                           {rewrite.improved}
                         </p>
                       </div>
 
-                      <p className="text-[11px] text-[var(--brand-primary)] font-mono pl-1">
+                      <p className="text-[11px] text-[var(--foreground-muted)] font-mono pl-1">
                         Rationale: {rewrite.reason}
                       </p>
                     </div>
@@ -737,10 +1045,39 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
             )}
 
-            {/* Actionable Suggestions Checklist */}
+            {/* Prioritized Action Plan / Recommendations */}
+            {result.recommendations && result.recommendations.length > 0 && (
+              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+                <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
+                  Prioritized Action Plan
+                </h3>
+                <div className="space-y-2.5">
+                  {result.recommendations.map((rec, i) => (
+                    <div key={i} className="p-3 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] flex items-start space-x-3 text-xs">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold shrink-0 mt-0.5 ${
+                        rec.priority === 'Critical' 
+                          ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' 
+                          : rec.priority === 'Important'
+                          ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                          : 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
+                      }`}>
+                        {rec.priority}
+                      </span>
+                      <div className="space-y-0.5 flex-1">
+                        <div className="font-semibold text-[var(--foreground)]">{rec.issue} ({rec.section})</div>
+                        <div className="text-[var(--foreground-muted)]">{rec.howToFix}</div>
+                        <div className="text-[11px] font-mono text-[var(--brand-primary)]">Impact: {rec.expectedImpact}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Section-by-Section Recommendations */}
             <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
               <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3.5">
-                Section-by-Section Recommendations
+                Section-by-Section Checklist
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -820,10 +1157,8 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-          </>
+          </div>
         )}
-      </div>
-    )}
       </div>
     </div>
   );
