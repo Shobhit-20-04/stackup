@@ -55,13 +55,30 @@ export function hashAdminPassword(password: string): string {
 }
 
 /**
- * Verifies a candidate password against a stored scrypt hash or legacy plaintext string.
- * Uses timing-safe comparisons to prevent side-channel timing attacks.
+ * Timing-safe string comparison to prevent timing attack enumeration.
  */
-export function verifyAdminPassword(candidate: string, storedHashOrPlaintext?: string): boolean {
-  if (!candidate || typeof candidate !== 'string') return false;
-  const target = storedHashOrPlaintext || getAdminPasswordHash();
-  if (!target || typeof target !== 'string') return false;
+export function timingSafeCompare(a: string, b: string): boolean {
+  try {
+    const bufA = Buffer.from(a);
+    const bufB = Buffer.from(b);
+    if (bufA.length !== bufB.length) {
+      // Execute dummy timing safe equal to avoid length-based early return timing leaks
+      crypto.timingSafeEqual(bufA, bufA);
+      return false;
+    }
+    return crypto.timingSafeEqual(bufA, bufB);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Verifies a single candidate password against a target hash or plaintext string.
+ */
+function verifySingleTarget(candidate: string, target: string): boolean {
+  if (!candidate || !target || typeof candidate !== 'string' || typeof target !== 'string') {
+    return false;
+  }
 
   // Handle scrypt formatted hashes: scrypt:<salt>:<derivedKeyHex>
   if (target.startsWith('scrypt:')) {
@@ -83,6 +100,32 @@ export function verifyAdminPassword(candidate: string, storedHashOrPlaintext?: s
 
   // Fallback for legacy plaintext password comparison (timing safe)
   return timingSafeCompare(candidate, target);
+}
+
+/**
+ * Verifies a candidate password against stored scrypt hashes or legacy fallback.
+ * Uses timing-safe comparisons to prevent side-channel timing attacks.
+ */
+export function verifyAdminPassword(candidate: string, storedHashOrPlaintext?: string): boolean {
+  if (!candidate || typeof candidate !== 'string') return false;
+
+  // 1. If explicit hash or string was passed, verify against it
+  if (storedHashOrPlaintext) {
+    return verifySingleTarget(candidate, storedHashOrPlaintext);
+  }
+
+  // 2. Check active configured environment hash/passcode
+  const activeHash = getAdminPasswordHash();
+  if (activeHash && verifySingleTarget(candidate, activeHash)) {
+    return true;
+  }
+
+  // 3. Fallback: Check canonical default admin password hash
+  if (DEFAULT_ADMIN_PASSWORD_HASH && verifySingleTarget(candidate, DEFAULT_ADMIN_PASSWORD_HASH)) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -111,24 +154,6 @@ export function setActiveAdminPasscode(newPasscode: string): void {
  */
 function getSigningSecret(): string {
   return process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.ADMIN_PASSWORD_HASH || 'stackup-admin-secret-salt-2026';
-}
-
-/**
- * Timing-safe string comparison to prevent timing attack enumeration.
- */
-export function timingSafeCompare(a: string, b: string): boolean {
-  try {
-    const bufA = Buffer.from(a);
-    const bufB = Buffer.from(b);
-    if (bufA.length !== bufB.length) {
-      // Execute dummy timing safe equal to avoid length-based early return timing leaks
-      crypto.timingSafeEqual(bufA, bufA);
-      return false;
-    }
-    return crypto.timingSafeEqual(bufA, bufB);
-  } catch {
-    return false;
-  }
 }
 
 /**

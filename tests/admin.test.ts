@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 import {
   DEFAULT_ADMIN_PASSWORD_HASH,
   VERIFIED_ADMIN_EMAIL,
@@ -32,6 +34,12 @@ describe('Admin Authentication, Salted Scrypt Hashing & Key Verification', () =>
   it('1. successfully verifies newly specified admin password against salted scrypt hash', () => {
     // Verify candidate matches the precomputed NIST-compliant salted scrypt hash
     const isValid = verifyAdminPassword('$t@ckup/admin201104', DEFAULT_ADMIN_PASSWORD_HASH);
+    expect(isValid).toBe(true);
+  });
+
+  it('1b. successfully verifies newly specified admin password when called with single argument (as in auth route)', () => {
+    // When called from /api/admin/auth: verifyAdminPassword(passcode)
+    const isValid = verifyAdminPassword('$t@ckup/admin201104');
     expect(isValid).toBe(true);
   });
 
@@ -203,14 +211,32 @@ describe('Admin Password Recovery & Single-Use Verification Codes', () => {
   });
 
   it('14. persistAdminPasscodeToEnv updates password hash without plaintext leakage', () => {
-    const candidateKey = 'UpdatedSecureKey#2026';
-    const persisted = persistAdminPasscodeToEnv(candidateKey);
+    const envPath = path.resolve(process.cwd(), '.env.local');
+    const originalEnvFile = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : null;
+    const originalEnvHash = process.env.ADMIN_PASSWORD_HASH;
+    const originalEnvPass = process.env.ADMIN_PASSCODE;
 
-    // Active hash in memory must now verify against the new key
-    const activeHash = getAdminPasswordHash();
-    expect(activeHash.startsWith('scrypt:')).toBe(true);
-    expect(activeHash).not.toContain(candidateKey); // Plaintext is never stored
-    expect(verifyAdminPassword(candidateKey, activeHash)).toBe(true);
+    try {
+      const candidateKey = 'UpdatedSecureKey#2026';
+      persistAdminPasscodeToEnv(candidateKey);
+
+      // Active hash in memory must now verify against the new key
+      const activeHash = getAdminPasswordHash();
+      expect(activeHash.startsWith('scrypt:')).toBe(true);
+      expect(activeHash).not.toContain(candidateKey); // Plaintext is never stored
+      expect(verifyAdminPassword(candidateKey, activeHash)).toBe(true);
+    } finally {
+      // Restore original .env.local on disk and reset process.env
+      if (originalEnvFile !== null) {
+        fs.writeFileSync(envPath, originalEnvFile, 'utf8');
+      }
+      process.env.ADMIN_PASSWORD_HASH = originalEnvHash || DEFAULT_ADMIN_PASSWORD_HASH;
+      if (originalEnvPass) {
+        process.env.ADMIN_PASSCODE = originalEnvPass;
+      } else {
+        delete process.env.ADMIN_PASSCODE;
+      }
+    }
   });
 });
 
