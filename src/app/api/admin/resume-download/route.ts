@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { verifyAdminRequest } from '@/lib/security/admin-auth';
+import { verifyAdminRequest, getAdminEmail } from '@/lib/security/admin-auth';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { sanitizeFilename } from '@/lib/security/sanitize';
+import { getUploadedResumeById, recordAdminAudit } from '@/lib/services/resume/resume-repository';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
   try {
     const ip = getClientIp(req);
-    const rateCheck = checkRateLimit(`admin-download-${ip}`, 20, 60 * 1000);
+    const rateCheck = checkRateLimit(`admin-download-${ip}`, 30, 60 * 1000);
     if (!rateCheck.allowed) {
       return NextResponse.json(
         { error: `Download rate limit exceeded. Please wait ${rateCheck.resetInSeconds} seconds.` },
@@ -30,30 +30,25 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Valid Resume UUID parameter is required.' }, { status: 400 });
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || (!serviceRoleKey && !anonKey)) {
-      return NextResponse.json({ error: 'Supabase configuration is missing.' }, { status: 500 });
-    }
-
-    const clientKey = (serviceRoleKey && !serviceRoleKey.includes('placeholder')) ? serviceRoleKey : anonKey!;
-    const supabase = createClient(supabaseUrl, clientKey);
-
-    const { data: resume, error } = await supabase
-      .from('uploaded_resumes')
-      .select('id, filename, mime_type, file_data, resume_text')
-      .eq('id', id)
-      .single();
-
-    if (error || !resume) {
+    const resume = await getUploadedResumeById(id);
+    if (!resume) {
       return NextResponse.json({ error: 'Resume document not found.' }, { status: 404 });
     }
 
+    const adminEmail = getAdminEmail();
     const rawFilename = resume.filename || 'Candidate_Resume.pdf';
     const originalFilename = sanitizeFilename(rawFilename);
     const cleanBasename = originalFilename.replace(/\.[^/.]+$/, '');
+
+    // Record download action in admin audit trail
+    await recordAdminAudit({
+      action: 'DOWNLOAD',
+      admin_email: adminEmail,
+      target_id: resume.id,
+      target_name: originalFilename,
+      details: `Downloaded ${format === 'txt' ? 'plain text stream' : 'original file'} (${originalFilename})`,
+      ip_address: ip,
+    });
 
     // 1. Explicit text format requested
     if (format === 'txt') {
@@ -62,6 +57,7 @@ export async function GET(req: NextRequest) {
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
           'Content-Disposition': `attachment; filename="${encodeURIComponent(cleanBasename)}_raw.txt"`,
+          'X-Content-Type-Options': 'nosniff',
           'Cache-Control': 'no-cache, private',
         },
       });
@@ -85,22 +81,24 @@ export async function GET(req: NextRequest) {
           'Content-Type': mime,
           'Content-Disposition': `attachment; filename="${encodeURIComponent(originalFilename)}"`,
           'Content-Length': fileBuffer.length.toString(),
+          'X-Content-Type-Options': 'nosniff',
           'Cache-Control': 'no-cache, private',
         },
       });
     }
 
-    // 3. Fallback for older records stored prior to binary persistence: serve text content
+    // 3. Fallback for older text-only records: serve text content
     const fallbackText = resume.resume_text || 'Document content unavailable.';
     return new NextResponse(fallbackText, {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
         'Content-Disposition': `attachment; filename="${encodeURIComponent(cleanBasename)}.txt"`,
+        'X-Content-Type-Options': 'nosniff',
         'Cache-Control': 'no-cache, private',
       },
     });
   } catch (err: unknown) {
-    console.error('Error generating resume download:', err);
-    return NextResponse.json({ error: 'Failed to process resume download due to an unexpected server error.' }, { status: 500 });
+    console.error('Failed to download resume file:', err);
+    return NextResponse.json({ error: 'Server error downloading document.' }, { status: 500 });
   }
 }

@@ -9,6 +9,7 @@ import {
   type ResumeAnalysisResult, 
   type ExperienceLevel 
 } from '@/lib/services/resume';
+import { saveUploadedResume } from '@/lib/services/resume/resume-repository';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -143,7 +144,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 6. Store uploaded resume and analysis in database
+    // 6. Store uploaded resume and analysis in persistent repository & database
     try {
       const emailMatch = analysis.parsingReport.cleanText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
       const detectedEmail = effectiveEmail || (emailMatch ? emailMatch[0] : null);
@@ -151,40 +152,43 @@ export async function POST(req: NextRequest) {
       const isUUID = typeof effectiveUserId === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(effectiveUserId);
       const dbUserId = isUUID ? effectiveUserId : null;
 
-      const persistPromises: Promise<unknown>[] = [
-        (supabase.from('uploaded_resumes') as unknown as {
-          insert: (data: Record<string, unknown>) => Promise<unknown>;
-        }).insert({
-          filename: analysis.filename,
-          file_size: fileSize,
-          mime_type: analysis.parsingReport.mimeType,
-          resume_text: analysis.parsingReport.cleanText,
-          ats_score: analysis.ats_score,
-          analysis: analysis as unknown as Json,
-          user_id: dbUserId,
-          user_email: detectedEmail,
-          ip_address: ip,
-          file_data: fileDataBase64,
-        }),
-      ];
+      await saveUploadedResume({
+        filename: analysis.filename,
+        file_size: fileSize,
+        mime_type: analysis.parsingReport.mimeType,
+        resume_text: analysis.parsingReport.cleanText,
+        ats_score: analysis.ats_score,
+        analysis: {
+          grade: analysis.grade,
+          summary: analysis.summary,
+          breakdown: analysis.breakdown,
+          matched_keywords: analysis.matched_keywords,
+          missing_keywords: analysis.missing_keywords,
+          formatting_issues: analysis.formatting_issues,
+          bullet_rewrites: analysis.bullet_rewrites,
+        },
+        user_id: dbUserId,
+        user_email: detectedEmail,
+        target_role: targetRole || null,
+        job_description: customJd || null,
+        ip_address: ip,
+        file_data: fileDataBase64,
+        status: 'parsed',
+      });
 
       if (dbUserId) {
-        persistPromises.push(
-          (supabase.from('resume_analyses') as unknown as {
-            insert: (data: Record<string, unknown>) => Promise<unknown>;
-          }).insert({
-            user_id: dbUserId,
-            filename: analysis.filename,
-            ats_score: analysis.ats_score,
-            feedback: analysis as unknown as Json,
-            resume_text: analysis.parsingReport.cleanText,
-          })
-        );
+        await (supabase.from('resume_analyses') as unknown as {
+          insert: (data: Record<string, unknown>) => Promise<unknown>;
+        }).insert({
+          user_id: dbUserId,
+          filename: analysis.filename,
+          ats_score: analysis.ats_score,
+          feedback: analysis as unknown as Json,
+          resume_text: analysis.parsingReport.cleanText,
+        }).catch(() => {});
       }
-
-      await Promise.all(persistPromises);
     } catch (dbErr) {
-      console.warn('Note: Storing resume in database encountered an issue:', dbErr);
+      console.warn('Note: Storing resume encountered an issue:', dbErr);
     }
 
     return NextResponse.json(analysis);

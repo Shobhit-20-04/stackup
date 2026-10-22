@@ -42,3 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 scratch/
+
+# persistent local data
+data/*.json

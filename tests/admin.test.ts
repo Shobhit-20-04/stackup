@@ -20,6 +20,19 @@ import {
   persistAdminPasscodeToEnv,
 } from '@/lib/security/admin-reset-store';
 import { checkRateLimit } from '@/lib/services/rate-limit';
+import {
+  saveUploadedResume,
+  getUploadedResumes,
+  getUploadedResumeById,
+  deleteUploadedResume,
+  deleteUploadedResumes,
+  purgeTestRecords,
+  reprocessResume,
+  recordAdminAudit,
+  getAdminAuditLogs,
+  extractCandidateName,
+  isTestOrDemoRecord,
+} from '@/lib/services/resume/resume-repository';
 
 describe('Admin Authentication, Salted Scrypt Hashing & Key Verification', () => {
   const originalEnvHash = process.env.ADMIN_PASSWORD_HASH;
@@ -255,5 +268,139 @@ describe('Rate Limiting & Admin Brute Force Protection', () => {
     const blockedCheck = checkRateLimit(limitKey, 5, 60000);
     expect(blockedCheck.allowed).toBe(false);
     expect(blockedCheck.resetInSeconds).toBeGreaterThan(0);
+  });
+});
+
+describe('ATS Resume Management, Real Data Persistence & Advanced Features', () => {
+  it('16. extractCandidateName accurately derives names without hardcoding', () => {
+    // A. From clean resume header
+    const sampleText = 'Jane Doe\njane.doe@gmail.com | +1 555-0192\nEXPERIENCE\nSoftware Engineer...';
+    expect(extractCandidateName(sampleText, 'jane.doe@gmail.com')).toBe('Jane Doe');
+
+    // B. From email prefix when name is omitted in text
+    const textWithoutName = 'SUMMARY\nPassionate engineer.\nSKILLS: Python, React';
+    expect(extractCandidateName(textWithoutName, 'alex.turner@gmail.com')).toBe('Alex Turner');
+
+    // C. Respects authenticated account full_name
+    expect(extractCandidateName(sampleText, 'john@corp.com', 'Dr. John Watson')).toBe('Dr. John Watson');
+  });
+
+  it('17. isTestOrDemoRecord reliably filters out synthetic test records', () => {
+    expect(isTestOrDemoRecord('candidate@example.com', 'Resume.pdf')).toBe(true);
+    expect(isTestOrDemoRecord('user@domain.com', 'Resume.docx')).toBe(true);
+    expect(isTestOrDemoRecord('realstudent@gmail.com', 'alex_smith_resume.pdf')).toBe(true);
+    expect(isTestOrDemoRecord('realstudent@gmail.com', 'john_doe_cv.docx')).toBe(true);
+    expect(isTestOrDemoRecord('realstudent@gmail.com', 'direct_test.pdf')).toBe(true);
+
+    // Genuine records must not be filtered
+    expect(isTestOrDemoRecord('shobhitagrawal2004@gmail.com', 'Shobhit_Agrawal_SDE.pdf')).toBe(false);
+    expect(isTestOrDemoRecord('priya.sharma@gmail.com', 'Priya_Sharma_Resume.docx')).toBe(false);
+  });
+
+  it('18. saveUploadedResume persists real resume with candidate name, score and binary presence', async () => {
+    const testResumeId = '11111111-2222-3333-4444-555555555555';
+    const sampleBinary = Buffer.from('%PDF-1.4 sample content').toString('base64');
+    
+    const saved = await saveUploadedResume({
+      id: testResumeId,
+      filename: 'Maria_Garcia_SDE.pdf',
+      file_size: 15420,
+      mime_type: 'application/pdf',
+      resume_text: 'Maria Garcia\nmariag@gmail.com\nSkills: TypeScript, Next.js, Node.js\nLed migration to Next.js reducing latency by 40%.',
+      ats_score: 82,
+      analysis: {
+        grade: 'A',
+        summary: 'Solid full-stack engineering profile.',
+        breakdown: {
+          contact_score: 90,
+          experience_score: 80,
+          skills_score: 85,
+          formatting_score: 85,
+        },
+        matched_keywords: ['TypeScript', 'Next.js', 'Node.js'],
+        missing_keywords: ['Docker', 'Kubernetes'],
+      },
+      user_id: null,
+      user_email: 'mariag@gmail.com',
+      ip_address: '127.0.0.1',
+      file_data: sampleBinary,
+      status: 'parsed',
+    });
+
+    expect(saved.id).toBe(testResumeId);
+    expect(saved.candidate_name).toBe('Maria Garcia');
+    expect(saved.has_file_data).toBe(true);
+    expect(saved.ats_score).toBe(82);
+
+    // Retrieve by ID
+    const retrieved = await getUploadedResumeById(testResumeId);
+    expect(retrieved).not.toBeNull();
+    expect(retrieved?.filename).toBe('Maria_Garcia_SDE.pdf');
+    expect(retrieved?.file_data).toBe(sampleBinary);
+  });
+
+  it('19. reprocessResume re-executes parsing and scoring on stored file', async () => {
+    const testResumeId = '11111111-2222-3333-4444-555555555555';
+    const reprocessed = await reprocessResume(testResumeId, 'admin@test.local', '127.0.0.1');
+
+    expect(reprocessed.id).toBe(testResumeId);
+    expect(reprocessed.status).toBe('parsed');
+    expect(typeof reprocessed.ats_score).toBe('number');
+    expect(reprocessed.analysis?.breakdown).toBeDefined();
+  });
+
+  it('20. records administrative actions in immutable audit log', async () => {
+    await recordAdminAudit({
+      action: 'VIEW',
+      admin_email: 'shobhitagrawal2004@gmail.com',
+      target_id: '11111111-2222-3333-4444-555555555555',
+      target_name: 'Maria_Garcia_SDE.pdf',
+      details: 'Admin viewed candidate dossier and raw text stream',
+      ip_address: '127.0.0.1',
+    });
+
+    const logs = await getAdminAuditLogs(10);
+    expect(logs.length).toBeGreaterThan(0);
+    const viewLog = logs.find((l) => l.action === 'VIEW' && l.target_id === '11111111-2222-3333-4444-555555555555');
+    expect(viewLog).toBeDefined();
+    expect(viewLog?.admin_email).toBe('shobhitagrawal2004@gmail.com');
+  });
+
+  it('21. deleteUploadedResume and bulk delete removes records and logs action', async () => {
+    const testResumeId = '11111111-2222-3333-4444-555555555555';
+    const res = await deleteUploadedResume(testResumeId, 'admin@test.local', '127.0.0.1');
+    expect(res).toBe(true);
+
+    const check = await getUploadedResumeById(testResumeId);
+    expect(check).toBeNull();
+
+    // Verify deletion audit was logged
+    const logs = await getAdminAuditLogs(10);
+    const delLog = logs.find((l) => l.action === 'DELETE' && l.target_id === testResumeId);
+    expect(delLog).toBeDefined();
+  });
+
+  it('22. purgeTestRecords removes any residual mock candidates safely', async () => {
+    // Insert a dummy record
+    const dummyId = '99999999-9999-9999-9999-999999999999';
+    await saveUploadedResume({
+      id: dummyId,
+      filename: 'alex_smith_dummy_resume.pdf',
+      file_size: 5000,
+      mime_type: 'application/pdf',
+      resume_text: 'Alex Smith dummy text',
+      ats_score: 50,
+      analysis: null,
+      user_id: null,
+      user_email: 'alex_smith@example.com',
+      ip_address: '127.0.0.1',
+      status: 'parsed',
+    });
+
+    const { purgedCount } = await purgeTestRecords('admin@test.local', '127.0.0.1');
+    expect(purgedCount).toBeGreaterThanOrEqual(1);
+
+    const check = await getUploadedResumeById(dummyId);
+    expect(check).toBeNull();
   });
 });

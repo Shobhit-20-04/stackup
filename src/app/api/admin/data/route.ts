@@ -2,10 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { fetchLoginAudits, type LoginAuditEntry } from '@/lib/services/login-audit';
-import { verifyAdminRequest, getAdminPasscode } from '@/lib/security/admin-auth';
+import { verifyAdminRequest, getAdminPasscode, getAdminEmail } from '@/lib/security/admin-auth';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { verifyCsrfOrigin } from '@/lib/security/sanitize';
 import { persistAdminPasscodeToEnv } from '@/lib/security/admin-reset-store';
+import {
+  getUploadedResumes,
+  deleteUploadedResume,
+  deleteUploadedResumes,
+  purgeTestRecords,
+  getAdminAuditLogs,
+  extractCandidateName,
+  type UploadedResumeRecord,
+} from '@/lib/services/resume/resume-repository';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -47,60 +56,26 @@ export async function GET(req: NextRequest) {
 
     const supabase = await getSupabaseAdminClient();
 
-    // Fetch all telemetry datasets concurrently to minimize response latency
+    // Concurrently fetch genuine uploaded resumes, user profiles, login audits, quizzes, and admin logs
     const [
-      { data: resumes, error: resumeErr },
+      allResumes,
       { data: profiles, error: profileErr },
       loginLogs,
       { data: quizzes, error: quizErr },
+      auditLogs,
     ] = await Promise.all([
-      supabase.from('uploaded_resumes').select('*').order('created_at', { ascending: false }),
+      getUploadedResumes(),
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       fetchLoginAudits(),
       supabase.from('quiz_attempts').select('*').order('attempted_at', { ascending: false }),
+      getAdminAuditLogs(30),
     ]);
 
-    if (resumeErr) {
-      console.error('Admin fetch resumes error:', resumeErr);
-    }
     if (profileErr) {
-      console.error('Admin fetch profiles error:', profileErr);
+      console.warn('Notice: Admin fetch profiles error:', profileErr);
     }
     if (quizErr) {
-      console.error('Admin fetch quizzes error:', quizErr);
-    }
-
-    interface UploadedResumeRow {
-      id: string;
-      filename: string;
-      file_size: number | null;
-      mime_type: string | null;
-      resume_text: string | null;
-      ats_score: number;
-      user_id: string | null;
-      user_email: string | null;
-      ip_address: string | null;
-      created_at: string;
-      file_data?: string | null;
-      has_file_data?: boolean;
-      analysis: {
-        grade?: string;
-        summary?: string;
-        breakdown?: {
-          contact_score: number;
-          experience_score: number;
-          skills_score: number;
-          formatting_score: number;
-        };
-        matched_keywords?: string[];
-        missing_keywords?: string[];
-        formatting_issues?: string[];
-        bullet_rewrites?: {
-          original: string;
-          improved: string;
-          reason: string;
-        }[];
-      } | null;
+      console.warn('Notice: Admin fetch quizzes error:', quizErr);
     }
 
     interface ProfileRow {
@@ -123,35 +98,27 @@ export async function GET(req: NextRequest) {
       attempted_at: string;
     }
 
-    const rawResumeList = (resumes as unknown as UploadedResumeRow[]) || [];
-    // Strictly filter out internal system audit records, test seeds, and fake entries
-    const resumeList = rawResumeList
-      .filter((r) => {
-        if (r.mime_type === 'application/x-audit-log' || (r.filename && r.filename.startsWith('__system_'))) {
-          return false;
+    // Keep dashboard payload lightweight by omitting raw binary data from list items
+    const resumeList = allResumes.map((r) => {
+      let cleanText = r.resume_text || '';
+      // Sanitize any residual raw PDF bytecode stream tokens into clean text
+      if (cleanText.includes('/Length') && (cleanText.includes('stream') || cleanText.includes('BT') || cleanText.includes('endstream'))) {
+        const matches = cleanText.match(/\(([^)]+)\)/g);
+        if (matches && matches.length >= 2) {
+          cleanText = matches.map((m) => m.slice(1, -1).trim()).join('\n\n');
         }
-        const email = (r.user_email || '').toLowerCase();
-        const fn = (r.filename || '').toLowerCase();
-        if (email.includes('@example.com') || email === 'shobhit@gmail.com') return false;
-        if (fn.includes('alex_smith') || fn.includes('john_doe') || fn.includes('direct_test')) return false;
-        return true;
-      })
-      .map((r) => {
-        // Sanitize any residual raw PDF bytecode stream tokens into clean text
-        let cleanText = r.resume_text || '';
-        if (cleanText.includes('/Length') && (cleanText.includes('stream') || cleanText.includes('BT') || cleanText.includes('endstream'))) {
-          const matches = cleanText.match(/\(([^)]+)\)/g);
-          if (matches && matches.length >= 2) {
-            cleanText = matches.map((m) => m.slice(1, -1).trim()).join('\n\n');
-          }
-        }
-        return {
-          ...r,
-          resume_text: cleanText,
-          has_file_data: Boolean(r.file_data),
-          file_data: undefined, // Keep dashboard listing lightweight
-        };
-      });
+      }
+
+      const candidateName = r.candidate_name || extractCandidateName(cleanText, r.user_email);
+
+      return {
+        ...r,
+        candidate_name: candidateName,
+        resume_text: cleanText,
+        has_file_data: Boolean(r.file_data || r.has_file_data),
+        file_data: undefined, // Strip large base64 payload from listing response
+      };
+    });
 
     // Synthesize registered student profiles from verified candidate activity & profiles table
     interface EnrichedProfile {
@@ -174,7 +141,7 @@ export async function GET(req: NextRequest) {
     for (const p of rawProfiles) {
       const email = (p.email || (p as unknown as { user_email?: string }).user_email || '').toLowerCase().trim();
       const name = (p.full_name || '').trim();
-      if (email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit') || name.toLowerCase().includes('test student')) continue;
+      if (email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit')) continue;
       const key = email || p.id;
       profileMap.set(key, {
         id: p.id,
@@ -190,15 +157,12 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // B. Real candidate accounts from uploaded resumes
+    // B. Real candidate accounts from genuine uploaded resumes
     for (const r of resumeList) {
       const email = (r.user_email || '').trim().toLowerCase();
       if (!email || email.includes('@example.com') || email.includes('@domain.com') || email.includes('test_audit')) continue;
 
-      let candidateName = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
-      if (r.filename.toLowerCase().includes('shobhit')) {
-        candidateName = 'Shobhit Agrawal';
-      }
+      const candidateName = r.candidate_name || extractCandidateName(r.resume_text, email);
 
       const existing = profileMap.get(email);
       if (existing) {
@@ -262,7 +226,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // D. Direct Supabase auth.users synchronization (when SUPABASE_SERVICE_ROLE_KEY is configured)
+    // D. Direct Supabase auth.users synchronization
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     let authUsersCount = 0;
@@ -311,7 +275,6 @@ export async function GET(req: NextRequest) {
               });
             }
 
-            // Also record login audit from last_sign_in_at if available
             if (u.last_sign_in_at) {
               const provider = (u.app_metadata?.provider === 'google' ? 'Google OAuth' : 'Email & Password') as LoginAuditEntry['auth_method'];
               loginLogs.push({
@@ -328,26 +291,7 @@ export async function GET(req: NextRequest) {
           }
         }
       } catch (err) {
-        console.warn('Notice: fetching auth.admin.listUsers failed:', err);
-      }
-    }
-
-    // Ensure all registered profiles with verified last_sign_in_at are present in loginLogs
-    for (const p of profileMap.values()) {
-      if (p.last_sign_in_at && p.email && p.email !== '—') {
-        const alreadyLogged = loginLogs.some((l) => l.email?.toLowerCase() === p.email.toLowerCase());
-        if (!alreadyLogged) {
-          loginLogs.push({
-            id: `prof-${p.id.substring(0, 8)}`,
-            user_id: p.id,
-            email: p.email,
-            full_name: p.full_name,
-            auth_method: 'Google OAuth',
-            ip_address: 'Verified Supabase Session',
-            user_agent: 'Cloud Authentication Gateway',
-            created_at: p.last_sign_in_at,
-          });
-        }
+        console.warn('Notice: fetching auth.admin.listUsers returned:', err);
       }
     }
 
@@ -360,7 +304,7 @@ export async function GET(req: NextRequest) {
     const rawQuizzes = (quizzes as unknown as QuizAttemptRow[]) || [];
     const quizList = rawQuizzes.filter((q) => q.score !== null && q.score !== undefined);
 
-    // Calculate aggregated metrics
+    // Calculate aggregated metrics from real resume data
     const totalResumes = resumeList.length;
     const avgScore = totalResumes > 0
       ? Math.round(resumeList.reduce((acc, r) => acc + (r.ats_score || 0), 0) / totalResumes)
@@ -368,8 +312,19 @@ export async function GET(req: NextRequest) {
 
     const highPerformers = resumeList.filter((r) => (r.ats_score || 0) >= 75).length;
     const needsOptimization = resumeList.filter((r) => (r.ats_score || 0) < 65).length;
+    const passCount = resumeList.filter((r) => (r.ats_score || 0) >= 65).length;
+    const passRate = totalResumes > 0 ? Math.round((passCount / totalResumes) * 100) : 0;
 
-    // Count skills frequencies across all uploaded resumes
+    // Score distribution
+    const scoreDistribution = {
+      APlus: resumeList.filter((r) => (r.ats_score || 0) >= 88).length,
+      A: resumeList.filter((r) => (r.ats_score || 0) >= 78 && (r.ats_score || 0) < 88).length,
+      B: resumeList.filter((r) => (r.ats_score || 0) >= 66 && (r.ats_score || 0) < 78).length,
+      C: resumeList.filter((r) => (r.ats_score || 0) >= 52 && (r.ats_score || 0) < 66).length,
+      D: resumeList.filter((r) => (r.ats_score || 0) < 52).length,
+    };
+
+    // Aggregate skills frequency across all real uploaded resumes
     const skillCounts: Record<string, number> = {};
     for (const r of resumeList) {
       const matched = r.analysis?.matched_keywords || [];
@@ -383,7 +338,7 @@ export async function GET(req: NextRequest) {
     const topSkills = Object.entries(skillCounts)
       .map(([skill, count]) => ({ skill, count }))
       .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
+      .slice(0, 12);
 
     return NextResponse.json({
       metrics: {
@@ -394,6 +349,8 @@ export async function GET(req: NextRequest) {
         avgScore,
         highPerformers,
         needsOptimization,
+        passRate,
+        scoreDistribution,
         hasServiceRole,
         authUsersCount,
       },
@@ -402,6 +359,7 @@ export async function GET(req: NextRequest) {
       profiles: profileList,
       loginLogs,
       quizzes: quizList,
+      auditLogs,
     });
   } catch (err: unknown) {
     console.error('Failed to fetch admin data:', err);
@@ -416,7 +374,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     const ip = getClientIp(req);
-    const rateCheck = checkRateLimit(`admin-delete-${ip}`, 15, 60 * 1000);
+    const rateCheck = checkRateLimit(`admin-delete-${ip}`, 25, 60 * 1000);
     if (!rateCheck.allowed) {
       return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
     }
@@ -427,20 +385,15 @@ export async function DELETE(req: NextRequest) {
 
     const body = await req.json().catch(() => ({}));
     const id = typeof body?.id === 'string' ? body.id.trim() : '';
-    // UUID format check to prevent injection or invalid queries
+
     if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
       return NextResponse.json({ error: 'Valid Resume UUID is required.' }, { status: 400 });
     }
 
-    const supabase = await getSupabaseAdminClient();
-    const { error } = await supabase.from('uploaded_resumes').delete().eq('id', id);
+    const adminEmail = getAdminEmail();
+    await deleteUploadedResume(id, adminEmail, ip);
 
-    if (error) {
-      console.error('Failed to delete resume database record:', error);
-      return NextResponse.json({ error: 'Failed to delete resume record.' }, { status: 500 });
-    }
-
-    return NextResponse.json({ success: true, message: 'Resume deleted successfully.' });
+    return NextResponse.json({ success: true, message: 'Resume permanently deleted.' });
   } catch (err: unknown) {
     console.error('Failed to delete resume:', err);
     return NextResponse.json({ error: 'Failed to delete resume due to an unexpected server error.' }, { status: 500 });
@@ -454,7 +407,7 @@ export async function POST(req: NextRequest) {
     }
 
     const ip = getClientIp(req);
-    const rateCheck = checkRateLimit(`admin-post-${ip}`, 15, 60 * 1000);
+    const rateCheck = checkRateLimit(`admin-post-${ip}`, 20, 60 * 1000);
     if (!rateCheck.allowed) {
       return NextResponse.json({ error: 'Rate limit exceeded.' }, { status: 429 });
     }
@@ -464,7 +417,8 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { action, newPasscode } = body;
+    const { action, newPasscode, ids } = body;
+    const adminEmail = getAdminEmail();
 
     // Action 1: Change Admin Authentication Passcode Key
     if (action === 'change_passcode') {
@@ -486,12 +440,32 @@ export async function POST(req: NextRequest) {
 
     // Action 2: Purge Legacy Testing & Seed Records
     if (action === 'purge_test_records') {
-      const supabase = await getSupabaseAdminClient();
-      await supabase.from('uploaded_resumes').delete().ilike('user_email', '%@example.com%');
-      await supabase.from('uploaded_resumes').delete().ilike('filename', '%direct_test%');
-      await supabase.from('uploaded_resumes').delete().ilike('filename', '%alex_smith%');
-      await supabase.from('uploaded_resumes').delete().ilike('filename', '%john_doe%');
-      return NextResponse.json({ success: true, message: 'All test and seed dummy records purged successfully.' });
+      const { purgedCount } = await purgeTestRecords(adminEmail, ip);
+      return NextResponse.json({
+        success: true,
+        message: `All test and seed dummy records purged successfully (${purgedCount} cleaned).`,
+        purgedCount,
+      });
+    }
+
+    // Action 3: Bulk Delete Resumes
+    if (action === 'bulk_delete') {
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return NextResponse.json({ error: 'Array of resume IDs is required for bulk delete.' }, { status: 400 });
+      }
+
+      const { deletedCount } = await deleteUploadedResumes(ids, adminEmail, ip);
+      return NextResponse.json({
+        success: true,
+        message: `Successfully deleted ${deletedCount} candidate resume(s).`,
+        deletedCount,
+      });
+    }
+
+    // Action 4: Get Admin Audit Logs
+    if (action === 'get_audit_logs') {
+      const logs = await getAdminAuditLogs(100);
+      return NextResponse.json({ success: true, logs });
     }
 
     return NextResponse.json({ error: 'Unknown action requested.' }, { status: 400 });
