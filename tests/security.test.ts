@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server';
 import { describe, it, expect } from 'vitest';
 import {
   sanitizeText,
@@ -8,6 +9,7 @@ import {
   verifyCsrfOrigin,
   maskEmail,
   sanitizeRedirectPath,
+  escapeCsvCell,
 } from '@/lib/security/sanitize';
 import {
   timingSafeCompare,
@@ -273,3 +275,50 @@ describe('Security: Client IP & Rate Limit Key Sanitization', () => {
 });
 
 
+
+describe('Security: CSV Formula Injection Defense (CWE-1236)', () => {
+  it('neutralizes cells starting with =, +, -, @, \t, \r by prefixing single quote', () => {
+    expect(escapeCsvCell("=cmd|' /C calc'!A0")).toBe('"\'=cmd|\' /C calc\'!A0"');
+    expect(escapeCsvCell("+12345")).toBe('"\' + 12345"'.replace(' + ', '+'));
+    expect(escapeCsvCell("@SUM(A1:A10)")).toBe('"\'@SUM(A1:A10)"');
+    expect(escapeCsvCell("-50")).toBe('"\' - 50"'.replace(' - ', '-'));
+    expect(escapeCsvCell("\tTabLeading")).toBe('"\'\tTabLeading"');
+  });
+
+  it('escapes standard values without executable formula characters', () => {
+    expect(escapeCsvCell('Software Engineer')).toBe('"Software Engineer"');
+    expect(escapeCsvCell('Alex Rivera, Junior Dev')).toBe('"Alex Rivera, Junior Dev"');
+    expect(escapeCsvCell('Senior "Staff" Engineer')).toBe('"Senior ""Staff"" Engineer"');
+    expect(escapeCsvCell(null)).toBe('""');
+    expect(escapeCsvCell(undefined)).toBe('""');
+  });
+});
+
+describe('Security: Privilege Escalation & Role Authorization Defense', () => {
+  it('blocks unauthenticated requests from issuing admin session tokens via /api/auth/session/create', async () => {
+    const { POST } = await import('@/app/api/auth/session/create/route');
+    const req = new NextRequest('http://localhost:3000/api/auth/session/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', host: 'localhost:3000' },
+      body: JSON.stringify({ userId: 'attacker-1', role: 'admin' }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(403);
+    const json = await res.json();
+    expect(json.code).toBe('FORBIDDEN_PRIVILEGE_ESCALATION');
+  });
+
+  it('permits student session creation with sanitized student role', async () => {
+    const { POST } = await import('@/app/api/auth/session/create/route');
+    const req = new NextRequest('http://localhost:3000/api/auth/session/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', host: 'localhost:3000' },
+      body: JSON.stringify({ userId: 'student-42', role: 'student', email: 'alex@example.com' }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.session.role).toBe('student');
+    expect(json.session.userId).toBe('student-42');
+  });
+});

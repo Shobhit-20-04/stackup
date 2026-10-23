@@ -2,18 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminRequest, getAdminEmail } from '@/lib/security/admin-auth';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { getUploadedResumes, recordAdminAudit } from '@/lib/services/resume/resume-repository';
+import { escapeCsvCell } from '@/lib/security/sanitize';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-function escapeCsvCell(val: unknown): string {
-  if (val === null || val === undefined) return '""';
-  const str = String(val);
-  if (/[",\n\r]/.test(str)) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return `"${str}"`;
-}
 
 export async function GET(req: NextRequest) {
   try {

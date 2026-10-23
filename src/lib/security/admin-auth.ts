@@ -149,11 +149,18 @@ export function setActiveAdminPasscode(newPasscode: string): void {
   }
 }
 
+let processEphemeralAdminSecret: string | null = null;
+
 /**
- * Generates an HMAC secret derived from server environment or a fallback hash.
+ * Generates an HMAC secret derived from server environment or a secure process-level ephemeral key.
  */
 function getSigningSecret(): string {
-  return process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.ADMIN_PASSWORD_HASH || 'stackup-admin-secret-salt-2026';
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) return process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (process.env.ADMIN_PASSWORD_HASH) return process.env.ADMIN_PASSWORD_HASH;
+  if (!processEphemeralAdminSecret) {
+    processEphemeralAdminSecret = crypto.randomBytes(32).toString('hex');
+  }
+  return processEphemeralAdminSecret;
 }
 
 /**

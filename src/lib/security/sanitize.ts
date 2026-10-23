@@ -276,3 +276,24 @@ export function maskEmail(email: unknown): string {
   return `${visibleStart}${'•'.repeat(maskedLength)}${visibleEnd}@${domain}`;
 }
 
+/**
+ * Safely escapes CSV cells and neutralizes CSV Formula Injection (CWE-1236).
+ * Prepends a single quote if the value begins with '=', '+', '-', '@', '\t', '\r',
+ * preventing spreadsheet engines (Microsoft Excel, Google Sheets) from executing formulas.
+ */
+export function escapeCsvCell(val: unknown): string {
+  if (val === null || val === undefined) return '""';
+  let str = String(val);
+
+  // Formula Injection neutralization
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
+
+  if (/[",\n\r]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return `"${str}"`;
+}
+
+
