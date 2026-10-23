@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { getActiveTheme, setThemeMode } from '@/components/ThemeToggle';
 import { applyTheme, THEMES } from '@/components/ThemeSwitcher';

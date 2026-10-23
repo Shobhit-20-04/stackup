@@ -301,7 +301,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center px-4 py-2.5 text-base font-semibold text-white bg-[#8B5CF6] hover:bg-[#7C3AED] rounded-xl shadow-xs transition-colors"
+                className="w-full flex items-center justify-center px-4 py-2.5 text-base font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] rounded-xl shadow-xs transition-colors"
               >
                 Sign In
               </Link>

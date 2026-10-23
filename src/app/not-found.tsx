@@ -53,7 +53,7 @@ export default function NotFound() {
 
           <Link
             href="/dashboard"
-            className="px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all inline-flex items-center space-x-2 cursor-pointer"
+            className="px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-[#004182] hover:bg-[#003366] shadow-sm transition-all inline-flex items-center space-x-2 cursor-pointer"
           >
             <LayoutDashboard className="w-4 h-4" />
             <span>Go to Dashboard</span>
@@ -89,13 +89,13 @@ export default function NotFound() {
           {/* Core CS Subjects */}
           <Link
             href="/core-cs"
-            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-indigo-500/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
+            className="p-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-[#004182]/50 transition-all flex items-center space-x-3 group shadow-xs cursor-pointer"
           >
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#D4E2F2]/50 dark:bg-[#004182]/20 border border-[#C5D2E1] dark:border-[#004182]/30 text-[#004182] dark:text-[#D4CBFF] flex items-center justify-center shrink-0">
               <Cpu className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-indigo-500 transition-colors">
+              <div className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#004182] dark:group-hover:text-[#D4CBFF] transition-colors">
                 Core CS Subjects
               </div>
               <div className="text-xs text-slate-500 dark:text-zinc-400">15 disciplines: OS, DBMS, Networks, TOC</div>

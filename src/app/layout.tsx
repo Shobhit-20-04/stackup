@@ -55,7 +55,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] selection:bg-[#8B5CF6] selection:text-white transition-colors duration-150">
+      <body className="font-sans min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] selection:bg-[#004182] selection:text-white transition-colors duration-150">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

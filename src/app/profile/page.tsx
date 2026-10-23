@@ -285,7 +285,7 @@ export default function ProfilePage() {
             percent: csMetrics.percent, 
             completed_items: csMetrics.completed, 
             total_items: csMetrics.total, 
-            color: 'bg-indigo-600' 
+            color: 'bg-[#004182]' 
           },
           { 
             section_name: 'DSA Curated Hub', 
@@ -492,7 +492,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#004182] animate-spin" />
         <span className="text-sm text-slate-500 font-medium">Loading your real profile metrics...</span>
       </div>
     );

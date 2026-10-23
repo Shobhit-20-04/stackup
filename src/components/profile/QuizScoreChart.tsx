@@ -32,8 +32,8 @@ export default function QuizScoreChart({ quizHistory }: QuizScoreChartProps) {
         <AreaChart data={quizHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--brand-primary, #8B5CF6)" stopOpacity={0.4} />
-              <stop offset="95%" stopColor="var(--brand-primary, #8B5CF6)" stopOpacity={0.0} />
+              <stop offset="5%" stopColor="var(--brand-primary, #004182)" stopOpacity={0.4} />
+              <stop offset="95%" stopColor="var(--brand-primary, #004182)" stopOpacity={0.0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle, #1E2B4D)" opacity={0.6} />
@@ -58,7 +58,7 @@ export default function QuizScoreChart({ quizHistory }: QuizScoreChartProps) {
           <Area
             type="monotone"
             dataKey="percentage"
-            stroke="var(--brand-primary, #8B5CF6)"
+            stroke="var(--brand-primary, #004182)"
             strokeWidth={3}
             fillOpacity={1}
             fill="url(#scoreGradient)"

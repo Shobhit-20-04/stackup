@@ -430,7 +430,7 @@ function DsaHubContent() {
                 onClick={() => setViewMode('list')}
                 className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   viewMode === 'list'
-                    ? 'bg-white dark:bg-[#151D35] text-indigo-600 dark:text-indigo-400 shadow-xs'
+                    ? 'bg-white dark:bg-[#151D35] text-[#004182] dark:text-[#D4CBFF] shadow-xs'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -442,7 +442,7 @@ function DsaHubContent() {
                 onClick={() => setViewMode('pattern')}
                 className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   viewMode === 'pattern'
-                    ? 'bg-white dark:bg-[#151D35] text-indigo-600 dark:text-indigo-400 shadow-xs'
+                    ? 'bg-white dark:bg-[#151D35] text-[#004182] dark:text-[#D4CBFF] shadow-xs'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -462,7 +462,7 @@ function DsaHubContent() {
                     setPageSize(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 rounded-lg px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+                  className="bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 rounded-lg px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#004182] cursor-pointer"
                 >
                   <option value={12}>12</option>
                   <option value={24}>24</option>
@@ -488,7 +488,7 @@ function DsaHubContent() {
                   setSearchQuery('');
                   setShowOnlyUnsolved(false);
                 }}
-                className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-colors cursor-pointer"
+                className="mt-4 px-4 py-2 bg-[#004182] hover:bg-[#003366] text-white text-xs font-semibold rounded-xl shadow-sm transition-colors cursor-pointer"
               >
                 Reset All Filters
               </button>
@@ -697,7 +697,7 @@ function DsaHubContent() {
                                 href={problem.striver_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                                className="inline-flex items-center space-x-1 text-[#004182] dark:text-[#D4CBFF] hover:underline"
                               >
                                 <span>Striver Guide</span>
                                 <ExternalLink className="w-3 h-3" />
@@ -792,14 +792,14 @@ function DsaHubContent() {
                               </div>
                             </div>
                           ) : (
-                            <div className="p-4 rounded-xl border border-indigo-200/80 dark:border-indigo-900/60 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                              <div className="flex items-center space-x-2 text-indigo-700 dark:text-indigo-300 font-medium">
-                                <Lock className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                            <div className="p-4 rounded-xl border border-[#C5D2E1] dark:border-[#004182]/50 bg-[#D4E2F2]/30 dark:bg-[#004182]/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center space-x-2 text-[#004182] dark:text-[#D4CBFF] font-medium">
+                                <Lock className="w-4 h-4 shrink-0 text-[#004182] dark:text-[#D4CBFF]" />
                                 <span>Additional test cases, edge cases, and boundary constraints are locked for visitors.</span>
                               </div>
                               <Link
                                 href={`/login?redirect=${encodeURIComponent('/dsa')}`}
-                                className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
+                                className="px-3.5 py-1.5 rounded-lg bg-[#004182] hover:bg-[#003366] text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
                               >
                                 <span>Sign In to Unlock</span>
                                 <ArrowRight className="w-3 h-3" />
@@ -823,14 +823,14 @@ function DsaHubContent() {
                           </div>
 
                           {!currentUser && (
-                            <div className="p-4 rounded-xl border border-indigo-200/80 dark:border-indigo-900/60 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                              <div className="flex items-center space-x-2 text-indigo-700 dark:text-indigo-300 font-medium">
-                                <Lock className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                            <div className="p-4 rounded-xl border border-[#C5D2E1] dark:border-[#004182]/50 bg-[#D4E2F2]/30 dark:bg-[#004182]/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center space-x-2 text-[#004182] dark:text-[#D4CBFF] font-medium">
+                                <Lock className="w-4 h-4 shrink-0 text-[#004182] dark:text-[#D4CBFF]" />
                                 <span>Full algorithmic walk-through and Big-O proofs are locked for visitors.</span>
                               </div>
                               <Link
                                 href={`/login?redirect=${encodeURIComponent('/dsa')}`}
-                                className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
+                                className="px-3.5 py-1.5 rounded-lg bg-[#004182] hover:bg-[#003366] text-white font-semibold text-xs shrink-0 flex items-center space-x-1"
                               >
                                 <span>Sign In to Unlock</span>
                                 <ArrowRight className="w-3 h-3" />
@@ -841,7 +841,7 @@ function DsaHubContent() {
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Time Complexity */}
                             <div className="bg-white dark:bg-[#151D35] p-4 rounded-xl border border-slate-200 dark:border-zinc-800 flex items-start space-x-3">
-                              <div className="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
+                              <div className="p-2.5 rounded-lg bg-[#D4E2F2]/50 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF]">
                                 <Clock className="w-5 h-5" />
                               </div>
                               <div>
@@ -913,9 +913,9 @@ function DsaHubContent() {
                             ) : (
                               <Link
                                 href={`/login?redirect=${encodeURIComponent('/dsa')}`}
-                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm"
+                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#D4E2F2]/50 dark:bg-[#004182]/20 border border-[#C5D2E1] dark:border-[#004182]/40 text-[#004182] dark:text-[#D4CBFF] hover:bg-[#D4E2F2]/80 dark:hover:bg-[#004182]/40 transition-colors shadow-sm"
                               >
-                                <Lock className="w-3 h-3 text-indigo-500" />
+                                <Lock className="w-3 h-3 text-[#004182] dark:text-[#D4CBFF]" />
                                 <span>Sign In to Copy</span>
                               </Link>
                             )}
@@ -945,8 +945,8 @@ function DsaHubContent() {
 
                                 {/* Locked overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/90 to-slate-950 flex flex-col items-center justify-center p-6 text-center">
-                                  <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-2.5 border border-indigo-500/30">
-                                    <Lock className="w-5 h-5 text-indigo-400" />
+                                  <div className="w-10 h-10 rounded-xl bg-[#D4E2F2]/50 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF] flex items-center justify-center mb-2.5 border border-[#C5D2E1] dark:border-[#004182]/30">
+                                    <Lock className="w-5 h-5 text-[#004182] dark:text-[#D4CBFF]" />
                                   </div>
                                   <h4 className="text-sm font-bold text-white mb-1">
                                     Sign in to view full multi-language code
@@ -956,7 +956,7 @@ function DsaHubContent() {
                                   </p>
                                   <Link
                                     href={`/login?redirect=${encodeURIComponent('/dsa')}`}
-                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all flex items-center space-x-1.5"
+                                    className="px-4 py-2 bg-[#004182] hover:bg-[#003366] text-white rounded-xl text-xs font-semibold shadow-md shadow-[#004182]/20 transition-all flex items-center space-x-1.5"
                                   >
                                     <span>Sign In to Unlock</span>
                                     <ArrowRight className="w-3.5 h-3.5" />
@@ -992,7 +992,7 @@ function DsaHubContent() {
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
                               group.solvedCount === group.totalCount && group.totalCount > 0
                                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
-                                : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300'
+                                : 'bg-[#D4E2F2]/50 text-[#004182] dark:bg-[#004182]/30 dark:text-[#D4CBFF]'
                             }`}>
                               {group.solvedCount === group.totalCount && group.totalCount > 0 ? (
                                 <CheckCircle2 className="w-4 h-4" />
@@ -1013,7 +1013,7 @@ function DsaHubContent() {
                           <div className="flex items-center space-x-3">
                             <div className="hidden sm:block w-24 bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                               <div
-                                className="bg-indigo-600 h-full rounded-full transition-all duration-300"
+                                className="bg-[#9FD6D2] h-full rounded-full transition-all duration-300"
                                 style={{ width: `${group.percentage}%` }}
                               />
                             </div>
@@ -1047,7 +1047,7 @@ function DsaHubContent() {
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in"
           >
             <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-1 border border-indigo-100 dark:border-indigo-900/40">
+              <div className="w-12 h-12 rounded-2xl bg-[#D4E2F2]/50 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF] flex items-center justify-center mb-1 border border-[#C5D2E1] dark:border-[#004182]/30">
                 <Lock className="w-6 h-6" />
               </div>
               <div>
@@ -1061,7 +1061,7 @@ function DsaHubContent() {
               <div className="flex items-center space-x-3 pt-2">
                 <Link
                   href={`/login?redirect=${encodeURIComponent('/dsa')}`}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs text-center shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-[#004182] hover:bg-[#003366] text-white font-semibold text-xs text-center shadow-md shadow-[#004182]/20 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
                 >
                   <span>Sign In to Continue</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -1117,7 +1117,7 @@ function DsaHubContent() {
                     onClick={() => handlePageChange(pageNum)}
                     className={`min-w-[32px] h-8 px-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                        ? 'bg-[#004182] text-white shadow-md shadow-[#004182]/20'
                         : 'border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
                     }`}
                   >
@@ -1152,7 +1152,7 @@ function DsaHubContent() {
                     }}
                     className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       pageSize === size
-                        ? 'bg-white dark:bg-[#151D35] text-indigo-600 dark:text-indigo-400 shadow-xs'
+                        ? 'bg-white dark:bg-[#151D35] text-[#004182] dark:text-[#D4CBFF] shadow-xs'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
@@ -1180,7 +1180,7 @@ export default function DsaHubPage() {
     <React.Suspense fallback={
       <div className="min-h-screen bg-slate-50 dark:bg-[#070B14] flex items-center justify-center p-8">
         <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400">
-          <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-[#004182] border-t-transparent rounded-full animate-spin" />
           <span className="text-xs font-semibold">Loading DSA Practice Hub...</span>
         </div>
       </div>

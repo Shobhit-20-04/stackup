@@ -441,7 +441,7 @@ export default function SessionTimeoutManager() {
             type="button"
             onClick={handleContinueSession}
             disabled={isExtending}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center justify-center space-x-2 shadow-md cursor-pointer disabled:opacity-50"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-[#004182] hover:bg-[#003366] text-white text-xs font-bold transition-all flex items-center justify-center space-x-2 shadow-md shadow-[#004182]/20 cursor-pointer disabled:opacity-50"
           >
             {isExtending ? (
               <>

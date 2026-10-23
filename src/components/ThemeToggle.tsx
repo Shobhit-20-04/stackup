@@ -163,7 +163,7 @@ export default function ThemeToggle({
         {isDark ? (
           <Sun className="w-3.5 h-3.5 text-amber-400" />
         ) : (
-          <Moon className="w-3.5 h-3.5 text-indigo-600" />
+          <Moon className="w-3.5 h-3.5 text-[#004182]" />
         )}
         {showLabel && (
           <span className="text-xs font-medium">
@@ -195,19 +195,19 @@ export default function ThemeToggle({
         {/* Ambient track icons */}
         <div className="absolute inset-0 flex items-center justify-between px-1.5 sm:px-2 pointer-events-none">
           <Sun className="w-3 h-3 text-amber-500 opacity-60 dark:opacity-35 transition-opacity" />
-          <Moon className="w-3 h-3 text-indigo-400 opacity-35 dark:opacity-60 transition-opacity" />
+          <Moon className="w-3 h-3 text-[#D4CBFF] opacity-35 dark:opacity-60 transition-opacity" />
         </div>
 
         {/* Sliding Thumb */}
         <span
           className={`${
             isDark
-              ? 'translate-x-5 sm:translate-x-6 bg-[#0B1020] border-[#1E2B4D] text-[#22D3EE] shadow-md shadow-black/30'
+              ? 'translate-x-5 sm:translate-x-6 bg-[#0B1020] border-[#1E2B4D] text-[#D4CBFF] shadow-md shadow-black/30'
               : 'translate-x-0 bg-white border-slate-200 text-amber-500 shadow-xs'
           } pointer-events-none relative inline-flex h-5.5 w-5.5 sm:h-6 sm:w-6 items-center justify-center rounded-full border transform transition-transform duration-200 ease-in-out group-hover:scale-105`}
         >
           {isDark ? (
-            <Moon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#22D3EE]" />
+            <Moon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#D4CBFF]" />
           ) : (
             <Sun className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500" />
           )}

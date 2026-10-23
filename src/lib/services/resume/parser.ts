@@ -114,7 +114,7 @@ export async function parseResumeDocument(
   }
 
   // 2. Clean up text and evaluate encoding issues
-  let cleanText = rawText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const cleanText = rawText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   
   // Detect replacement characters or broken unicode glyphs
   const replacementCharMatches = cleanText.match(/\uFFFD|\?{4,}/g);
