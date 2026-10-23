@@ -56,6 +56,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   serverExternalPackages: ['pdf-parse', 'mammoth'],
+  experimental: {
+    agentUpgrade: 'security',
+  },
   async redirects() {
     return [
       {
