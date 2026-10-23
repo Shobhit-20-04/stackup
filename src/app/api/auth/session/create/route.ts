@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSessionToken, setSessionCookie } from '@/lib/security/session-manager';
 import { verifyCsrfOrigin, sanitizeEmail, sanitizeText } from '@/lib/security/sanitize';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
+import { verifyAdminRequest } from '@/lib/security/admin-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -9,6 +10,7 @@ export const dynamic = 'force-dynamic';
 /**
  * POST: Initializes a new server-managed authenticated session upon login.
  * Issues signed HttpOnly session cookie containing creation and activity timestamps.
+ * Enforces strict role authorization to prevent privilege escalation.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -27,11 +29,26 @@ export async function POST(req: NextRequest) {
 
     const cleanUserId = sanitizeText(userId, 64);
     const cleanEmail = sanitizeEmail(email) || 'user@stackup.xyz';
-    const cleanRole = role === 'admin' ? 'admin' : 'student';
     const isRememberMe = Boolean(rememberMe);
 
     if (!cleanUserId) {
       return NextResponse.json({ error: 'A valid userId is required.' }, { status: 400 });
+    }
+
+    // Strict Role Separation: Reject unauthorized callers claiming role: 'admin'
+    let cleanRole: 'student' | 'admin' = 'student';
+    if (role === 'admin') {
+      const isAuthorizedAdmin = verifyAdminRequest(req);
+      if (!isAuthorizedAdmin) {
+        return NextResponse.json(
+          {
+            error: 'Forbidden: Administrator authorization required to create an admin session.',
+            code: 'FORBIDDEN_PRIVILEGE_ESCALATION',
+          },
+          { status: 403 }
+        );
+      }
+      cleanRole = 'admin';
     }
 
     const { token, payload } = createSessionToken({

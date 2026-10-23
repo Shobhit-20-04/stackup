@@ -55,15 +55,19 @@ function cleanupRevocations(): void {
   }
 }
 
+let processEphemeralSessionSecret: string | null = null;
+
 /**
  * Returns the secret key used for HMAC signing of session tokens.
+ * Uses configured environment secrets or a secure process-level high-entropy key.
  */
 function getSigningSecret(): string {
-  return (
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.ADMIN_PASSCODE ||
-    'stackup-session-signing-secret-key-2026'
-  );
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) return process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (process.env.ADMIN_PASSCODE) return process.env.ADMIN_PASSCODE;
+  if (!processEphemeralSessionSecret) {
+    processEphemeralSessionSecret = crypto.randomBytes(32).toString('hex');
+  }
+  return processEphemeralSessionSecret;
 }
 
 /**

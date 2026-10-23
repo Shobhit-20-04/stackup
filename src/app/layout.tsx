@@ -40,7 +40,8 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var saved = localStorage.getItem('stackup-theme') || 'cosmic';
+                  var raw = localStorage.getItem('stackup-theme');
+                  var saved = (raw === 'cosmic' || raw === 'lavender' || raw === 'obsidian') ? raw : 'cosmic';
                   document.documentElement.setAttribute('data-theme', saved);
                   if (saved === 'lavender') {
                     document.documentElement.classList.remove('dark');
