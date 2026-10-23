@@ -17,23 +17,23 @@ export const THEMES: ThemeOption[] = [
   {
     id: 'cosmic',
     name: 'StackUp Midnight',
-    tagline: 'Deep Midnight Navy, Soft Lavender & Mint (Default)',
+    tagline: 'Deep Midnight, Electric Indigo & Deep Teal (Default)',
     isDark: true,
-    palette: ['#0B1020', '#151D35', '#004182', '#D4CBFF', '#9FD6D2'],
+    palette: ['#0B1020', '#151D35', '#044E62', '#0D08CB', '#E9DEFA'],
   },
   {
     id: 'lavender',
     name: 'StackUp Daylight',
-    tagline: 'Powder Blue, Soft Lavender & Deep Plum',
+    tagline: 'Soft Lavender, Deep Teal & Warm Brown',
     isDark: false,
-    palette: ['#D4E2F2', '#FFFFFF', '#004182', '#D4CBFF', '#2E0D23'],
+    palette: ['#E9DEFA', '#FFFFFF', '#044E62', '#0D08CB', '#4A3932'],
   },
   {
     id: 'obsidian',
-    name: 'Deep Plum Noir',
-    tagline: 'Deep Plum, Navy Blue & Mint Teal',
+    name: 'Deep Espresso Noir',
+    tagline: 'Warm Brown, Electric Indigo & Soft Pink',
     isDark: true,
-    palette: ['#140810', '#2E0D23', '#004182', '#9FD6D2', '#D4CBFF'],
+    palette: ['#171210', '#251C18', '#044E62', '#FACAE7', '#0D08CB'],
   },
 ];
 
@@ -118,7 +118,7 @@ export default function ThemeSwitcher() {
         aria-expanded={isOpen}
         className="flex items-center space-x-2 px-2.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-zinc-800 bg-white/80 dark:bg-[#151D35]/80 hover:bg-slate-100 dark:hover:bg-[#1B2442] text-slate-700 dark:text-zinc-200 text-xs font-semibold shadow-xs transition-all cursor-pointer backdrop-blur-sm"
       >
-        <Palette className="w-3.5 h-3.5 text-[#004182] dark:text-[#D4CBFF]" />
+        <Palette className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA]" />
         <span className="hidden sm:inline-block truncate max-w-[90px]">{activeThemeObj.name.split(' ')[0]}</span>
         {/* Active Theme 3-dot preview */}
         <div className="flex items-center -space-x-1 shrink-0 ml-0.5">
@@ -155,7 +155,7 @@ export default function ThemeSwitcher() {
                   onClick={() => selectTheme(theme.id)}
                   className={`w-full text-left p-2.5 rounded-xl transition-all flex items-center justify-between group cursor-pointer ${
                     isSelected
-                      ? 'bg-slate-100 dark:bg-[#1B2442] ring-1 ring-[#004182]/50 shadow-xs'
+                      ? 'bg-slate-100 dark:bg-[#1B2442] ring-1 ring-[#044E62]/50 shadow-xs'
                       : 'hover:bg-slate-50 dark:hover:bg-[#1B2442]/60'
                   }`}
                 >
@@ -165,7 +165,7 @@ export default function ThemeSwitcher() {
                         {theme.name}
                       </span>
                       {isSelected && (
-                        <Check className="w-3.5 h-3.5 text-[#004182] dark:text-[#D4CBFF] shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA] shrink-0" />
                       )}
                     </div>
                     <p className="text-[10px] text-slate-500 dark:text-[#8E9FC8] mt-0.5">

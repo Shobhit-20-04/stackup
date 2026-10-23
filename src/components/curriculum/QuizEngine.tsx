@@ -177,7 +177,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       <div className="space-y-8 max-w-4xl mx-auto">
         {/* Scorecard Hero */}
         <div className="p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs text-center">
-          <div className="inline-flex p-4 rounded-2xl bg-[#004182] text-white shadow-md shadow-[#004182]/20 mb-4">
+          <div className="inline-flex p-4 rounded-2xl bg-[#044E62] text-white shadow-md shadow-[#044E62]/20 mb-4">
             <Award className="w-10 h-10" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
@@ -190,7 +190,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
 
           <div className="mt-6 grid grid-cols-3 gap-2 max-w-lg mx-auto">
             <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#18181b] border border-slate-100 dark:border-zinc-800">
-              <div className="text-3xl sm:text-4xl font-black text-[#004182] dark:text-[#D4CBFF]">
+              <div className="text-3xl sm:text-4xl font-black text-[#044E62] dark:text-[#E9DEFA]">
                 {score}/{activeQuestions.length}
               </div>
               <div className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-zinc-400 font-bold mt-1">Raw Score</div>
@@ -239,7 +239,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
 
             <button
               onClick={onExitQuiz}
-              className="px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-[#004182] hover:bg-[#003366] shadow-xs transition-all flex items-center space-x-1.5"
+              className="px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-[#0D08CB] hover:bg-[#0A06A3] shadow-xs transition-all flex items-center space-x-1.5"
             >
               <BookOpen className="w-4 h-4" />
               <span>Back to Topic Notes</span>
@@ -376,7 +376,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
 
                   {/* Explanation Callout */}
                   <div className="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-[#18181b] text-xs text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800">
-                    <div className="flex items-center space-x-1.5 font-bold text-[#004182] dark:text-[#D4CBFF] mb-1">
+                    <div className="flex items-center space-x-1.5 font-bold text-[#044E62] dark:text-[#E9DEFA] mb-1">
                       <Lightbulb className="w-4 h-4" />
                       <span>Conceptual Solution &amp; Step-by-Step Explanation:</span>
                     </div>
@@ -411,7 +411,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
               onClick={() => setQuizMode('exam')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
                 quizMode === 'exam'
-                  ? 'bg-[#004182] text-white shadow-xs'
+                  ? 'bg-[#0D08CB] text-white shadow-xs'
                   : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white'
               }`}
             >
@@ -450,7 +450,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
               className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
                 timeLeft < 30
                   ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 animate-pulse'
-                  : 'border-[#C5D2E1] dark:border-[#004182]/50 bg-[#D4E2F2]/40 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF]'
+                  : 'border-[#DCD2EC] dark:border-[#044E62]/50 bg-[#E9DEFA]/40 dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA]'
               }`}
             >
               <Clock className="w-4 h-4" />
@@ -468,7 +468,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       {/* Visual Progress Bar */}
       <div className="h-2 w-full bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden -mt-2">
         <div
-          className={`h-full transition-all duration-300 rounded-full ${quizMode === 'practice' ? 'bg-[#9FD6D2]' : 'bg-[#004182]'}`}
+          className={`h-full transition-all duration-300 rounded-full ${quizMode === 'practice' ? 'bg-[#044E62]' : 'bg-[#0D08CB]'}`}
           style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
         />
       </div>
@@ -476,7 +476,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       {/* Question Card */}
       <div className="p-6 sm:p-9 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-7 animate-in fade-in duration-200">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#004182] dark:text-[#D4CBFF]">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
             Question {currentIndex + 1} of {activeQuestions.length}
           </span>
           {isFlagged && (
@@ -507,7 +507,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                 optionClasses = 'border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 font-semibold ring-1 ring-rose-500';
               }
             } else if (active) {
-              optionClasses = 'border-[#004182] bg-[#D4E2F2]/40 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF] shadow-xs ring-1 ring-[#004182]';
+              optionClasses = 'border-[#0D08CB] bg-[#E9DEFA]/40 dark:bg-[#0D08CB]/20 text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs ring-1 ring-[#0D08CB]';
             }
 
             return (
@@ -525,7 +525,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                         : quizMode === 'practice' && active && !isCorrectChoice
                         ? 'border-rose-600 bg-rose-600 text-white'
                         : active
-                        ? 'border-[#004182] bg-[#004182] text-white'
+                        ? 'border-[#0D08CB] bg-[#0D08CB] text-white'
                         : 'border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
                     }`}
                   >
@@ -548,7 +548,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
         {/* Practice Mode Instant Explanation Callout */}
         {quizMode === 'practice' && selectedAnswers[currentIndex] !== undefined && (
           <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#18181b] border border-slate-200 dark:border-zinc-800 space-y-2 animate-in fade-in duration-200">
-            <div className="flex items-center space-x-2 text-xs font-bold text-[#004182] dark:text-[#D4CBFF]">
+            <div className="flex items-center space-x-2 text-xs font-bold text-[#044E62] dark:text-[#E9DEFA]">
               <Lightbulb className="w-4 h-4" />
               <span>Step-by-Step Solution &amp; Conceptual Explanation:</span>
             </div>
@@ -574,7 +574,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             <button
               type="button"
               onClick={() => setCurrentIndex((prev) => prev + 1)}
-              className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-[#004182] hover:bg-[#003366] shadow-md shadow-[#004182]/20 transition-all cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-[#0D08CB] hover:bg-[#0A06A3] shadow-md shadow-[#0D08CB]/20 transition-all cursor-pointer"
             >
               <span>Next Question</span>
               <ArrowRight className="w-3.5 h-3.5" />

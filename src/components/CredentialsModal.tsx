@@ -151,7 +151,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
         {/* Header */}
         <div className="p-6 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#0B1020]/40">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#D4E2F2]/50 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF] border border-[#C5D2E1] dark:border-[#004182]/30 flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center shadow-sm">
               <Database className="w-5 h-5" />
             </div>
             <div>
@@ -200,7 +200,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
             <div className={`p-4 rounded-2xl border text-xs ${
               status?.anthropicConfigured
                 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300'
-                : 'bg-[#D4E2F2]/40 dark:bg-[#004182]/20 border-[#C5D2E1] dark:border-[#004182]/40 text-[#004182] dark:text-[#D4CBFF]'
+                : 'bg-[#E9DEFA]/40 dark:bg-[#044E62]/20 border-[#DCD2EC] dark:border-[#044E62]/40 text-[#044E62] dark:text-[#E9DEFA]'
             }`}>
               <div className="flex items-center justify-between mb-1.5 font-bold">
                 <span className="flex items-center space-x-1.5">
@@ -247,7 +247,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   placeholder="https://xyzproject.supabase.co"
                   value={supabaseUrl}
                   onChange={(e) => setSupabaseUrl(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#004182] focus:outline-none text-slate-900 dark:text-white font-mono"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#0D08CB] focus:outline-none text-slate-900 dark:text-white font-mono"
                 />
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -265,7 +265,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   value={supabaseAnonKey}
                   onChange={(e) => setSupabaseAnonKey(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#004182] focus:outline-none text-slate-900 dark:text-white font-mono"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#0D08CB] focus:outline-none text-slate-900 dark:text-white font-mono"
                 />
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -283,7 +283,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   placeholder="sk-ant-api03-..."
                   value={anthropicApiKey}
                   onChange={(e) => setAnthropicApiKey(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#004182] focus:outline-none text-slate-900 dark:text-white font-mono"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#0D08CB] focus:outline-none text-slate-900 dark:text-white font-mono"
                 />
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -297,7 +297,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                 Database &amp; Google Sign-In Setup:
               </span>
               <ol className="list-decimal list-inside space-y-1.5 text-slate-600 dark:text-slate-400">
-                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-[#004182] dark:text-[#D4CBFF] underline font-medium">supabase.com</a>.</li>
+                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-[#0D08CB] dark:text-[#E9DEFA] underline font-medium">supabase.com</a>.</li>
                 <li>Click <strong>Copy Full Migration SQL</strong> below, open your Supabase <strong>SQL Editor</strong>, paste and run it.</li>
                 <li>Enter your <strong>Project URL</strong> and <strong>Anon Key</strong> above and click Save.</li>
                 <li>
@@ -319,7 +319,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2.5 bg-[#004182] hover:bg-[#003366] disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-[#004182]/20 flex items-center space-x-2 transition-all cursor-pointer"
+                className="px-6 py-2.5 bg-[#0D08CB] hover:bg-[#0A06A3] disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-[#0D08CB]/20 flex items-center space-x-2 transition-all cursor-pointer"
               >
                 {saving ? (
                   <>

@@ -35,6 +35,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <head>
+        <meta name="color-scheme" content="light dark" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -56,7 +57,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] selection:bg-[#004182] selection:text-white transition-colors duration-150">
+      <body className="font-sans min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] selection:bg-[#044E62] selection:text-white transition-colors duration-150">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
