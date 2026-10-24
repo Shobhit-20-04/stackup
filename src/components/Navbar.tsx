@@ -144,10 +144,10 @@ export default function Navbar() {
           <Link
             href="/"
             onClick={handleLogoClick}
-            className="flex items-center space-x-2.5 select-none"
+            className="group flex items-center space-x-2.5 select-none"
             title="StackUp"
           >
-            <div className={`w-8 h-8 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-xs transition-colors ${
+            <div className={`w-8 h-8 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-xs transition-transform duration-200 ease-out group-hover:scale-105 ${
               logoTapCount >= 3 ? 'ring-2 ring-[var(--brand-secondary)]' : ''
             }`}>
               <Layers className="w-4 h-4" />
@@ -160,7 +160,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden md:flex items-center space-x-1" aria-label="Main Navigation">
             {navLinks.map((item) => {
               const Icon = item.icon;
               const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
@@ -168,14 +168,20 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors ${
+                  className={`relative flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-1 select-none ${
                     isActive
-                      ? 'text-slate-900 dark:text-[#E8EEFF] bg-slate-100 dark:bg-[#151D35] font-semibold border border-slate-200/80 dark:border-[#1E2B4D]'
-                      : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF] hover:bg-slate-100/70 dark:hover:bg-[#151D35]/60 font-medium'
+                      ? 'text-slate-900 dark:text-[#E8EEFF] bg-slate-100/90 dark:bg-[#151D35] font-semibold border border-slate-200/90 dark:border-[#1E2B4D] shadow-2xs'
+                      : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF] hover:bg-slate-100/70 dark:hover:bg-[#151D35]/50 border border-transparent'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className={`w-3.5 h-3.5 transition-transform duration-200 ${isActive ? 'text-[var(--brand-primary)] scale-105' : 'text-slate-400 dark:text-slate-500'}`} />
                   <span>{item.name}</span>
+                  {isActive && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute -bottom-1 left-2.5 right-2.5 h-[2px] bg-[var(--brand-primary)] rounded-full transition-all duration-200 ease-out"
+                    />
+                  )}
                 </Link>
               );
             })}
@@ -225,7 +231,7 @@ export default function Navbar() {
                 <div className="flex items-center space-x-2">
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center px-3.5 py-1.5 text-xs font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] rounded-lg shadow-xs transition-colors cursor-pointer"
+                    className="inline-flex items-center justify-center px-3.5 py-1.5 text-xs font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] active:scale-95 rounded-lg shadow-xs transition-all duration-150 cursor-pointer"
                   >
                     Sign In
                   </Link>
@@ -251,7 +257,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#0B1020] px-4 pt-2 pb-4 space-y-1 animate-in slide-in-from-top-2 duration-150">
+        <div className="md:hidden border-b border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#0B1020] px-4 pt-2 pb-4 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200 ease-out">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);

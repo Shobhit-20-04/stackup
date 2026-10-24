@@ -339,23 +339,110 @@ summary {
 button:not(:disabled):active,
 [role="button"]:not([aria-disabled="true"]):active,
 .btn-press:active {
-  transform: scale(0.975);
+  transform: scale(0.98);
   transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Subtle card interaction */
-.card-hover-lift {
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+/* Interactive button micro-interactions */
+.btn-interaction {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.15s ease,
+              border-color 0.15s ease,
+              box-shadow 0.15s ease;
+}
+.btn-interaction:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.btn-interaction:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
-.card-hover-lift:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
+/* Subtle card interaction & elevation on genuine interactive elements */
+.card-hover-lift,
+.card-interactive {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease,
+              background-color 0.2s ease,
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dark .card-hover-lift:hover {
+.card-hover-lift:hover,
+.card-interactive:hover {
+  transform: translateY(-2px);
   border-color: var(--border-strong);
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.08);
+}
+
+.dark .card-hover-lift:hover,
+.dark .card-interactive:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 8px 22px -4px rgba(0, 0, 0, 0.45);
+}
+
+/* Keyframes for refined page entrance */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: pageFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Keyframes for modal scale entrance */
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-enter {
+  animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Keyframes for indeterminate ATS analysis bar */
+@keyframes progressIndeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(25%);
+  }
+  100% {
+    transform: translateX(110%);
+  }
+}
+
+.animate-progress-indeterminate {
+  animation: progressIndeterminate 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Micro-interaction checkmark pop */
+@keyframes checkPop {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-check-pop {
+  animation: checkPop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -364,6 +451,15 @@ button:not(:disabled):active,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    transform: none !important;
+  }
+  .page-enter,
+  .modal-enter,
+  .animate-progress-indeterminate,
+  .animate-check-pop {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
 }
 

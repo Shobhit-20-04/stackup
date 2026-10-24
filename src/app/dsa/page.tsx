@@ -271,7 +271,7 @@ function DsaHubContent() {
   const hardSolved = DSA_PROBLEMS.filter((p) => p.difficulty === 'Hard' && solvedIds.includes(p.id)).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] pb-20 page-enter">
       {/* Header Banner */}
       <div className="bg-white dark:bg-[#151D35] border-b border-slate-200 dark:border-[#1E2B4D]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
@@ -312,7 +312,7 @@ function DsaHubContent() {
               </div>
               <div className="w-full bg-slate-200 dark:bg-[#0B1020] h-2 rounded-full overflow-hidden mb-3 border border-slate-300/30 dark:border-white/5">
                 <div 
-                  className="bg-emerald-500 h-full rounded-full transition-all duration-300" 
+                  className="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out" 
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -527,14 +527,14 @@ function DsaHubContent() {
                     <div className="flex items-start space-x-3 flex-1 min-w-0">
                       <button
                         onClick={() => toggleSolved(problem.id)}
-                        className={`mt-0.5 w-5 h-5 rounded-md flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
+                        className={`mt-0.5 w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 cursor-pointer shrink-0 ${
                           isSolved
                             ? 'bg-emerald-500 text-white shadow-xs'
                             : 'border-2 border-slate-300 dark:border-slate-600 hover:border-emerald-500 text-transparent'
                         }`}
                         title={isSolved ? 'Mark as Unsolved' : 'Mark as Solved'}
                       >
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        <Check className={`w-3.5 h-3.5 stroke-[3] transition-transform duration-200 ${isSolved ? 'animate-check-pop' : ''}`} />
                       </button>
 
                       <div className="min-w-0 flex-1">
@@ -644,14 +644,14 @@ function DsaHubContent() {
                       >
                         <Terminal className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
                         <span>{isExpanded ? 'Hide Solution' : 'Solution & Notes'}</span>
-                        {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
                       </button>
                     </div>
                   </div>
 
                   {/* Complete Output Expandable Body */}
                   {isExpanded && (
-                    <div className="border-t border-slate-200 dark:border-[#1E2B4D] bg-slate-50/50 dark:bg-[#0B1020]/80 rounded-b-xl p-4 sm:p-5 space-y-4">
+                    <div className="border-t border-slate-200 dark:border-[#1E2B4D] bg-slate-50/50 dark:bg-[#0B1020]/80 rounded-b-xl p-4 sm:p-5 space-y-4 animate-in fade-in-50 slide-in-from-top-1 duration-200">
                       {/* Top Tabs */}
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-[#1E2B4D] pb-3">
                         <div className="flex items-center space-x-1 bg-slate-200/80 dark:bg-[#151D35] p-1 rounded-lg border border-slate-200/80 dark:border-[#1E2B4D] overflow-x-auto max-w-full scrollbar-none">

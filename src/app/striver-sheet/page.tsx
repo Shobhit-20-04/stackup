@@ -8,7 +8,6 @@ import {
   ExternalLink, 
   Search, 
   ChevronDown, 
-  ChevronUp, 
   Copy, 
   Check, 
   ListChecks, 
@@ -101,7 +100,7 @@ export default function StriverSheetPage() {
   const progressPercent = Math.round((solvedCount / totalCount) * 100);
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-20 transition-colors">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-20 transition-colors page-enter">
       {/* Header Banner */}
       <div className="border-b border-[var(--border-subtle)] bg-[var(--surface-card)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
@@ -129,7 +128,7 @@ export default function StriverSheetPage() {
               </div>
               <div className="w-full bg-[var(--border-subtle)] h-2 rounded-full overflow-hidden">
                 <div 
-                  className="bg-emerald-500 h-full rounded-full transition-all duration-300" 
+                  className="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out" 
                   style={{ width: `${progressPercent}%` }} 
                 />
               </div>
@@ -255,13 +254,13 @@ export default function StriverSheetPage() {
                           <button
                             type="button"
                             onClick={() => toggleProblemSolved(prob.id)}
-                            className="shrink-0 text-slate-400 hover:text-emerald-500 transition-colors cursor-pointer"
+                            className="shrink-0 text-slate-400 hover:text-emerald-500 transition-all duration-200 active:scale-90 cursor-pointer"
                             title={isSolved ? 'Mark as Unsolved' : 'Mark as Solved'}
                           >
                             {isSolved ? (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 transition-transform duration-200 scale-105" />
                             ) : (
-                              <Circle className="w-4 h-4" />
+                              <Circle className="w-4 h-4 transition-transform duration-200 hover:scale-105" />
                             )}
                           </button>
 
@@ -331,18 +330,14 @@ export default function StriverSheetPage() {
                             className="p-1 rounded hover:bg-[var(--surface-sunken)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
                             title="Quick Code & Approach Drawer"
                           >
-                            {isExpanded ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
+                            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
                           </button>
                         </div>
                       </div>
 
                       {/* Expandable Quick Drawer */}
                       {isExpanded && (
-                        <div className="p-4 sm:px-6 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 space-y-3 animate-in fade-in duration-150">
+                        <div className="p-4 sm:px-6 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 space-y-3 animate-in fade-in-50 slide-in-from-top-1 duration-200">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                             <div className="flex items-center space-x-3 text-[11px] font-mono text-[var(--color-text-secondary)]">
                               <span>Time: <strong className="text-[var(--color-text-primary)]">{prob.timeComplexity}</strong></span>

@@ -282,11 +282,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 {dimension.score}%
               </span>
             </div>
-            {isExpanded ? (
-              <ChevronUp className="w-4 h-4 text-[var(--foreground-muted)]" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-[var(--foreground-muted)]" />
-            )}
+            <ChevronDown className={`w-4 h-4 text-[var(--foreground-muted)] transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
           </div>
         </button>
 
@@ -296,7 +292,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             <div className="mt-3">
               <div className="w-full bg-[var(--surface-sunken)] h-2 rounded-full overflow-hidden border border-[var(--border-subtle)]">
                 <div 
-                  className={`h-full rounded-full transition-all duration-300 ${
+                  className={`h-full rounded-full transition-all duration-500 ease-out ${
                     dimension.score >= 80 ? 'bg-emerald-500' : dimension.score >= 60 ? 'bg-amber-500' : 'bg-rose-500'
                   }`} 
                   style={{ width: `${dimension.score}%` }} 
@@ -361,7 +357,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] pb-20">
+    <div className="min-h-screen bg-[var(--background)] pb-20 page-enter">
       {/* Header Banner */}
       <div className="bg-[var(--surface-card)] border-b border-[var(--border-subtle)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
@@ -652,8 +648,8 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
                 {analyzing && (
                   <div className="w-full max-w-xs mt-4 space-y-2 animate-in fade-in duration-200">
-                    <div className="h-1.5 w-full bg-[var(--surface-sunken)] rounded-full overflow-hidden border border-[var(--border-subtle)]">
-                      <div className="h-full bg-[var(--brand-primary)] animate-pulse w-full rounded-full" />
+                    <div className="h-2 w-full bg-[var(--surface-sunken)] rounded-full overflow-hidden border border-[var(--border-subtle)] relative">
+                      <div className="h-full bg-[var(--brand-primary)] animate-progress-indeterminate w-1/3 rounded-full" />
                     </div>
                     <p className="text-[11px] text-[var(--foreground-muted)] text-center">
                       Extracting text layers, checking encoding, and scoring rubric...

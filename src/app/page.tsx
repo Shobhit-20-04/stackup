@@ -61,28 +61,28 @@ export default function HomePage() {
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   href="/dsa"
-                  className="px-5 py-2.5 rounded-lg text-xs font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-colors inline-flex items-center space-x-2 shadow-xs cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg text-xs font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95 inline-flex items-center space-x-2 shadow-xs cursor-pointer"
                 >
                   <span>Explore the DSA Roadmap</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
                 <Link
                   href="/striver-sheet"
-                  className="px-4 py-2.5 rounded-lg text-xs font-semibold text-[var(--color-text-primary)] bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] border border-[var(--border-subtle)] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+                  className="px-4 py-2.5 rounded-lg text-xs font-semibold text-[var(--color-text-primary)] bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] border border-[var(--border-subtle)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95 inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
                 >
                   <ListChecks className="w-3.5 h-3.5 text-[var(--color-action)]" />
                   <span>Striver SDE Sheet</span>
                 </Link>
                 <Link
                   href="/core-cs"
-                  className="px-4 py-2.5 rounded-lg text-xs font-semibold text-[var(--color-text-primary)] bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] border border-[var(--border-subtle)] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+                  className="px-4 py-2.5 rounded-lg text-xs font-semibold text-[var(--color-text-primary)] bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] border border-[var(--border-subtle)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95 inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
                 >
                   <Cpu className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                   <span>Core CS Notes</span>
                 </Link>
                 <Link
                   href="/resume-checker"
-                  className="px-4 py-2.5 rounded-lg text-xs font-semibold text-[var(--color-text-primary)] bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] border border-[var(--border-subtle)] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+                  className="px-4 py-2.5 rounded-lg text-xs font-semibold text-[var(--color-text-primary)] bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] border border-[var(--border-subtle)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95 inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
                 >
                   <FileCheck2 className="w-3.5 h-3.5 text-rose-500" />
                   <span>Audit Resume</span>
@@ -95,22 +95,22 @@ export default function HomePage() {
                   Immediate Syllabus Shortcuts
                 </span>
                 <div className="flex flex-wrap gap-2 text-xs">
-                  <Link href="/dsa?category=Two+Pointers" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                  <Link href="/dsa?category=Two+Pointers" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95">
                     Two Pointers &amp; Sliding Window
                   </Link>
-                  <Link href="/dsa?category=Trees+%26+BST" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                  <Link href="/dsa?category=Trees+%26+BST" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95">
                     Binary Trees &amp; BSTs
                   </Link>
-                  <Link href="/dsa?category=Dynamic+Programming" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                  <Link href="/dsa?category=Dynamic+Programming" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95">
                     Dynamic Programming
                   </Link>
-                  <Link href="/core-cs" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                  <Link href="/core-cs" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95">
                     Operating Systems
                   </Link>
-                  <Link href="/core-cs" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                  <Link href="/core-cs" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95">
                     DBMS &amp; SQL
                   </Link>
-                  <Link href="/core-cs" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                  <Link href="/core-cs" className="px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--border-strong)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all duration-150 hover:-translate-y-0.5 active:scale-95">
                     Computer Networks
                   </Link>
                 </div>
@@ -272,7 +272,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Pillar 1: DSA Practice Hub */}
-          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 flex flex-col justify-between">
+          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 flex flex-col justify-between card-interactive">
             <div className="space-y-3">
               <div className="w-9 h-9 rounded-lg bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] flex items-center justify-center font-bold">
                 <Code2 className="w-5 h-5" />
@@ -308,7 +308,7 @@ export default function HomePage() {
           </div>
 
           {/* Pillar 2: Core Computer Science */}
-          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 flex flex-col justify-between">
+          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 flex flex-col justify-between card-interactive">
             <div className="space-y-3">
               <div className="w-9 h-9 rounded-lg bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] flex items-center justify-center font-bold">
                 <Cpu className="w-5 h-5" />
@@ -344,7 +344,7 @@ export default function HomePage() {
           </div>
 
           {/* Pillar 3: Aptitude & Assessment Drills */}
-          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 flex flex-col justify-between">
+          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 flex flex-col justify-between card-interactive">
             <div className="space-y-3">
               <div className="w-9 h-9 rounded-lg bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] flex items-center justify-center font-bold">
                 <BookOpen className="w-5 h-5" />

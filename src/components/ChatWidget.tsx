@@ -171,7 +171,7 @@ export default function ChatWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group flex items-center space-x-2 px-3.5 py-2.5 bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] text-[var(--foreground)] border border-[var(--border-subtle)] rounded-lg shadow-md transition-colors cursor-pointer"
+          className="group flex items-center space-x-2 px-3.5 py-2.5 bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] text-[var(--foreground)] border border-[var(--border-subtle)] rounded-lg shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
           aria-label="Open StackUp Assistant"
         >
           <Bot className="w-4 h-4 text-[var(--brand-primary)]" />
@@ -181,7 +181,7 @@ export default function ChatWidget() {
 
       {/* Floating Chat Modal */}
       {isOpen && (
-        <div className="w-[360px] sm:w-[420px] h-[520px] max-h-[85vh] bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in duration-150">
+        <div className="w-[360px] sm:w-[420px] h-[520px] max-h-[85vh] bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl shadow-2xl flex flex-col overflow-hidden modal-enter">
           {/* Header */}
           <div className="bg-[var(--surface-card)] px-4 py-3 border-b border-[var(--border-subtle)] text-[var(--foreground)] flex items-center justify-between">
             <div className="flex items-center space-x-2.5">

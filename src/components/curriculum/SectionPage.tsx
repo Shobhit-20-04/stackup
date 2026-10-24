@@ -364,7 +364,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     const nextTopic = topicIdx < catTopics.length - 1 ? catTopics[topicIdx + 1] : null;
 
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 page-enter">
         <TopicNotes
           topic={selectedTopic}
           sectionSlug={sectionKey}
@@ -423,7 +423,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           </div>
           <div className="w-full h-1.5 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden">
             <div
-              className="h-full rounded-full bg-[var(--brand-primary)] transition-all duration-500"
+              className="h-full rounded-full bg-[var(--brand-primary)] transition-all duration-500 ease-out"
               style={{ width: `${metrics.percent}%` }}
             />
           </div>
@@ -1002,7 +1002,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {/* QUICK REVISION CHEATSHEET MODAL */}
       {isCheatsheetOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden modal-enter">
             {/* Modal Header */}
             <div className="p-4 sm:p-5 border-b border-[var(--border-subtle)] flex items-start justify-between gap-4 bg-[var(--surface-card)]">
               <div className="space-y-1">
@@ -1211,7 +1211,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {/* Auth Prompt Modal */}
       {authPromptOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl max-w-sm w-full p-5 shadow-2xl space-y-4 modal-enter">
             <div className="w-10 h-10 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] border border-[var(--border-subtle)] flex items-center justify-center mb-1">
               <Lock className="w-5 h-5" />
             </div>
