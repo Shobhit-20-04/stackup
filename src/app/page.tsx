@@ -9,8 +9,6 @@ import {
   FileCheck2, 
   ArrowRight, 
   ExternalLink,
-  Layers,
-  FileText
 } from 'lucide-react';
 import { CURRICULUM_DATA } from '@/lib/data/curriculum';
 

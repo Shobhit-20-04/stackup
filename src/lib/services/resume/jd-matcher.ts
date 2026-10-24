@@ -3,7 +3,7 @@
  * Aligns candidate resumes against target job descriptions and roles.
  */
 
-import { SKILL_ONTOLOGY, extractSkillsWithEvidence } from './skills-ontology';
+import { extractSkillsWithEvidence } from './skills-ontology';
 import { getRolePresetById, type RolePreset } from './role-presets';
 import type { JobDescriptionMatch, MatchedSkill } from './types';
 
@@ -76,7 +76,7 @@ export function matchJobDescription(
   preferredJdSkills = preferredJdSkills.filter((s) => !requiredJdSkills.includes(s));
 
   // 3. Match Candidate Skills against JD Skills
-  const candidateSkillNames = new Set(candidateSkills.map((s) => s.name.toLowerCase()));
+  // candidateSkills mapped directly
 
   const requiredSkillsMatched: MatchedSkill[] = [];
   const requiredSkillsMissing: string[] = [];

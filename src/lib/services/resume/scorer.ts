@@ -12,7 +12,6 @@ import type {
   ExperienceLevel,
   Recommendation,
 } from './types';
-import { generateBulletRewrites } from './bullet-optimizer';
 
 const ACTION_VERBS = [
   'architected', 'spearheaded', 'engineered', 'implemented', 'optimized',

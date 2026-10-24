@@ -17,20 +17,6 @@ export interface UserSession {
 const DEMO_STORAGE_KEY = 'stackup_demo_user_session';
 const COOKIE_KEY = 'sb-demo-user';
 
-export const DEFAULT_DEMO_USER: UserSession = {
-  id: 'student-demo',
-  email: 'guest@stackup.xyz',
-  full_name: 'Guest Student',
-  avatar_url: null,
-  phone: null,
-  target_role: null,
-  college: null,
-  grad_year: null,
-  github_url: null,
-  linkedin_url: null,
-  isDemo: true,
-};
-
 export function getFastCachedUser(): UserSession | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -70,7 +56,7 @@ export async function getCurrentUser(): Promise<UserSession | null> {
         isDemo: false,
       };
       if (typeof window !== 'undefined') {
-        setDemoUserSession(sessionUser);
+        setUserSession(sessionUser);
       }
       return sessionUser;
     }
@@ -80,7 +66,6 @@ export async function getCurrentUser(): Promise<UserSession | null> {
 
   // 2. Fall back to authenticated session from localStorage or cookie
   if (typeof window !== 'undefined') {
-
     try {
       const stored = localStorage.getItem(DEMO_STORAGE_KEY);
       if (stored) {
@@ -101,13 +86,19 @@ export async function getCurrentUser(): Promise<UserSession | null> {
   return null;
 }
 
-export function setDemoUserSession(user: UserSession = DEFAULT_DEMO_USER): void {
+export function setUserSession(user: UserSession): void {
+  if (!user || user.isDemo || user.id === 'student-demo' || user.email === 'guest@stackup.xyz') {
+    return;
+  }
   if (typeof window !== 'undefined') {
     localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(user));
-    // Set cookie so Next.js middleware and SSR can detect demo session
+    // Set cookie so Next.js middleware and SSR can detect authenticated session
     document.cookie = `${COOKIE_KEY}=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=86400; SameSite=Lax`;
   }
 }
+
+// Backwards-compatible alias for existing callers
+export const setDemoUserSession = setUserSession;
 
 export function updateUserSession(updates: Partial<UserSession>): void {
   if (typeof window !== 'undefined') {

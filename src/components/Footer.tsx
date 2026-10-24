@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Layers, Code2, BookOpen, Cpu, FileCheck2, ShieldCheck } from 'lucide-react';
+import { Layers, Code2, BookOpen, Cpu, FileCheck2 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Footer() {

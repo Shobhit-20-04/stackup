@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     if (demoCookie) {
       try {
         const parsed = JSON.parse(decodeURIComponent(demoCookie));
-        if (parsed?.id && parsed?.email) {
+        if (parsed?.id && parsed?.email && !parsed.isDemo && parsed.id !== 'student-demo' && parsed.email !== 'guest@stackup.xyz') {
           localUserId = parsed.id;
           localUserEmail = parsed.email;
         }

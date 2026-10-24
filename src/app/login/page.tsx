@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   User,
   Lock,
-  Sparkles,
   Eye,
   EyeOff,
   Clock
@@ -254,44 +253,6 @@ function LoginForm() {
     }
   };
 
-  // 3. Instant One-Click Demo Access
-  const handleInstantDemoLogin = () => {
-    setLoading(true);
-    const demoStudent = {
-      id: `usr-demo-${Date.now()}`,
-      email: 'alex.rivera@university.edu',
-      full_name: 'Alex Rivera',
-      avatar_url: null,
-      phone: null,
-      target_role: 'Software Development Engineer (SDE-1)',
-      college: 'National Institute of Technology',
-      grad_year: '2026',
-      github_url: 'https://github.com/alexrivera-dev',
-      linkedin_url: 'https://linkedin.com/in/alexrivera',
-      isDemo: false,
-    };
-
-    setDemoUserSession(demoStudent);
-
-    fetch('/api/auth/record-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      keepalive: true,
-      body: JSON.stringify({
-        email: demoStudent.email,
-        fullName: demoStudent.full_name,
-        userId: demoStudent.id,
-        authMethod: 'Instant Demo Login',
-      }),
-    }).catch(() => {});
-
-    setSuccessMsg('Signed in as Alex Rivera! Redirecting to dashboard...');
-    setTimeout(() => {
-      router.push(redirectPath);
-      router.refresh();
-    }, 300);
-  };
-
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 bg-[var(--background)]">
       <div className="w-full max-w-md">
@@ -499,19 +460,6 @@ function LoginForm() {
               </button>
             </div>
           </form>
-
-          {/* Instant 1-Click Demo Login */}
-          <div className="mt-4 pt-3.5 border-t border-[var(--border-subtle)]">
-            <button
-              type="button"
-              onClick={handleInstantDemoLogin}
-              disabled={loading}
-              className="w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground)] font-medium text-xs transition-colors cursor-pointer"
-            >
-              <User className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-              <span>Quick Demo Session (Alex Rivera)</span>
-            </button>
-          </div>
 
           {/* Security footnote */}
           <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex items-center justify-center space-x-1.5 text-[11px] text-[var(--foreground-muted)]">

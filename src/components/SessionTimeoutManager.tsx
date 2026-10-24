@@ -27,7 +27,7 @@ export default function SessionTimeoutManager() {
   const [errorMessage, setErrorMessage] = useState('');
 
   // Refs for state without triggering re-renders
-  const lastActiveRef = useRef<number>(Date.now());
+  const lastActiveRef = useRef<number>(0);
   const isAuthenticatedRef = useRef<boolean>(false);
   const userRoleRef = useRef<string>('student');
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);

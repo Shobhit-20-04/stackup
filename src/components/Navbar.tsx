@@ -15,7 +15,6 @@ import {
   Layers, 
   Menu, 
   X,
-  ArrowRight
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 

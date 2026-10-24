@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       if (match) {
         try {
           const parsed = JSON.parse(decodeURIComponent(match[1]));
-          if (parsed && typeof parsed.id === 'string' && (!explicitUserId || parsed.id === explicitUserId)) {
+          if (parsed && typeof parsed.id === 'string' && !parsed.isDemo && parsed.id !== 'student-demo' && (!explicitUserId || parsed.id === explicitUserId)) {
             demoUserId = parsed.id;
           }
         } catch {

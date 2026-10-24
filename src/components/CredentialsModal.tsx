@@ -187,13 +187,13 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
                   <span>Supabase Postgres</span>
                 </span>
                 <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-black bg-white/70 dark:bg-zinc-900/70">
-                  {status?.supabaseConfigured ? 'Connected' : 'Demo Mode'}
+                  {status?.supabaseConfigured ? 'Connected' : 'Local Storage'}
                 </span>
               </div>
               <p className="text-[11px] opacity-80">
                 {status?.supabaseConfigured 
                   ? 'Real-time database and live OAuth active.' 
-                  : 'Operating via robust local storage & simulated sessions.'}
+                  : 'Operating via secure local storage & browser database.'}
               </p>
             </div>
 

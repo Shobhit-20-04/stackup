@@ -9,7 +9,6 @@ import {
   Bot, 
   X, 
   Send, 
-  Sparkles, 
   Loader2,
   Lock,
   ArrowRight

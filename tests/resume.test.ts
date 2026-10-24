@@ -5,7 +5,6 @@ import {
   analyzeResumeText, 
   extractSkillsWithEvidence, 
   matchJobDescription, 
-  TARGET_ROLE_PRESETS 
 } from '../src/lib/services/resume';
 
 describe('Resume ATS Diagnostics & Rate Limiting', () => {

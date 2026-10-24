@@ -37,8 +37,6 @@ import {
   History,
   CheckSquare,
   Square,
-  Layers,
-  Activity,
 } from 'lucide-react';
 
 interface ResumeRecord {

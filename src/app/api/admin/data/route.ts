@@ -13,7 +13,6 @@ import {
   purgeTestRecords,
   getAdminAuditLogs,
   extractCandidateName,
-  type UploadedResumeRecord,
 } from '@/lib/services/resume/resume-repository';
 
 export const runtime = 'nodejs';

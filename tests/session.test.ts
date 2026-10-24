@@ -17,7 +17,7 @@ describe('StackUp Session Management & Automatic Timeout Suite', () => {
 
   // 1. A newly authenticated user can access protected routes
   it('1. permits newly authenticated users with valid session tokens', () => {
-    const { token, payload } = createSessionToken(
+    const { token } = createSessionToken(
       {
         userId: 'usr-student-101',
         email: 'student@stackup.xyz',

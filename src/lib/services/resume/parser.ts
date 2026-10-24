@@ -4,7 +4,7 @@
  */
 
 import mammoth from 'mammoth';
-import type { ParsingReport, ExtractedSection, ConfidenceRating } from './types';
+import type { ParsingReport, ConfidenceRating } from './types';
 
 // Ensure Node.js global polyfills for PDF.js runtime
 if (typeof (globalThis as unknown as { DOMMatrix: unknown }).DOMMatrix === 'undefined') {

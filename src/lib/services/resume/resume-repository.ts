@@ -65,7 +65,7 @@ let inMemoryAudits: AdminAuditLogEntry[] | null = null;
 
 function ensureDataDir(): void {
   try {
-    if (!fs.existsSync(DATA_DIR)) {
+    if (!fs.existsSync(/*turbopackIgnore: true*/ DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
   } catch (err) {
@@ -107,7 +107,7 @@ function saveLocalResumes(map: Map<string, UploadedResumeRecord>): void {
     } catch {
       fs.writeFileSync(RESUMES_FILE, JSON.stringify(list, null, 2), 'utf8');
     }
-  } catch (err) {
+  } catch {
     // Non-blocking in-memory fallback for read-only / serverless container runtimes
   }
 }
@@ -141,7 +141,7 @@ function saveLocalAudits(list: AdminAuditLogEntry[]): void {
     } catch {
       fs.writeFileSync(AUDIT_FILE, JSON.stringify(list.slice(0, 500), null, 2), 'utf8');
     }
-  } catch (err) {
+  } catch {
     // Non-blocking in-memory fallback for read-only / serverless container runtimes
   }
 }

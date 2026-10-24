@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -22,10 +22,8 @@ import {
 import { checkRateLimit } from '@/lib/services/rate-limit';
 import {
   saveUploadedResume,
-  getUploadedResumes,
   getUploadedResumeById,
   deleteUploadedResume,
-  deleteUploadedResumes,
   purgeTestRecords,
   reprocessResume,
   recordAdminAudit,
@@ -35,8 +33,6 @@ import {
 } from '@/lib/services/resume/resume-repository';
 
 describe('Admin Authentication, Salted Scrypt Hashing & Key Verification', () => {
-  const originalEnvHash = process.env.ADMIN_PASSWORD_HASH;
-  const originalEnvPass = process.env.ADMIN_PASSCODE;
 
   beforeEach(() => {
     // Restore default hash for each test

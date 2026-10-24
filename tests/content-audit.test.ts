@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CURRICULUM_DATA } from '@/lib/data/curriculum';
-import { DSA_PROBLEMS, DSA_CATEGORIES } from '@/lib/data/dsa';
+import { DSA_PROBLEMS } from '@/lib/data/dsa';
 
 describe('Comprehensive Educational Content Audit', () => {
   it('audits and inventories all DSA problems', () => {
@@ -10,11 +10,10 @@ describe('Comprehensive Educational Content Audit', () => {
     const difficultyCounts: Record<string, number> = { Easy: 0, Medium: 0, Hard: 0 };
     const categoryCounts: Record<string, number> = {};
     const missingFields: string[] = [];
-    const problemsWithShortNotes: string[] = [];
 
     const seenIds = new Set<string>();
 
-    DSA_PROBLEMS.forEach((prob, idx) => {
+    DSA_PROBLEMS.forEach((prob) => {
       // Check ID uniqueness
       if (seenIds.has(prob.id)) {
         missingFields.push(`Duplicate ID: ${prob.id}`);
@@ -105,7 +104,7 @@ describe('Comprehensive Educational Content Audit', () => {
             catQuestions += topic.questions.length;
             totalQuestions += topic.questions.length;
 
-            topic.questions.forEach((q, qIdx) => {
+            topic.questions.forEach((q) => {
               if (seenQuestionIds.has(q.id)) {
                 issues.push(`Duplicate question ID: ${q.id} in topic ${topic.id}`);
               }

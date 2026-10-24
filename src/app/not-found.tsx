@@ -2,11 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, 
   Code2, 
   Cpu, 
-  BookOpen, 
   FileCheck2, 
   Home, 
   LayoutDashboard,
@@ -14,11 +14,12 @@ import {
 } from 'lucide-react';
 
 export default function NotFound() {
+  const router = useRouter();
   const handleGoBack = () => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
       window.history.back();
     } else {
-      window.location.href = '/dashboard';
+      router.push('/dashboard');
     }
   };
 
