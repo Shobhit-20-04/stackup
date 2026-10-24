@@ -66,7 +66,7 @@ export default function HomePage() {
             <span>Technical Interview &amp; GATE Preparation Platform</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#2E0D23] dark:text-[#E8EEFF] leading-[1.14]">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#044E62] dark:text-[#E8EEFF] leading-[1.14]">
             Structured preparation for software engineering interviews.
           </h1>
 
@@ -103,22 +103,22 @@ export default function HomePage() {
         {/* Structured Quantitative Metrics Bar */}
         <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
           <div>
-            <div className="text-xl sm:text-2xl font-bold text-[#2E0D23] dark:text-[#E8EEFF]">150+</div>
+            <div className="text-xl sm:text-2xl font-bold text-[#4A3932] dark:text-[#E8EEFF]">150+</div>
             <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">DSA Problems Mapped</div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">LeetCode &amp; Striver SDE sheet</div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-bold text-[#2E0D23] dark:text-[#E8EEFF]">19</div>
+            <div className="text-xl sm:text-2xl font-bold text-[#4A3932] dark:text-[#E8EEFF]">19</div>
             <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">Core CS &amp; Aptitude</div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">15 CS Subjects + 4 Aptitude Tracks</div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-bold text-[#2E0D23] dark:text-[#E8EEFF]">668</div>
+            <div className="text-xl sm:text-2xl font-bold text-[#4A3932] dark:text-[#E8EEFF]">668</div>
             <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">Verified Practice MCQs</div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Timed tests with detailed solutions</div>
           </div>
           <div>
-            <div className="text-xl sm:text-2xl font-bold text-[#2E0D23] dark:text-[#E8EEFF]">ATS Scanner</div>
+            <div className="text-xl sm:text-2xl font-bold text-[#4A3932] dark:text-[#E8EEFF]">ATS Scanner</div>
             <div className="text-xs font-medium text-slate-600 dark:text-[#8E9FC8] mt-0.5">Resume Parser Audit</div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Keyword match &amp; STAR rewrites</div>
           </div>
@@ -149,7 +149,7 @@ export default function HomePage() {
                 </span>
                 <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">15 Patterns</span>
               </div>
-              <h3 className="text-base font-bold text-[#2E0D23] dark:text-[#E8EEFF]">
+              <h3 className="text-base font-bold text-[#4A3932] dark:text-[#E8EEFF]">
                 DSA Practice Hub
               </h3>
               <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed">
@@ -178,7 +178,7 @@ export default function HomePage() {
                 </span>
                 <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">15 Subjects</span>
               </div>
-              <h3 className="text-base font-bold text-[#2E0D23] dark:text-[#E8EEFF]">
+              <h3 className="text-base font-bold text-[#4A3932] dark:text-[#E8EEFF]">
                 Core Computer Science
               </h3>
               <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed">
@@ -207,7 +207,7 @@ export default function HomePage() {
                 </span>
                 <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">4 Categories</span>
               </div>
-              <h3 className="text-base font-bold text-[#2E0D23] dark:text-[#E8EEFF]">
+              <h3 className="text-base font-bold text-[#4A3932] dark:text-[#E8EEFF]">
                 Aptitude &amp; Reasoning
               </h3>
               <p className="mt-1.5 text-xs text-slate-600 dark:text-[#8E9FC8] leading-relaxed">
@@ -256,7 +256,7 @@ export default function HomePage() {
               className="p-3.5 rounded-lg border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-[#2D3D6E] transition-colors flex items-start justify-between group"
             >
               <div className="min-w-0 pr-3">
-                <div className="text-xs font-bold text-[#2E0D23] dark:text-[#E8EEFF] group-hover:text-[var(--brand-primary)] transition-colors truncate">
+                <div className="text-xs font-bold text-[#4A3932] dark:text-[#E8EEFF] group-hover:text-[var(--brand-primary)] transition-colors truncate">
                   {subject.title}
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-[#8E9FC8] mt-0.5 line-clamp-1">
@@ -303,7 +303,7 @@ export default function HomePage() {
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs font-bold text-[#2E0D23] dark:text-[#E8EEFF]">
+                    <span className="text-xs font-bold text-[#4A3932] dark:text-[#E8EEFF]">
                       {item.name}
                     </span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-[#0B1020] text-slate-600 dark:text-[#8E9FC8] border border-slate-200 dark:border-[#1E2B4D]">
@@ -335,7 +335,7 @@ export default function HomePage() {
               <FileCheck2 className="w-4 h-4" />
               <span>ATS Resume Evaluator</span>
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-[#2E0D23] dark:text-[#E8EEFF]">
+            <h3 className="text-lg sm:text-xl font-bold text-[#4A3932] dark:text-[#E8EEFF]">
               Test your engineering resume against standard applicant tracking parsers.
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-[#8E9FC8] leading-relaxed">

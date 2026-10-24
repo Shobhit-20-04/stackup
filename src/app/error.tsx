@@ -46,7 +46,7 @@ export default function GlobalError({
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <button
             onClick={() => reset()}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-2xl font-bold text-xs text-white bg-[#004182] hover:bg-[#003366] shadow-sm transition-all cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-2xl font-bold text-xs text-white bg-[#0D08CB] hover:bg-[#0A06A3] shadow-sm transition-all cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>

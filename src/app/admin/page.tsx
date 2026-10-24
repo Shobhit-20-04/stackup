@@ -784,7 +784,7 @@ export default function AdminDashboardPage() {
         <div className="w-full max-w-md mb-3 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-[#004182] dark:hover:text-[#D4CBFF] bg-white dark:bg-[#151D35] hover:bg-slate-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-[#0D08CB] dark:hover:text-[#E9DEFA] bg-white dark:bg-[#151D35] hover:bg-slate-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-sm"
           >
             <ChevronLeft className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             <span>&larr; Back to StackUp Website</span>
@@ -797,7 +797,7 @@ export default function AdminDashboardPage() {
           {authView === 'login' && (
             <>
               <div className="space-y-3">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D4E2F2]/50 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF] border border-[#C5D2E1] dark:border-[#004182]/30 flex items-center justify-center mx-auto shadow-sm">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center mx-auto shadow-sm">
                   <ShieldCheck className="w-8 h-8 sm:w-9 sm:h-9" />
                 </div>
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -836,7 +836,7 @@ export default function AdminDashboardPage() {
                       autoCorrect="off"
                       autoCapitalize="off"
                       spellCheck={false}
-                      className="w-full pl-10 pr-11 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182] focus:border-[#004182] cursor-text transition-colors"
+                      className="w-full pl-10 pr-11 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB] focus:border-[#0D08CB] cursor-text transition-colors"
                     />
                     <button
                       type="button"
@@ -863,7 +863,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 py-3 px-4 rounded-2xl bg-[#004182] hover:bg-[#003366] active:bg-[#002855] text-white text-xs font-bold transition-all shadow-md shadow-[#004182]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-3 px-4 rounded-2xl bg-[#0D08CB] hover:bg-[#0A06A3] active:bg-[#08059E] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                   >
                     {loading ? (
                       <>
@@ -890,7 +890,7 @@ export default function AdminDashboardPage() {
                     setResetSuccess('');
                     setAuthView('reset-request');
                   }}
-                  className="inline-flex items-center space-x-1.5 text-[#004182] dark:text-[#D4CBFF] hover:text-[#003366] dark:hover:text-white font-semibold cursor-pointer transition-colors"
+                  className="inline-flex items-center space-x-1.5 text-[#0D08CB] dark:text-[#E9DEFA] hover:text-[#0A06A3] dark:hover:text-white font-semibold cursor-pointer transition-colors"
                 >
                   <Key className="w-3.5 h-3.5" />
                   <span>Forgot security key? Reset password via email</span>
@@ -923,14 +923,14 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Security Policy Badge */}
-              <div className="p-3.5 rounded-2xl bg-[#D4E2F2]/40 dark:bg-[#004182]/20 border border-[#C5D2E1] dark:border-[#004182]/40 text-left text-xs space-y-1">
-                <div className="font-bold text-[#004182] dark:text-[#D4CBFF] flex items-center space-x-1.5">
-                  <ShieldCheck className="w-4 h-4 text-[#004182] dark:text-[#D4CBFF]" />
+              <div className="p-3.5 rounded-2xl bg-[#E9DEFA]/40 dark:bg-[#044E62]/20 border border-[#DCD2EC] dark:border-[#044E62]/40 text-left text-xs space-y-1">
+                <div className="font-bold text-[#044E62] dark:text-[#E9DEFA] flex items-center space-x-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
                   <span>Restricted Administrator Recovery</span>
                 </div>
                 <p className="text-slate-600 dark:text-slate-300 text-[11px]">
                   Password recovery is strictly restricted to the verified administrator account:{' '}
-                  <code className="font-mono font-bold text-[#004182] dark:text-[#D4CBFF] bg-white dark:bg-zinc-800 px-1 py-0.5 rounded">
+                  <code className="font-mono font-bold text-[#044E62] dark:text-[#E9DEFA] bg-white dark:bg-zinc-800 px-1 py-0.5 rounded">
                     shobhitagrawal2004@gmail.com
                   </code>
                 </p>
@@ -968,7 +968,7 @@ export default function AdminDashboardPage() {
                       required
                       autoFocus
                       autoComplete="email"
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182] font-medium transition-colors"
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB] font-medium transition-colors"
                     />
                   </div>
                   <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 pl-1">
@@ -991,7 +991,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="submit"
                     disabled={resetLoading}
-                    className="flex-1 py-3 px-4 rounded-2xl bg-[#004182] hover:bg-[#003366] active:bg-[#002855] text-white text-xs font-bold transition-all shadow-md shadow-[#004182]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-3 px-4 rounded-2xl bg-[#0D08CB] hover:bg-[#0A06A3] active:bg-[#08059E] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                   >
                     {resetLoading ? (
                       <>
@@ -1016,7 +1016,7 @@ export default function AdminDashboardPage() {
                     setResetError('');
                     setResetSuccess('');
                   }}
-                  className="text-[#004182] dark:text-[#D4CBFF] hover:underline font-semibold cursor-pointer"
+                  className="text-[#044E62] dark:text-[#E9DEFA] hover:underline font-semibold cursor-pointer"
                 >
                   Already have a 6-digit recovery code? Enter it here &rarr;
                 </button>
@@ -1028,7 +1028,7 @@ export default function AdminDashboardPage() {
           {authView === 'reset-verify' && (
             <>
               <div className="space-y-3">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D4E2F2]/50 dark:bg-[#004182]/20 text-[#004182] dark:text-[#D4CBFF] border border-[#C5D2E1] dark:border-[#004182]/30 flex items-center justify-center mx-auto shadow-sm">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center mx-auto shadow-sm">
                   <Lock className="w-8 h-8 sm:w-9 sm:h-9" />
                 </div>
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -1040,9 +1040,9 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Informational Banner */}
-              <div className="p-3.5 rounded-2xl bg-[#D4E2F2]/40 dark:bg-[#004182]/20 border border-[#C5D2E1] dark:border-[#004182]/40 text-left text-xs space-y-1">
-                <div className="font-bold text-[#004182] dark:text-[#D4CBFF] flex items-center space-x-1.5">
-                  <Key className="w-4 h-4 text-[#004182] dark:text-[#D4CBFF]" />
+              <div className="p-3.5 rounded-2xl bg-[#E9DEFA]/40 dark:bg-[#044E62]/20 border border-[#DCD2EC] dark:border-[#044E62]/40 text-left text-xs space-y-1">
+                <div className="font-bold text-[#044E62] dark:text-[#E9DEFA] flex items-center space-x-1.5">
+                  <Key className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
                   <span>Recovery Instructions Dispatched</span>
                 </div>
                 <p className="text-slate-600 dark:text-slate-300 text-[11px]">
@@ -1098,7 +1098,7 @@ export default function AdminDashboardPage() {
                       placeholder="admin@example.com"
                       required
                       autoComplete="email"
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182] font-medium transition-colors"
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB] font-medium transition-colors"
                     />
                   </div>
                 </div>
@@ -1120,7 +1120,7 @@ export default function AdminDashboardPage() {
                       required={!isRecoverySession}
                       maxLength={6}
                       autoFocus={!isRecoverySession}
-                      className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                      className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                     />
                   </div>
                   <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 pl-1">
@@ -1145,7 +1145,7 @@ export default function AdminDashboardPage() {
                       required
                       minLength={8}
                       autoComplete="new-password"
-                      className="w-full pl-10 pr-11 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                      className="w-full pl-10 pr-11 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                     />
                     <button
                       type="button"
@@ -1175,7 +1175,7 @@ export default function AdminDashboardPage() {
                       required
                       minLength={8}
                       autoComplete="new-password"
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                     />
                   </div>
                 </div>
@@ -1196,7 +1196,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="submit"
                     disabled={resetLoading}
-                    className="flex-1 py-3 px-4 rounded-2xl bg-[#004182] hover:bg-[#003366] active:bg-[#002855] text-white text-xs font-bold transition-all shadow-md shadow-[#004182]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-3 px-4 rounded-2xl bg-[#0D08CB] hover:bg-[#0A06A3] active:bg-[#08059E] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                   >
                     {resetLoading ? (
                       <>
@@ -1221,14 +1221,14 @@ export default function AdminDashboardPage() {
 
   // Authenticated Administration Surface
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] text-slate-900 dark:text-slate-100 flex flex-col transition-colors selection:bg-[#004182] selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] text-slate-900 dark:text-slate-100 flex flex-col transition-colors selection:bg-[#044E62] selection:text-white">
       {/* Top Header Navigation Strip */}
       <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0B1020]/95 backdrop-blur-md border-b border-slate-200 dark:border-zinc-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#004182] text-white flex items-center justify-center shadow-md shadow-[#004182]/20 shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#044E62] text-white flex items-center justify-center shadow-md shadow-[#0D08CB]/20 shrink-0">
                   <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
@@ -1271,7 +1271,7 @@ export default function AdminDashboardPage() {
                 disabled={loading}
                 className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#D4CBFF]' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#E9DEFA]' : ''}`} />
                 <span className="hidden xs:inline">Refresh</span>
               </button>
 
@@ -1289,7 +1289,7 @@ export default function AdminDashboardPage() {
                 className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
                 title="View administrator audit trail"
               >
-                <History className="w-3.5 h-3.5 text-[#004182] dark:text-[#D4CBFF] dark:text-[#D4CBFF]" />
+                <History className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA] dark:text-[#E9DEFA]" />
                 <span className="hidden sm:inline">Audit Trail</span>
               </button>
 
@@ -1311,7 +1311,7 @@ export default function AdminDashboardPage() {
                 className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
                 title="Supabase and Claude API Integrations"
               >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-[#004182] dark:text-[#D4CBFF] dark:text-[#D4CBFF]" />
+                <SlidersHorizontal className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA] dark:text-[#E9DEFA]" />
                 <span className="hidden sm:inline">Integrations</span>
               </button>
 
@@ -1366,7 +1366,7 @@ export default function AdminDashboardPage() {
           <div className="bg-[#151D35] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Candidate Resumes</span>
-              <FileText className="w-3.5 h-3.5 text-[#D4CBFF]" />
+              <FileText className="w-3.5 h-3.5 text-[#E9DEFA]" />
             </div>
             <div className="text-xl sm:text-3xl font-black text-white">
               {data?.metrics.totalResumes ?? 0}
@@ -1393,7 +1393,7 @@ export default function AdminDashboardPage() {
           <div className="bg-[#151D35] p-3.5 sm:p-5 rounded-2xl border border-zinc-800 shadow-xs">
             <div className="flex items-center justify-between text-slate-400 mb-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">Student Profiles</span>
-              <Users className="w-3.5 h-3.5 text-[#D4CBFF]" />
+              <Users className="w-3.5 h-3.5 text-[#E9DEFA]" />
             </div>
             <div className="text-xl sm:text-3xl font-black text-white">
               {data?.metrics.totalUsers ?? 0}
@@ -1436,7 +1436,7 @@ export default function AdminDashboardPage() {
             onClick={() => { setActiveTab('workspace'); setMobileDetailOpen(false); }}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'workspace'
-                ? 'bg-[#004182] text-white shadow-sm'
+                ? 'bg-[#0D08CB] text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
@@ -1448,7 +1448,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('table')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'table'
-                ? 'bg-[#004182] text-white shadow-sm'
+                ? 'bg-[#0D08CB] text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
@@ -1460,7 +1460,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('users')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'users'
-                ? 'bg-[#004182] text-white shadow-sm'
+                ? 'bg-[#0D08CB] text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
@@ -1472,7 +1472,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('skills')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'skills'
-                ? 'bg-[#004182] text-white shadow-sm'
+                ? 'bg-[#0D08CB] text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
@@ -1484,7 +1484,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('logins')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
               activeTab === 'logins'
-                ? 'bg-[#004182] text-white shadow-sm'
+                ? 'bg-[#0D08CB] text-white shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-zinc-850'
             }`}
           >
@@ -1501,7 +1501,7 @@ export default function AdminDashboardPage() {
             {/* AUTHENTIC EMPTY STATE: Shown when no genuine resumes exist in store */}
             {(!data?.resumes || data.resumes.length === 0) ? (
               <div className="bg-[#151D35] rounded-3xl border border-zinc-800 p-12 text-center text-slate-400 space-y-5">
-                <div className="w-16 h-16 rounded-2xl bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30 flex items-center justify-center mx-auto shadow-inner">
+                <div className="w-16 h-16 rounded-2xl bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30 flex items-center justify-center mx-auto shadow-inner">
                   <FileText className="w-8 h-8" />
                 </div>
                 <div className="max-w-md mx-auto space-y-2">
@@ -1515,7 +1515,7 @@ export default function AdminDashboardPage() {
                 <div className="pt-2">
                   <Link
                     href="/resume-checker"
-                    className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#004182] hover:bg-[#003366] text-white text-xs font-bold transition-all shadow-md shadow-[#004182]/20"
+                    className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20"
                   >
                     <span>Open ATS Resume Checker</span>
                     <ArrowRight className="w-4 h-4" />
@@ -1536,7 +1536,7 @@ export default function AdminDashboardPage() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search candidate name, email, filename, or skill..."
                         aria-label="Search candidate records by name, email, filename, or skill"
-                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                       />
                     </div>
 
@@ -1599,14 +1599,14 @@ export default function AdminDashboardPage() {
 
                   {/* Bulk Actions Toolbar (Sticky when 1+ selected) */}
                   {selectedResumeIds.size > 0 && (
-                    <div className="p-3 rounded-2xl bg-[#004182]/25 border border-[#004182]/50 flex items-center justify-between gap-2 text-xs animate-in fade-in">
+                    <div className="p-3 rounded-2xl bg-[#044E62]/25 border border-[#044E62]/50 flex items-center justify-between gap-2 text-xs animate-in fade-in">
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={toggleSelectAll}
                           className="text-slate-300 hover:text-white cursor-pointer"
                         >
                           {selectedResumeIds.size === filteredResumes.length ? (
-                            <CheckSquare className="w-4 h-4 text-[#D4CBFF]" />
+                            <CheckSquare className="w-4 h-4 text-[#E9DEFA]" />
                           ) : (
                             <Square className="w-4 h-4 text-slate-400" />
                           )}
@@ -1619,7 +1619,7 @@ export default function AdminDashboardPage() {
                       <div className="flex items-center space-x-1.5">
                         <button
                           onClick={() => handleExportCsv(Array.from(selectedResumeIds))}
-                          className="px-2.5 py-1 rounded-lg bg-[#004182] hover:bg-[#003366] text-white font-semibold text-[11px] flex items-center space-x-1 transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] text-white font-semibold text-[11px] flex items-center space-x-1 transition-colors cursor-pointer"
                         >
                           <Download className="w-3 h-3" />
                           <span>Export CSV</span>
@@ -1664,7 +1664,7 @@ export default function AdminDashboardPage() {
                             }}
                             className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative group ${
                               isSelected
-                                ? 'bg-[#004182]/20 border-[#004182] shadow-sm'
+                                ? 'bg-[#044E62]/20 border-[#044E62] shadow-sm'
                                 : 'bg-[#151D35] border-zinc-800 hover:border-zinc-700 hover:bg-slate-850/60'
                             }`}
                           >
@@ -1677,7 +1677,7 @@ export default function AdminDashboardPage() {
                                 className="mt-0.5 text-slate-400 hover:text-white cursor-pointer shrink-0"
                               >
                                 {isChecked ? (
-                                  <CheckSquare className="w-4 h-4 text-[#D4CBFF]" />
+                                  <CheckSquare className="w-4 h-4 text-[#E9DEFA]" />
                                 ) : (
                                   <Square className="w-4 h-4 text-slate-500 group-hover:text-slate-300" />
                                 )}
@@ -1705,7 +1705,7 @@ export default function AdminDashboardPage() {
                                   resume.ats_score >= 80
                                     ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
                                     : resume.ats_score >= 65
-                                    ? 'bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30'
+                                    ? 'bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30'
                                     : 'bg-amber-950/60 text-amber-400 border border-amber-800'
                                 }`}>
                                   {resume.ats_score}
@@ -1740,7 +1740,7 @@ export default function AdminDashboardPage() {
                       <div className="p-3 bg-[#151D35] border-b border-zinc-800 lg:hidden flex items-center justify-between">
                         <button
                           onClick={() => setMobileDetailOpen(false)}
-                          className="inline-flex items-center space-x-1 text-xs font-bold text-[#D4CBFF] cursor-pointer"
+                          className="inline-flex items-center space-x-1 text-xs font-bold text-[#E9DEFA] cursor-pointer"
                         >
                           <ChevronLeft className="w-4 h-4" />
                           <span>Back to Candidate List</span>
@@ -1755,7 +1755,7 @@ export default function AdminDashboardPage() {
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                           <div className="space-y-1">
                             <div className="flex items-center space-x-2">
-                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30">
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
                                 Candidate Dossier
                               </span>
                               <span className="text-xs text-slate-400 font-mono">
@@ -1800,7 +1800,7 @@ export default function AdminDashboardPage() {
                               currentResume.ats_score >= 80
                                 ? 'bg-emerald-600 shadow-emerald-600/20'
                                 : currentResume.ats_score >= 65
-                                ? 'bg-[#004182] shadow-[#004182]/20'
+                                ? 'bg-[#0D08CB] shadow-[#0D08CB]/20'
                                 : 'bg-amber-600 shadow-amber-600/20'
                             }`}>
                               <span className="text-2xl sm:text-3xl">{currentResume.ats_score}</span>
@@ -1851,17 +1851,17 @@ export default function AdminDashboardPage() {
                             <button
                               onClick={() => handleReprocess(currentResume.id)}
                               disabled={reprocessingId === currentResume.id}
-                              className="px-3 py-1.5 rounded-xl border border-[#004182]/50 bg-[#004182]/20 hover:bg-[#004182]/40 text-[#D4CBFF] hover:text-white text-xs font-bold inline-flex items-center space-x-1.5 transition-all cursor-pointer disabled:opacity-50"
+                              className="px-3 py-1.5 rounded-xl border border-[#044E62]/50 bg-[#044E62]/20 hover:bg-[#044E62]/40 text-[#E9DEFA] hover:text-white text-xs font-bold inline-flex items-center space-x-1.5 transition-all cursor-pointer disabled:opacity-50"
                               title="Re-run document parsing and 7-dimension ATS scoring engine"
                             >
-                              <RotateCcw className={`w-3.5 h-3.5 ${reprocessingId === currentResume.id ? 'animate-spin text-[#D4CBFF]' : ''}`} />
+                              <RotateCcw className={`w-3.5 h-3.5 ${reprocessingId === currentResume.id ? 'animate-spin text-[#E9DEFA]' : ''}`} />
                               <span>{reprocessingId === currentResume.id ? 'Re-scoring...' : 'Reprocess'}</span>
                             </button>
 
                             {/* Download PDF / DOCX */}
                             <button
                               onClick={() => handleDownloadOriginalFile(currentResume)}
-                              className="px-3.5 py-1.5 rounded-xl bg-[#004182] hover:bg-[#003366] text-xs font-bold text-white inline-flex items-center space-x-1.5 shadow-sm shadow-[#004182]/20 transition-all cursor-pointer"
+                              className="px-3.5 py-1.5 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-xs font-bold text-white inline-flex items-center space-x-1.5 shadow-sm shadow-[#0D08CB]/20 transition-all cursor-pointer"
                               title={`Download uploaded document (${currentResume.filename})`}
                             >
                               <Download className="w-3.5 h-3.5 text-white" />
@@ -1927,9 +1927,9 @@ export default function AdminDashboardPage() {
                           <div className="space-y-6">
                             {/* Summary & Verdict Card */}
                             {currentResume.analysis?.summary && (
-                              <div className="p-4 rounded-2xl bg-[#004182]/20 border border-[#004182]/40 text-xs space-y-1.5">
-                                <div className="font-bold text-[#D4CBFF] flex items-center space-x-1.5">
-                                  <Sparkles className="w-3.5 h-3.5 text-[#D4CBFF]" />
+                              <div className="p-4 rounded-2xl bg-[#044E62]/20 border border-[#044E62]/40 text-xs space-y-1.5">
+                                <div className="font-bold text-[#E9DEFA] flex items-center space-x-1.5">
+                                  <Sparkles className="w-3.5 h-3.5 text-[#E9DEFA]" />
                                   <span>Automated ATS Diagnostic Verdict:</span>
                                 </div>
                                 <p className="text-slate-300 leading-relaxed">
@@ -1964,7 +1964,7 @@ export default function AdminDashboardPage() {
                                 <span>Extracted Resume Content (Document Flow)</span>
                                 <span className="text-[10px] text-slate-500 font-mono">Clean Text Stream</span>
                               </h3>
-                              <div className="p-5 sm:p-6 rounded-2xl bg-[#0B1020] border border-zinc-800 text-xs leading-relaxed font-sans text-slate-100 whitespace-pre-wrap selection:bg-[#004182] selection:text-white shadow-inner">
+                              <div className="p-5 sm:p-6 rounded-2xl bg-[#0B1020] border border-zinc-800 text-xs leading-relaxed font-sans text-slate-100 whitespace-pre-wrap selection:bg-[#044E62] selection:text-white shadow-inner">
                                 {currentResume.resume_text || 'No readable text content found in document.'}
                               </div>
                             </div>
@@ -1973,7 +1973,7 @@ export default function AdminDashboardPage() {
                             {currentResume.analysis?.bullet_rewrites && currentResume.analysis.bullet_rewrites.length > 0 && (
                               <div className="space-y-3">
                                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
-                                  <Sparkles className="w-3.5 h-3.5 text-[#D4CBFF]" />
+                                  <Sparkles className="w-3.5 h-3.5 text-[#E9DEFA]" />
                                   <span>AI STAR Bullet Optimization Recommendations</span>
                                 </h3>
                                 <div className="space-y-3">
@@ -2023,7 +2023,7 @@ export default function AdminDashboardPage() {
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                 <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Contact &amp; Links</span>
-                                  <span className="text-lg font-black text-[#D4CBFF]">{currentResume.analysis.breakdown.contact_score}%</span>
+                                  <span className="text-lg font-black text-[#E9DEFA]">{currentResume.analysis.breakdown.contact_score}%</span>
                                 </div>
                                 <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Skills Match</span>
@@ -2031,7 +2031,7 @@ export default function AdminDashboardPage() {
                                 </div>
                                 <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Impact &amp; STAR</span>
-                                  <span className="text-lg font-black text-[#D4CBFF]">{currentResume.analysis.breakdown.experience_score}%</span>
+                                  <span className="text-lg font-black text-[#E9DEFA]">{currentResume.analysis.breakdown.experience_score}%</span>
                                 </div>
                                 <div className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800">
                                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">ATS Formatting</span>
@@ -2065,7 +2065,7 @@ export default function AdminDashboardPage() {
                                 <ul className="space-y-1.5 text-xs text-slate-400">
                                   {currentResume.analysis.formatting_issues.map((issue, idx) => (
                                     <li key={idx} className="flex items-start space-x-2">
-                                      <span className="text-[#004182] dark:text-[#D4CBFF]">•</span>
+                                      <span className="text-[#044E62] dark:text-[#E9DEFA]">•</span>
                                       <span>{issue}</span>
                                     </li>
                                   ))}
@@ -2109,7 +2109,7 @@ export default function AdminDashboardPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search candidate, email, filename, or skill..."
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                 />
               </div>
 
@@ -2140,7 +2140,7 @@ export default function AdminDashboardPage() {
 
                 <button
                   onClick={() => handleExportCsv()}
-                  className="px-3 py-2 rounded-xl bg-[#004182] hover:bg-[#003366] text-xs font-bold text-white flex items-center space-x-1 transition-all cursor-pointer"
+                  className="px-3 py-2 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-xs font-bold text-white flex items-center space-x-1 transition-all cursor-pointer"
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5" />
                   <span>Export CSV</span>
@@ -2181,7 +2181,7 @@ export default function AdminDashboardPage() {
                             {/* Candidate & File */}
                             <td className="py-3.5 px-4">
                               <div className="flex items-center space-x-3">
-                                <div className="w-8 h-8 rounded-lg bg-[#D4CBFF]/15 text-[#D4CBFF] flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-lg bg-[#FACAE7]/20 text-[#E9DEFA] flex items-center justify-center shrink-0">
                                   <FileText className="w-4 h-4" />
                                 </div>
                                 <div className="truncate max-w-xs">
@@ -2209,7 +2209,7 @@ export default function AdminDashboardPage() {
                                   score >= 88
                                     ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-900'
                                     : score >= 75
-                                    ? 'bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30'
+                                    ? 'bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30'
                                     : score >= 60
                                     ? 'bg-amber-950/60 text-amber-400 border border-amber-900'
                                     : 'bg-rose-950/60 text-rose-400 border border-rose-900'
@@ -2313,7 +2313,7 @@ export default function AdminDashboardPage() {
                       <tr key={profile.id} className="hover:bg-slate-850/40 transition-colors">
                         <td className="py-3.5 px-4">
                           <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-[#D4CBFF]/15 text-[#D4CBFF] font-bold flex items-center justify-center shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-[#FACAE7]/20 text-[#E9DEFA] font-bold flex items-center justify-center shrink-0">
                               {(profile.full_name || 'U').charAt(0).toUpperCase()}
                             </div>
                             <div className="font-bold text-white">
@@ -2329,7 +2329,7 @@ export default function AdminDashboardPage() {
                         </td>
                         <td className="py-3.5 px-4">
                           {profile.latest_score !== null && profile.latest_score !== undefined ? (
-                            <span className="px-2 py-0.5 rounded-md font-bold bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30">
+                            <span className="px-2 py-0.5 rounded-md font-bold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
                               {profile.latest_score} / 100
                             </span>
                           ) : (
@@ -2358,7 +2358,7 @@ export default function AdminDashboardPage() {
           <div className="space-y-6">
             <div className="bg-[#151D35] p-6 rounded-2xl border border-zinc-800 space-y-4">
               <h3 className="text-base font-bold text-white flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-[#D4CBFF]" />
+                <Sparkles className="w-4 h-4 text-[#E9DEFA]" />
                 <span>Aggregated Skill Taxonomy &amp; Frequency</span>
               </h3>
               <p className="text-xs text-slate-400">
@@ -2377,7 +2377,7 @@ export default function AdminDashboardPage() {
                       className="p-3.5 rounded-xl bg-[#0B1020] border border-zinc-800 flex items-center justify-between"
                     >
                       <span className="text-xs font-bold text-white">{skill}</span>
-                      <span className="px-2 py-0.5 rounded-lg text-xs font-mono font-bold bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30">
+                      <span className="px-2 py-0.5 rounded-lg text-xs font-mono font-bold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
                         {count} resume{count > 1 ? 's' : ''}
                       </span>
                     </div>
@@ -2401,7 +2401,7 @@ export default function AdminDashboardPage() {
                   value={loginSearchQuery}
                   onChange={(e) => setLoginSearchQuery(e.target.value)}
                   placeholder="Search by email, name, or IP..."
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                 />
               </div>
 
@@ -2444,7 +2444,7 @@ export default function AdminDashboardPage() {
                             <div className="text-[11px] text-slate-400 font-mono">{log.email}</div>
                           </td>
                           <td className="py-3.5 px-4">
-                            <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30">
+                            <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
                               {log.auth_method}
                             </span>
                           </td>
@@ -2487,7 +2487,7 @@ export default function AdminDashboardPage() {
             </button>
 
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30 flex items-center justify-center shrink-0">
                 <History className="w-5 h-5" />
               </div>
               <div>
@@ -2517,7 +2517,7 @@ export default function AdminDashboardPage() {
                           entry.action === 'DELETE' || entry.action === 'BULK_DELETE'
                             ? 'bg-rose-950/60 text-rose-400 border border-rose-900'
                             : entry.action === 'REPROCESS'
-                            ? 'bg-[#D4CBFF]/15 text-[#D4CBFF] border border-[#D4CBFF]/30'
+                            ? 'bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30'
                             : entry.action === 'EXPORT'
                             ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-900'
                             : 'bg-zinc-800 text-slate-300 border border-zinc-700'
@@ -2600,7 +2600,7 @@ export default function AdminDashboardPage() {
 
             <div className="p-3.5 rounded-2xl bg-[#0B1020]/90 border border-zinc-800 text-xs text-slate-300 leading-relaxed">
               <span className="font-bold text-white block mb-1">Server-Side Admin Security</span>
-              Your portal authenticates against cryptographic salted scrypt hashes in server environment configuration. Entering a new passcode below updates the runtime server passcode. For permanent persistence across redeployments, update <code className="text-[#D4CBFF] bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSWORD_HASH</code> in your hosting environment variables.
+              Your portal authenticates against cryptographic salted scrypt hashes in server environment configuration. Entering a new passcode below updates the runtime server passcode. For permanent persistence across redeployments, update <code className="text-[#E9DEFA] bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSWORD_HASH</code> in your hosting environment variables.
             </div>
 
             {changeKeyErr && (
@@ -2632,7 +2632,7 @@ export default function AdminDashboardPage() {
                     required
                     minLength={8}
                     autoComplete="new-password"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                   />
                 </div>
               </div>
@@ -2651,7 +2651,7 @@ export default function AdminDashboardPage() {
                     required
                     minLength={8}
                     autoComplete="new-password"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#004182]"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                   />
                 </div>
               </div>
@@ -2671,7 +2671,7 @@ export default function AdminDashboardPage() {
                 <button
                   type="submit"
                   disabled={changeKeyLoading}
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#004182] hover:bg-[#003366] text-white text-xs font-bold transition-all shadow-md shadow-[#004182]/20 flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {changeKeyLoading ? (
                     <>

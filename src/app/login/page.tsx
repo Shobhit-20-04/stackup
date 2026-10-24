@@ -465,7 +465,7 @@ function LoginForm() {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-3.5 h-3.5 rounded border-[var(--border-subtle)] text-[#004182] focus:ring-0 cursor-pointer"
+                    className="w-3.5 h-3.5 rounded border-[var(--border-subtle)] text-[#0D08CB] focus:ring-0 cursor-pointer"
                   />
                   <span>Remember me for 7 days</span>
                 </label>
@@ -529,7 +529,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-[#004182] animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#0D08CB] animate-spin" />
         </div>
       }
     >

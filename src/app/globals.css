@@ -4,21 +4,42 @@
 
 :root {
   /* Official StackUp Brand Color System (Exact Mandated HEX) */
-  --color-powder-blue: #D4E2F2;
-  --color-soft-lavender: #D4CBFF;
-  --color-mint-teal: #9FD6D2;
-  --color-deep-plum: #2E0D23;
-  --color-navy-blue: #004182;
+  --color-deep-teal: #044E62;
+  --color-electric-indigo: #0D08CB;
+  --color-warm-brown: #4A3932;
+  --color-soft-lavender: #E9DEFA;
+  --color-soft-pink: #FACAE7;
 
   /* Direct brand aliases */
-  --brand-powder: #D4E2F2;
-  --brand-lavender: #D4CBFF;
-  --brand-mint: #9FD6D2;
-  --brand-plum: #2E0D23;
-  --brand-navy: #004182;
-  --brand-navy-hover: #003366;
+  --brand-teal: #044E62;
+  --brand-indigo: #0D08CB;
+  --brand-brown: #4A3932;
+  --brand-lavender: #E9DEFA;
+  --brand-pink: #FACAE7;
 
-  /* Default Theme: Cosmic Midnight with Unified Brand Foundations */
+  /* Action & Hover variants */
+  --brand-primary: #044E62;
+  --brand-primary-hover: #033c4b;
+  --brand-action: #0D08CB;
+  --brand-action-hover: #0a06a3;
+  --brand-secondary: #E9DEFA;
+  --brand-accent: #FACAE7;
+  --brand-emerald: #044E62;
+  --brand-rose: #f43f5e;
+  --brand-violet: #0D08CB;
+
+  /* Legacy & Transition Aliases */
+  --color-powder-blue: #E9DEFA;
+  --color-mint-teal: #044E62;
+  --color-deep-plum: #4A3932;
+  --color-navy-blue: #044E62;
+  --brand-powder: #E9DEFA;
+  --brand-mint: #FACAE7;
+  --brand-plum: #4A3932;
+  --brand-navy: #044E62;
+  --brand-navy-hover: #033c4b;
+
+  /* Default Theme: Cosmic Midnight with Deep Teal & Electric Indigo */
   --background: #0b1020;
   --foreground: #e8eeff;
   --foreground-muted: #9ab3d5;
@@ -27,15 +48,8 @@
   --surface-sunken: #0e1428;
   --border-subtle: #1e2b4d;
   --border-strong: #2d3d6e;
-  --brand-primary: #004182;
-  --brand-primary-hover: #0a529b;
-  --brand-secondary: #D4CBFF;
-  --brand-accent: #9FD6D2;
-  --brand-emerald: #9FD6D2;
-  --brand-rose: #f43f5e;
-  --brand-violet: #D4CBFF;
   --text-muted: #9ab3d5;
-  --glow-color: rgba(0, 65, 130, 0.32);
+  --glow-color: rgba(4, 78, 98, 0.35);
 
   /* Centralized Design Tokens (WCAG 2.2 AA compliant) */
   --color-page-background: var(--background);
@@ -45,13 +59,18 @@
   --color-text-secondary: var(--foreground-muted);
   --color-primary: var(--brand-primary);
   --color-primary-hover: var(--brand-primary-hover);
+  --color-action: var(--brand-action);
+  --color-action-hover: var(--brand-action-hover);
   --color-secondary-accent: var(--brand-secondary);
-  --color-success-accent: var(--brand-emerald);
+  --color-success-accent: #044E62;
   --color-border: var(--border-subtle);
-  --color-focus: #004182;
+  --color-focus: #0D08CB;
+
+  color-scheme: dark;
+  accent-color: #0D08CB;
 }
 
-/* Palette 1: Cosmic Dark (StackUp Midnight · Navy #004182 · Lavender #D4CBFF · Mint #9FD6D2) */
+/* Palette 1: Cosmic Dark (StackUp Midnight · Deep Teal #044E62 · Electric Indigo #0D08CB · Soft Lavender #E9DEFA · Soft Pink #FACAE7) */
 html[data-theme="cosmic"],
 html.dark:not([data-theme="lavender"]):not([data-theme="obsidian"]),
 :root:not([data-theme="lavender"]):not([data-theme="obsidian"]) {
@@ -63,109 +82,140 @@ html.dark:not([data-theme="lavender"]):not([data-theme="obsidian"]),
   --surface-sunken: #0e1428;
   --border-subtle: #1e2b4d;
   --border-strong: #2d3d6e;
-  --brand-primary: #004182;
-  --brand-primary-hover: #0a529b;
-  --brand-secondary: #D4CBFF;
-  --brand-accent: #9FD6D2;
-  --brand-emerald: #9FD6D2;
+  --brand-primary: #044E62;
+  --brand-primary-hover: #033c4b;
+  --brand-action: #0D08CB;
+  --brand-action-hover: #0a06a3;
+  --brand-secondary: #E9DEFA;
+  --brand-accent: #FACAE7;
+  --brand-emerald: #044E62;
   --brand-rose: #f43f5e;
-  --brand-violet: #D4CBFF;
+  --brand-violet: #0D08CB;
   --text-muted: #9ab3d5;
-  --glow-color: rgba(0, 65, 130, 0.32);
+  --glow-color: rgba(4, 78, 98, 0.35);
 
   --color-page-background: #0b1020;
   --color-surface: #151d35;
   --color-surface-elevated: #1b2442;
   --color-text-primary: #e8eeff;
   --color-text-secondary: #9ab3d5;
-  --color-primary: #004182;
-  --color-primary-hover: #0a529b;
-  --color-secondary-accent: #D4CBFF;
-  --color-success-accent: #9FD6D2;
+  --color-primary: #044E62;
+  --color-primary-hover: #033c4b;
+  --color-action: #0D08CB;
+  --color-action-hover: #0a06a3;
+  --color-secondary-accent: #E9DEFA;
+  --color-success-accent: #044E62;
   --color-border: #1e2b4d;
-  --color-focus: #004182;
+  --color-focus: #0D08CB;
+
+  color-scheme: dark;
 }
 
-/* Palette 2: Lavender Light (StackUp Daylight · Powder Blue #D4E2F2 · Lavender #D4CBFF · Deep Plum #2E0D23 · Navy #004182) */
+/* Palette 2: Lavender Light (StackUp Daylight · Soft Lavender #E9DEFA · Deep Teal #044E62 · Warm Brown #4A3932 · Electric Indigo #0D08CB · Soft Pink #FACAE7) */
 html[data-theme="lavender"],
 html.light {
-  --background: #D4E2F2;
-  --foreground: #2E0D23;
-  --foreground-muted: #4D4350;
+  --background: #F7F3FC;
+  --foreground: #4A3932;
+  --foreground-muted: #6E5B53;
   --surface-card: #ffffff;
-  --surface-card-elevated: #f4f8fd;
-  --surface-sunken: #e4edf8;
-  --border-subtle: #c5d2e1;
-  --border-strong: #abbcd0;
-  --brand-primary: #004182;
-  --brand-primary-hover: #003366;
-  --brand-secondary: #D4CBFF;
-  --brand-accent: #D4CBFF;
-  --brand-emerald: #0b302e;
+  --surface-card-elevated: #F8F5FD;
+  --surface-sunken: #E9DEFA;
+  --border-subtle: #DCD2EC;
+  --border-strong: #BAABC9;
+  --brand-primary: #044E62;
+  --brand-primary-hover: #033c4b;
+  --brand-action: #0D08CB;
+  --brand-action-hover: #0a06a3;
+  --brand-secondary: #E9DEFA;
+  --brand-accent: #FACAE7;
+  --brand-emerald: #044E62;
   --brand-rose: #dc2626;
-  --brand-violet: #004182;
-  --text-muted: #4D4350;
-  --glow-color: rgba(0, 65, 130, 0.18);
+  --brand-violet: #0D08CB;
+  --text-muted: #6E5B53;
+  --glow-color: rgba(13, 8, 203, 0.16);
 
-  --color-page-background: #D4E2F2;
+  --color-page-background: #F7F3FC;
   --color-surface: #FFFFFF;
-  --color-surface-elevated: #F4F8FD;
-  --color-text-primary: #2E0D23;
-  --color-text-secondary: #4D4350;
-  --color-primary: #004182;
-  --color-primary-hover: #003366;
-  --color-secondary-accent: #D4CBFF;
-  --color-success-accent: #9FD6D2;
-  --color-border: #C5D2E1;
-  --color-focus: #004182;
+  --color-surface-elevated: #F8F5FD;
+  --color-text-primary: #4A3932;
+  --color-text-secondary: #6E5B53;
+  --color-primary: #044E62;
+  --color-primary-hover: #033c4b;
+  --color-action: #0D08CB;
+  --color-action-hover: #0a06a3;
+  --color-secondary-accent: #E9DEFA;
+  --color-success-accent: #044E62;
+  --color-border: #DCD2EC;
+  --color-focus: #0D08CB;
+
+  color-scheme: light;
 }
 
-/* Palette 3: Obsidian Plum Dark (Selected Deep Plum #2E0D23 & Navy #004182 Surfaces) */
+/* Palette 3: Obsidian Noir (Dark Warm Brown #4A3932 · Electric Indigo #0D08CB · Deep Teal #044E62 · Soft Pink #FACAE7) */
 html[data-theme="obsidian"] {
-  --background: #140810;
-  --foreground: #f6ecf3;
-  --foreground-muted: #bda6b4;
-  --surface-card: #2E0D23;
-  --surface-card-elevated: #3e1331;
-  --surface-sunken: #10060d;
-  --border-subtle: #4d1a3f;
-  --border-strong: #6b2558;
-  --brand-primary: #004182;
-  --brand-primary-hover: #0a529b;
-  --brand-secondary: #D4CBFF;
-  --brand-accent: #9FD6D2;
-  --brand-emerald: #9FD6D2;
+  --background: #171210;
+  --foreground: #F8F3F0;
+  --foreground-muted: #C0B4AE;
+  --surface-card: #251C18;
+  --surface-card-elevated: #332722;
+  --surface-sunken: #110D0B;
+  --border-subtle: #4A3932;
+  --border-strong: #695349;
+  --brand-primary: #044E62;
+  --brand-primary-hover: #06657e;
+  --brand-action: #0D08CB;
+  --brand-action-hover: #1914df;
+  --brand-secondary: #E9DEFA;
+  --brand-accent: #FACAE7;
+  --brand-emerald: #044E62;
   --brand-rose: #f43f5e;
-  --brand-violet: #D4CBFF;
-  --text-muted: #bda6b4;
-  --glow-color: rgba(0, 65, 130, 0.28);
+  --brand-violet: #E9DEFA;
+  --text-muted: #C0B4AE;
+  --glow-color: rgba(13, 8, 203, 0.28);
 
-  --color-page-background: #140810;
-  --color-surface: #2E0D23;
-  --color-surface-elevated: #3e1331;
-  --color-text-primary: #f6ecf3;
-  --color-text-secondary: #bda6b4;
-  --color-primary: #004182;
-  --color-primary-hover: #0a529b;
-  --color-secondary-accent: #D4CBFF;
-  --color-success-accent: #9FD6D2;
-  --color-border: #4d1a3f;
-  --color-focus: #004182;
+  --color-page-background: #171210;
+  --color-surface: #251C18;
+  --color-surface-elevated: #332722;
+  --color-text-primary: #F8F3F0;
+  --color-text-secondary: #C0B4AE;
+  --color-primary: #044E62;
+  --color-primary-hover: #06657e;
+  --color-action: #0D08CB;
+  --color-action-hover: #1914df;
+  --color-secondary-accent: #E9DEFA;
+  --color-success-accent: #044E62;
+  --color-border: #4A3932;
+  --color-focus: #0D08CB;
+
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-powder-blue: #D4E2F2;
-  --color-soft-lavender: #D4CBFF;
-  --color-mint-teal: #9FD6D2;
-  --color-deep-plum: #2E0D23;
-  --color-navy-blue: #004182;
+  /* Official StackUp Brand Color System */
+  --color-deep-teal: #044E62;
+  --color-electric-indigo: #0D08CB;
+  --color-warm-brown: #4A3932;
+  --color-soft-lavender: #E9DEFA;
+  --color-soft-pink: #FACAE7;
 
-  --color-brand-powder: #D4E2F2;
-  --color-brand-lavender: #D4CBFF;
-  --color-brand-mint: #9FD6D2;
-  --color-brand-plum: #2E0D23;
-  --color-brand-navy: #004182;
-  --color-brand-navy-hover: #003366;
+  --color-brand-teal: #044E62;
+  --color-brand-indigo: #0D08CB;
+  --color-brand-brown: #4A3932;
+  --color-brand-lavender: #E9DEFA;
+  --color-brand-pink: #FACAE7;
+  --color-brand-action: #0D08CB;
+  --color-brand-action-hover: #0a06a3;
+
+  /* Compatibility Tokens */
+  --color-powder-blue: #E9DEFA;
+  --color-mint-teal: #044E62;
+  --color-deep-plum: #4A3932;
+  --color-navy-blue: #044E62;
+  --color-brand-powder: #E9DEFA;
+  --color-brand-mint: #FACAE7;
+  --color-brand-plum: #4A3932;
+  --color-brand-navy: #044E62;
+  --color-brand-navy-hover: #033c4b;
 
   --color-page-background: var(--color-page-background);
   --color-surface: var(--surface-card);
@@ -175,6 +225,8 @@ html[data-theme="obsidian"] {
   --color-text-secondary: var(--color-text-secondary);
   --color-primary: var(--color-primary);
   --color-primary-hover: var(--color-primary-hover);
+  --color-action: var(--color-action);
+  --color-action-hover: var(--color-action-hover);
   --color-secondary-accent: var(--color-secondary-accent);
   --color-success-accent: var(--color-success-accent);
   --color-border: var(--border-subtle);
@@ -274,7 +326,7 @@ html[data-theme="obsidian"] {
 /* Accessibility & High Contrast Safeguards for Light Themes */
 html[data-theme="lavender"] input::placeholder,
 html.light input::placeholder {
-  color: #94a3b8;
+  color: #6E5B53;
 }
 
 html[data-theme="lavender"] select,
