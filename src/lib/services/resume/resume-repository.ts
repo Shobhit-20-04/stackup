@@ -55,7 +55,7 @@ export interface AdminAuditLogEntry {
   created_at: string;
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_DIR = process.env.STORAGE_DIR || path.join(process.cwd(), 'data');
 const RESUMES_FILE = path.join(DATA_DIR, 'uploaded-resumes.json');
 const AUDIT_FILE = path.join(DATA_DIR, 'admin-audit-log.json');
 
@@ -100,11 +100,15 @@ function saveLocalResumes(map: Map<string, UploadedResumeRecord>): void {
   ensureDataDir();
   try {
     const list = Array.from(map.values());
-    const tempFile = `${RESUMES_FILE}.${Date.now()}.tmp`;
-    fs.writeFileSync(tempFile, JSON.stringify(list, null, 2), 'utf8');
-    fs.renameSync(tempFile, RESUMES_FILE);
+    try {
+      const tempFile = `${RESUMES_FILE}.${Date.now()}.tmp`;
+      fs.writeFileSync(tempFile, JSON.stringify(list, null, 2), 'utf8');
+      fs.renameSync(tempFile, RESUMES_FILE);
+    } catch {
+      fs.writeFileSync(RESUMES_FILE, JSON.stringify(list, null, 2), 'utf8');
+    }
   } catch (err) {
-    console.warn('Notice: Failed writing uploaded-resumes.json:', err);
+    // Non-blocking in-memory fallback for read-only / serverless container runtimes
   }
 }
 
@@ -130,11 +134,15 @@ function loadLocalAudits(): AdminAuditLogEntry[] {
 function saveLocalAudits(list: AdminAuditLogEntry[]): void {
   ensureDataDir();
   try {
-    const tempFile = `${AUDIT_FILE}.${Date.now()}.tmp`;
-    fs.writeFileSync(tempFile, JSON.stringify(list.slice(0, 500), null, 2), 'utf8');
-    fs.renameSync(tempFile, AUDIT_FILE);
+    try {
+      const tempFile = `${AUDIT_FILE}.${Date.now()}.tmp`;
+      fs.writeFileSync(tempFile, JSON.stringify(list.slice(0, 500), null, 2), 'utf8');
+      fs.renameSync(tempFile, AUDIT_FILE);
+    } catch {
+      fs.writeFileSync(AUDIT_FILE, JSON.stringify(list.slice(0, 500), null, 2), 'utf8');
+    }
   } catch (err) {
-    console.warn('Notice: Failed writing admin-audit-log.json:', err);
+    // Non-blocking in-memory fallback for read-only / serverless container runtimes
   }
 }
 
