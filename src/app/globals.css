@@ -245,67 +245,31 @@ html[data-theme="obsidian"] {
   --color-zinc-850: var(--surface-card-elevated);
 }
 
-/* Automatic remap for dark hex tokens across codebase, preserving dark code terminals */
+/* Automatic remap for legacy dark hex tokens across codebase, preserving intentional dark code terminals and IDEs */
 .bg-\[\#09090b\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:bg-\[\#09090b\],
-[data-theme] .bg-\[\#09090b\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:bg-\[\#09090b\],
-.bg-\[\#0b1020\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:bg-\[\#0b1020\],
-.bg-\[\#0B1020\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:bg-\[\#0B1020\],
-[data-theme] .bg-\[\#0b1020\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:bg-\[\#0b1020\],
-[data-theme] .bg-\[\#0B1020\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:bg-\[\#0B1020\] {
+.dark .dark\:bg-\[\#09090b\] {
   background-color: var(--background) !important;
 }
 
 .bg-\[\#121215\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:bg-\[\#121215\],
-[data-theme] .bg-\[\#121215\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:bg-\[\#121215\],
-.bg-\[\#151d35\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:bg-\[\#151d35\],
-.bg-\[\#151D35\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:bg-\[\#151D35\],
-[data-theme] .bg-\[\#151d35\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:bg-\[\#151d35\],
-[data-theme] .bg-\[\#151D35\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:bg-\[\#151D35\] {
+.dark .dark\:bg-\[\#121215\] {
   background-color: var(--surface-card) !important;
 }
 
 .border-zinc-800:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:border-zinc-800,
-[data-theme] .border-zinc-800:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:border-zinc-800,
-.border-\[\#1e2b4d\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:border-\[\#1e2b4d\],
-.border-\[\#1E2B4D\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-.dark .dark\:border-\[\#1E2B4D\],
-[data-theme] .border-\[\#1e2b4d\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:border-\[\#1e2b4d\],
-[data-theme] .border-\[\#1E2B4D\]:not(.code-terminal-dark):not(.code-terminal-dark *),
-[data-theme] .dark\:border-\[\#1E2B4D\] {
+.dark .dark\:border-zinc-800 {
   border-color: var(--border-subtle) !important;
 }
 
 /* Maintain authentic high-contrast dark IDE terminal styling for code blocks across all themes */
 .code-terminal-dark,
-[data-theme] .code-terminal-dark,
-.code-terminal-dark.bg-\[\#0B1020\],
-[data-theme] .code-terminal-dark.bg-\[\#0B1020\],
-.code-terminal-dark.bg-\[\#0b1020\],
-[data-theme] .code-terminal-dark.bg-\[\#0b1020\],
-.code-terminal-dark.bg-\[\#09090b\],
-[data-theme] .code-terminal-dark.bg-\[\#09090b\],
-.code-terminal-dark.bg-\[\#151D35\],
-[data-theme] .code-terminal-dark.bg-\[\#151D35\],
-.code-terminal-dark pre,
-[data-theme] .code-terminal-dark pre,
-.code-terminal-dark code,
-[data-theme] .code-terminal-dark code,
+html .code-terminal-dark,
+html[data-theme] .code-terminal-dark,
+html.light .code-terminal-dark,
+html.dark .code-terminal-dark,
+html[data-theme="lavender"] .code-terminal-dark,
+html[data-theme="cosmic"] .code-terminal-dark,
+html[data-theme="obsidian"] .code-terminal-dark,
 pre.code-terminal-dark,
 [data-theme] pre.code-terminal-dark {
   background-color: #0b1020 !important;
@@ -315,9 +279,11 @@ pre.code-terminal-dark,
 
 /* Ensure pre and code inside terminals inherit dark styling and do not collapse */
 .code-terminal-dark pre,
-.code-terminal-dark code {
+.code-terminal-dark code,
+[data-theme] .code-terminal-dark pre,
+[data-theme] .code-terminal-dark code {
   background-color: transparent !important;
-  color: inherit !important;
+  color: #e8eeff !important;
 }
 
 .code-terminal-dark .code-terminal-header,

@@ -369,7 +369,7 @@ export default function StriverSheetPage() {
                           </div>
 
                           {/* Code Block with Copy */}
-                          <div className="code-terminal-dark relative rounded-lg bg-[#0b1020] text-[#e8eeff] p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d] shadow-inner">
+                          <div className="code-terminal-dark relative rounded-lg p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d] shadow-inner" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
                             <button
                               onClick={() => handleCopyCode(prob.solutions[activeLang], prob.id)}
                               className="absolute right-2.5 top-2.5 p-1.5 rounded bg-[#151d35] hover:bg-[#1e2b4d] text-slate-300 hover:text-white transition-colors cursor-pointer"

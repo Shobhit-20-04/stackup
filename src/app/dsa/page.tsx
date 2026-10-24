@@ -935,7 +935,7 @@ function DsaHubContent() {
                           </div>
 
                           {/* Code Display */}
-                          <div className="code-terminal-dark relative rounded-xl overflow-hidden border border-slate-700/60 dark:border-[#1E2B4D] font-mono text-xs shadow-inner">
+                          <div className="code-terminal-dark relative rounded-xl overflow-hidden border border-[#1e2b4d] font-mono text-xs shadow-inner" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
                             <div className="code-terminal-header flex items-center justify-between px-4 py-2 border-b text-[11px]">
                               <span>Solution • {activeLang.toUpperCase()}</span>
                               <span>Verified on LeetCode</span>

@@ -1962,7 +1962,7 @@ export default function AdminDashboardPage() {
                                 <span>Extracted Resume Content (Document Flow)</span>
                                 <span className="text-[10px] text-slate-500 font-mono">Clean Text Stream</span>
                               </h3>
-                              <div className="code-terminal-dark p-5 sm:p-6 rounded-xl bg-[#0B1020] border border-[#1e2b4d] text-xs leading-relaxed font-sans text-[#e8eeff] whitespace-pre-wrap selection:bg-[#044E62] selection:text-white shadow-inner">
+                              <div className="code-terminal-dark p-5 sm:p-6 rounded-xl border border-[#1e2b4d] text-xs leading-relaxed font-sans text-[#e8eeff] whitespace-pre-wrap selection:bg-[#044E62] selection:text-white shadow-inner" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
                                 {currentResume.resume_text || 'No readable text content found in document.'}
                               </div>
                             </div>
@@ -2007,7 +2007,7 @@ export default function AdminDashboardPage() {
                                   : '0 words'}
                               </span>
                             </div>
-                            <div className="code-terminal-dark p-4 sm:p-5 rounded-xl bg-[#0B1020] text-[#e8eeff] font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-[#1e2b4d] shadow-inner">
+                            <div className="code-terminal-dark p-4 sm:p-5 rounded-xl text-[#e8eeff] font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-[#1e2b4d] shadow-inner" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
                               {currentResume.resume_text || 'No raw text stream available.'}
                             </div>
                           </div>

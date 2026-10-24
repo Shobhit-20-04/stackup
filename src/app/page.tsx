@@ -170,7 +170,7 @@ export default function HomePage() {
                           Medium • O(n) Time
                         </span>
                       </div>
-                      <div className="code-terminal-dark relative rounded-lg bg-[#0b1020] text-[#e8eeff] p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d] shadow-inner">
+                      <div className="code-terminal-dark relative rounded-lg p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d] shadow-inner" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
                         <div className="text-slate-400"># Two Pointers: Left &amp; Right converge to target</div>
                         <div><span className="text-emerald-400 font-bold">def</span> <span className="text-blue-300 font-bold">twoSum</span><span className="text-[#e8eeff]">(numbers, target):</span></div>
                         <div className="pl-4 text-[#e8eeff]">left, right = 0, len(numbers) - 1</div>

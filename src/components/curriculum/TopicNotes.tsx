@@ -104,7 +104,7 @@ function CodeBlockWithCopy({ children, ...props }: React.ComponentPropsWithoutRe
   };
 
   return (
-    <div className="code-terminal-dark relative group my-4 rounded-2xl overflow-hidden border border-slate-800 shadow-md">
+    <div className="code-terminal-dark relative group my-4 rounded-2xl overflow-hidden border border-[#1e2b4d] shadow-md" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
       <div className="code-terminal-header flex items-center justify-between px-4 py-1.5 border-b text-[11px] font-mono text-zinc-400">
         <span>Code Snippet</span>
         <button
