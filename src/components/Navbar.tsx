@@ -15,7 +15,7 @@ import {
   Layers, 
   Menu, 
   X,
-  ListChecks
+  Home
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -129,8 +129,8 @@ export default function Navbar() {
   };
 
   const navLinks = [
+    { name: 'Home', href: '/', icon: Home },
     { name: 'DSA Hub', href: '/dsa', icon: Code2 },
-    { name: 'Striver Sheet', href: '/striver-sheet', icon: ListChecks },
     { name: 'Core CS', href: '/core-cs', icon: Cpu },
     { name: 'Aptitude', href: '/aptitude', icon: BookOpen },
     { name: 'ATS Resume', href: '/resume-checker', icon: FileCheck2 },
@@ -163,7 +163,7 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center space-x-1">
             {navLinks.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname.startsWith(item.href);
+              const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
               return (
                 <Link
                   key={item.name}
@@ -254,7 +254,7 @@ export default function Navbar() {
         <div className="md:hidden border-b border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#0B1020] px-4 pt-2 pb-4 space-y-1 animate-in slide-in-from-top-2 duration-150">
           {navLinks.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname.startsWith(item.href);
+            const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
             return (
               <Link
                 key={item.name}

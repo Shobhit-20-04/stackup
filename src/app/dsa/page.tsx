@@ -27,7 +27,8 @@ import {
   FileText,
   Terminal,
   Lock,
-  ArrowRight
+  ArrowRight,
+  ListChecks
 } from 'lucide-react';
 import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
@@ -285,6 +286,18 @@ function DsaHubContent() {
               <p className="mt-2 text-slate-600 dark:text-[#8E9FC8] max-w-2xl text-xs sm:text-sm leading-relaxed">
                 A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, Striver&apos;s SDE Sheet, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
               </p>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/striver-sheet"
+                  className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-hover)] shadow-xs transition-colors"
+                >
+                  <ListChecks className="w-3.5 h-3.5" />
+                  <span>Explore Striver SDE Sheet</span>
+                </Link>
+                <span className="text-xs text-slate-500 dark:text-[#8E9FC8]">
+                  Looking for topic-wise interview sheets? Practice via the curated SDE sheet.
+                </span>
+              </div>
             </div>
 
             {/* Quick Progress Badge */}
