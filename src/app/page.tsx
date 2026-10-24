@@ -170,18 +170,18 @@ export default function HomePage() {
                           Medium • O(n) Time
                         </span>
                       </div>
-                      <div className="rounded-lg bg-[#0b1020] text-[#e8eeff] p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d]">
-                        <div className="text-slate-500"># Two Pointers: Left &amp; Right converge to target</div>
-                        <div className="text-emerald-400">def <span className="text-blue-300">twoSum</span>(numbers, target):</div>
-                        <div className="pl-4">left, right = 0, len(numbers) - 1</div>
-                        <div className="pl-4">while left &lt; right:</div>
-                        <div className="pl-8">curr_sum = numbers[left] + numbers[right]</div>
-                        <div className="pl-8">if curr_sum == target:</div>
-                        <div className="pl-12 text-yellow-300">return [left + 1, right + 1]</div>
-                        <div className="pl-8">elif curr_sum &lt; target:</div>
-                        <div className="pl-12">left += 1</div>
-                        <div className="pl-8">else:</div>
-                        <div className="pl-12">right -= 1</div>
+                      <div className="code-terminal-dark relative rounded-lg bg-[#0b1020] text-[#e8eeff] p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d] shadow-inner">
+                        <div className="text-slate-400"># Two Pointers: Left &amp; Right converge to target</div>
+                        <div><span className="text-emerald-400 font-bold">def</span> <span className="text-blue-300 font-bold">twoSum</span><span className="text-[#e8eeff]">(numbers, target):</span></div>
+                        <div className="pl-4 text-[#e8eeff]">left, right = 0, len(numbers) - 1</div>
+                        <div className="pl-4 text-[#e8eeff]"><span className="text-purple-300 font-bold">while</span> left &lt; right:</div>
+                        <div className="pl-8 text-[#e8eeff]">curr_sum = numbers[left] + numbers[right]</div>
+                        <div className="pl-8 text-[#e8eeff]"><span className="text-purple-300 font-bold">if</span> curr_sum == target:</div>
+                        <div className="pl-12 text-[#e8eeff]"><span className="text-yellow-300 font-bold">return</span> [left + 1, right + 1]</div>
+                        <div className="pl-8 text-[#e8eeff]"><span className="text-purple-300 font-bold">elif</span> curr_sum &lt; target:</div>
+                        <div className="pl-12 text-[#e8eeff]">left += 1</div>
+                        <div className="pl-8 text-[#e8eeff]"><span className="text-purple-300 font-bold">else</span>:</div>
+                        <div className="pl-12 text-[#e8eeff]">right -= 1</div>
                       </div>
                       <div className="flex items-center justify-between pt-1 text-xs">
                         <span className="text-[11px] text-[var(--color-text-secondary)]">Available in Python, C++, Java, TypeScript</span>

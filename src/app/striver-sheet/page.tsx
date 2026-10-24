@@ -369,10 +369,10 @@ export default function StriverSheetPage() {
                           </div>
 
                           {/* Code Block with Copy */}
-                          <div className="relative rounded-lg bg-[#0b1020] text-[#e8eeff] p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d]">
+                          <div className="code-terminal-dark relative rounded-lg bg-[#0b1020] text-[#e8eeff] p-3.5 font-mono text-xs overflow-x-auto leading-relaxed border border-[#1e2b4d] shadow-inner">
                             <button
                               onClick={() => handleCopyCode(prob.solutions[activeLang], prob.id)}
-                              className="absolute right-2.5 top-2.5 p-1.5 rounded bg-[#151d35] hover:bg-[#1e2b4d] text-slate-300 hover:text-white transition-colors"
+                              className="absolute right-2.5 top-2.5 p-1.5 rounded bg-[#151d35] hover:bg-[#1e2b4d] text-slate-300 hover:text-white transition-colors cursor-pointer"
                               title="Copy Implementation"
                             >
                               {copiedId === prob.id ? (
@@ -381,7 +381,7 @@ export default function StriverSheetPage() {
                                 <Copy className="w-3.5 h-3.5" />
                               )}
                             </button>
-                            <pre className="pr-10">{prob.solutions[activeLang]}</pre>
+                            <pre className="pr-10 text-[#e8eeff] font-mono whitespace-pre">{prob.solutions[activeLang]}</pre>
                           </div>
 
                           {/* Approach Text */}

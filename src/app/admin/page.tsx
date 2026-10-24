@@ -1962,7 +1962,7 @@ export default function AdminDashboardPage() {
                                 <span>Extracted Resume Content (Document Flow)</span>
                                 <span className="text-[10px] text-slate-500 font-mono">Clean Text Stream</span>
                               </h3>
-                              <div className="p-5 sm:p-6 rounded-2xl bg-[#0B1020] border border-zinc-800 text-xs leading-relaxed font-sans text-slate-100 whitespace-pre-wrap selection:bg-[#044E62] selection:text-white shadow-inner">
+                              <div className="code-terminal-dark p-5 sm:p-6 rounded-xl bg-[#0B1020] border border-[#1e2b4d] text-xs leading-relaxed font-sans text-[#e8eeff] whitespace-pre-wrap selection:bg-[#044E62] selection:text-white shadow-inner">
                                 {currentResume.resume_text || 'No readable text content found in document.'}
                               </div>
                             </div>
@@ -2007,7 +2007,7 @@ export default function AdminDashboardPage() {
                                   : '0 words'}
                               </span>
                             </div>
-                            <div className="p-4 sm:p-5 rounded-2xl bg-[#0B1020] text-slate-100 font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-zinc-800">
+                            <div className="code-terminal-dark p-4 sm:p-5 rounded-xl bg-[#0B1020] text-[#e8eeff] font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-[#1e2b4d] shadow-inner">
                               {currentResume.resume_text || 'No raw text stream available.'}
                             </div>
                           </div>
@@ -2150,7 +2150,7 @@ export default function AdminDashboardPage() {
             <div className="bg-[#151D35] rounded-2xl border border-zinc-800 overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#0B1020] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
+                  <thead className="bg-slate-100 dark:bg-[#0B1020] border-b border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-400 uppercase tracking-wider font-bold">
                     <tr>
                       <th className="py-3.5 px-4">Candidate / Document</th>
                       <th className="py-3.5 px-4">Format</th>
@@ -2289,7 +2289,7 @@ export default function AdminDashboardPage() {
           <div className="bg-[#151D35] rounded-2xl border border-zinc-800 overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#0B1020] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
+                <thead className="bg-slate-100 dark:bg-[#0B1020] border-b border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-400 uppercase tracking-wider font-bold">
                   <tr>
                     <th className="py-3.5 px-4">Student Candidate</th>
                     <th className="py-3.5 px-4">Verified Email</th>
@@ -2418,7 +2418,7 @@ export default function AdminDashboardPage() {
             <div className="bg-[#151D35] rounded-2xl border border-zinc-800 overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#0B1020] border-b border-zinc-800 text-slate-400 uppercase tracking-wider font-bold">
+                  <thead className="bg-slate-100 dark:bg-[#0B1020] border-b border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-400 uppercase tracking-wider font-bold">
                     <tr>
                       <th className="py-3.5 px-4">Candidate / User</th>
                       <th className="py-3.5 px-4">Authentication Method</th>
