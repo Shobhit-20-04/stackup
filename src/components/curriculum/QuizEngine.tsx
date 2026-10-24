@@ -176,7 +176,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
     return (
       <div className="space-y-8 max-w-4xl mx-auto">
         {/* Scorecard Hero */}
-        <div className="p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs text-center">
+        <div className="p-8 sm:p-10 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs text-center">
           <div className="inline-flex p-4 rounded-2xl bg-[#044E62] text-white shadow-md shadow-[#044E62]/20 mb-4">
             <Award className="w-10 h-10" />
           </div>
@@ -248,7 +248,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
         </div>
 
         {/* Detailed Solutions Breakdown with Filter Tabs */}
-        <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-6">
+        <div className="p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-zinc-800 pb-4">
             <div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">Detailed Solutions &amp; Explanations</h3>
@@ -395,7 +395,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Quiz Top Bar with Mode Switcher & Timer */}
-      <div className="p-4 sm:p-5 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
           <button
             onClick={onExitQuiz}
@@ -474,7 +474,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       </div>
 
       {/* Question Card */}
-      <div className="p-6 sm:p-9 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-7 animate-in fade-in duration-200">
+      <div className="p-6 sm:p-9 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-7 animate-in fade-in duration-200">
         <div className="flex items-center justify-between gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
             Question {currentIndex + 1} of {activeQuestions.length}

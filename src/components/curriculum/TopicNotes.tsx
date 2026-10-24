@@ -183,7 +183,7 @@ export default function TopicNotes({
     <div className="space-y-6">
       {/* Sticky Reading Progress Top Bar */}
       <div
-        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-[#044E62] via-[#0D08CB] to-[#FACAE7] z-50 transition-all duration-150"
+        className="fixed top-0 left-0 h-1 bg-[var(--color-primary)] z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -221,7 +221,7 @@ export default function TopicNotes({
       </div>
 
       {/* Topic Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700/80">
@@ -308,7 +308,7 @@ export default function TopicNotes({
 
       {/* Prerequisites Banner */}
       {topic.prerequisites && topic.prerequisites.length > 0 && (
-        <div className="p-4 sm:p-5 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-wrap items-center gap-2 text-xs">
+        <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-wrap items-center gap-2 text-xs">
           <span className="font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider flex items-center space-x-1.5">
             <Compass className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
             <span>Recommended Prerequisites:</span>
@@ -323,7 +323,7 @@ export default function TopicNotes({
 
       {/* Key Takeaways & Cheat Formulas Banner */}
       {topic.keyTakeaways && topic.keyTakeaways.length > 0 && (
-        <div className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-3">
+        <div className="p-5 sm:p-6 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-3">
           <div className="flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
             <Sparkles className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
             <span>High-Yield Placement Takeaways &amp; Core Principles</span>
@@ -340,7 +340,7 @@ export default function TopicNotes({
       )}
 
       {/* Markdown Content Container */}
-      <div className="p-6 sm:p-10 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs relative overflow-hidden">
+      <div className="p-6 sm:p-10 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs relative overflow-hidden">
         <article className="prose dark:prose-invert max-w-none text-slate-800 dark:text-zinc-200 leading-relaxed text-sm sm:text-base">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -412,7 +412,7 @@ export default function TopicNotes({
         {/* Restricted Content Lock Overlay for Unauthenticated Visitors */}
         {isLocked ? (
           <div className="pt-8">
-            <div className="relative rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] p-6 sm:p-8 text-center shadow-lg space-y-4">
+            <div className="relative rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] p-6 sm:p-8 text-center shadow-lg space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center mx-auto mb-2">
                 <Lock className="w-6 h-6" />
               </div>

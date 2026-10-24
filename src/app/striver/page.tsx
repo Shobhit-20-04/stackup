@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function StriverRoute() {
-  redirect('/dsa');
+  redirect('/striver-sheet');
 }

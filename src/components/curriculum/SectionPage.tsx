@@ -35,8 +35,8 @@ const TopicNotes = dynamic(() => import('./TopicNotes'), {
   ssr: false,
   loading: () => (
     <div className="max-w-4xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
-      <div className="h-28 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
-      <div className="h-64 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
+      <div className="h-28 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-xl" />
+      <div className="h-64 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-xl" />
     </div>
   ),
 });
@@ -45,8 +45,8 @@ const QuizEngine = dynamic(() => import('./QuizEngine'), {
   ssr: false,
   loading: () => (
     <div className="max-w-3xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
-      <div className="h-20 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
-      <div className="h-72 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl" />
+      <div className="h-20 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-xl" />
+      <div className="h-72 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-xl" />
     </div>
   ),
 });
@@ -620,7 +620,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           </div>
 
           {searchResults.length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-3xl border border-slate-200 dark:border-zinc-800 space-y-2">
+            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-xl border border-slate-200 dark:border-zinc-800 space-y-2">
               <p className="text-sm font-bold text-slate-900 dark:text-white">No topics matching your criteria</p>
               <p className="text-xs text-slate-500 dark:text-zinc-400">Try adjusting your filters or keywords like &quot;Deadlock&quot;, &quot;TCP&quot;, &quot;Normal Form&quot;, or &quot;Probability&quot;.</p>
             </div>
@@ -749,7 +749,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 <div
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className="p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
+                  className="p-5 sm:p-6 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3.5">
@@ -791,7 +791,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       </div>
                       <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-[#1E2B4D] border border-slate-300/30 dark:border-white/5 overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-full transition-all"
+                          className="h-full bg-[var(--color-primary)] rounded-full transition-all"
                           style={{ width: `${catPercent}%` }}
                         />
                       </div>
@@ -845,7 +845,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           </div>
 
           {/* Active Subject Banner */}
-          <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#151D35] text-slate-900 dark:text-white border border-slate-200 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="p-5 sm:p-6 rounded-xl bg-white dark:bg-[#151D35] text-slate-900 dark:text-white border border-slate-200 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-[10px] font-black uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
                 Active Subject Study Track
@@ -869,7 +869,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
           {/* Topic Modules List */}
           {filteredActiveTopics.length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-3xl border border-slate-200 dark:border-zinc-800 space-y-2">
+            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-xl border border-slate-200 dark:border-zinc-800 space-y-2">
               <p className="text-sm font-bold text-slate-900 dark:text-white">No modules match your current filter</p>
               <p className="text-xs text-slate-500 dark:text-zinc-400">Try changing difficulty or status filters to view modules.</p>
               <button

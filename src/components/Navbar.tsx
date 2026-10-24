@@ -15,6 +15,7 @@ import {
   Layers, 
   Menu, 
   X,
+  ListChecks
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -128,9 +129,10 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { name: 'Aptitude', href: '/aptitude', icon: BookOpen },
-    { name: 'Core CS', href: '/core-cs', icon: Cpu },
     { name: 'DSA Hub', href: '/dsa', icon: Code2 },
+    { name: 'Striver Sheet', href: '/striver-sheet', icon: ListChecks },
+    { name: 'Core CS', href: '/core-cs', icon: Cpu },
+    { name: 'Aptitude', href: '/aptitude', icon: BookOpen },
     { name: 'ATS Resume', href: '/resume-checker', icon: FileCheck2 },
   ];
 

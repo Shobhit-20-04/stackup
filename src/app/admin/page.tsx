@@ -790,7 +790,7 @@ export default function AdminDashboardPage() {
           <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Admin Authorization</span>
         </div>
 
-        <div className="max-w-md w-full bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-xl text-center space-y-6">
+        <div className="max-w-md w-full bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-xl p-6 sm:p-8 shadow-xl text-center space-y-6">
           {/* VIEW 1: MASTER PASSCODE GATEWAY */}
           {authView === 'login' && (
             <>
@@ -1498,7 +1498,7 @@ export default function AdminDashboardPage() {
           <div>
             {/* AUTHENTIC EMPTY STATE: Shown when no genuine resumes exist in store */}
             {(!data?.resumes || data.resumes.length === 0) ? (
-              <div className="bg-[#151D35] rounded-3xl border border-zinc-800 p-12 text-center text-slate-400 space-y-5">
+              <div className="bg-[#151D35] rounded-xl border border-zinc-800 p-12 text-center text-slate-400 space-y-5">
                 <div className="w-16 h-16 rounded-2xl bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30 flex items-center justify-center mx-auto shadow-inner">
                   <FileText className="w-8 h-8" />
                 </div>
@@ -1733,7 +1733,7 @@ export default function AdminDashboardPage() {
                 {/* Right Column: Dedicated Space to View Uploaded Resume Document */}
                 <div className={`lg:col-span-7 ${mobileDetailOpen ? 'block' : 'hidden lg:block'}`}>
                   {currentResume ? (
-                    <div className="bg-[#151D35] rounded-3xl border border-zinc-800 shadow-sm overflow-hidden flex flex-col">
+                    <div className="bg-[#151D35] rounded-xl border border-zinc-800 shadow-sm overflow-hidden flex flex-col">
                       {/* Mobile Back Button */}
                       <div className="p-3 bg-[#151D35] border-b border-zinc-800 lg:hidden flex items-center justify-between">
                         <button
@@ -2075,7 +2075,7 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-[#151D35] rounded-3xl border border-zinc-800 p-12 text-center text-slate-400">
+                    <div className="bg-[#151D35] rounded-xl border border-zinc-800 p-12 text-center text-slate-400">
                       <FileText className="w-12 h-12 mx-auto mb-3 opacity-40" />
                       <h3 className="text-base font-bold text-white">
                         No Resume Selected
@@ -2476,7 +2476,7 @@ export default function AdminDashboardPage() {
           }}
           className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
         >
-          <div className="max-w-3xl w-full bg-[#151D35] border border-zinc-800 rounded-3xl p-6 shadow-2xl space-y-4 text-left relative animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] flex flex-col">
+          <div className="max-w-3xl w-full bg-[#151D35] border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-4 text-left relative animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] flex flex-col">
             <button
               onClick={() => setAuditModalOpen(false)}
               className="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-zinc-850 transition-colors cursor-pointer"
@@ -2570,7 +2570,7 @@ export default function AdminDashboardPage() {
           }}
           className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
         >
-          <div className="max-w-md w-full bg-[#151D35] border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
+          <div className="max-w-md w-full bg-[#151D35] border border-zinc-800 rounded-xl p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
             <button
               onClick={() => {
                 setChangeKeyModalOpen(false);

@@ -147,7 +147,7 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
       }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200"
     >
-      <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="p-6 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#0B1020]/40">
           <div className="flex items-center space-x-3">
