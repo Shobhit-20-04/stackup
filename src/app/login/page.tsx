@@ -77,7 +77,7 @@ function LoginForm() {
       const isPlaceholder = !supabaseUrl || supabaseUrl.includes('placeholder');
 
       if (isPlaceholder && !isSupabaseLive) {
-        setOauthHelp('Google sign-in is currently unavailable in this environment. Please sign in using your email and password or use Instant Demo Login below.');
+        setOauthHelp('Google sign-in is currently unavailable in this environment. Please sign in using your email and password.');
         setLoading(false);
         return;
       }

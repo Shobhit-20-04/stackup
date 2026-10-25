@@ -23,7 +23,6 @@ import {
   Target,
   ShieldAlert,
   ChevronDown,
-  ChevronUp,
   Info
 } from 'lucide-react';
 import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
@@ -249,7 +248,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
     return (
       <div 
         key={dimension.id}
-        className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] overflow-hidden transition-all"
+        className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] overflow-hidden transition-all"
       >
         <button
           onClick={() => setExpandedDimension(isExpanded ? null : dimension.id)}
@@ -396,13 +395,13 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
         )}
 
         {authLoading ? (
-          <div className="p-12 border border-[var(--border-subtle)] rounded-xl text-center bg-[var(--surface-card)] shadow-xs flex flex-col items-center justify-center space-y-3">
+          <div className="p-12 border border-[var(--border-subtle)] rounded-lg text-center bg-[var(--surface-card)] shadow-xs flex flex-col items-center justify-center space-y-3">
             <Loader2 className="w-7 h-7 animate-spin text-[var(--brand-primary)]" />
             <p className="text-xs text-[var(--foreground-muted)]">Verifying student session...</p>
           </div>
         ) : !currentUser ? (
           /* Locked State for Unauthenticated Visitors */
-          <div className="p-8 sm:p-12 border border-[var(--border-subtle)] rounded-xl text-center bg-[var(--surface-card)] shadow-xs space-y-6">
+          <div className="p-8 sm:p-12 border border-[var(--border-subtle)] rounded-lg text-center bg-[var(--surface-card)] shadow-xs space-y-6">
             <div className="max-w-md mx-auto flex flex-col items-center">
               <div className="w-12 h-12 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] flex items-center justify-center mb-3 border border-[var(--border-subtle)]">
                 <Lock className="w-6 h-6" />
@@ -434,10 +433,12 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             </div>
           </div>
         ) : !result ? (
-          /* Configuration & Upload State */
-          <div className="space-y-6">
+          /* Two-Column Diagnostic Workbench */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Column: Configuration & Document Input */}
+            <div className="lg:col-span-7 space-y-6">
             {/* 1. Target Role & Experience Level Config */}
-            <div className="p-5 sm:p-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-5">
+            <div className="p-5 sm:p-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-5">
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
                 <div className="flex items-center space-x-2">
                   <Target className="w-4 h-4 text-[var(--brand-primary)]" />
@@ -575,7 +576,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleFileDrop}
-              className={`p-8 sm:p-10 border-2 border-dashed rounded-xl text-center transition-all bg-[var(--surface-card)] ${
+              className={`p-8 sm:p-10 border-2 border-dashed rounded-lg text-center transition-all bg-[var(--surface-card)] ${
                 isDragging 
                   ? 'border-[var(--brand-primary)] bg-[var(--surface-sunken)]' 
                   : 'border-[var(--border-subtle)] hover:border-[var(--foreground-muted)]'
@@ -658,9 +659,11 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 )}
               </div>
             </div>
+            </div>
 
-            {/* ATS Diagnostic Evaluation Rubric Overview */}
-            <div className="border border-[var(--border-subtle)] bg-[var(--surface-card)] rounded-xl p-5">
+            {/* Right Column: Persistent Rubric Scope & ATS Standards */}
+            <div className="lg:col-span-5 space-y-5">
+              <div className="border border-[var(--border-subtle)] bg-[var(--surface-card)] rounded-lg p-5 shadow-xs space-y-4">
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-subtle)]">
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
@@ -708,6 +711,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                   </p>
                 </div>
               </div>
+              </div>
             </div>
           </div>
         ) : (
@@ -715,7 +719,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
           <div className="space-y-6">
             {/* Scanned Document Warning Banner (if image-only PDF detected) */}
             {result.parsingReport.isScanned && (
-              <div className="p-4 sm:p-5 rounded-xl bg-amber-500/10 border-2 border-amber-500/40 text-amber-600 dark:text-amber-400 space-y-2">
+              <div className="p-4 sm:p-5 rounded-lg bg-amber-500/10 border-2 border-amber-500/40 text-amber-600 dark:text-amber-400 space-y-2">
                 <div className="flex items-center space-x-2 font-bold text-sm">
                   <ShieldAlert className="w-5 h-5 shrink-0" />
                   <span>Scanned Document Alert: OCR Required for Commercial ATS</span>
@@ -731,7 +735,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* Keyword Stuffing Warning (if detected) */}
             {result.keyword_stuffing_detected && (
-              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 flex items-start space-x-3 text-xs">
+              <div className="p-4 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 flex items-start space-x-3 text-xs">
                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold">Keyword Stuffing Detected: </span>
@@ -741,10 +745,10 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             )}
 
             {/* Top Score Summary Banner */}
-            <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xs">
+            <div className="bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xs">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:space-x-5">
-                  <div className={`w-20 h-20 sm:w-22 sm:h-22 rounded-xl flex flex-col items-center justify-center text-white shrink-0 ${
+                  <div className={`w-20 h-20 sm:w-22 sm:h-22 rounded-lg flex flex-col items-center justify-center text-white shrink-0 ${
                     result.ats_score >= 80 
                       ? 'bg-emerald-600 border border-emerald-500/50' 
                       : result.ats_score >= 65
@@ -838,7 +842,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* Job Description Alignment Panel (if target JD or preset was provided) */}
             {result.jobDescriptionMatch.hasJobDescription && (
-              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5 space-y-4">
+              <div className="bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] p-5 space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center space-x-2">
                     <Target className="w-4 h-4 text-[var(--brand-primary)]" />
@@ -944,7 +948,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             {/* Keyword Analysis Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Matched Keywords */}
-              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+              <div className="bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] p-5">
                 <div className="flex items-center space-x-2 mb-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">
@@ -971,7 +975,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
 
               {/* Missing Recommended Keywords */}
-              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+              <div className="bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] p-5">
                 <div className="flex items-center space-x-2 mb-2">
                   <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">
@@ -1000,7 +1004,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* Fact-Preserving Google XYZ Bullet Point Rewrites */}
             {result.bullet_rewrites && result.bullet_rewrites.length > 0 && (
-              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5 space-y-3">
+              <div className="bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] p-5 space-y-3">
                 <div className="flex items-center space-x-2 mb-1">
                   <Sparkles className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">
@@ -1043,7 +1047,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
 
             {/* Prioritized Action Plan / Recommendations */}
             {result.recommendations && result.recommendations.length > 0 && (
-              <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+              <div className="bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] p-5">
                 <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
                   Prioritized Action Plan
                 </h3>
@@ -1071,7 +1075,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             )}
 
             {/* Section-by-Section Recommendations */}
-            <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-subtle)] p-5">
+            <div className="bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] p-5">
               <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3.5">
                 Section-by-Section Checklist
               </h3>
@@ -1136,7 +1140,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             </div>
 
             {/* Profile Navigation Footer */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4 sm:p-5 rounded-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4 sm:p-5 rounded-lg">
               <div>
                 <h4 className="text-xs sm:text-sm font-semibold text-[var(--foreground)]">
                   Track your score progression

@@ -7,7 +7,6 @@ import remarkGfm from 'remark-gfm';
 import { 
   Clock, 
   Play, 
-  BookOpen, 
   Lock, 
   ArrowRight, 
   CheckCircle2, 
@@ -72,21 +71,21 @@ function FormulaBlock({ formula }: { formula: string }) {
   };
 
   return (
-    <div className="my-5 p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 shadow-xs relative group">
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200 dark:border-zinc-800">
-        <div className="flex items-center space-x-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
+    <div className="my-5 p-4 sm:p-5 rounded-md bg-[var(--surface-sunken)] border border-[var(--border-subtle)] relative group">
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--border-subtle)]">
+        <div className="flex items-center space-x-1.5 text-[11px] font-mono uppercase tracking-wider text-[var(--color-primary)]">
           <Zap className="w-3.5 h-3.5" />
           <span>Core Formula / Key Equation</span>
         </div>
         <button
           onClick={handleCopy}
-          className="p-1 rounded-lg text-slate-400 hover:text-[#0D08CB] dark:hover:text-[#FACAE7] hover:bg-white dark:hover:bg-zinc-800 transition-colors"
+          className="p-1 rounded text-slate-400 hover:text-[var(--color-primary)] hover:bg-[var(--surface-card)] transition-colors cursor-pointer"
           title="Copy Formula"
         >
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
         </button>
       </div>
-      <div className="text-center font-mono text-sm sm:text-base font-bold text-slate-900 dark:text-white py-1 tracking-wide overflow-x-auto">
+      <div className="text-center font-mono text-sm sm:text-base font-bold text-[var(--color-text-primary)] py-1 tracking-wide overflow-x-auto">
         {formatted}
       </div>
     </div>
@@ -104,18 +103,18 @@ function CodeBlockWithCopy({ children, ...props }: React.ComponentPropsWithoutRe
   };
 
   return (
-    <div className="code-terminal-dark relative group my-4 rounded-2xl overflow-hidden border border-[#1e2b4d] shadow-md" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
+    <div className="code-terminal-dark relative group my-4 rounded-md overflow-hidden border border-[#1e2b4d] shadow-sm" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
       <div className="code-terminal-header flex items-center justify-between px-4 py-1.5 border-b text-[11px] font-mono text-zinc-400">
         <span>Code Snippet</span>
         <button
           onClick={handleCopyCode}
-          className="flex items-center space-x-1 text-zinc-400 hover:text-white transition-colors"
+          className="flex items-center space-x-1 text-zinc-400 hover:text-white transition-colors cursor-pointer"
         >
           {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
           <span>{copied ? 'Copied' : 'Copy'}</span>
         </button>
       </div>
-      <pre className="p-4 overflow-x-auto text-xs sm:text-sm font-mono" {...props}>
+      <pre className="p-4 overflow-x-auto text-xs sm:text-sm font-mono leading-relaxed" {...props}>
         {children}
       </pre>
     </div>
@@ -180,7 +179,7 @@ export default function TopicNotes({
   }, [isLocked, topic.notesMarkdown]);
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl mx-auto space-y-8 pb-16">
       {/* Sticky Reading Progress Top Bar */}
       <div
         className="fixed top-0 left-0 h-1 bg-[var(--color-primary)] z-50 transition-all duration-150"
@@ -188,150 +187,141 @@ export default function TopicNotes({
       />
 
       {/* Navigation Breadcrumb Bar */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
         <button
           onClick={onBack}
-          className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:text-[#0D08CB] dark:hover:text-[#FACAE7] bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
+          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" />
-          <span>Back to {categoryTitle || 'Syllabus'}</span>
+          <span>&larr; Back to {categoryTitle || 'Syllabus'}</span>
         </button>
 
         {/* Mark as Completed Button */}
         <button
           onClick={handleToggleCompleted}
-          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs ${
+          className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs border ${
             isCompleted
-              ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-              : 'bg-white dark:bg-[#151D35] text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:border-emerald-500'
+              ? 'bg-emerald-600 text-white border-emerald-600'
+              : 'bg-[var(--surface-card)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border-[var(--border-subtle)] hover:border-emerald-500'
           }`}
         >
           {isCompleted ? (
             <>
-              <Check className="w-4 h-4" />
+              <Check className="w-3.5 h-3.5" />
               <span>Completed</span>
             </>
           ) : (
             <>
-              <CheckCircle2 className="w-4 h-4 text-slate-400" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-slate-400" />
               <span>Mark as Read</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Topic Header Banner */}
-      <div className="p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="space-y-2 max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700/80">
-              <BookOpen className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA]" />
-              <span>{categoryTitle || 'Study Notes'} • Module Guide</span>
-            </span>
+      {/* Editorial Document Header (Open, architectural layout without cards-in-cards) */}
+      <header className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--color-primary)] bg-[var(--surface-sunken)] px-2.5 py-0.5 rounded border border-[var(--border-subtle)]">
+            {categoryTitle || 'Curriculum'} &bull; Module Guide
+          </span>
 
-            {/* Difficulty Badge */}
-            {topic.difficulty && (
-              <span
-                className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
-                  topic.difficulty === 'Easy'
-                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
-                    : topic.difficulty === 'Medium'
-                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-300 dark:border-amber-800'
-                    : 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-300 dark:border-rose-800'
-                }`}
-              >
-                {topic.difficulty}
-              </span>
+          {/* Difficulty Badge */}
+          {topic.difficulty && (
+            <span
+              className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold border ${
+                topic.difficulty === 'Easy'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
+                  : topic.difficulty === 'Medium'
+                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                  : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
+              }`}
+            >
+              {topic.difficulty}
+            </span>
+          )}
+        </div>
+
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-[var(--color-text-primary)] tracking-tight leading-tight">
+          {topic.title}
+        </h1>
+
+        <p className="text-sm sm:text-base text-[var(--color-text-secondary)] leading-relaxed max-w-3xl font-normal">
+          {topic.description}
+        </p>
+
+        {/* Structured Metadata & Action Bar */}
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-y border-[var(--border-subtle)] py-3">
+          <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-[var(--color-text-secondary)]">
+            <span className="flex items-center space-x-1.5">
+              <Clock className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+              <span>{topic.estimatedMinutes} MIN READ</span>
+            </span>
+            <span>&bull;</span>
+            <span>{topic.questions.length} VERIFIED MCQS</span>
+            {topic.companyTags && topic.companyTags.length > 0 && (
+              <>
+                <span>&bull;</span>
+                <span className="flex items-center space-x-1">
+                  <Building2 className="w-3 h-3" />
+                  <span>{topic.companyTags.slice(0, 3).join(', ')}</span>
+                </span>
+              </>
             )}
           </div>
 
-          <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            {topic.title}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
-            {topic.description}
-          </p>
-
-          {/* Company Tags */}
-          {topic.companyTags && topic.companyTags.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 flex items-center space-x-1">
-                <Building2 className="w-3 h-3" />
-                <span>Interviews:</span>
-              </span>
-              {topic.companyTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          <div className="flex items-center space-x-3 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
-            <span className="flex items-center space-x-1">
-              <Clock className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA]" />
-              <span>{topic.estimatedMinutes} min read</span>
-            </span>
-            <span>•</span>
-            <span>{topic.questions.length} MCQ Questions</span>
+          <div className="flex items-center space-x-2 shrink-0">
+            {topic.youtube_url && (
+              <a
+                href={topic.youtube_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-colors"
+                title="Study this topic on YouTube"
+              >
+                <Video className="w-3.5 h-3.5" />
+                <span>Video Tutorial</span>
+              </a>
+            )}
+            {topic.questions.length > 0 && (
+              <button
+                onClick={onStartQuiz}
+                className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-md font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-all cursor-pointer text-xs shadow-xs"
+              >
+                <Play className="w-3 h-3 fill-white" />
+                <span>Practice Quiz ({topic.questions.length} Qs)</span>
+              </button>
+            )}
           </div>
         </div>
+      </header>
 
-        {/* Topic Actions */}
-        <div className="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
-          {topic.youtube_url && (
-            <a
-              href={topic.youtube_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center space-x-2 px-5 py-3.5 rounded-xl font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200/60 dark:border-rose-900/50 transition-all cursor-pointer text-xs sm:text-sm text-center"
-              title="Study this topic on YouTube"
-            >
-              <Video className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-              <span>Watch on YouTube</span>
-            </a>
-          )}
-          {topic.questions.length > 0 && (
-            <button
-              onClick={onStartQuiz}
-              className="inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl font-bold text-white bg-[#0D08CB] hover:bg-[#0A06A3] shadow-md shadow-[#0D08CB]/20 transition-all shrink-0 cursor-pointer text-xs sm:text-sm"
-            >
-              <Play className="w-4 h-4 fill-white" />
-              <span>Launch Practice Quiz ({topic.questions.length} Qs)</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Prerequisites Banner */}
+      {/* Prerequisites Reference Strip (Integrated, not a floating card) */}
       {topic.prerequisites && topic.prerequisites.length > 0 && (
-        <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider flex items-center space-x-1.5">
-            <Compass className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
-            <span>Recommended Prerequisites:</span>
+        <div className="p-3.5 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 flex flex-wrap items-center gap-2 text-xs">
+          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] flex items-center space-x-1.5">
+            <Compass className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+            <span>Recommended Foundations:</span>
           </span>
           {topic.prerequisites.map((prereq, pIdx) => (
-            <span key={pIdx} className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700/80 font-medium text-slate-700 dark:text-zinc-200">
+            <span key={pIdx} className="px-2 py-0.5 rounded bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[11px] font-medium text-[var(--color-text-primary)]">
               {prereq}
             </span>
           ))}
         </div>
       )}
 
-      {/* Key Takeaways & Cheat Formulas Banner */}
+      {/* Key Takeaways & Executive Summary (Editorial Callout) */}
       {topic.keyTakeaways && topic.keyTakeaways.length > 0 && (
-        <div className="p-5 sm:p-6 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs space-y-3">
-          <div className="flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
-            <Sparkles className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
-            <span>High-Yield Placement Takeaways &amp; Core Principles</span>
+        <div className="p-4 sm:p-5 rounded-r-md border-l-4 border-[var(--color-primary)] bg-[var(--surface-sunken)]/50 space-y-2.5">
+          <div className="flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--color-primary)]">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>High-Yield Placement Principles &amp; Takeaways</span>
           </div>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-zinc-300">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[var(--color-text-secondary)]">
             {topic.keyTakeaways.map((takeaway, idx) => (
-              <li key={idx} className="flex items-start space-x-2 bg-slate-50 dark:bg-[#151D35] p-2.5 rounded-xl border border-slate-200/80 dark:border-[#1E2B4D]">
-                <Check className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA] shrink-0 mt-0.5" />
+              <li key={idx} className="flex items-start space-x-2">
+                <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                 <span className="leading-relaxed">{takeaway}</span>
               </li>
             ))}
@@ -339,69 +329,64 @@ export default function TopicNotes({
         </div>
       )}
 
-      {/* Markdown Content Container */}
-      <div className="p-6 sm:p-10 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] shadow-xs relative overflow-hidden">
-        <article className="prose dark:prose-invert max-w-none text-slate-800 dark:text-zinc-200 leading-relaxed text-sm sm:text-base">
+      {/* Main Educational Reading Column (~68ch measure for optimal readability) */}
+      <main className="reading-measure max-w-3xl space-y-6">
+        <article className="prose dark:prose-invert max-w-none text-[var(--color-text-secondary)] leading-relaxed text-sm sm:text-base">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
               h1: ({ ...props }) => (
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-7 mb-3.5 border-b border-slate-200 dark:border-zinc-800 pb-2.5" {...props} />
+                <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] mt-8 mb-4 border-b border-[var(--border-subtle)] pb-2" {...props} />
               ),
               h2: ({ ...props }) => (
-                <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-6 mb-2.5" {...props} />
+                <h2 className="text-lg sm:text-xl font-bold text-[var(--color-text-primary)] mt-7 mb-3" {...props} />
               ),
               h3: ({ ...props }) => (
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2" {...props} />
+                <h3 className="text-base sm:text-lg font-semibold text-[var(--color-text-primary)] mt-6 mb-2" {...props} />
               ),
               p: ({ children, ...props }) => {
                 const text = String(children);
-                // Check if this paragraph is a standalone formula block ($$...$$)
                 if (text.startsWith('$$') && text.endsWith('$$')) {
                   return <FormulaBlock formula={text} />;
                 }
-                return <p className="my-3.5 text-slate-800 dark:text-zinc-200 leading-7 font-normal" {...props}>{children}</p>;
+                return <p className="my-4 text-[var(--color-text-secondary)] leading-7 font-normal" {...props}>{children}</p>;
               },
               ul: ({ ...props }) => (
-                <ul className="list-disc pl-5 my-3.5 space-y-1.5 text-slate-800 dark:text-zinc-200" {...props} />
+                <ul className="list-disc pl-5 my-4 space-y-1.5 text-[var(--color-text-secondary)]" {...props} />
               ),
               ol: ({ ...props }) => (
-                <ol className="list-decimal pl-5 my-3.5 space-y-1.5 text-slate-800 dark:text-zinc-200" {...props} />
+                <ol className="list-decimal pl-5 my-4 space-y-1.5 text-[var(--color-text-secondary)]" {...props} />
               ),
               li: ({ ...props }) => (
-                <li className="leading-7 text-slate-800 dark:text-zinc-200" {...props} />
+                <li className="leading-7 text-[var(--color-text-secondary)]" {...props} />
               ),
               blockquote: ({ ...props }) => (
-                <blockquote className="p-4 my-4 border-l-4 border-[#044E62] bg-[#E9DEFA]/30 dark:bg-[#044E62]/20 rounded-r-2xl text-slate-800 dark:text-zinc-200 font-medium not-italic" {...props} />
+                <blockquote className="p-4 my-4 border-l-3 border-[var(--color-primary)] bg-[var(--surface-sunken)]/60 rounded-r-md text-[var(--color-text-primary)] font-medium not-italic" {...props} />
               ),
               code: ({ className, children, ...props }) => {
                 const isInline = !className && typeof children === 'string' && !children.includes('\n');
                 if (isInline) {
                   return (
-                    <code className="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-[#044E62] dark:text-[#E9DEFA] font-mono text-xs sm:text-sm font-semibold" {...props}>
+                    <code className="px-1.5 py-0.5 rounded text-xs font-mono font-medium bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--color-primary)]" {...props}>
                       {children}
                     </code>
                   );
                 }
-                return (
-                  <CodeBlockWithCopy {...props}>
-                    <code {...props}>{children}</code>
-                  </CodeBlockWithCopy>
-                );
+                return <code className={className} {...props}>{children}</code>;
               },
+              pre: ({ children, ...props }) => (
+                <CodeBlockWithCopy {...props}>{children}</CodeBlockWithCopy>
+              ),
               table: ({ ...props }) => (
-                <div className="overflow-x-auto my-5">
-                  <table className="w-full text-left border-collapse border border-slate-300 dark:border-zinc-800 rounded-xl overflow-hidden text-xs sm:text-sm" {...props} />
+                <div className="overflow-x-auto my-6 rounded-md border border-[var(--border-subtle)]">
+                  <table className="w-full text-left text-xs sm:text-sm divide-y divide-[var(--border-subtle)]" {...props} />
                 </div>
               ),
               th: ({ ...props }) => (
-                <th className="p-3 bg-slate-100 dark:bg-zinc-800 border-b border-slate-300 dark:border-zinc-700 font-black text-xs uppercase tracking-wider text-slate-900 dark:text-white" {...props} />
+                <th className="bg-[var(--surface-sunken)] p-3 font-semibold text-[var(--color-text-primary)] font-mono text-xs uppercase" {...props} />
               ),
               td: ({ ...props }) => (
-                <td className="p-3 border-b border-slate-200 dark:border-zinc-800 text-slate-800 dark:text-zinc-200 font-medium" {...props} />
-              ),
-              hr: ({ ...props }) => (
-                <hr className="my-6 border-slate-200 dark:border-zinc-800" {...props} />
+                <td className="p-3 border-t border-[var(--border-subtle)] text-[var(--color-text-secondary)]" {...props} />
               ),
             }}
           >
@@ -409,128 +394,115 @@ export default function TopicNotes({
           </ReactMarkdown>
         </article>
 
-        {/* Restricted Content Lock Overlay for Unauthenticated Visitors */}
-        {isLocked ? (
-          <div className="pt-8">
-            <div className="relative rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] p-6 sm:p-8 text-center shadow-lg space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center mx-auto mb-2">
-                <Lock className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+        {/* Locked Preview Teaser for Unauthenticated Users */}
+        {isLocked && (
+          <div className="mt-8 p-6 sm:p-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 text-center space-y-4">
+            <div className="w-10 h-10 rounded-md bg-[var(--surface-card)] text-[var(--color-primary)] flex items-center justify-center mx-auto border border-[var(--border-subtle)]">
+              <Lock className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-[var(--color-text-primary)]">
                 Full Study Notes &amp; Formula Cheatsheet Locked
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 max-w-md mx-auto leading-relaxed">
-                Sign in or create a free account to unlock the full notes, formulas, and take the timed interactive quiz.
+              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-md mx-auto mt-1 leading-relaxed">
+                Sign in or create a free student account to unlock the full revision notes, key formulas, and timed interactive quizzes.
               </p>
+            </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <Link
-                  href={`/login?redirect=${encodeURIComponent(`/${sectionSlug}`)}`}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white font-semibold text-xs shadow-xs transition-all flex items-center justify-center space-x-2"
-                >
-                  <span>Sign In to Unlock Full Content</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  href={`/login?redirect=${encodeURIComponent(`/${sectionSlug}`)}`}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-800 text-slate-900 dark:text-zinc-200 font-semibold text-xs hover:bg-slate-50 dark:hover:bg-zinc-750 transition-colors"
-                >
-                  Create Free Account
-                </Link>
-              </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <Link
+                href={`/login?redirect=${encodeURIComponent(`/${sectionSlug}`)}`}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-md bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-xs transition-colors flex items-center justify-center space-x-1.5 shadow-xs cursor-pointer"
+              >
+                <span>Sign In to Unlock Full Content</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                href={`/login?redirect=${encodeURIComponent(`/${sectionSlug}`)}`}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--color-text-primary)] font-semibold text-xs hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
+              >
+                Create Free Account
+              </Link>
             </div>
           </div>
-        ) : (
-          <>
-            {/* Curated External Resources (Benchmarked & Verified Free) */}
-          {topic.externalResources && topic.externalResources.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300">
-                  <ExternalLink className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
-                  <span>Curated Free Benchmark References &amp; Further Learning</span>
-                </div>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full self-start sm:self-auto">
-                  100% Free Access Verified
-                </span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {topic.externalResources.map((res, rIdx) => (
-                  <a
-                    key={rIdx}
-                    href={res.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3.5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#151D35] hover:border-[#044E62]/50 hover:bg-white dark:hover:bg-zinc-800/80 transition-all flex items-start justify-between gap-3 group"
-                  >
-                    <div className="space-y-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30">
-                          {res.provider}
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-medium">
-                          {res.difficulty}
-                        </span>
-                      </div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-[#0D08CB] dark:group-hover:text-[#E9DEFA] transition-colors">
-                        {res.title}
-                      </div>
-                    </div>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0D08CB] shrink-0 mt-1" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+        )}
 
-          {/* Bottom Sequential Navigation Bar */}
-          <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#1E2B4D] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        {/* Curated External Resources (Verified Free Benchmark References) */}
+        {!isLocked && topic.externalResources && topic.externalResources.length > 0 && (
+          <div className="mt-10 pt-6 border-t border-[var(--border-subtle)] space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <div className="flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--color-text-primary)]">
+                <ExternalLink className="w-4 h-4 text-[var(--color-primary)]" />
+                <span>Curated External References &amp; Readings</span>
+              </div>
+              <span className="text-[10px] font-mono font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded self-start sm:self-auto">
+                Verified Free Access
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {topic.externalResources.map((res, rIdx) => (
+                <a
+                  key={rIdx}
+                  href={res.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3.5 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[var(--color-primary)] transition-colors flex items-start justify-between gap-3 group"
+                >
+                  <div className="space-y-1 min-w-0">
+                    <div className="flex items-center space-x-2 text-[10px] font-mono">
+                      <span className="px-1.5 py-0.5 rounded bg-[var(--surface-sunken)] text-[var(--color-primary)] font-bold">
+                        {res.provider}
+                      </span>
+                      <span className="text-[var(--color-text-secondary)]">
+                        {res.difficulty}
+                      </span>
+                    </div>
+                    <div className="text-xs font-bold text-[var(--color-text-primary)] truncate group-hover:text-[var(--color-primary)] transition-colors">
+                      {res.title}
+                    </div>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[var(--color-primary)] shrink-0 mt-1" />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Bottom Sequential Navigation Bar */}
+        {!isLocked && (
+          <nav className="mt-10 pt-6 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {prevTopic ? (
               <button
                 onClick={() => onSelectTopic?.(prevTopic)}
-                className="flex items-center space-x-2 p-3 rounded-2xl border border-slate-200 dark:border-[#1E2B4D] hover:border-[var(--brand-primary)] bg-slate-50 dark:bg-[#151D35] text-left transition-all cursor-pointer group"
+                className="flex items-center space-x-2 p-3 rounded-md border border-[var(--border-subtle)] hover:border-[var(--color-primary)] bg-[var(--surface-card)] text-left transition-colors cursor-pointer group"
               >
-                <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-[var(--brand-primary)] shrink-0" />
+                <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-[var(--color-primary)] shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[10px] font-bold text-slate-500 dark:text-[var(--text-muted)] uppercase tracking-wider">Previous Module</div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{prevTopic.title}</div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-secondary)]">Previous Module</div>
+                  <div className="text-xs font-bold text-[var(--color-text-primary)] truncate">{prevTopic.title}</div>
                 </div>
               </button>
             ) : (
               <div />
-            )}
-
-            {topic.youtube_url && (
-              <a
-                href={topic.youtube_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-2xl border border-rose-200/60 dark:border-rose-900/40 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                title="Watch lecture on YouTube"
-              >
-                <Video className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-                <span>YouTube Lecture</span>
-              </a>
             )}
 
             {nextTopic ? (
               <button
                 onClick={() => onSelectTopic?.(nextTopic)}
-                className="flex items-center justify-end space-x-2 p-3 rounded-2xl border border-slate-200 dark:border-[#1E2B4D] hover:border-[var(--brand-primary)] bg-slate-50 dark:bg-[#151D35] text-right transition-all cursor-pointer group"
+                className="flex items-center justify-end space-x-2 p-3 rounded-md border border-[var(--border-subtle)] hover:border-[var(--color-primary)] bg-[var(--surface-card)] text-right transition-colors cursor-pointer group"
               >
                 <div className="min-w-0">
-                  <div className="text-[10px] font-bold text-slate-500 dark:text-[var(--text-muted)] uppercase tracking-wider">Next Module</div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{nextTopic.title}</div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-secondary)]">Next Module</div>
+                  <div className="text-xs font-bold text-[var(--color-text-primary)] truncate">{nextTopic.title}</div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[var(--brand-primary)] shrink-0" />
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[var(--color-primary)] shrink-0" />
               </button>
             ) : (
               <div />
             )}
-          </div>
-          </>
+          </nav>
         )}
-      </div>
+      </main>
     </div>
   );
 }

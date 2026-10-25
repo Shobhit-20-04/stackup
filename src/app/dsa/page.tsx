@@ -490,7 +490,7 @@ function DsaHubContent() {
         {/* Problems List */}
         <div className="space-y-4">
           {filteredProblems.length === 0 ? (
-            <div className="bg-white dark:bg-[#151D35] p-12 text-center rounded-2xl border border-slate-200 dark:border-zinc-800">
+            <div className="bg-white dark:bg-[#151D35] p-12 text-center rounded-lg border border-slate-200 dark:border-zinc-800">
               <Code2 className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
               <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">No problems found</h3>
               <p className="text-sm text-slate-500 mt-1">Try clearing your search query or filter settings.</p>
@@ -516,10 +516,10 @@ function DsaHubContent() {
                 <div 
                   key={problem.id}
                   id={`problem-${problem.id}`}
-                  className={`bg-white dark:bg-[#151D35] rounded-xl border transition-colors shadow-xs ${
+                  className={`transition-colors ${
                     isSolved 
-                      ? 'border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/20 dark:bg-emerald-950/10' 
-                      : 'border-slate-200 dark:border-[#1E2B4D] hover:border-slate-300 dark:hover:border-[#2D3D6E]'
+                      ? 'bg-emerald-50/20 dark:bg-emerald-950/10' 
+                      : 'hover:bg-slate-50/70 dark:hover:bg-[#1B2442]/40'
                   }`}
                 >
                   <div className="p-4 sm:p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
@@ -651,7 +651,7 @@ function DsaHubContent() {
 
                   {/* Complete Output Expandable Body */}
                   {isExpanded && (
-                    <div className="border-t border-slate-200 dark:border-[#1E2B4D] bg-slate-50/50 dark:bg-[#0B1020]/80 rounded-b-xl p-4 sm:p-5 space-y-4 animate-in fade-in-50 slide-in-from-top-1 duration-200">
+                    <div className="border-t border-slate-200 dark:border-[#1E2B4D] bg-slate-50/50 dark:bg-[#0B1020]/80 p-4 sm:p-5 space-y-4 animate-in fade-in-50 slide-in-from-top-1 duration-200">
                       {/* Top Tabs */}
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-[#1E2B4D] pb-3">
                         <div className="flex items-center space-x-1 bg-slate-200/80 dark:bg-[#151D35] p-1 rounded-lg border border-slate-200/80 dark:border-[#1E2B4D] overflow-x-auto max-w-full scrollbar-none">
@@ -994,7 +994,7 @@ function DsaHubContent() {
                     return (
                       <div
                         key={group.pattern}
-                        className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] overflow-hidden shadow-sm"
+                        className="rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] overflow-hidden shadow-sm"
                       >
                         <button
                           type="button"
@@ -1035,7 +1035,7 @@ function DsaHubContent() {
                         </button>
 
                         {isGroupOpen && (
-                          <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-zinc-800 space-y-3 bg-slate-50/50 dark:bg-[#0B1020]/40">
+                          <div className="border-t border-slate-200 dark:border-[#1E2B4D] divide-y divide-slate-100 dark:divide-[#1E2B4D] bg-white dark:bg-[#151D35]">
                             {group.problems.map((p) => renderCard(p))}
                           </div>
                         )}
@@ -1046,7 +1046,11 @@ function DsaHubContent() {
               );
             }
 
-            return displayedProblems.map((problem) => renderCard(problem));
+            return (
+              <div className="rounded-lg border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] divide-y divide-slate-100 dark:divide-[#1E2B4D] overflow-hidden shadow-xs">
+                {displayedProblems.map((problem) => renderCard(problem))}
+              </div>
+            );
           })()
         )}
         </div>
@@ -1059,8 +1063,8 @@ function DsaHubContent() {
             }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in"
           >
-            <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#0D08CB] dark:text-[#E9DEFA] flex items-center justify-center mb-1 border border-[#DCD2EC] dark:border-[#044E62]/30">
+            <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-lg max-w-md w-full p-6 shadow-2xl space-y-4">
+              <div className="w-12 h-12 rounded-lg bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#0D08CB] dark:text-[#E9DEFA] flex items-center justify-center mb-1 border border-[#DCD2EC] dark:border-[#044E62]/30">
                 <Lock className="w-6 h-6" />
               </div>
               <div>
