@@ -33,18 +33,20 @@ Rather than relying on visual gimmicks—such as saturated purple-cyan gradients
 ## 3. Page-by-Page Transformation Details
 
 ### 3.1 Homepage (`src/app/page.tsx`)
-- **Core Questions Answered Above the Fold**:
-  1. *What is StackUp?* An open-access engineering career prep workbench combining structured DSA, core CS theory, and ATS resume diagnostics.
-  2. *Who is it for?* University students, junior developers, and engineering candidates preparing for technical placement interviews.
-  3. *What can a user do?* Solve 150+ categorized DSA problems, master 9 foundational CS subjects, and run automated ATS checks against target job descriptions.
-  4. *What is the most useful next action?* Direct primary CTAs: "Explore Striver SDE Sheet" and "Analyze Resume Free".
-- **Curriculum Workbench Widget**:
-  - Live interactive tabs demonstrating real platform content:
-    - *Tab 1: Two Pointers Algorithm* (Python snippet with time/space complexity).
-    - *Tab 2: Coffman Deadlock Conditions* (OS theory breakdown: Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait).
-    - *Tab 3: ATS 7-Dimension Diagnostics* (Real scoring weights: JD Alignment, Skills, Impact).
-- **Core Curriculum Directory**:
-  - Dense, structured table listing all 9 core CS subjects with topics count, estimated study hours, key concepts, and direct navigation links.
+- **Editorial Masthead & Roadmap Hub**:
+  - Authoritative, clean statement of purpose as an open-access preparation workbench.
+  - Zero fake statistics, fake user counts, or fabricated testimonials.
+  - Genuine session status integration: reads real local progress (`stackup_solved_dsa`, topics read, quiz attempts) without inventing data.
+  - Directional primary pathways: "Browse DSA Patterns (150 Problems)", "Striver SDE Sheet", "Core CS Notes", and "Audit Resume".
+- **Interactive Workbench**:
+  - Live preview tabs demonstrating real algorithm code (Two Sum II), OS theory (Coffman Deadlock Conditions), and authentic 7-dimension ATS resume rubric.
+- **Three Linear Curriculum Tracks (roadmap.sh & The Odin Project Inspired)**:
+  - Replaced repetitive card grids with structured milestone progression tracks:
+    1. *Track 01: Algorithmic Problem Solving & Striver SDE Sheet* (150 Problems, 19 Patterns, milestone breadcrumbs).
+    2. *Track 02: Undergraduate Computer Systems & Software Design* (15 academic disciplines, 221 topics, 587 MCQs).
+    3. *Track 03: Placement Screening Drills & Resume Diagnostics* (Quantitative aptitude, logical deduction, ATS document audit, Google XYZ bullets).
+- **Curriculum Catalog Directory (MDN Web Docs Inspired)**:
+  - Tabular multi-column directory organizing all 19 undergraduate disciplines into 4 academic clusters: Systems, Engineering, Foundations, and Aptitude.
 
 ### 3.2 Striver SDE Sheet (`src/app/striver-sheet/page.tsx`)
 - **Dedicated Route**: Implemented comprehensive sheet architecture replacing legacy redirect.
