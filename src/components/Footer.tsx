@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Layers, Code2, BookOpen, Cpu, FileCheck2, ListChecks } from 'lucide-react';
+import { Layers, Code2, BookOpen, Cpu, FileCheck2 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Footer() {
@@ -38,9 +38,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/striver-sheet" className="hover:text-[var(--brand-primary)] transition-colors flex items-center space-x-1.5">
-                  <ListChecks className="w-3.5 h-3.5 text-[var(--brand-action)]" />
-                  <span>Striver SDE Sheet</span>
+                <Link href="/profile" className="hover:text-[var(--brand-primary)] transition-colors flex items-center space-x-1.5">
+                  <span>Candidate Scorecards & Analytics</span>
                 </Link>
               </li>
               <li>
