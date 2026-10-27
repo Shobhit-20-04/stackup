@@ -27,8 +27,7 @@ import {
   FileText,
   Terminal,
   Lock,
-  ArrowRight,
-  ListChecks
+  ArrowRight
 } from 'lucide-react';
 import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
@@ -284,20 +283,9 @@ function DsaHubContent() {
                 DSA Practice Hub
               </h1>
               <p className="mt-2 text-[var(--foreground-muted)] max-w-2xl text-xs sm:text-sm leading-relaxed">
-                A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, Striver&apos;s SDE Sheet, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
+                A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, TakeUForward guides, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
               </p>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <Link
-                  href="/striver-sheet"
-                  className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-hover)] shadow-xs transition-colors"
-                >
-                  <ListChecks className="w-3.5 h-3.5" />
-                  <span>Explore Striver SDE Sheet</span>
-                </Link>
-                <span className="text-xs text-[var(--foreground-muted)]">
-                  Looking for topic-wise interview sheets? Practice via the curated SDE sheet.
-                </span>
-              </div>
+              
             </div>
 
             {/* Quick Progress Badge */}
@@ -338,42 +326,7 @@ function DsaHubContent() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
-        {/* Prominent Striver SDE Sheet Discovery Banner */}
-        <div className="mb-6 p-4 sm:p-5 rounded-lg border border-[var(--brand-primary)]/30 bg-[var(--surface-card)] relative overflow-hidden shadow-xs">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-start sm:items-center space-x-3.5">
-              <div className="w-10 h-10 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shrink-0 shadow-xs">
-                <ListChecks className="w-5 h-5" />
-              </div>
-              <div className="space-y-0.5">
-                <div className="flex items-center space-x-2">
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)]">Curated Placement Track</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">150+ Problems</span>
-                </div>
-                <h3 className="text-sm sm:text-base font-bold text-[var(--foreground)] tracking-tight">
-                  Striver SDE Sheet — Canonical Placement Curriculum
-                </h3>
-                <p className="text-xs text-[var(--foreground-muted)] max-w-xl leading-relaxed">
-                  Practice high-frequency interview patterns organized topic-by-topic with TakeUForward editorial guides, video breakdowns, and multi-language optimal solutions.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 shrink-0">
-              <div className="text-right hidden sm:block">
-                <div className="text-xs font-mono font-bold text-[var(--foreground)]">{solvedCount} / {totalCount} Solved</div>
-                <div className="text-[11px] text-[var(--foreground-muted)]">{progressPercent}% Completed</div>
-              </div>
-              <Link
-                href="/striver-sheet"
-                className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-hover)] shadow-xs transition-colors shrink-0 cursor-pointer"
-              >
-                <span>Open SDE Sheet</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-        </div>
+        
         {/* Controls: Search, Filters */}
         <div className="bg-[var(--surface-card)] p-4 sm:p-5 rounded-xl border border-[var(--border-subtle)] shadow-xs space-y-3.5 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">

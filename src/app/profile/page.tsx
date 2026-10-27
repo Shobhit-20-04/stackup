@@ -256,19 +256,7 @@ export default function ProfilePage() {
         const dsaMetrics = getSectionMetrics('dsa');
         setSolvedDsaCount(dsaMetrics.completed);
 
-        let striverSolved = 0;
-        try {
-          const solvedRaw = localStorage.getItem('stackup_solved_dsa');
-          if (solvedRaw) {
-            const solved = JSON.parse(solvedRaw);
-            if (Array.isArray(solved)) {
-              striverSolved = solved.length;
-            }
-          }
-        } catch {
-          // ignore
-        }
-        const striverPercent = Math.min(100, Math.round((striverSolved / 150) * 100));
+        
 
         setProgressList([
           { 
@@ -295,14 +283,7 @@ export default function ProfilePage() {
             total_items: dsaMetrics.total, 
             color: 'bg-emerald-600' 
           },
-          { 
-            section_name: "Striver's SDE Sheet", 
-            slug: 'striver', 
-            percent: striverPercent, 
-            completed_items: striverSolved, 
-            total_items: 150, 
-            color: 'bg-orange-500' 
-          },
+
         ]);
 
         // 2. Fetch REAL Quiz Attempts (LocalStorage + Supabase)
