@@ -12,51 +12,50 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log client-side exception securely to console for debugging
     console.error('Unhandled route error caught by error boundary:', error);
   }, [error]);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 bg-[var(--background)] text-[var(--foreground)] transition-colors">
-      <div className="max-w-xl w-full text-center space-y-8">
-        {/* Error Visual Pill */}
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 text-xs font-semibold text-rose-600 dark:text-rose-400 shadow-xs">
+      <div className="max-w-md w-full text-center space-y-6">
+        {/* Error Status Pill */}
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-md border border-rose-500/20 bg-rose-500/10 text-xs font-mono font-medium text-rose-600 dark:text-rose-400">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-          <span>Application Error</span>
+          <span>RUNTIME_EXCEPTION &bull; RECOVERABLE</span>
         </div>
 
         {/* Headline */}
-        <div className="space-y-3">
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
-            Something unexpected occurred
+        <div className="space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
+            Something went wrong
           </h1>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-400 max-w-md mx-auto leading-relaxed">
-            We encountered an unexpected problem loading this section. Your progress and study data remain completely safe.
+          <p className="text-xs sm:text-sm text-[var(--foreground-muted)] max-w-sm mx-auto leading-relaxed">
+            An unexpected error occurred while rendering this view. Your progress and study data are completely safe.
           </p>
         </div>
 
-        {/* Error Diagnostic Digest (if present) */}
+        {/* Diagnostic Digest */}
         {error?.digest && (
-          <div className="p-3 rounded-xl bg-slate-100 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 max-w-sm mx-auto font-mono">
-            Error Reference ID: <span className="text-slate-800 dark:text-zinc-200 select-all">{error.digest}</span>
+          <div className="p-2.5 rounded-md bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[11px] text-[var(--foreground-muted)] font-mono max-w-xs mx-auto">
+            Digest: <span className="text-[var(--foreground)] select-all">{error.digest}</span>
           </div>
         )}
 
         {/* Action CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
           <button
             onClick={() => reset()}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-2xl font-bold text-xs text-white bg-[#0D08CB] hover:bg-[#0A06A3] shadow-sm transition-all cursor-pointer"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-md font-medium text-xs text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer shadow-xs"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-3.5 h-3.5" />
             <span>Try Again</span>
           </button>
           <Link
             href="/"
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-2xl font-bold text-xs text-slate-700 dark:text-zinc-300 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 shadow-xs transition-all cursor-pointer"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-md font-medium text-xs text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-colors cursor-pointer"
           >
-            <Home className="w-4 h-4" />
-            <span>Return to Homepage</span>
+            <Home className="w-3.5 h-3.5" />
+            <span>Return Home</span>
           </Link>
         </div>
       </div>

@@ -348,12 +348,12 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                     {q.options.map((opt, optIdx) => {
                       const isUserChoice = userPick === optIdx;
                       const isCorrectChoice = q.correct_option === optIdx;
-                      let optionClasses = 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400';
+                      let optionClasses = 'border-[var(--border-subtle)] text-[var(--foreground-muted)] bg-[var(--surface-card)]';
 
                       if (isCorrectChoice) {
-                        optionClasses = 'border-emerald-500 bg-emerald-100/50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200 font-semibold';
+                        optionClasses = 'border-emerald-500/50 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-semibold';
                       } else if (isUserChoice) {
-                        optionClasses = 'border-red-500 bg-red-100/50 dark:bg-red-950/50 text-red-900 dark:text-red-200 font-semibold';
+                        optionClasses = 'border-rose-500/50 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-semibold';
                       }
 
                       return (
@@ -362,7 +362,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                           className={`p-3 rounded-lg border text-xs flex items-center justify-between ${optionClasses}`}
                         >
                           <div className="flex items-center space-x-2">
-                            <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-slate-200/50 dark:bg-slate-800">
+                            <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
                               {String.fromCharCode(65 + optIdx)}
                             </span>
                             <span>{opt}</span>
@@ -399,7 +399,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
         <div className="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
           <button
             onClick={onExitQuiz}
-            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-[var(--foreground-muted)] hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer"
+            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Exit to Notes</span>
@@ -498,7 +498,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             const isPracticeAnswered = quizMode === 'practice' && selectedAnswers[currentIndex] !== undefined;
             const isCorrectChoice = optIdx === currentQuestion.correct_option;
 
-            let optionClasses = 'border-[var(--border-subtle)] hover:border-slate-300 dark:hover:border-zinc-700 text-[var(--foreground)] hover:bg-slate-50 dark:hover:bg-zinc-800/60 bg-white dark:bg-[#18181b]';
+            let optionClasses = 'border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-[var(--foreground)] hover:bg-[var(--surface-sunken)] bg-[var(--surface-card)]';
 
             if (quizMode === 'practice' && isPracticeAnswered) {
               if (isCorrectChoice) {
@@ -526,7 +526,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                         ? 'border-rose-600 bg-rose-600 text-white'
                         : active
                         ? 'border-[#0D08CB] bg-[#0D08CB] text-white'
-                        : 'border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 text-[var(--foreground-muted)]'
+                        : 'border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground-muted)]'
                     }`}
                   >
                     {String.fromCharCode(65 + optIdx)}
@@ -617,7 +617,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
             const isCurrent = currentIndex === qIdx;
             const flagged = Boolean(flaggedIndices[qIdx]);
 
-            let btnClasses = 'bg-slate-100 dark:bg-[#1B2442] text-slate-600 dark:text-[#E8EEFF]/80 hover:bg-slate-200 dark:hover:bg-[#223055] border border-transparent dark:border-[#1E2B4D]';
+            let btnClasses = 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)]';
 
             if (isCurrent) {
               btnClasses = 'ring-2 ring-[var(--brand-primary)] bg-[var(--brand-primary)] text-white font-extrabold shadow-xs';

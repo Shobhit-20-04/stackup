@@ -145,86 +145,86 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
     >
-      <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-xl max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-enter">
+      <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-lg max-w-xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-enter">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#0B1020]/40">
+        <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--surface-sunken)]">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center shadow-sm">
-              <Database className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-md bg-[var(--surface-card)] text-[var(--brand-primary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-xs">
+              <Database className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                <span>Supabase &amp; API Connections</span>
-                {loading && <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />}
+              <h3 className="text-sm font-bold text-[var(--foreground)] flex items-center space-x-2">
+                <span>Database &amp; API Integration</span>
+                {loading && <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--foreground-muted)]" />}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-[11px] text-[var(--foreground-muted)]">
                 Connect your cloud database and Anthropic Claude keys for real traffic.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="p-1.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)] rounded-md hover:bg-[var(--surface-card)] transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto space-y-6">
+        <div className="p-5 overflow-y-auto space-y-5">
           {/* Connection Status Badges */}
           <div className="grid grid-cols-2 gap-3">
-            <div className={`p-4 rounded-2xl border text-xs ${
+            <div className={`p-3.5 rounded-lg border text-xs ${
               status?.supabaseConfigured 
-                ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300'
-                : 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+                : 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300'
             }`}>
-              <div className="flex items-center justify-between mb-1.5 font-bold">
+              <div className="flex items-center justify-between mb-1 font-bold">
                 <span className="flex items-center space-x-1.5">
                   <Server className="w-3.5 h-3.5" />
                   <span>Supabase Postgres</span>
                 </span>
-                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-black bg-white/70 dark:bg-zinc-900/70">
-                  {status?.supabaseConfigured ? 'Connected' : 'Local Storage'}
+                <span className="text-[10px] uppercase font-mono tracking-wider px-1.5 py-0.5 rounded font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)]">
+                  {status?.supabaseConfigured ? 'Connected' : 'Local Fallback'}
                 </span>
               </div>
-              <p className="text-[11px] opacity-80">
+              <p className="text-[11px] opacity-80 leading-normal">
                 {status?.supabaseConfigured 
-                  ? 'Real-time database and live OAuth active.' 
-                  : 'Operating via secure local storage & browser database.'}
+                  ? 'Cloud database and OAuth active.' 
+                  : 'Operating via browser storage.'}
               </p>
             </div>
 
-            <div className={`p-4 rounded-2xl border text-xs ${
+            <div className={`p-3.5 rounded-lg border text-xs ${
               status?.anthropicConfigured
-                ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300'
-                : 'bg-[#E9DEFA]/40 dark:bg-[#044E62]/20 border-[#DCD2EC] dark:border-[#044E62]/40 text-[#044E62] dark:text-[#E9DEFA]'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+                : 'bg-[var(--surface-sunken)] border-[var(--border-subtle)] text-[var(--foreground-muted)]'
             }`}>
-              <div className="flex items-center justify-between mb-1.5 font-bold">
+              <div className="flex items-center justify-between mb-1 font-bold">
                 <span className="flex items-center space-x-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Claude AI API</span>
                 </span>
-                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-black bg-white/70 dark:bg-zinc-900/70">
-                  {status?.anthropicConfigured ? 'Live Key' : 'Built-in Engine'}
+                <span className="text-[10px] uppercase font-mono tracking-wider px-1.5 py-0.5 rounded font-bold bg-[var(--surface-card)] border border-[var(--border-subtle)]">
+                  {status?.anthropicConfigured ? 'Live Key' : 'Built-in'}
                 </span>
               </div>
-              <p className="text-[11px] opacity-80">
+              <p className="text-[11px] opacity-80 leading-normal">
                 {status?.anthropicConfigured 
-                  ? 'High-speed Claude 3.5 Sonnet processing enabled.' 
-                  : 'Heuristic STAR resume engine & CS assistant active.'}
+                  ? 'Claude 3.5 Sonnet scoring enabled.' 
+                  : 'Heuristic STAR rubric engine active.'}
               </p>
             </div>
           </div>
 
           {/* Feedback Notification */}
           {message && (
-            <div className={`p-4 rounded-2xl flex items-start space-x-3 text-xs ${
+            <div className={`p-3 rounded-lg flex items-start space-x-2.5 text-xs ${
               message.type === 'success'
-                ? 'bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 text-emerald-800 dark:text-emerald-300'
-                : 'bg-rose-50 dark:bg-rose-950/40 border border-rose-200 text-rose-800 dark:text-rose-300'
+                ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+                : 'bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300'
             }`}>
               {message.type === 'success' ? (
                 <Check className="w-4 h-4 shrink-0 mt-0.5" />
@@ -236,95 +236,89 @@ export default function CredentialsModal({ isOpen, onClose }: CredentialsModalPr
           )}
 
           {/* Credentials Input Form */}
-          <form onSubmit={handleSave} className="space-y-4">
+          <form onSubmit={handleSave} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
                 Supabase Project URL
               </label>
-              <div className="relative">
-                <input
-                  type="url"
-                  placeholder="https://xyzproject.supabase.co"
-                  value={supabaseUrl}
-                  onChange={(e) => setSupabaseUrl(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#0D08CB] focus:outline-none text-slate-900 dark:text-white font-mono"
-                />
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                Found under Project Settings &gt; API in your Supabase dashboard.
+              <input
+                type="url"
+                placeholder="https://xyzproject.supabase.co"
+                value={supabaseUrl}
+                onChange={(e) => setSupabaseUrl(e.target.value)}
+                className="w-full px-3 py-2 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-md text-xs focus:border-[var(--brand-primary)] focus:outline-none text-[var(--foreground)] font-mono"
+              />
+              <p className="text-[11px] text-[var(--foreground-muted)] mt-1 font-mono">
+                Found in Supabase: Project Settings &gt; API.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
                 Supabase Anon / Public Key (JWT)
               </label>
-              <div className="relative">
-                <input
-                  type="password"
-                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                  value={supabaseAnonKey}
-                  onChange={(e) => setSupabaseAnonKey(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#0D08CB] focus:outline-none text-slate-900 dark:text-white font-mono"
-                />
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                Found under Project Settings &gt; API &gt; Project API keys (`anon` / `public`).
+              <input
+                type="password"
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                value={supabaseAnonKey}
+                onChange={(e) => setSupabaseAnonKey(e.target.value)}
+                className="w-full px-3 py-2 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-md text-xs focus:border-[var(--brand-primary)] focus:outline-none text-[var(--foreground)] font-mono"
+              />
+              <p className="text-[11px] text-[var(--foreground-muted)] mt-1 font-mono">
+                Found in Supabase: Project Settings &gt; API keys (`anon` / `public`).
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">
                 Anthropic Claude API Key (Optional)
               </label>
-              <div className="relative">
-                <input
-                  type="password"
-                  placeholder="sk-ant-api03-..."
-                  value={anthropicApiKey}
-                  onChange={(e) => setAnthropicApiKey(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs focus:ring-2 focus:ring-[#0D08CB] focus:outline-none text-slate-900 dark:text-white font-mono"
-                />
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                Used strictly server-side for Claude 3.5 Sonnet scoring and chatbot reasoning.
+              <input
+                type="password"
+                placeholder="sk-ant-api03-..."
+                value={anthropicApiKey}
+                onChange={(e) => setAnthropicApiKey(e.target.value)}
+                className="w-full px-3 py-2 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-md text-xs focus:border-[var(--brand-primary)] focus:outline-none text-[var(--foreground)] font-mono"
+              />
+              <p className="text-[11px] text-[var(--foreground-muted)] mt-1 font-mono">
+                Server-side only for Claude 3.5 Sonnet analysis.
               </p>
             </div>
 
             {/* Quick Step Guide */}
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-zinc-900/40 border border-slate-200 dark:border-zinc-800 text-xs space-y-2.5">
-              <span className="font-bold text-slate-900 dark:text-white block">
+            <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs space-y-2">
+              <span className="font-bold text-[var(--foreground)] block">
                 Database &amp; Google Sign-In Setup:
               </span>
-              <ol className="list-decimal list-inside space-y-1.5 text-slate-600 dark:text-slate-400">
-                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-[#0D08CB] dark:text-[#E9DEFA] underline font-medium">supabase.com</a>.</li>
-                <li>Click <strong>Copy Full Migration SQL</strong> below, open your Supabase <strong>SQL Editor</strong>, paste and run it.</li>
+              <ol className="list-decimal list-inside space-y-1 text-[var(--foreground-muted)] leading-relaxed">
+                <li>Create a free database at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-[var(--brand-primary)] underline font-medium">supabase.com</a>.</li>
+                <li>Click <strong>Copy Full Migration SQL</strong> below, paste and execute in your Supabase <strong>SQL Editor</strong>.</li>
                 <li>Enter your <strong>Project URL</strong> and <strong>Anon Key</strong> above and click Save.</li>
                 <li>
-                  <strong className="text-slate-900 dark:text-white">To enable Google OAuth:</strong> In Supabase, go to <em>Authentication &gt; Providers &gt; Google</em>, toggle Enable, and enter your Google Cloud Client ID &amp; Secret. Add redirect URI: <code className="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-[10px]">{supabaseUrl ? `${supabaseUrl}/auth/v1/callback` : 'https://<project-ref>.supabase.co/auth/v1/callback'}</code>.
+                  <strong>To enable Google OAuth:</strong> Under <em>Authentication &gt; Providers &gt; Google</em>, enter your Client ID &amp; Secret. Add redirect URI: <code className="bg-[var(--surface-card)] px-1 py-0.5 rounded text-[10px] font-mono border border-[var(--border-subtle)]">{supabaseUrl ? `${supabaseUrl}/auth/v1/callback` : 'https://<project-ref>.supabase.co/auth/v1/callback'}</code>.
                 </li>
               </ol>
             </div>
 
-            <div className="flex items-center justify-end space-x-3 pt-2">
+            <div className="flex items-center justify-end space-x-2.5 pt-2">
               <button
                 type="button"
                 onClick={handleCopyMigrationNotice}
-                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800 flex items-center space-x-1.5 transition-colors cursor-pointer"
+                className="px-3.5 py-2 rounded-md border border-[var(--border-subtle)] text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--surface-sunken)] flex items-center space-x-1.5 transition-colors cursor-pointer"
               >
                 {copiedMigration ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedMigration ? 'Full SQL Copied to Clipboard!' : 'Copy Full Migration SQL'}</span>
+                <span>{copiedMigration ? 'SQL Copied!' : 'Copy Migration SQL'}</span>
               </button>
 
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2.5 bg-[#0D08CB] hover:bg-[#0A06A3] disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-[#0D08CB]/20 flex items-center space-x-2 transition-all cursor-pointer"
+                className="px-4 py-2 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] disabled:opacity-50 text-white text-xs font-semibold rounded-md shadow-xs flex items-center space-x-1.5 transition-all cursor-pointer"
               >
                 {saving ? (
                   <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Connecting &amp; Testing...</span>
+                    <span>Connecting...</span>
                   </>
                 ) : (
                   <>
