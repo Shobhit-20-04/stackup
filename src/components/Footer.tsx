@@ -7,7 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#0B1020] mt-auto transition-colors">
+    <footer className="border-t border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--foreground)] mt-auto transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Col 1: Brand & Mission */}
@@ -16,21 +16,21 @@ export default function Footer() {
               <div className="w-7 h-7 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-xs">
                 <Layers className="w-4 h-4" />
               </div>
-              <span className="font-bold text-base tracking-tight text-slate-900 dark:text-[#E8EEFF]">
+              <span className="font-bold text-base tracking-tight text-[var(--foreground)]">
                 Stack<span className="text-[var(--brand-primary)]">Up</span>
               </span>
             </Link>
-            <p className="text-xs text-slate-500 dark:text-[#8E9FC8] leading-relaxed">
+            <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
               Curated technical interview curriculum for engineering students and software developers.
             </p>
           </div>
 
           {/* Col 2: Practice Curriculum */}
           <div className="space-y-3">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-[#E8EEFF]">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
               Curriculum Roadmap
             </div>
-            <ul className="space-y-2 text-xs text-slate-600 dark:text-[#8E9FC8]">
+            <ul className="space-y-2 text-xs text-[var(--foreground-muted)]">
               <li>
                 <Link href="/dsa" className="hover:text-[var(--brand-primary)] transition-colors flex items-center space-x-1.5">
                   <Code2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -60,10 +60,10 @@ export default function Footer() {
 
           {/* Col 3: Career Tools */}
           <div className="space-y-3">
-            <div className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-[#E8EEFF]">
+            <div className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
               Career Tools
             </div>
-            <ul className="space-y-2 text-xs text-slate-600 dark:text-[#8E9FC8]">
+            <ul className="space-y-2 text-xs text-[var(--foreground-muted)]">
               <li>
                 <Link href="/resume-checker" className="hover:text-[var(--brand-primary)] transition-colors flex items-center space-x-1.5">
                   <FileCheck2 className="w-3.5 h-3.5 text-rose-500" />
@@ -85,23 +85,23 @@ export default function Footer() {
 
           {/* Col 4: Industry Benchmarks */}
           <div className="space-y-3">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-[#E8EEFF]">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
               Benchmarks
             </div>
-            <p className="text-xs text-slate-500 dark:text-[#8E9FC8] leading-relaxed">
+            <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
               Curated for software engineering interviews, GATE CS, and placements.
             </p>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500">
+            <div className="text-[11px] text-[var(--foreground-subtle)]">
               <span>Python, C++, Java &amp; TypeScript solutions</span>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#1E2B4D]/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-[#8E9FC8]">
+        <div className="mt-8 pt-6 border-t border-[var(--border-subtle)]/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--foreground-muted)]">
           <div className="flex items-center space-x-3">
             <span>&copy; {new Date().getFullYear()} StackUp.</span>
-            <span className="text-slate-300 dark:text-[#1E2B4D]">|</span>
+            <span className="text-[var(--border-subtle)]">|</span>
             <div className="flex items-center space-x-2">
               <span className="text-[11px] text-slate-400 dark:text-[#8E9FC8]">Theme:</span>
               <ThemeToggle variant="button" showLabel />

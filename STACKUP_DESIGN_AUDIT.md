@@ -69,7 +69,10 @@ Rather than relying on visual gimmicks—such as saturated purple-cyan gradients
 - **Zero Mock Policy**: Clear user guidance on supported formats (.pdf, .docx, .txt $\le 5$MB) and secure processing without fake candidate scores.
 
 ### 3.5 Global Components & Dark Mode
-- **Navbar (`src/components/Navbar.tsx`)**: Cleaned navigation hierarchy, elevated "Striver Sheet" to primary menu, integrated responsive mobile drawer.
+- **Navbar (`src/components/Navbar.tsx`)**: Enforced canonical 5-item top navigation order (Home, DSA Hub, Core CS, Aptitude, ATS Resume), with Striver Sheet promoted via high-visibility discovery banner in DSA Hub; integrated responsive mobile drawer.
+- **Problem Ledgers (`/dsa` & `/striver-sheet`)**: Added LeetCode-style desktop column headers and bidirectional solved progress synchronization.
+- **Student Profile (`src/app/profile/page.tsx`)**: Unified 3 floating cards into an integrated 3-column metrics strip with 1px border dividers.
+- **Quiz Engine (`QuizEngine.tsx`)**: Replaced bubbly `rounded-2xl` containers with clean `rounded-lg` test-taking interface.
 - **Footer (`src/components/Footer.tsx`)**: Editorial layout with direct links to all curriculum sections, ATS tool, Striver sheet, and GitHub repository.
 - **Focus Indicators (`src/app/globals.css`)**: Standardized 2px solid vivid blue (`#0D08CB`) outline with 2px offset for accessible keyboard navigation.
 

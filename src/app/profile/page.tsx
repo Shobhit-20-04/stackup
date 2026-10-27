@@ -31,8 +31,8 @@ import dynamic from 'next/dynamic';
 const QuizScoreChart = dynamic(() => import('@/components/profile/QuizScoreChart'), {
   ssr: false,
   loading: () => (
-    <div className="h-64 w-full flex items-center justify-center bg-slate-50 dark:bg-[#18181b] rounded-2xl border border-slate-100 dark:border-zinc-800 animate-pulse">
-      <span className="text-xs text-slate-400 dark:text-zinc-500 font-medium">Loading performance chart...</span>
+    <div className="h-64 w-full flex items-center justify-center bg-[var(--surface-sunken)] rounded-xl border border-[var(--border-subtle)] animate-pulse">
+      <span className="text-xs text-[var(--foreground-muted)] font-medium">Loading performance chart...</span>
     </div>
   ),
 });
@@ -493,7 +493,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
         <Loader2 className="w-8 h-8 text-[#0D08CB] animate-spin" />
-        <span className="text-sm text-slate-500 font-medium">Loading your real profile metrics...</span>
+        <span className="text-sm text-[var(--foreground-muted)] font-medium">Loading your real profile metrics...</span>
       </div>
     );
   }
@@ -622,10 +622,10 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Grid: Real Streak Tracker & Real Performance Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Streak Tracker Card */}
-        <div className="p-5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col justify-between">
+      {/* Integrated Metrics Ledger: Real Streak Tracker & Real Performance Stats */}
+      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y md:divide-y-0 md:divide-x divide-[var(--border-subtle)] grid grid-cols-1 md:grid-cols-3 shadow-xs">
+        {/* Streak Tracker Cell */}
+        <div className="p-5 sm:p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
@@ -669,8 +669,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Quizzes Taken Stat Card */}
-        <div className="p-5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col justify-between">
+        {/* Quizzes Taken Stat Cell */}
+        <div className="p-5 sm:p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
@@ -707,8 +707,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* ATS Score Benchmark Card */}
-        <div className="p-5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col justify-between">
+        {/* ATS Score Benchmark Cell */}
+        <div className="p-5 sm:p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--foreground-muted)]">

@@ -35,8 +35,8 @@ const TopicNotes = dynamic(() => import('./TopicNotes'), {
   ssr: false,
   loading: () => (
     <div className="max-w-4xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
-      <div className="h-28 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-lg" />
-      <div className="h-64 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-lg" />
+      <div className="h-28 bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-lg" />
+      <div className="h-64 bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-lg" />
     </div>
   ),
 });
@@ -45,8 +45,8 @@ const QuizEngine = dynamic(() => import('./QuizEngine'), {
   ssr: false,
   loading: () => (
     <div className="max-w-3xl mx-auto p-6 sm:p-8 space-y-6 animate-pulse">
-      <div className="h-20 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-lg" />
-      <div className="h-72 bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-lg" />
+      <div className="h-20 bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-lg" />
+      <div className="h-72 bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-lg" />
     </div>
   ),
 });
@@ -156,73 +156,73 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       case 'Cpu':
         return {
           icon: <Cpu className="w-5 h-5 text-[#044E62] dark:text-[#E9DEFA]" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-[#E9DEFA] dark:bg-[#044E62]/20 border-[#DCD2EC] dark:border-[#044E62]/30',
         };
       case 'Database':
         return {
           icon: <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-emerald-500/10 border-emerald-500/20',
         };
       case 'Network':
         return {
           icon: <Network className="w-5 h-5 text-[#044E62] dark:text-[#E9DEFA]" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-[#E9DEFA] dark:bg-[#044E62]/20 border-[#DCD2EC] dark:border-[#044E62]/30',
         };
       case 'Code2':
         return {
           icon: <Code2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-amber-500/10 border-amber-500/20',
         };
       case 'Server':
         return {
           icon: <Server className="w-5 h-5 text-[#044E62] dark:text-[#E9DEFA]" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-[#E9DEFA] dark:bg-[#044E62]/20 border-[#DCD2EC] dark:border-[#044E62]/30',
         };
       case 'GitBranch':
         return {
           icon: <GitBranch className="w-5 h-5 text-rose-600 dark:text-rose-400" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-rose-500/10 border-rose-500/20',
         };
       case 'Terminal':
         return {
           icon: <Terminal className="w-5 h-5 text-[#044E62] dark:text-[#E9DEFA]" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-[#E9DEFA] dark:bg-[#044E62]/20 border-[#DCD2EC] dark:border-[#044E62]/30',
         };
       case 'Layers':
         return {
           icon: <Layers className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-teal-500/10 border-teal-500/20',
         };
       default:
         return {
           icon: <BookOpen className="w-5 h-5 text-[#044E62] dark:text-[#E9DEFA]" />,
-          border: 'border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700',
-          bg: 'bg-white dark:bg-[#151D35]',
-          badge: 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60',
+          border: 'border-[var(--border-subtle)] hover:border-[var(--border-strong)]',
+          bg: 'bg-[var(--surface-card)]',
+          badge: 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]',
           iconBg: 'bg-[#E9DEFA] dark:bg-[#044E62]/20 border-[#DCD2EC] dark:border-[#044E62]/30',
         };
     }
@@ -331,7 +331,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   if (!section) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Section not found</h2>
+        <h2 className="text-xl font-bold text-[var(--foreground)]">Section not found</h2>
         <Link href="/" className="text-sm font-semibold text-[#044E62] dark:text-[#E9DEFA] hover:underline mt-2 inline-flex items-center space-x-1">
           <span>← Back to home</span>
         </Link>
@@ -607,7 +607,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {searchResults !== null && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center space-x-2">
+            <h2 className="text-sm font-black text-[var(--foreground)] uppercase tracking-wider flex items-center space-x-2">
               <Search className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
               <span>Search Results for &quot;{searchQuery}&quot; ({searchResults.length})</span>
             </h2>
@@ -620,9 +620,9 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           </div>
 
           {searchResults.length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-lg border border-slate-200 dark:border-zinc-800 space-y-2">
-              <p className="text-sm font-bold text-slate-900 dark:text-white">No topics matching your criteria</p>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">Try adjusting your filters or keywords like &quot;Deadlock&quot;, &quot;TCP&quot;, &quot;Normal Form&quot;, or &quot;Probability&quot;.</p>
+            <div className="p-12 text-center bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] space-y-2">
+              <p className="text-sm font-bold text-[var(--foreground)]">No topics matching your criteria</p>
+              <p className="text-xs text-[var(--foreground-muted)]">Try adjusting your filters or keywords like &quot;Deadlock&quot;, &quot;TCP&quot;, &quot;Normal Form&quot;, or &quot;Probability&quot;.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -632,12 +632,12 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   <div
                     key={topic.id}
                     onClick={() => { setSelectedTopic(topic); setActiveView('notes'); }}
-                    className="p-4 sm:p-4.5 rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-zinc-700 shadow-xs transition-all flex flex-col justify-between cursor-pointer group"
+                    className="p-4 sm:p-4.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-slate-300 dark:hover:border-zinc-700 shadow-xs transition-all flex flex-col justify-between cursor-pointer group"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
                         <div className="flex items-center space-x-2">
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-slate-200 dark:border-zinc-700/60">
                             {category.title}
                           </span>
                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${getDifficultyBadge(topic.difficulty)}`}>
@@ -651,10 +651,10 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                           </span>
                         )}
                       </div>
-                      <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-[#0D08CB] dark:group-hover:text-[#E9DEFA] transition-colors">
+                      <h3 className="text-sm sm:text-base font-bold text-[var(--foreground)] group-hover:text-[#0D08CB] dark:group-hover:text-[#E9DEFA] transition-colors">
                         {topic.title}
                       </h3>
-                      <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 leading-relaxed font-normal">
+                      <p className="text-xs text-[var(--foreground-muted)] mt-1 leading-relaxed font-normal">
                         {topic.description}
                       </p>
 
@@ -664,7 +664,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                           {topic.companyTags.slice(0, 3).map((comp) => (
                             <span
                               key={comp}
-                              className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"
+                              className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--surface-sunken)] text-[var(--foreground-muted)]"
                             >
                               {comp}
                             </span>
@@ -677,7 +677,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                         </div>
                       )}
                     </div>
-                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-zinc-800/80 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-zinc-300 group-hover:text-[#0D08CB] dark:group-hover:text-[#E9DEFA] transition-colors">
+                    <div className="mt-4 pt-3 border-t border-[var(--border-subtle)]/80 flex items-center justify-between text-xs font-semibold text-[var(--foreground-muted)] group-hover:text-[#0D08CB] dark:group-hover:text-[#E9DEFA] transition-colors">
                       <span>Study Module Notes ({topic.questions.length} MCQs)</span>
                       <div className="flex items-center space-x-2">
                         {topic.youtube_url && (
@@ -707,11 +707,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {searchResults === null && selectedCategory === 'all' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center space-x-1.5">
+            <h2 className="text-xs font-black uppercase tracking-wider text-[var(--foreground-muted)] flex items-center space-x-1.5">
               <Zap className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA]" />
               <span>Choose a Subject to Study ({filteredDashboardCategories.length} Modules Available)</span>
             </h2>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-500">Tap any subject to open syllabus</span>
+            <span className="text-[11px] font-bold text-[var(--foreground-subtle)]">Tap any subject to open syllabus</span>
           </div>
 
           {/* Quick Subject Cluster Filter Tabs for Core CS */}
@@ -730,7 +730,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
                     subjectCluster === tab.id
                       ? 'bg-[var(--brand-primary)] text-white shadow-xs'
-                      : 'bg-white dark:bg-[#151D35] text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-[#1B2442]'
+                      : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:bg-slate-100 dark:hover:bg-[#1B2442]'
                   }`}
                 >
                   {tab.label} ({tab.count})
@@ -749,7 +749,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                 <div
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className="p-5 sm:p-6 rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
+                  className="p-5 sm:p-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3.5">
@@ -774,10 +774,10 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       </div>
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-[var(--brand-primary)] transition-colors">
+                    <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
                       {cat.title}
                     </h3>
-                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
+                    <p className="mt-1.5 text-xs text-[var(--foreground-muted)] leading-relaxed font-normal">
                       {cat.description}
                     </p>
 
@@ -813,10 +813,10 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
       {searchResults === null && activeCategoryObj !== null && (
         <div className="space-y-6 animate-in fade-in">
           {/* Breadcrumb & Quick Subject Nav */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-zinc-800">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
             <button
               onClick={() => setSelectedCategory('all')}
-              className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:text-[#0D08CB] dark:hover:text-[#E9DEFA] bg-white dark:bg-[#151D35] border border-slate-300 dark:border-zinc-800 px-3 py-2 rounded-lg transition-all shadow-xs cursor-pointer self-start"
+              className="inline-flex items-center space-x-1.5 text-xs font-bold text-[var(--foreground-muted)] hover:text-[#0D08CB] dark:hover:text-[#E9DEFA] bg-[var(--surface-card)] border border-slate-300 dark:border-zinc-800 px-3 py-2 rounded-lg transition-all shadow-xs cursor-pointer self-start"
             >
               <ChevronLeft className="w-4 h-4" />
               <span>← All Subjects Dashboard</span>
@@ -827,7 +827,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               {prevCategory && (
                 <button
                   onClick={() => setSelectedCategory(prevCategory.id)}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#1E2B4D] bg-slate-100 dark:bg-[#1B2442] text-[11px] font-bold text-slate-700 dark:text-[#E8EEFF] hover:bg-slate-200 dark:hover:bg-[#223055] transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[11px] font-bold text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                 >
                   ← {prevCategory.title}
                 </button>
@@ -845,33 +845,33 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           </div>
 
           {/* Active Subject Banner */}
-          <div className="p-5 sm:p-6 rounded-lg bg-white dark:bg-[#151D35] text-slate-900 dark:text-white border border-slate-200 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="p-5 sm:p-6 rounded-lg bg-[var(--surface-card)] text-[var(--foreground)] border border-[var(--border-subtle)] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-[10px] font-black uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
                 Active Subject Study Track
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+              <h2 className="text-xl sm:text-2xl font-black text-[var(--foreground)]">
                 {activeCategoryObj.title}
               </h2>
-              <p className="text-xs text-slate-600 dark:text-zinc-400 max-w-xl leading-relaxed">
+              <p className="text-xs text-[var(--foreground-muted)] max-w-xl leading-relaxed">
                 {activeCategoryObj.description}
               </p>
             </div>
 
-            <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-[#18181b] border border-slate-200 dark:border-zinc-800 shrink-0 text-center w-full md:w-auto">
-              <div className="text-xs font-bold text-slate-500 dark:text-zinc-400">Filtered Modules</div>
-              <div className="text-lg font-black text-slate-900 dark:text-white">
+            <div className="p-3.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] shrink-0 text-center w-full md:w-auto">
+              <div className="text-xs font-bold text-[var(--foreground-muted)]">Filtered Modules</div>
+              <div className="text-lg font-black text-[var(--foreground)]">
                 {filteredActiveTopics.length} of {activeCategoryObj.topics.length}
-                <span className="text-xs text-slate-500 dark:text-zinc-400 font-semibold"> Shown</span>
+                <span className="text-xs text-[var(--foreground-muted)] font-semibold"> Shown</span>
               </div>
             </div>
           </div>
 
           {/* Topic Modules List */}
           {filteredActiveTopics.length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#151D35] rounded-lg border border-slate-200 dark:border-zinc-800 space-y-2">
-              <p className="text-sm font-bold text-slate-900 dark:text-white">No modules match your current filter</p>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">Try changing difficulty or status filters to view modules.</p>
+            <div className="p-12 text-center bg-[var(--surface-card)] rounded-lg border border-[var(--border-subtle)] space-y-2">
+              <p className="text-sm font-bold text-[var(--foreground)]">No modules match your current filter</p>
+              <p className="text-xs text-[var(--foreground-muted)]">Try changing difficulty or status filters to view modules.</p>
               <button
                 onClick={() => {
                   setSelectedDifficulty('all');
@@ -883,7 +883,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               </button>
             </div>
           ) : (
-            <div className="rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] divide-y divide-slate-100 dark:divide-zinc-800 overflow-hidden shadow-xs">
+            <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y divide-[var(--border-subtle)] overflow-hidden shadow-xs">
               {filteredActiveTopics.map((topic, index) => {
                 const isCompleted = completedTopicIds.has(topic.id);
 
@@ -894,7 +894,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     className={`p-4 sm:p-4.5 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer group ${
                       isCompleted
                         ? 'bg-emerald-500/5 dark:bg-emerald-950/10'
-                        : 'hover:bg-slate-50/70 dark:hover:bg-[#1B2442]/40'
+                        : 'hover:bg-[var(--surface-sunken)]/60'
                     }`}
                   >
                     <div className="flex items-start space-x-3.5 min-w-0">
@@ -902,14 +902,14 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-xs ${
                         isCompleted
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700/60'
+                          : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-slate-200 dark:border-zinc-700/60'
                       }`}>
                         {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
                       </div>
 
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-[#0D08CB] dark:group-hover:text-[#E9DEFA] transition-colors">
+                          <span className="text-sm sm:text-base font-bold text-[var(--foreground)] group-hover:text-[#0D08CB] dark:group-hover:text-[#E9DEFA] transition-colors">
                             {topic.title}
                           </span>
                           <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${getDifficultyBadge(topic.difficulty)}`}>
@@ -920,16 +920,16 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                               ✓ Completed
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-700/60">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[var(--surface-sunken)] text-[var(--foreground-muted)] border border-slate-200 dark:border-zinc-700/60">
                               Ready to Study
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
+                        <p className="text-xs text-[var(--foreground-muted)] leading-relaxed font-normal">
                           {topic.description}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] font-semibold text-slate-500 dark:text-zinc-500">
+                        <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] font-semibold text-[var(--foreground-subtle)]">
                           <span className="flex items-center space-x-1">
                             <Clock className="w-3 h-3 text-[#044E62] dark:text-[#E9DEFA]" />
                             <span>{topic.estimatedMinutes} min read</span>
@@ -943,7 +943,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                               <div className="flex items-center gap-1">
                                 <Building2 className="w-3 h-3 text-slate-400" />
                                 {topic.companyTags.slice(0, 3).map((comp) => (
-                                  <span key={comp} className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">
+                                  <span key={comp} className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-[var(--surface-sunken)] text-[var(--foreground-muted)]">
                                     {comp}
                                   </span>
                                 ))}
@@ -955,7 +955,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center space-x-2 self-stretch md:self-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-zinc-800/80 shrink-0">
+                    <div className="flex items-center space-x-2 self-stretch md:self-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)]/80 shrink-0">
                       {topic.youtube_url && (
                         <a
                           href={topic.youtube_url}
@@ -974,7 +974,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                           setSelectedTopic(topic);
                           setActiveView('notes');
                         }}
-                        className="flex-1 md:flex-initial px-3.5 py-2 rounded-lg border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#1B2442] text-xs font-semibold text-slate-700 dark:text-[#E8EEFF] hover:bg-slate-50 dark:hover:bg-[#223055] transition-colors cursor-pointer text-center shadow-xs"
+                        className="flex-1 md:flex-initial px-3.5 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer text-center shadow-xs"
                       >
                         Read Notes
                       </button>

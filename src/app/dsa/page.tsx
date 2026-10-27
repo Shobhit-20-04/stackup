@@ -271,19 +271,19 @@ function DsaHubContent() {
   const hardSolved = DSA_PROBLEMS.filter((p) => p.difficulty === 'Hard' && solvedIds.includes(p.id)).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] pb-20 page-enter">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-20 page-enter">
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#151D35] border-b border-slate-200 dark:border-[#1E2B4D]">
+      <div className="bg-[var(--surface-card)] border-b border-[var(--border-subtle)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="text-xs font-semibold text-slate-500 dark:text-[#8E9FC8] mb-1.5 uppercase tracking-wider">
+              <div className="text-xs font-semibold text-[var(--foreground-muted)] mb-1.5 uppercase tracking-wider">
                 Algorithms &amp; Data Structures Roadmap
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-[#E8EEFF] tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
                 DSA Practice Hub
               </h1>
-              <p className="mt-2 text-slate-600 dark:text-[#8E9FC8] max-w-2xl text-xs sm:text-sm leading-relaxed">
+              <p className="mt-2 text-[var(--foreground-muted)] max-w-2xl text-xs sm:text-sm leading-relaxed">
                 A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, Striver&apos;s SDE Sheet, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -294,16 +294,16 @@ function DsaHubContent() {
                   <ListChecks className="w-3.5 h-3.5" />
                   <span>Explore Striver SDE Sheet</span>
                 </Link>
-                <span className="text-xs text-slate-500 dark:text-[#8E9FC8]">
+                <span className="text-xs text-[var(--foreground-muted)]">
                   Looking for topic-wise interview sheets? Practice via the curated SDE sheet.
                 </span>
               </div>
             </div>
 
             {/* Quick Progress Badge */}
-            <div className="bg-slate-50 dark:bg-[#151D35] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] min-w-[280px]">
+            <div className="bg-[var(--surface-sunken)] p-4 sm:p-5 rounded-xl border border-[var(--border-subtle)] min-w-[280px]">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#8E9FC8]">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)]">
                   Completion Status
                 </span>
                 <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
@@ -319,17 +319,17 @@ function DsaHubContent() {
 
               {/* Sub-breakdown */}
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="bg-white dark:bg-[#0B1020] p-2 rounded-lg border border-slate-200 dark:border-[#1E2B4D]">
+                <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
                   <span className="block text-emerald-600 dark:text-emerald-400 font-bold">{easySolved}/{easyTotal}</span>
-                  <span className="text-slate-500 dark:text-[#8E9FC8] text-[10px]">Easy</span>
+                  <span className="text-[var(--foreground-muted)] text-[10px]">Easy</span>
                 </div>
-                <div className="bg-white dark:bg-[#0B1020] p-2 rounded-lg border border-slate-200 dark:border-[#1E2B4D]">
+                <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
                   <span className="block text-amber-600 dark:text-amber-400 font-bold">{mediumSolved}/{mediumTotal}</span>
-                  <span className="text-slate-500 dark:text-[#8E9FC8] text-[10px]">Medium</span>
+                  <span className="text-[var(--foreground-muted)] text-[10px]">Medium</span>
                 </div>
-                <div className="bg-white dark:bg-[#0B1020] p-2 rounded-lg border border-slate-200 dark:border-[#1E2B4D]">
+                <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
                   <span className="block text-rose-600 dark:text-rose-400 font-bold">{hardSolved}/{hardTotal}</span>
-                  <span className="text-slate-500 dark:text-[#8E9FC8] text-[10px]">Hard</span>
+                  <span className="text-[var(--foreground-muted)] text-[10px]">Hard</span>
                 </div>
               </div>
             </div>
@@ -338,19 +338,55 @@ function DsaHubContent() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
+        {/* Prominent Striver SDE Sheet Discovery Banner */}
+        <div className="mb-6 p-4 sm:p-5 rounded-lg border border-[var(--brand-primary)]/30 bg-[var(--surface-card)] relative overflow-hidden shadow-xs">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center space-x-3.5">
+              <div className="w-10 h-10 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shrink-0 shadow-xs">
+                <ListChecks className="w-5 h-5" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="flex items-center space-x-2">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)]">Curated Placement Track</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">150+ Problems</span>
+                </div>
+                <h3 className="text-sm sm:text-base font-bold text-[var(--foreground)] tracking-tight">
+                  Striver SDE Sheet — Canonical Placement Curriculum
+                </h3>
+                <p className="text-xs text-[var(--foreground-muted)] max-w-xl leading-relaxed">
+                  Practice high-frequency interview patterns organized topic-by-topic with TakeUForward editorial guides, video breakdowns, and multi-language optimal solutions.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-3 shrink-0">
+              <div className="text-right hidden sm:block">
+                <div className="text-xs font-mono font-bold text-[var(--foreground)]">{solvedCount} / {totalCount} Solved</div>
+                <div className="text-[11px] text-[var(--foreground-muted)]">{progressPercent}% Completed</div>
+              </div>
+              <Link
+                href="/striver-sheet"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-hover)] shadow-xs transition-colors shrink-0 cursor-pointer"
+              >
+                <span>Open SDE Sheet</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
         {/* Controls: Search, Filters */}
-        <div className="bg-white dark:bg-[#151D35] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-[#1E2B4D] shadow-xs space-y-3.5 mb-6">
+        <div className="bg-[var(--surface-card)] p-4 sm:p-5 rounded-xl border border-[var(--border-subtle)] shadow-xs space-y-3.5 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--foreground-muted)]" />
               <input 
                 type="text"
                 placeholder="Search problem name, company (e.g. Google), or pattern..."
                 aria-label="Search problems by name, company, or pattern"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-9 py-2 bg-slate-50 dark:bg-[#0B1020] border border-slate-200 dark:border-[#1E2B4D] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] text-slate-900 dark:text-[#E8EEFF] placeholder:text-slate-400"
+                className="w-full pl-10 pr-9 py-2 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] text-[var(--foreground)] placeholder:text-[var(--foreground-muted)]"
               />
               {showSearchSpinner && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -360,15 +396,15 @@ function DsaHubContent() {
             </div>
 
             {/* Difficulty Toggle Buttons */}
-            <div className="flex flex-wrap items-center gap-1 bg-slate-100 dark:bg-[#0B1020] border border-slate-200/80 dark:border-[#1E2B4D] p-1 rounded-lg">
+            <div className="flex flex-wrap items-center gap-1 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-1 rounded-lg">
               {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
                 <button
                   key={diff}
                   onClick={() => setSelectedDifficulty(diff)}
                   className={`px-3 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                     selectedDifficulty === diff
-                      ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
-                      : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
+                      ? 'bg-white dark:bg-[#1B2442] text-[var(--foreground)] shadow-xs font-semibold'
+                      : 'text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                   }`}
                 >
                   {diff}
@@ -377,7 +413,7 @@ function DsaHubContent() {
             </div>
 
             {/* Toggle Unsolved */}
-            <label className="flex items-center space-x-2 text-xs font-medium text-slate-600 dark:text-[#8E9FC8] cursor-pointer select-none">
+            <label className="flex items-center space-x-2 text-xs font-medium text-[var(--foreground-muted)] cursor-pointer select-none">
               <input 
                 type="checkbox"
                 checked={showOnlyUnsolved}
@@ -403,7 +439,7 @@ function DsaHubContent() {
 
           {/* Pattern / Category Pills - Scrollable Horizontally on Mobile */}
           <div className="flex items-center gap-1.5 pt-2.5 border-t border-slate-100 dark:border-[#1E2B4D] overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider pl-1 mr-1 shrink-0">
+            <span className="text-xs font-semibold text-[var(--foreground-muted)] uppercase tracking-wider pl-1 mr-1 shrink-0">
               Pattern:
             </span>
             {DSA_CATEGORIES.map((cat) => (
@@ -413,7 +449,7 @@ function DsaHubContent() {
                 className={`px-3 py-1 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-[var(--brand-primary)] text-white shadow-xs'
-                    : 'bg-slate-100 dark:bg-[#1B2442] text-slate-700 dark:text-[#8E9FC8] hover:bg-slate-200 dark:hover:bg-[#223055]'
+                    : 'bg-[var(--surface-sunken)] text-slate-700 dark:text-[#8E9FC8] hover:bg-slate-200 dark:hover:bg-[#223055]'
                 }`}
               >
                 {cat}
@@ -423,13 +459,13 @@ function DsaHubContent() {
         </div>
 
         {/* Dynamic Problem Count Header & View Switcher */}
-        <div ref={problemContainerRef} className="scroll-mt-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1 mb-4 text-xs text-slate-500 dark:text-slate-400">
+        <div ref={problemContainerRef} className="scroll-mt-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1 mb-4 text-xs text-[var(--foreground-muted)]">
           <div className="flex items-center space-x-2">
-            <span className="font-semibold text-slate-900 dark:text-white">
+            <span className="font-semibold text-[var(--foreground)]">
               {filteredProblems.length} {filteredProblems.length === 1 ? 'problem' : 'problems'} found
             </span>
             {viewMode === 'list' && pageSize !== -1 && totalPages > 1 && (
-              <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-400 font-medium">
+              <span className="px-2 py-0.5 rounded-md bg-[var(--surface-sunken)] text-slate-600 dark:text-[var(--foreground-muted)] font-medium">
                 Page {effectivePage} of {totalPages}
               </span>
             )}
@@ -437,13 +473,13 @@ function DsaHubContent() {
 
           <div className="flex items-center space-x-3 self-end sm:self-auto">
             {/* View Mode Toggle: Paginated List vs Group by Pattern */}
-            <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-800">
+            <div className="inline-flex rounded-xl p-0.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
               <button
                 type="button"
                 onClick={() => setViewMode('list')}
                 className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   viewMode === 'list'
-                    ? 'bg-white dark:bg-[#151D35] text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs'
+                    ? 'bg-[var(--surface-card)] text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -455,7 +491,7 @@ function DsaHubContent() {
                 onClick={() => setViewMode('pattern')}
                 className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   viewMode === 'pattern'
-                    ? 'bg-white dark:bg-[#151D35] text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs'
+                    ? 'bg-[var(--surface-card)] text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs'
                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -466,7 +502,7 @@ function DsaHubContent() {
 
             {/* Items Per Page Selector (in list view) */}
             {viewMode === 'list' && (
-              <div className="hidden sm:flex items-center space-x-1 text-slate-400">
+              <div className="hidden sm:flex items-center space-x-1 text-[var(--foreground-muted)]">
                 <span>Per page:</span>
                 <select
                   value={pageSize}
@@ -475,7 +511,7 @@ function DsaHubContent() {
                     setPageSize(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 rounded-lg px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#0D08CB] cursor-pointer"
+                  className="bg-[var(--surface-sunken)] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 rounded-lg px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#0D08CB] cursor-pointer"
                 >
                   <option value={12}>12</option>
                   <option value={24}>24</option>
@@ -490,7 +526,7 @@ function DsaHubContent() {
         {/* Problems List */}
         <div className="space-y-4">
           {filteredProblems.length === 0 ? (
-            <div className="bg-white dark:bg-[#151D35] p-12 text-center rounded-lg border border-slate-200 dark:border-zinc-800">
+            <div className="bg-[var(--surface-card)] p-12 text-center rounded-lg border border-[var(--border-subtle)]">
               <Code2 className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
               <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">No problems found</h3>
               <p className="text-sm text-slate-500 mt-1">Try clearing your search query or filter settings.</p>
@@ -519,7 +555,7 @@ function DsaHubContent() {
                   className={`transition-colors ${
                     isSolved 
                       ? 'bg-emerald-50/20 dark:bg-emerald-950/10' 
-                      : 'hover:bg-slate-50/70 dark:hover:bg-[#1B2442]/40'
+                      : 'hover:bg-[var(--surface-sunken)]/60'
                   }`}
                 >
                   <div className="p-4 sm:p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
@@ -541,8 +577,8 @@ function DsaHubContent() {
                         <div className="flex items-center space-x-2 flex-wrap gap-y-1">
                           <h3 className={`text-sm sm:text-base font-semibold transition-colors ${
                             isSolved 
-                              ? 'line-through text-slate-400 dark:text-slate-500' 
-                              : 'text-slate-900 dark:text-[#E8EEFF] hover:text-[var(--brand-primary)]'
+                              ? 'line-through text-[var(--foreground-subtle)]' 
+                              : 'text-[var(--foreground)] hover:text-[var(--brand-primary)]'
                           }`}>
                             {problem.title}
                           </h3>
@@ -566,11 +602,11 @@ function DsaHubContent() {
 
                         {/* Company badges */}
                         <div className="flex items-center space-x-1.5 mt-2 flex-wrap gap-y-1 text-xs text-slate-500">
-                          <Building2 className="w-3 h-3 text-slate-400 mr-0.5" />
+                          <Building2 className="w-3 h-3 text-[var(--foreground-muted)] mr-0.5" />
                           {problem.companies.map((c) => (
                             <span 
                               key={c}
-                              className="text-[10px] bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded font-mono"
+                              className="text-[10px] bg-slate-100 dark:bg-slate-800/80 text-[var(--foreground-muted)] px-1.5 py-0.5 rounded font-mono"
                             >
                               {c}
                             </span>
@@ -599,7 +635,7 @@ function DsaHubContent() {
                           href={problem.striver_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-[#1B2442] dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] flex items-center space-x-1.5 transition-colors border border-slate-200 dark:border-[#1E2B4D]"
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-[#1B2442] dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] flex items-center space-x-1.5 transition-colors border border-[var(--border-subtle)]"
                           title="Open Striver's TakeUForward guide"
                         >
                           <span>Striver</span>
@@ -607,7 +643,7 @@ function DsaHubContent() {
                         </a>
                       ) : (
                         <span
-                          className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-50 dark:bg-slate-800/40 text-slate-400 dark:text-slate-500 flex items-center space-x-1.5 border border-slate-200/50 dark:border-slate-800/50 cursor-not-allowed opacity-75"
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-50 dark:bg-slate-800/40 text-[var(--foreground-subtle)] flex items-center space-x-1.5 border border-slate-200/50 dark:border-slate-800/50 cursor-not-allowed opacity-75"
                           title="Striver editorial guide pending for this problem"
                         >
                           <span>Guide Pending</span>
@@ -638,7 +674,7 @@ function DsaHubContent() {
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-colors cursor-pointer border ${
                           isExpanded
                             ? 'bg-slate-900 dark:bg-[#1B2442] text-white border-slate-800 dark:border-[#2D3D6E] shadow-xs'
-                            : 'bg-slate-100 dark:bg-[#1B2442] hover:bg-slate-200 dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] border-slate-200 dark:border-[#1E2B4D]'
+                            : 'bg-[var(--surface-sunken)] hover:bg-slate-200 dark:hover:bg-[#223055] text-slate-700 dark:text-[#E8EEFF] border-[var(--border-subtle)]'
                         }`}
                         title="View complete problem output, approach, and code solutions"
                       >
@@ -651,16 +687,16 @@ function DsaHubContent() {
 
                   {/* Complete Output Expandable Body */}
                   {isExpanded && (
-                    <div className="border-t border-slate-200 dark:border-[#1E2B4D] bg-slate-50/50 dark:bg-[#0B1020]/80 p-4 sm:p-5 space-y-4 animate-in fade-in-50 slide-in-from-top-1 duration-200">
+                    <div className="border-t border-[var(--border-subtle)] bg-slate-50/50 dark:bg-[#0B1020]/80 p-4 sm:p-5 space-y-4 animate-in fade-in-50 slide-in-from-top-1 duration-200">
                       {/* Top Tabs */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-[#1E2B4D] pb-3">
-                        <div className="flex items-center space-x-1 bg-slate-200/80 dark:bg-[#151D35] p-1 rounded-lg border border-slate-200/80 dark:border-[#1E2B4D] overflow-x-auto max-w-full scrollbar-none">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-3">
+                        <div className="flex items-center space-x-1 bg-slate-200/80 dark:bg-[#151D35] p-1 rounded-lg border border-[var(--border-subtle)] overflow-x-auto max-w-full scrollbar-none">
                           <button
                             onClick={() => setActiveTab('problem')}
                             className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                               activeTab === 'problem'
-                                ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
-                                : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
+                                ? 'bg-white dark:bg-[#1B2442] text-[var(--foreground)] shadow-xs font-semibold'
+                                : 'text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                             }`}
                           >
                             <FileText className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
@@ -671,8 +707,8 @@ function DsaHubContent() {
                             onClick={() => setActiveTab('approach')}
                             className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                               activeTab === 'approach'
-                                ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
-                                : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
+                                ? 'bg-white dark:bg-[#1B2442] text-[var(--foreground)] shadow-xs font-semibold'
+                                : 'text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                             }`}
                           >
                             <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
@@ -683,8 +719,8 @@ function DsaHubContent() {
                             onClick={() => setActiveTab('code')}
                             className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                               activeTab === 'code'
-                                ? 'bg-white dark:bg-[#1B2442] text-slate-900 dark:text-[#E8EEFF] shadow-xs font-semibold'
-                                : 'text-slate-600 dark:text-[#8E9FC8] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
+                                ? 'bg-white dark:bg-[#1B2442] text-[var(--foreground)] shadow-xs font-semibold'
+                                : 'text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-[#E8EEFF]'
                             }`}
                           >
                             <Code2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -719,7 +755,7 @@ function DsaHubContent() {
                           ) : (
                             <>
                               <span className="text-slate-300 dark:text-slate-700">•</span>
-                              <span className="text-slate-400 dark:text-slate-500 text-xs">
+                              <span className="text-[var(--foreground-subtle)] text-xs">
                                 Striver Guide Pending
                               </span>
                             </>
@@ -742,42 +778,42 @@ function DsaHubContent() {
                         <div className="space-y-4">
                           {/* Description */}
                           <div>
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-1.5">
                               Problem Statement
                             </h4>
-                            <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed bg-white dark:bg-[#151D35] p-4 rounded-xl border border-slate-200 dark:border-zinc-800">
+                            <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed bg-[var(--surface-card)] p-4 rounded-xl border border-[var(--border-subtle)]">
                               {problem.description}
                             </p>
                           </div>
 
                           {/* Examples */}
                           <div>
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-2">
                               Sample Test Cases &amp; Outputs
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                               {(currentUser ? problem.examples : problem.examples.slice(0, 1)).map((ex, idx) => (
                                 <div 
                                   key={idx}
-                                  className="bg-white dark:bg-[#151D35] p-3.5 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs space-y-2"
+                                  className="bg-[var(--surface-card)] p-3.5 rounded-xl border border-[var(--border-subtle)] text-xs space-y-2"
                                 >
-                                  <div className="flex items-center justify-between text-slate-400 font-mono text-[11px] pb-1 border-b border-slate-100 dark:border-zinc-800">
+                                  <div className="flex items-center justify-between text-[var(--foreground-muted)] font-mono text-[11px] pb-1 border-b border-slate-100 dark:border-zinc-800">
                                     <span>Example {idx + 1}</span>
                                   </div>
                                   <div>
-                                    <span className="font-semibold text-slate-500 dark:text-slate-400 block mb-0.5">Input:</span>
+                                    <span className="font-semibold text-[var(--foreground-muted)] block mb-0.5">Input:</span>
                                     <code className="text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded block font-mono">
                                       {ex.input}
                                     </code>
                                   </div>
                                   <div>
-                                    <span className="font-semibold text-slate-500 dark:text-slate-400 block mb-0.5">Output:</span>
+                                    <span className="font-semibold text-[var(--foreground-muted)] block mb-0.5">Output:</span>
                                     <code className="text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 rounded block font-mono font-semibold">
                                       {ex.output}
                                     </code>
                                   </div>
                                   {ex.explanation && (
-                                    <div className="text-slate-600 dark:text-slate-400 pt-1 text-[11px] leading-relaxed">
+                                    <div className="text-slate-600 dark:text-[var(--foreground-muted)] pt-1 text-[11px] leading-relaxed">
                                       <span className="font-medium text-slate-700 dark:text-slate-300">Explanation: </span>
                                       {ex.explanation}
                                     </div>
@@ -790,14 +826,14 @@ function DsaHubContent() {
                           {/* Constraints & Member Teaser */}
                           {currentUser ? (
                             <div>
-                              <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                              <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)] mb-2">
                                 Constraints
                               </h4>
                               <div className="flex flex-wrap gap-2">
                                 {problem.constraints.map((c, idx) => (
                                   <span 
                                     key={idx}
-                                    className="text-xs font-mono bg-white dark:bg-[#151D35] text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-800"
+                                    className="text-xs font-mono bg-[var(--surface-card)] text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg border border-[var(--border-subtle)]"
                                   >
                                     {c}
                                   </span>
@@ -825,7 +861,7 @@ function DsaHubContent() {
                       {/* Tab 2: Optimal Approach & Complexity */}
                       {activeTab === 'approach' && (
                         <div className="space-y-4">
-                          <div className="bg-white dark:bg-[#151D35] p-4 rounded-xl border border-slate-200 dark:border-zinc-800">
+                          <div className="bg-[var(--surface-card)] p-4 rounded-xl border border-[var(--border-subtle)]">
                             <div className="flex items-center space-x-2 mb-2 text-amber-600 dark:text-amber-400 font-semibold text-sm">
                               <Sparkles className="w-4 h-4" />
                               <span>Core Algorithmic Intuition</span>
@@ -853,30 +889,30 @@ function DsaHubContent() {
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Time Complexity */}
-                            <div className="bg-white dark:bg-[#151D35] p-4 rounded-xl border border-slate-200 dark:border-zinc-800 flex items-start space-x-3">
+                            <div className="bg-[var(--surface-card)] p-4 rounded-xl border border-[var(--border-subtle)] flex items-start space-x-3">
                               <div className="p-2.5 rounded-lg bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#0D08CB] dark:text-[#E9DEFA]">
                                 <Clock className="w-5 h-5" />
                               </div>
                               <div>
-                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 block">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)] block">
                                   Time Complexity
                                 </span>
-                                <span className="text-sm font-bold text-slate-900 dark:text-white font-mono mt-0.5 block">
+                                <span className="text-sm font-bold text-[var(--foreground)] font-mono mt-0.5 block">
                                   {currentUser ? problem.timeComplexity : 'Sign in to view'}
                                 </span>
                               </div>
                             </div>
 
                             {/* Space Complexity */}
-                            <div className="bg-white dark:bg-[#151D35] p-4 rounded-xl border border-slate-200 dark:border-zinc-800 flex items-start space-x-3">
+                            <div className="bg-[var(--surface-card)] p-4 rounded-xl border border-[var(--border-subtle)] flex items-start space-x-3">
                               <div className="p-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400">
                                 <HardDrive className="w-5 h-5" />
                               </div>
                               <div>
-                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 block">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)] block">
                                   Space Complexity
                                 </span>
-                                <span className="text-sm font-bold text-slate-900 dark:text-white font-mono mt-0.5 block">
+                                <span className="text-sm font-bold text-[var(--foreground)] font-mono mt-0.5 block">
                                   {currentUser ? problem.spaceComplexity : 'Sign in to view'}
                                 </span>
                               </div>
@@ -897,8 +933,8 @@ function DsaHubContent() {
                                   onClick={() => setActiveLang(lang)}
                                   className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                                     activeLang === lang
-                                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-semibold shadow-sm'
-                                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                      ? 'bg-white dark:bg-slate-700 text-[var(--foreground)] font-semibold shadow-sm'
+                                      : 'text-slate-600 dark:text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-white'
                                   }`}
                                 >
                                   {lang === 'python' ? 'Python 3' : lang === 'cpp' ? 'C++' : lang === 'java' ? 'Java' : 'TypeScript'}
@@ -918,7 +954,7 @@ function DsaHubContent() {
                                   </>
                                 ) : (
                                   <>
-                                    <Copy className="w-3.5 h-3.5 text-slate-400" />
+                                    <Copy className="w-3.5 h-3.5 text-[var(--foreground-muted)]" />
                                     <span>Copy Solution</span>
                                   </>
                                 )}
@@ -964,7 +1000,7 @@ function DsaHubContent() {
                                   <h4 className="text-sm font-bold text-white mb-1">
                                     Sign in to view full multi-language code
                                   </h4>
-                                  <p className="text-xs text-slate-400 max-w-xs mb-3">
+                                  <p className="text-xs text-[var(--foreground-muted)] max-w-xs mb-3">
                                     Unlock full implementations, optimal time/space solutions, and one-click copy.
                                   </p>
                                   <Link
@@ -994,12 +1030,12 @@ function DsaHubContent() {
                     return (
                       <div
                         key={group.pattern}
-                        className="rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] overflow-hidden shadow-sm"
+                        className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] overflow-hidden shadow-sm"
                       >
                         <button
                           type="button"
                           onClick={() => togglePatternAccordion(group.pattern)}
-                          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer"
+                          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-[var(--surface-sunken)]/60 transition-colors cursor-pointer"
                         >
                           <div className="flex items-center space-x-3 min-w-0">
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
@@ -1014,10 +1050,10 @@ function DsaHubContent() {
                               )}
                             </div>
                             <div>
-                              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                              <h3 className="text-sm sm:text-base font-bold text-[var(--foreground)]">
                                 {group.pattern}
                               </h3>
-                              <p className="text-xs text-slate-500 dark:text-slate-400">
+                              <p className="text-xs text-[var(--foreground-muted)]">
                                 {group.solvedCount} of {group.totalCount} completed ({group.percentage}%)
                               </p>
                             </div>
@@ -1030,12 +1066,12 @@ function DsaHubContent() {
                                 style={{ width: `${group.percentage}%` }}
                               />
                             </div>
-                            {isGroupOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                            {isGroupOpen ? <ChevronUp className="w-4 h-4 text-[var(--foreground-muted)]" /> : <ChevronDown className="w-4 h-4 text-[var(--foreground-muted)]" />}
                           </div>
                         </button>
 
                         {isGroupOpen && (
-                          <div className="border-t border-slate-200 dark:border-[#1E2B4D] divide-y divide-slate-100 dark:divide-[#1E2B4D] bg-white dark:bg-[#151D35]">
+                          <div className="border-t border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] bg-[var(--surface-card)]">
                             {group.problems.map((p) => renderCard(p))}
                           </div>
                         )}
@@ -1047,7 +1083,15 @@ function DsaHubContent() {
             }
 
             return (
-              <div className="rounded-lg border border-slate-200 dark:border-[#1E2B4D] bg-white dark:bg-[#151D35] divide-y divide-slate-100 dark:divide-[#1E2B4D] overflow-hidden shadow-xs">
+              <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y divide-[var(--border-subtle)] overflow-hidden shadow-xs">
+                {/* LeetCode-style Problem Ledger Table Header */}
+                <div className="hidden sm:grid sm:grid-cols-12 px-6 py-2.5 bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--foreground-muted)]">
+                  <div className="col-span-1 text-center">Status</div>
+                  <div className="col-span-5">Problem &amp; Pattern</div>
+                  <div className="col-span-2">Difficulty</div>
+                  <div className="col-span-2">Companies</div>
+                  <div className="col-span-2 text-right">Solutions &amp; Code</div>
+                </div>
                 {displayedProblems.map((problem) => renderCard(problem))}
               </div>
             );
@@ -1063,15 +1107,15 @@ function DsaHubContent() {
             }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in"
           >
-            <div className="bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-lg max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-lg max-w-md w-full p-6 shadow-2xl space-y-4">
               <div className="w-12 h-12 rounded-lg bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#0D08CB] dark:text-[#E9DEFA] flex items-center justify-center mb-1 border border-[#DCD2EC] dark:border-[#044E62]/30">
                 <Lock className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-[var(--foreground)]">
                   Sign In Required
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                <p className="text-sm text-slate-600 dark:text-[var(--foreground-muted)] mt-1 leading-relaxed">
                   {authPromptReason || 'Sign in to access this feature and sync your data with your personal profile dashboard.'}
                 </p>
               </div>
@@ -1085,7 +1129,7 @@ function DsaHubContent() {
                 </Link>
                 <button
                   onClick={() => setAuthPromptOpen(false)}
-                  className="py-2.5 px-4 rounded-xl border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                  className="py-2.5 px-4 rounded-xl border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-[var(--foreground-muted)] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1096,12 +1140,12 @@ function DsaHubContent() {
 
         {/* Modern Pagination Controls (List View) */}
         {viewMode === 'list' && filteredProblems.length > 0 && pageSize !== -1 && totalPages > 1 && (
-          <div className="pt-8 pb-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 dark:border-zinc-800">
+          <div className="pt-8 pb-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[var(--border-subtle)]">
             {/* Left: Summary */}
-            <div className="text-xs text-slate-500 dark:text-slate-400">
-              Showing <span className="font-bold text-slate-900 dark:text-white">{startIndex + 1}</span>–
-              <span className="font-bold text-slate-900 dark:text-white">{endIndex}</span> of{' '}
-              <span className="font-bold text-slate-900 dark:text-white">{filteredProblems.length}</span> problems
+            <div className="text-xs text-[var(--foreground-muted)]">
+              Showing <span className="font-bold text-[var(--foreground)]">{startIndex + 1}</span>–
+              <span className="font-bold text-[var(--foreground)]">{endIndex}</span> of{' '}
+              <span className="font-bold text-[var(--foreground)]">{filteredProblems.length}</span> problems
             </div>
 
             {/* Center: Page navigation pills */}
@@ -1110,7 +1154,7 @@ function DsaHubContent() {
                 type="button"
                 onClick={() => handlePageChange(effectivePage - 1)}
                 disabled={effectivePage <= 1}
-                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
+                className="px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
                 title="Previous Page"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
@@ -1120,7 +1164,7 @@ function DsaHubContent() {
               {getPageNumbers(effectivePage, totalPages).map((p, idx) => {
                 if (p === '...') {
                   return (
-                    <span key={`dots-${idx}`} className="px-2 py-1 text-xs text-slate-400 select-none">
+                    <span key={`dots-${idx}`} className="px-2 py-1 text-xs text-[var(--foreground-muted)] select-none">
                       ...
                     </span>
                   );
@@ -1135,7 +1179,7 @@ function DsaHubContent() {
                     className={`min-w-[32px] h-8 px-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       isActive
                         ? 'bg-[#0D08CB] text-white shadow-md shadow-[#0D08CB]/20'
-                        : 'border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+                        : 'border border-[var(--border-subtle)] bg-[var(--surface-card)] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
                     }`}
                   >
                     {pageNum}
@@ -1147,7 +1191,7 @@ function DsaHubContent() {
                 type="button"
                 onClick={() => handlePageChange(effectivePage + 1)}
                 disabled={effectivePage >= totalPages}
-                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
+                className="px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center space-x-1 cursor-pointer"
                 title="Next Page"
               >
                 <span>Next</span>
@@ -1156,9 +1200,9 @@ function DsaHubContent() {
             </div>
 
             {/* Right: Per-page selector pills */}
-            <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center space-x-2 text-xs text-[var(--foreground-muted)]">
               <span>Per page:</span>
-              <div className="inline-flex rounded-xl p-0.5 bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-800">
+              <div className="inline-flex rounded-xl p-0.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
                 {[12, 24, 48, -1].map((size) => (
                   <button
                     key={size}
@@ -1169,8 +1213,8 @@ function DsaHubContent() {
                     }}
                     className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       pageSize === size
-                        ? 'bg-white dark:bg-[#151D35] text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-[var(--surface-card)] text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs'
+                        : 'text-slate-600 dark:text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     {size === -1 ? 'All' : size}
@@ -1183,7 +1227,7 @@ function DsaHubContent() {
 
         {/* Footer Completion Note */}
         {filteredProblems.length > 0 && (
-          <div className="text-center text-xs text-slate-400 dark:text-slate-500 pt-4 pb-2">
+          <div className="text-center text-xs text-[var(--foreground-subtle)] pt-4 pb-2">
             All {filteredProblems.length} curated problems available • Ready to crack your technical interviews
           </div>
         )}
@@ -1196,7 +1240,7 @@ export default function DsaHubPage() {
   return (
     <React.Suspense fallback={
       <div className="min-h-screen bg-slate-50 dark:bg-[#070B14] flex items-center justify-center p-8">
-        <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400">
+        <div className="flex items-center space-x-2 text-[var(--foreground-muted)]">
           <div className="w-4 h-4 border-2 border-[#0D08CB] border-t-transparent rounded-full animate-spin" />
           <span className="text-xs font-semibold">Loading DSA Practice Hub...</span>
         </div>
