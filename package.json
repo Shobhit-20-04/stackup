@@ -12,6 +12,7 @@
     "admin:reset": "node scripts/reset-admin-passcode.js"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.1",
     "lucide-react": "^1.47.0",

@@ -32,6 +32,7 @@ import {
 import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
 import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
+import CodingWorkspace from '@/components/dsa/CodingWorkspace';
 
 function getPageNumbers(current: number, total: number): (number | '...')[] {
   if (total <= 7) {
@@ -59,6 +60,7 @@ function DsaHubContent() {
   
   // Expanded Complete Output panel state
   const [expandedProblemId, setExpandedProblemId] = useState<string | null>(null);
+  const [workspaceProblemId, setWorkspaceProblemId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'problem' | 'approach' | 'code'>('problem');
   const [activeLang, setActiveLang] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -81,7 +83,7 @@ function DsaHubContent() {
     getCurrentUser().then((u) => setCurrentUser(u));
   }, []);
 
-  // Deep-link auto-navigation and expansion via ?problem=<id-or-slug>
+  // Deep-link auto-navigation and workspace launch via ?problem=<id-or-slug>
   useEffect(() => {
     if (!problemParam) return;
     const target = DSA_PROBLEMS.find(
@@ -97,6 +99,7 @@ function DsaHubContent() {
       setSelectedDifficulty('All');
       setShowOnlyUnsolved(false);
       setExpandedProblemId(target.id);
+      setWorkspaceProblemId(target.id);
 
       const el = document.getElementById(`problem-${target.id}`);
       if (el) {
@@ -107,12 +110,14 @@ function DsaHubContent() {
     return () => clearTimeout(timer);
   }, [problemParam]);
 
-  // Keyboard shortcut: Escape closes expanded problem drawer or auth modal
+  // Keyboard shortcut: Escape closes workspace, expanded problem drawer or auth modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (authPromptOpen) {
           setAuthPromptOpen(false);
+        } else if (workspaceProblemId) {
+          setWorkspaceProblemId(null);
         } else if (expandedProblemId) {
           setExpandedProblemId(null);
         }
@@ -120,7 +125,7 @@ function DsaHubContent() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [expandedProblemId, authPromptOpen]);
+  }, [expandedProblemId, authPromptOpen, workspaceProblemId]);
 
   // Solved problem IDs persisted in localStorage (lazy initializer for SSR & React 19)
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
@@ -632,6 +637,16 @@ function DsaHubContent() {
                         <Video className="w-4 h-4" />
                       </a>
 
+                      {/* Integrated Coding Workspace Trigger */}
+                      <button
+                        onClick={() => setWorkspaceProblemId(problem.id)}
+                        className="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer bg-[var(--brand-primary)] hover:opacity-95 text-white shadow-xs"
+                        title="Open interactive coding workspace"
+                      >
+                        <Code2 className="w-3.5 h-3.5" />
+                        <span>Solve &amp; Code</span>
+                      </button>
+
                       {/* Complete Output Accordion Trigger */}
                       <button
                         onClick={() => {
@@ -696,6 +711,15 @@ function DsaHubContent() {
                           >
                             <Code2 className="w-3.5 h-3.5 text-emerald-500" />
                             <span>Code Solutions</span>
+                          </button>
+
+                          <button
+                            onClick={() => setWorkspaceProblemId(problem.id)}
+                            className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--brand-primary)] text-white hover:opacity-95 transition-opacity shrink-0 cursor-pointer shadow-xs ml-1"
+                            title="Launch interactive editor for this problem"
+                          >
+                            <Code2 className="w-3.5 h-3.5" />
+                            <span>Open Code Workspace</span>
                           </button>
                         </div>
 
@@ -1203,6 +1227,18 @@ function DsaHubContent() {
           <div className="text-center text-xs text-[var(--foreground-subtle)] pt-4 pb-2">
             All {filteredProblems.length} curated problems available • Ready to crack your technical interviews
           </div>
+        )}
+
+        {/* Integrated Interactive Coding Workspace */}
+        {workspaceProblemId && (
+          <CodingWorkspace
+            problemId={workspaceProblemId}
+            onClose={() => setWorkspaceProblemId(null)}
+            onProblemChange={(id) => setWorkspaceProblemId(id)}
+            currentUser={currentUser}
+            isSolvedInitially={solvedIds.includes(workspaceProblemId)}
+            onSolvedChange={(id) => toggleSolved(id)}
+          />
         )}
       </div>
     </div>
