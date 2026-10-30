@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { SECTION_TOTAL_ITEMS } from '@/lib/services/progress';
+import { DSA_PROBLEMS } from '@/lib/data/dsa';
 
 describe('Real Progress & Metrics Validation', () => {
   it('should have accurate total items for each section', () => {
     expect(SECTION_TOTAL_ITEMS['aptitude']).toBeGreaterThanOrEqual(10);
     expect(SECTION_TOTAL_ITEMS['core-cs']).toBeGreaterThanOrEqual(15);
-    expect(SECTION_TOTAL_ITEMS['dsa']).toBe(150);
+    expect(SECTION_TOTAL_ITEMS['dsa']).toBe(DSA_PROBLEMS.length);
   });
 
   it('should accurately compute section completion percentage from unique topics', () => {

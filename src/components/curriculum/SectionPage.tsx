@@ -445,7 +445,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
         <div className="p-4 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] w-full md:w-64 space-y-2.5 shrink-0">
           <div className="flex items-center justify-between text-xs font-semibold">
             <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--foreground-muted)]">Syllabus Progress</span>
-            <span className="font-mono font-bold text-[var(--brand-primary)]">{metrics.percent}%</span>
+            {metrics.completed > 0 ? (
+              <span className="font-mono font-bold text-[var(--brand-primary)]">{metrics.percent}%</span>
+            ) : (
+              <span className="font-mono font-medium text-[var(--foreground-muted)] text-[11px]">Ready to Study</span>
+            )}
           </div>
           <div className="w-full h-1.5 rounded-full bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden">
             <div
@@ -454,7 +458,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             />
           </div>
           <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)] font-mono">
-            <span>{metrics.completed} of {metrics.total} topics</span>
+            <span>
+              {metrics.completed > 0
+                ? `${metrics.completed} of ${metrics.total} topics`
+                : `${metrics.total} topics available`}
+            </span>
             <span>{section.categories.reduce((acc, c) => acc + c.topics.reduce((q, t) => q + t.questions.length, 0), 0)} MCQs</span>
           </div>
         </div>
@@ -812,9 +820,15 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                     <div className="mt-4 pt-3 border-t border-slate-100 dark:border-[#1E2B4D]/80">
                       <div className="flex items-center justify-between text-[11px] font-semibold mb-1.5">
                         <span className="text-slate-600 dark:text-[var(--text-muted)] font-medium">Subject Progress</span>
-                        <span className="text-slate-900 dark:text-[var(--foreground)] font-bold">
-                          {completedCount} / {cat.topics.length} ({catPercent}%)
-                        </span>
+                        {completedCount > 0 ? (
+                          <span className="text-slate-900 dark:text-[var(--foreground)] font-bold">
+                            {completedCount} of {cat.topics.length} ({catPercent}%)
+                          </span>
+                        ) : (
+                          <span className="text-[var(--foreground-muted)] font-medium">
+                            Ready to study
+                          </span>
+                        )}
                       </div>
                       <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-[#1E2B4D] border border-slate-300/30 dark:border-white/5 overflow-hidden">
                         <div

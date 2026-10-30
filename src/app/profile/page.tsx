@@ -665,18 +665,20 @@ export default function ProfilePage() {
               <span className="text-3xl font-bold font-mono text-[var(--foreground)] tracking-tight">
                 {quizHistory.length}
               </span>
-              {averageQuizScore !== null ? (
+              {quizHistory.length > 0 && averageQuizScore !== null ? (
                 <span className="text-xs font-semibold text-emerald-500 font-mono">
                   {averageQuizScore}% Avg. Score
                 </span>
               ) : (
                 <span className="text-xs font-medium text-[var(--foreground-muted)]">
-                  0 Attempts Yet
+                  No attempts recorded
                 </span>
               )}
             </div>
             <p className="mt-1 text-xs text-[var(--foreground-muted)]">
-              Scored quizzes across Aptitude and Core CS topics.
+              {quizHistory.length > 0
+                ? 'Scored quizzes across Aptitude and Core CS topics.'
+                : 'Take a topic self-assessment quiz to record your benchmark score.'}
             </p>
           </div>
           <div className="mt-5 pt-3.5 border-t border-[var(--border-subtle)] text-xs text-[var(--foreground-muted)] flex items-center space-x-1.5">
@@ -749,9 +751,15 @@ export default function ProfilePage() {
                 <span className="text-xs sm:text-sm font-semibold text-[var(--foreground)] truncate group-hover:text-[var(--brand-primary)] transition-colors">
                   {item.section_name}
                 </span>
-                <span className="text-xs font-mono font-bold text-[var(--brand-primary)] ml-2">
-                  {item.percent}%
-                </span>
+                {item.completed_items > 0 ? (
+                  <span className="text-xs font-mono font-bold text-[var(--brand-primary)] ml-2">
+                    {item.percent}%
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-medium text-[var(--foreground-muted)] ml-2">
+                    Ready
+                  </span>
+                )}
               </div>
 
               {/* Progress Bar */}
@@ -763,9 +771,13 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex items-center justify-between text-[11px] text-[var(--foreground-muted)]">
-                <span>{item.completed_items} of {item.total_items} complete</span>
+                <span>
+                  {item.completed_items > 0
+                    ? `${item.completed_items} of ${item.total_items} complete`
+                    : `Available • ${item.total_items} modules`}
+                </span>
                 <span className="capitalize text-[var(--brand-primary)] flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
-                  <span>Practice</span>
+                  <span>{item.completed_items > 0 ? 'Continue' : 'Start'}</span>
                   <ArrowRight className="w-3 h-3 ml-0.5" />
                 </span>
               </div>

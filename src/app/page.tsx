@@ -164,43 +164,95 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right: Live Telemetry & Progress Box */}
+            {/* Right: Live Telemetry & Preparation Activity Box */}
             <div className="lg:w-80 p-5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-4 shrink-0 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                 <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-[var(--brand-primary)]">
-                  {currentUser ? 'Student Session' : 'Preparation Tracker'}
+                  {currentUser ? 'Student Session' : 'Preparation Activity'}
                 </span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
                   {currentUser ? 'Authenticated' : 'Active Session'}
                 </span>
               </div>
 
-              <div className="space-y-2.5 text-xs font-mono">
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--foreground-muted)]">DSA Solved</span>
-                  <span className="font-bold text-[var(--foreground)]">
-                    {solvedDsaCount > 0 ? `${solvedDsaCount} Completed` : '0 Completed'}
-                  </span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-[var(--surface-sunken)] overflow-hidden">
-                  <div
-                    className="h-full bg-emerald-600 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min(100, (solvedDsaCount / (DSA_PROBLEMS.length || 1)) * 100)}%` }}
-                  />
+              <div className="space-y-3 text-xs">
+                {/* DSA Solved Row */}
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--foreground-muted)] text-[11px] font-medium">DSA Practice</span>
+                    {solvedDsaCount > 0 ? (
+                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs">
+                        {solvedDsaCount} Solved
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-medium text-[var(--foreground-muted)]">
+                        Ready to start
+                      </span>
+                    )}
+                  </div>
+                  {solvedDsaCount > 0 ? (
+                    <div className="w-full h-1.5 rounded-full bg-[var(--surface-sunken)] overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-600 rounded-full transition-all duration-300"
+                        style={{ width: `${Math.min(100, Math.round((solvedDsaCount / (DSA_PROBLEMS.length || 1)) * 100))}%` }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between text-[10px] text-[var(--foreground-muted)]">
+                      <span>Problem set available</span>
+                      <Link href="/dsa" className="text-[var(--brand-primary)] hover:underline font-medium">
+                        Start practice &rarr;
+                      </Link>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-[var(--foreground-muted)]">Core CS Topics Read</span>
-                  <span className="font-bold text-[var(--foreground)]">
-                    {readTopicsCount > 0 ? `${readTopicsCount} Completed` : '0 Completed'}
-                  </span>
+                {/* Core CS Row */}
+                <div className="space-y-1 pt-1 border-t border-[var(--border-subtle)]/60">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--foreground-muted)] text-[11px] font-medium">Core CS Syllabus</span>
+                    {readTopicsCount > 0 ? (
+                      <span className="font-mono font-bold text-[var(--foreground)] text-xs">
+                        {readTopicsCount} Reviewed
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-medium text-[var(--foreground-muted)]">
+                        Available to explore
+                      </span>
+                    )}
+                  </div>
+                  {readTopicsCount === 0 && (
+                    <div className="flex items-center justify-between text-[10px] text-[var(--foreground-muted)]">
+                      <span>Syllabus notes ready</span>
+                      <Link href="/core-cs" className="text-[var(--brand-primary)] hover:underline font-medium">
+                        Browse topics &rarr;
+                      </Link>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--foreground-muted)]">Exam MCQs Attempted</span>
-                  <span className="font-bold text-[var(--foreground)]">
-                    {quizAttemptsCount > 0 ? `${quizAttemptsCount} Tests Completed` : '0 Completed'}
-                  </span>
+                {/* Exam MCQs Row */}
+                <div className="space-y-1 pt-1 border-t border-[var(--border-subtle)]/60">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--foreground-muted)] text-[11px] font-medium">Timed Assessments</span>
+                    {quizAttemptsCount > 0 ? (
+                      <span className="font-mono font-bold text-[var(--foreground)] text-xs">
+                        {quizAttemptsCount} Completed
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-medium text-[var(--foreground-muted)]">
+                        Ready to test
+                      </span>
+                    )}
+                  </div>
+                  {quizAttemptsCount === 0 && (
+                    <div className="flex items-center justify-between text-[10px] text-[var(--foreground-muted)]">
+                      <span>Self-tests available</span>
+                      <Link href="/aptitude" className="text-[var(--brand-primary)] hover:underline font-medium">
+                        Try quiz &rarr;
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -296,8 +296,12 @@ function DsaHubContent() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)]">
                   Completion Status
                 </span>
-                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                  {solvedCount} / {totalCount} ({progressPercent}%)
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 font-mono">
+                  {solvedCount > 0 ? (
+                    `${solvedCount} of ${totalCount} Solved (${progressPercent}%)`
+                  ) : (
+                    `0 Solved • ${totalCount} Available`
+                  )}
                 </span>
               </div>
               <div className="w-full bg-slate-200 dark:bg-[#0B1020] h-2 rounded-full overflow-hidden mb-3 border border-slate-300/30 dark:border-white/5">
@@ -310,16 +314,28 @@ function DsaHubContent() {
               {/* Sub-breakdown */}
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
                 <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
-                  <span className="block text-emerald-600 dark:text-emerald-400 font-bold">{easySolved}/{easyTotal}</span>
-                  <span className="text-[var(--foreground-muted)] text-[10px]">Easy</span>
+                  <span className="block text-emerald-600 dark:text-emerald-400 font-bold font-mono">
+                    {easySolved > 0 ? `${easySolved} Solved` : `${easyTotal} Available`}
+                  </span>
+                  <span className="text-[var(--foreground-muted)] text-[10px]">
+                    {easySolved > 0 ? `of ${easyTotal} Easy` : 'Easy Track'}
+                  </span>
                 </div>
                 <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
-                  <span className="block text-amber-600 dark:text-amber-400 font-bold">{mediumSolved}/{mediumTotal}</span>
-                  <span className="text-[var(--foreground-muted)] text-[10px]">Medium</span>
+                  <span className="block text-amber-600 dark:text-amber-400 font-bold font-mono">
+                    {mediumSolved > 0 ? `${mediumSolved} Solved` : `${mediumTotal} Available`}
+                  </span>
+                  <span className="text-[var(--foreground-muted)] text-[10px]">
+                    {mediumSolved > 0 ? `of ${mediumTotal} Med` : 'Medium Track'}
+                  </span>
                 </div>
                 <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
-                  <span className="block text-rose-600 dark:text-rose-400 font-bold">{hardSolved}/{hardTotal}</span>
-                  <span className="text-[var(--foreground-muted)] text-[10px]">Hard</span>
+                  <span className="block text-rose-600 dark:text-rose-400 font-bold font-mono">
+                    {hardSolved > 0 ? `${hardSolved} Solved` : `${hardTotal} Available`}
+                  </span>
+                  <span className="text-[var(--foreground-muted)] text-[10px]">
+                    {hardSolved > 0 ? `of ${hardTotal} Hard` : 'Hard Track'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1009,7 +1025,9 @@ function DsaHubContent() {
                                 {group.pattern}
                               </h3>
                               <p className="text-xs text-[var(--foreground-muted)]">
-                                {group.solvedCount} of {group.totalCount} completed ({group.percentage}%)
+                                {group.solvedCount > 0 
+                                  ? `${group.solvedCount} of ${group.totalCount} completed (${group.percentage}%)`
+                                  : `${group.totalCount} problems available • Not started`}
                               </p>
                             </div>
                           </div>
