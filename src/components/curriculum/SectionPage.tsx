@@ -61,7 +61,18 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const isSearchPending = searchQuery !== deferredSearchQuery;
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
+    if (typeof window === 'undefined') return 'all';
+    try {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && section.categories.some((c) => c.id === hash)) {
+        return hash;
+      }
+    } catch {
+      // ignore
+    }
+    return 'all';
+  });
   const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'Easy' | 'Medium' | 'Hard'>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
   const [subjectCluster, setSubjectCluster] = useState<'all' | 'systems' | 'algo-theory' | 'math' | 'software'>('all');
@@ -87,6 +98,21 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isCheatsheetOpen, activeView]);
+
+  // Synchronize category selection when URL hash changes (e.g. /core-cs#os or /aptitude#quant-apt)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && section.categories.some((c) => c.id === hash)) {
+        setSelectedCategory(hash);
+        setSearchQuery('');
+      } else if (!hash) {
+        setSelectedCategory('all');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [section.categories]);
 
   // Metrics
   const [metricsRefresh, setMetricsRefresh] = useState(0);
@@ -748,6 +774,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
               return (
                 <div
                   key={cat.id}
+                  id={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
                   className="p-5 sm:p-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between shadow-xs hover:shadow-sm cursor-pointer group"
                 >

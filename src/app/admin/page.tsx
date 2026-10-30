@@ -184,6 +184,73 @@ interface AdminData {
   auditLogs?: AdminAuditRecord[];
 }
 
+function filterAndSortResumes(
+  resumes: ResumeRecord[] | undefined,
+  searchQuery: string,
+  gradeFilter: string,
+  formatFilter: string,
+  dateRangeFilter: string,
+  sortBy: 'date' | 'date_asc' | 'score' | 'score_asc' | 'name',
+  now: number
+): ResumeRecord[] {
+  if (!resumes || resumes.length === 0) return [];
+  const q = searchQuery.toLowerCase().trim();
+  const cutoffMs =
+    dateRangeFilter === 'today'
+      ? now - 24 * 60 * 60 * 1000
+      : dateRangeFilter === '7d'
+      ? now - 7 * 24 * 60 * 60 * 1000
+      : dateRangeFilter === '30d'
+      ? now - 30 * 24 * 60 * 60 * 1000
+      : 0;
+
+  const list = resumes.filter((r) => {
+    const matchesSearch =
+      !q ||
+      (r.candidate_name && r.candidate_name.toLowerCase().includes(q)) ||
+      r.filename.toLowerCase().includes(q) ||
+      (r.user_email && r.user_email.toLowerCase().includes(q)) ||
+      r.id.toLowerCase().includes(q) ||
+      (r.resume_text && r.resume_text.toLowerCase().includes(q)) ||
+      r.ats_score.toString().includes(q) ||
+      (r.analysis?.matched_keywords && r.analysis.matched_keywords.some((k) => k.toLowerCase().includes(q)));
+
+    const grade =
+      r.analysis?.grade ||
+      (r.ats_score >= 88 ? 'A+' : r.ats_score >= 78 ? 'A' : r.ats_score >= 66 ? 'B' : r.ats_score >= 52 ? 'C' : 'D');
+    const matchesGrade = gradeFilter === 'ALL' || grade === gradeFilter;
+
+    let matchesFormat = true;
+    if (formatFilter !== 'ALL') {
+      const fn = r.filename.toLowerCase();
+      if (formatFilter === 'pdf') matchesFormat = fn.endsWith('.pdf');
+      else if (formatFilter === 'docx') matchesFormat = fn.endsWith('.docx');
+      else if (formatFilter === 'txt') matchesFormat = fn.endsWith('.txt');
+    }
+
+    let matchesDate = true;
+    if (cutoffMs > 0) {
+      matchesDate = new Date(r.created_at).getTime() >= cutoffMs;
+    }
+
+    return matchesSearch && matchesGrade && matchesFormat && matchesDate;
+  });
+
+  if (sortBy === 'score') {
+    return [...list].sort((a, b) => b.ats_score - a.ats_score);
+  }
+  if (sortBy === 'score_asc') {
+    return [...list].sort((a, b) => a.ats_score - b.ats_score);
+  }
+  if (sortBy === 'date_asc') {
+    return [...list].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  }
+  if (sortBy === 'name') {
+    return [...list].sort((a, b) => (a.candidate_name || a.filename).localeCompare(b.candidate_name || b.filename));
+  }
+  return [...list].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+}
+
 export default function AdminDashboardPage() {
   const [passcode, setPasscode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -193,10 +260,24 @@ export default function AdminDashboardPage() {
   const [errorMsg, setErrorMsg] = useState('');
 
   // Unified Admin Authentication & Recovery State
-  const [authView, setAuthView] = useState<'login' | 'reset-request' | 'reset-verify'>('login');
+  const [authView, setAuthView] = useState<'login' | 'reset-request' | 'reset-verify'>(() => {
+    if (typeof window === 'undefined') return 'login';
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+    if (hash.includes('type=recovery') || search.includes('recovery=true')) {
+      return 'reset-verify';
+    }
+    return 'login';
+  });
   const [showPasscode, setShowPasscode] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
-  const [isRecoverySession, setIsRecoverySession] = useState(false);
+  const [isRecoverySession, setIsRecoverySession] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+    return hash.includes('type=recovery') || search.includes('recovery=true');
+  });
+  const [nowTimestamp] = useState<number>(() => Date.now());
   const [resetCode, setResetCode] = useState('');
   const [resetNewPasscode, setResetNewPasscode] = useState('');
   const [resetConfirmPasscode, setResetConfirmPasscode] = useState('');
@@ -312,15 +393,6 @@ export default function AdminDashboardPage() {
           }
         }
       });
-
-      if (typeof window !== 'undefined') {
-        const hash = window.location.hash || '';
-        const search = window.location.search || '';
-        if (hash.includes('type=recovery') || search.includes('recovery=true')) {
-          setAuthView('reset-verify');
-          setIsRecoverySession(true);
-        }
-      }
 
       return () => {
         subscription.unsubscribe();
@@ -670,6 +742,22 @@ export default function AdminDashboardPage() {
     URL.revokeObjectURL(url);
   };
 
+  // Filtered and sorted genuine resumes
+  const resumes = data?.resumes;
+  const filteredResumes = useMemo(
+    () =>
+      filterAndSortResumes(
+        resumes,
+        searchQuery,
+        gradeFilter,
+        formatFilter,
+        dateRangeFilter,
+        sortBy,
+        nowTimestamp
+      ),
+    [resumes, searchQuery, gradeFilter, formatFilter, dateRangeFilter, sortBy, nowTimestamp]
+  );
+
   const toggleSelectResume = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setSelectedResumeIds((prev) => {
@@ -687,64 +775,6 @@ export default function AdminDashboardPage() {
       setSelectedResumeIds(new Set(filteredResumes.map((r) => r.id)));
     }
   };
-
-  // Filtered and sorted genuine resumes
-  const resumes = data?.resumes;
-  const filteredResumes = useMemo(() => {
-    if (!resumes) return [];
-    const now = Date.now();
-
-    const list = resumes.filter((r) => {
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch =
-        !q ||
-        (r.candidate_name && r.candidate_name.toLowerCase().includes(q)) ||
-        r.filename.toLowerCase().includes(q) ||
-        (r.user_email && r.user_email.toLowerCase().includes(q)) ||
-        r.id.toLowerCase().includes(q) ||
-        (r.resume_text && r.resume_text.toLowerCase().includes(q)) ||
-        r.ats_score.toString().includes(q) ||
-        (r.analysis?.matched_keywords && r.analysis.matched_keywords.some((k) => k.toLowerCase().includes(q)));
-
-      const grade = r.analysis?.grade || (r.ats_score >= 88 ? 'A+' : r.ats_score >= 78 ? 'A' : r.ats_score >= 66 ? 'B' : r.ats_score >= 52 ? 'C' : 'D');
-      const matchesGrade = gradeFilter === 'ALL' || grade === gradeFilter;
-
-      // Format filter
-      let matchesFormat = true;
-      if (formatFilter !== 'ALL') {
-        const fn = r.filename.toLowerCase();
-        if (formatFilter === 'pdf') matchesFormat = fn.endsWith('.pdf');
-        else if (formatFilter === 'docx') matchesFormat = fn.endsWith('.docx');
-        else if (formatFilter === 'txt') matchesFormat = fn.endsWith('.txt');
-      }
-
-      // Date range filter
-      let matchesDate = true;
-      if (dateRangeFilter !== 'ALL') {
-        const createdMs = new Date(r.created_at).getTime();
-        const diffDays = (now - createdMs) / (1000 * 60 * 60 * 24);
-        if (dateRangeFilter === 'today') matchesDate = diffDays <= 1;
-        else if (dateRangeFilter === '7d') matchesDate = diffDays <= 7;
-        else if (dateRangeFilter === '30d') matchesDate = diffDays <= 30;
-      }
-
-      return matchesSearch && matchesGrade && matchesFormat && matchesDate;
-    });
-
-    if (sortBy === 'score') {
-      return [...list].sort((a, b) => b.ats_score - a.ats_score);
-    }
-    if (sortBy === 'score_asc') {
-      return [...list].sort((a, b) => a.ats_score - b.ats_score);
-    }
-    if (sortBy === 'date_asc') {
-      return [...list].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    }
-    if (sortBy === 'name') {
-      return [...list].sort((a, b) => (a.candidate_name || a.filename).localeCompare(b.candidate_name || b.filename));
-    }
-    return [...list].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-  }, [resumes, searchQuery, gradeFilter, formatFilter, dateRangeFilter, sortBy]);
 
   // Filtered login audit logs
   const loginLogs = data?.loginLogs;

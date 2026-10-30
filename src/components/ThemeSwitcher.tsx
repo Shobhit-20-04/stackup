@@ -64,23 +64,34 @@ export function applyTheme(themeId: ThemeId) {
 export { default as ThemeToggle } from '@/components/ThemeToggle';
 
 export default function ThemeSwitcher() {
-  const [currentTheme, setCurrentTheme] = useState<ThemeId>('cosmic');
+  const [currentTheme, setCurrentTheme] = useState<ThemeId>(() => {
+    if (typeof window === 'undefined') return 'cosmic';
+    try {
+      const saved = localStorage.getItem('stackup-theme') as ThemeId | null;
+      if (saved && (saved === 'cosmic' || saved === 'lavender' || saved === 'obsidian')) {
+        return saved;
+      }
+    } catch {
+      // ignore
+    }
+    return 'cosmic';
+  });
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('stackup-theme') as ThemeId | null;
-      if (saved && (saved === 'cosmic' || saved === 'lavender' || saved === 'obsidian')) {
-        setCurrentTheme(saved);
-        applyTheme(saved);
-      } else {
-        applyTheme('cosmic');
+    applyTheme(currentTheme);
+
+    const handleThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ themeId?: ThemeId }>;
+      if (customEvent.detail?.themeId) {
+        setCurrentTheme(customEvent.detail.themeId);
       }
-    } catch {
-      applyTheme('cosmic');
-    }
-  }, []);
+    };
+
+    window.addEventListener('stackup-theme-change', handleThemeChange);
+    return () => window.removeEventListener('stackup-theme-change', handleThemeChange);
+  }, [currentTheme]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

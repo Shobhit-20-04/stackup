@@ -5,19 +5,9 @@ import Link from 'next/link';
 import { 
   Code2, 
   Cpu, 
-  BookOpen, 
   FileCheck2, 
   ArrowRight, 
-  CheckCircle2, 
-  Terminal, 
-  ExternalLink,
-  ChevronRight,
-  Sparkles,
-  Layers,
-  Search,
-  Filter,
   Check,
-  Zap,
   Compass
 } from 'lucide-react';
 import { CURRICULUM_DATA } from '@/lib/data/curriculum';
@@ -420,7 +410,7 @@ export default function HomePage() {
                   <span>Computer Science Directory</span>
                 </h2>
                 <p className="text-[11px] text-[var(--foreground-muted)]">
-                  15 engineering disciplines with deep architectural notes and exam MCQs.
+                  19 engineering and aptitude disciplines with deep architectural notes and exam MCQs.
                 </p>
               </div>
 
@@ -482,14 +472,40 @@ export default function HomePage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Aptitude & Problem Solving */}
+                <div className="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-2">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">
+                    Aptitude &amp; Placement Reasoning
+                  </span>
+                  <div className="grid grid-cols-2 gap-1.5 text-xs">
+                    {aptitudeCategories.map((cat) => (
+                      <Link
+                        key={cat.id}
+                        href={`/aptitude#${cat.id}`}
+                        className="p-1.5 rounded hover:bg-[var(--surface-sunken)] transition-colors flex items-center justify-between text-[var(--foreground)] group"
+                      >
+                        <span className="font-medium truncate group-hover:text-[var(--brand-primary)]">{cat.title.split(' (')[0]}</span>
+                        <span className="font-mono text-[10px] text-[var(--foreground-muted)] shrink-0 ml-1">{cat.topics.length}T</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              <div className="pt-1">
+              <div className="pt-1 flex items-center justify-between text-xs">
                 <Link
                   href="/core-cs"
-                  className="font-semibold text-xs text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+                  className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
                 >
-                  <span>Explore All 15 CS Disciplines</span>
+                  <span>All 15 CS Disciplines</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  href="/aptitude"
+                  className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+                >
+                  <span>4 Aptitude Modules</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

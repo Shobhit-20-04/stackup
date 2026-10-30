@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useSyncExternalStore } from 'react';
 import { Sun, Moon } from 'lucide-react';
+
+const emptySubscribe = () => () => {};
 
 export type ThemeMode = 'dark' | 'light';
 
@@ -63,8 +65,11 @@ export default function ThemeToggle({
   className = '',
   showLabel = false,
 }: ThemeToggleProps) {
-  const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return getActiveTheme().isDark;
+  });
 
   const syncState = useCallback(() => {
     const current = getActiveTheme();
@@ -72,8 +77,6 @@ export default function ThemeToggle({
   }, []);
 
   useEffect(() => {
-    setMounted(true);
-    syncState();
 
     const handleThemeChange = (e: Event) => {
       const customEvent = e as CustomEvent<{ isDark?: boolean; mode?: ThemeMode }>;

@@ -83,26 +83,28 @@ function DsaHubContent() {
 
   // Deep-link auto-navigation and expansion via ?problem=<id-or-slug>
   useEffect(() => {
-    if (problemParam) {
-      const target = DSA_PROBLEMS.find(
-        (p) =>
-          p.id.toLowerCase() === problemParam.toLowerCase() ||
-          p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === problemParam.toLowerCase() ||
-          p.title.toLowerCase() === problemParam.toLowerCase().replace(/-/g, ' ')
-      );
-      if (target) {
-        setSelectedCategory('All');
-        setSelectedDifficulty('All');
-        setShowOnlyUnsolved(false);
-        setExpandedProblemId(target.id);
-        setTimeout(() => {
-          const el = document.getElementById(`problem-${target.id}`);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 250);
+    if (!problemParam) return;
+    const target = DSA_PROBLEMS.find(
+      (p) =>
+        p.id.toLowerCase() === problemParam.toLowerCase() ||
+        p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === problemParam.toLowerCase() ||
+        p.title.toLowerCase() === problemParam.toLowerCase().replace(/-/g, ' ')
+    );
+    if (!target) return;
+
+    const timer = setTimeout(() => {
+      setSelectedCategory('All');
+      setSelectedDifficulty('All');
+      setShowOnlyUnsolved(false);
+      setExpandedProblemId(target.id);
+
+      const el = document.getElementById(`problem-${target.id}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-    }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [problemParam]);
 
   // Keyboard shortcut: Escape closes expanded problem drawer or auth modal
