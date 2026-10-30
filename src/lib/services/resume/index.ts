@@ -1,6 +1,6 @@
 /**
  * StackUp Unified Resume ATS Analysis Engine
- * Orchestrates parsing, skills extraction, job-description alignment, 7-dimension scoring,
+ * Orchestrates parsing, skills extraction, job-description alignment, diagnostic rubric scoring,
  * and fact-preserving XYZ bullet point optimization.
  */
 
@@ -121,7 +121,7 @@ function buildAnalysisResult(
     options?.targetRole
   );
 
-  // 3. 7-Dimension Transparent Scoring
+  // 3. Diagnostic Rubric Scoring
   const scoring = calculateAtsScores(
     parsingReport,
     jdMatch,

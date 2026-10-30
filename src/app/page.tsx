@@ -67,7 +67,7 @@ export default function HomePage() {
       title: '01. Engineering Foundations',
       description: 'C programming, Discrete Mathematics, and Algorithmic Complexity analysis.',
       href: '/core-cs',
-      stats: '38 Topics • 114 MCQs',
+      stats: 'Curated Topics • Exam MCQs',
       subjects: ['Programming in C', 'Engineering Mathematics', 'Discrete Mathematics'],
     },
     {
@@ -75,7 +75,7 @@ export default function HomePage() {
       title: '02. Data Structures & Algorithms',
       description: 'Arrays, Two Pointers, Trees, Graphs, Dynamic Programming & LeetCode patterns.',
       href: '/dsa',
-      stats: '150 Problems • 19 Categories',
+      stats: 'Pattern-Based Coding Library',
       subjects: ['Arrays & Hashing', 'Trees & BST', 'Dynamic Programming', 'Graphs'],
     },
     {
@@ -83,7 +83,7 @@ export default function HomePage() {
       title: '03. Computer Systems & Architecture',
       description: 'Operating Systems internals, Database engines, Computer Networks, and System Design.',
       href: '/core-cs',
-      stats: '60 Topics • 182 MCQs',
+      stats: 'Systems Architecture & Engineering Notes',
       subjects: ['Operating Systems', 'DBMS', 'Computer Networks', 'System Design'],
     },
     {
@@ -91,15 +91,15 @@ export default function HomePage() {
       title: '04. Campus Aptitude Assessments',
       description: 'Quantitative aptitude, logical deduction, verbal ability, and spatial aptitude tests.',
       href: '/aptitude',
-      stats: '26 Topics • 81 MCQs',
+      stats: 'Quantitative & Analytical Practice',
       subjects: ['Quantitative Aptitude', 'Logical Reasoning', 'Verbal Ability'],
     },
     {
       stage: 5,
       title: '05. ATS Resume & Placement Readiness',
-      description: 'Automated 7-dimension ATS resume audit, Google XYZ bullet rewriter, and interview practice.',
+      description: 'Automated ATS resume diagnostics, Google XYZ bullet rewriter, and interview practice.',
       href: '/resume-checker',
-      stats: '7 Diagnostic Dimensions',
+      stats: 'Multi-Criteria Diagnostic Rubric',
       subjects: ['STAR Bullet Rewriter', 'Format Scanner', 'Keyword Matching'],
     },
   ], []);
@@ -133,7 +133,7 @@ export default function HomePage() {
               </h1>
 
               <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed font-normal max-w-xl">
-                A disciplined developer workbench replacing fragmented tutorials. 150 algorithmic patterns with optimal multi-language solutions, 15 undergraduate computer science disciplines, campus recruitment aptitude tests, and automated ATS resume diagnostics.
+                A disciplined developer workbench replacing fragmented tutorials. High-frequency algorithmic patterns with optimal multi-language solutions, core computer science disciplines, campus recruitment aptitude tests, and automated ATS resume diagnostics.
               </p>
 
               {/* Action Toolbar */}
@@ -143,7 +143,7 @@ export default function HomePage() {
                   className="px-4 py-2 rounded-md font-medium text-xs text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
                 >
                   <Code2 className="w-3.5 h-3.5" />
-                  <span>Start DSA Practice (150 Problems)</span>
+                  <span>Start DSA Practice</span>
                 </Link>
 
                 <Link
@@ -151,7 +151,7 @@ export default function HomePage() {
                   className="px-4 py-2 rounded-md font-medium text-xs text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-colors inline-flex items-center space-x-1.5 cursor-pointer"
                 >
                   <Cpu className="w-3.5 h-3.5" />
-                  <span>Core CS Disciplines (15 Subjects)</span>
+                  <span>Explore Core CS Disciplines</span>
                 </Link>
 
                 <Link
@@ -396,7 +396,7 @@ export default function HomePage() {
                   href="/dsa"
                   className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
                 >
-                  <span>Open Full 150-Problem DSA Hub</span>
+                  <span>Open Full DSA Practice Hub</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -410,7 +410,7 @@ export default function HomePage() {
                   <span>Computer Science Directory</span>
                 </h2>
                 <p className="text-[11px] text-[var(--foreground-muted)]">
-                  19 engineering and aptitude disciplines with deep architectural notes and exam MCQs.
+                  Comprehensive engineering and aptitude disciplines with deep architectural notes and exam MCQs.
                 </p>
               </div>
 
@@ -498,14 +498,14 @@ export default function HomePage() {
                   href="/core-cs"
                   className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
                 >
-                  <span>All 15 CS Disciplines</span>
+                  <span>Explore Core CS</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
                 <Link
                   href="/aptitude"
                   className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
                 >
-                  <span>4 Aptitude Modules</span>
+                  <span>Explore Aptitude</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -542,7 +542,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>7-Point Rubric</span>
+                  <span>Diagnostic Rubric</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-500" />

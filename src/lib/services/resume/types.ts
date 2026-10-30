@@ -1,6 +1,6 @@
 /**
  * StackUp ATS Resume Checker Types
- * Modular, explainable 7-dimension scoring and parsing types.
+ * Modular, explainable diagnostic scoring and parsing types.
  */
 
 export type ExperienceLevel = 'student_fresher' | 'junior' | 'mid_senior';

@@ -1,6 +1,6 @@
 /**
  * StackUp Modular & Explainable ATS Scoring Engine
- * Implements the 7 dimensions, configurable weights, candidate-level awareness,
+ * Implements diagnostic scoring dimensions, configurable weights, candidate-level awareness,
  * keyword stuffing guards, and normalized weighting when no JD is provided.
  */
 

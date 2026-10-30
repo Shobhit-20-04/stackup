@@ -206,7 +206,7 @@ export default function ResumeCheckerPage() {
 Mode: ${result.isGeneralQualityScore ? 'General Resume Quality (Rebalanced Weights)' : `Target Role Alignment (${result.jobDescriptionMatch.targetRoleTitle || 'Custom JD'})`}
 Experience Level: ${result.experienceLevel}
 
-📊 7-Dimension ATS Scoring:
+📊 Comprehensive ATS Scoring Dimensions:
   1. Job-Description Alignment: ${dims.jobDescriptionAlignment.score}% (Weight: ${dims.jobDescriptionAlignment.weightPct}%, Contribution: ${dims.jobDescriptionAlignment.weightedScore} pts)
   2. Skills & Qualifications: ${dims.skillsAndQualifications.score}% (Weight: ${dims.skillsAndQualifications.weightPct}%, Contribution: ${dims.skillsAndQualifications.weightedScore} pts)
   3. Experience & Projects: ${dims.experienceAndProjects.score}% (Weight: ${dims.experienceAndProjects.weightPct}%, Contribution: ${dims.experienceAndProjects.weightedScore} pts)
@@ -370,7 +370,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 Software Engineering Resume ATS Evaluator
               </h1>
               <p className="mt-2 text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
-                Benchmark your engineering resume with transparent 7-dimension scoring, job-description alignment, scanned PDF detection, and fact-preserving Google XYZ bullet point rewrites.
+                Benchmark your engineering resume with transparent diagnostic scoring, job-description alignment, scanned PDF detection, and fact-preserving Google XYZ bullet point rewrites.
               </p>
             </div>
 
@@ -413,7 +413,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 Sign in to analyze and benchmark your resume
               </h3>
               <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-1.5 mb-6 leading-relaxed">
-                Resume scanning, 7-dimension scoring, job description matching, and XYZ bullet optimization require an active student account to save scores to your preparation profile.
+                Resume scanning, diagnostic scoring, job description matching, and XYZ bullet optimization require an active student account to save scores to your preparation profile.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <Link
@@ -636,7 +636,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                     {analyzing ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Benchmarking 7 Dimensions...</span>
+                        <span>Evaluating Diagnostic Rubric...</span>
                       </>
                     ) : (
                       <>
@@ -667,7 +667,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--border-subtle)]">
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)]">
-                    Transparent 7-Dimension Rubric
+                    Comprehensive Diagnostic Rubric
                   </h4>
                   <p className="text-[11px] text-[var(--foreground-muted)] mt-0.5">
                     Configurable weights adapt automatically when a job description is provided
@@ -925,11 +925,11 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </div>
             )}
 
-            {/* 7-Dimension Explanatory Breakdown Accordion */}
+            {/* Diagnostic Rubric Explanatory Breakdown Accordion */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]">
-                  7-Dimension Rubric Scoring &amp; Observable Evidence
+                  Diagnostic Rubric Scoring &amp; Observable Evidence
                 </h3>
                 <span className="text-xs text-[var(--foreground-muted)]">
                   Click any dimension to inspect evidence &amp; deductions

@@ -83,7 +83,7 @@ export default function NotFound() {
               <div className="text-xs font-semibold text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
                 DSA Practice Hub
               </div>
-              <div className="text-[11px] text-[var(--foreground-muted)] font-mono">150 curated problems</div>
+              <div className="text-[11px] text-[var(--foreground-muted)] font-mono">Curated problem library</div>
             </div>
           </Link>
 
@@ -99,7 +99,7 @@ export default function NotFound() {
               <div className="text-xs font-semibold text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
                 Core CS Subjects
               </div>
-              <div className="text-[11px] text-[var(--foreground-muted)] font-mono">15 engineering disciplines</div>
+              <div className="text-[11px] text-[var(--foreground-muted)] font-mono">Engineering disciplines &amp; notes</div>
             </div>
           </Link>
 
@@ -115,7 +115,7 @@ export default function NotFound() {
               <div className="text-xs font-semibold text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
                 Aptitude &amp; Reasoning
               </div>
-              <div className="text-[11px] text-[var(--foreground-muted)] font-mono">26 placement modules</div>
+              <div className="text-[11px] text-[var(--foreground-muted)] font-mono">Quantitative &amp; reasoning modules</div>
             </div>
           </Link>
 

@@ -1,6 +1,6 @@
 # StackUp — Technical Interview Preparation & Career Accelerator Platform
 
-> **An all-in-one, production-grade technical interview preparation platform for engineering students and software developers.** StackUp delivers structured revision notes, interactive timed and practice quizzes across Core Computer Science subjects and Aptitude, a curated 150-problem Data Structures & Algorithms (DSA) hub with canonical Striver SDE Sheet integration, a binary-parsing Resume ATS Checker with keyword gap analysis, and a context-aware AI preparation assistant — engineered for high-concurrency serverless deployment from day one.
+> **An all-in-one, production-grade technical interview preparation platform for engineering students and software developers.** StackUp delivers structured revision notes, interactive timed and practice quizzes across Core Computer Science subjects and Aptitude, a curated Data Structures & Algorithms (DSA) practice library with canonical Striver SDE Sheet integration, a binary-parsing Resume ATS Checker with keyword gap analysis, and a context-aware AI preparation assistant — engineered for high-concurrency serverless deployment from day one.
 
 ---
 
@@ -30,8 +30,8 @@
 Engineering students and career switchers preparing for software engineering interviews and GATE CS face fragmented resources across multiple platforms: disparate LeetCode lists, textbook PDFs, unverified MCQs, and black-box resume screening tools. 
 
 **StackUp consolidates the entire technical interview lifecycle into a single unified platform:**
-1. **Core CS & Aptitude Curriculum:** 19 subjects covering 221 deep revision topics and 668 verified, peer-reviewed multiple-choice practice questions with detailed explanations.
-2. **Curated DSA Hub:** 150 essential algorithmic challenges across 19 core patterns with canonical Striver SDE Sheet mapping and optimal 4-language solutions (Python, C++, Java, TypeScript).
+1. **Core CS & Aptitude Curriculum:** Comprehensive academic and placement subjects covering deep revision topics and verified multiple-choice practice questions with detailed explanations.
+2. **Curated DSA Hub:** Essential algorithmic challenges across high-frequency patterns with canonical Striver SDE Sheet mapping and optimal multi-language solutions (Python, C++, Java, TypeScript).
 3. **Genuine ATS Resume Evaluator:** Binary parsing for PDF and DOCX files, extracting real text and scoring alignment against customizable target job specifications with STAR-format bullet rewrites.
 4. **Administrative Operations:** Consolidated administrative portal featuring scrypt-hashed passcodes, rate-limited single-use password recovery, candidate dossier inspection, and sanitized CSV exports.
 5. **Universal Session Security:** Strict 30-minute idle inactivity timeout, 2-minute warning modal, 24-hour absolute session cap, and multi-tab synchronization.
@@ -41,15 +41,15 @@ Engineering students and career switchers preparing for software engineering int
 ## ✨ Key Features
 
 ### 1. Curriculum Engine (Core CS & Quantitative Aptitude)
-- **19 Academic Subjects:** Operating Systems, Database Management Systems, Computer Networks, Computer Organization & Architecture, Theory of Computation, Compiler Design, Digital Logic, Algorithms, Data Structures, Discrete Mathematics, Engineering Mathematics, OOPs & Design Patterns, System Design Fundamentals, Software Engineering, and Quantitative/Logical/Verbal/Spatial Aptitude.
+- **Core Academic & Placement Subjects:** Operating Systems, Database Management Systems, Computer Networks, Computer Organization & Architecture, Theory of Computation, Compiler Design, Digital Logic, Algorithms, Data Structures, Discrete Mathematics, Engineering Mathematics, OOPs & Design Patterns, System Design Fundamentals, Software Engineering, and Quantitative/Logical/Verbal/Spatial Aptitude.
 - **Deep Revision Notes:** Markdown notes engine featuring clear intuition, diagrams, syntax-highlighted code blocks, and external links to verified video lectures.
 - **Interactive Quiz Modes:** 
   - *Practice Mode:* Immediate answer validation and step-by-step explanations for deep conceptual retention.
   - *Timed Mode:* Exam-style countdown simulating real campus recruitment tests with detailed score breakdowns.
 
 ### 2. DSA Practice Hub & Striver SDE Sheet
-- **150 Curated Problems:** Categorized across 19 algorithmic patterns (Arrays, Two Pointers, Sliding Window, Trees, Graphs, Dynamic Programming, Greedy, Backtracking, etc.).
-- **Canonical Striver SDE Sheet:** One-click toggle filtering the 79 canonical Striver sheet challenges without redundant routes.
+- **Curated Algorithmic Problem Library:** Categorized across core algorithmic patterns (Arrays, Two Pointers, Sliding Window, Trees, Graphs, Dynamic Programming, Greedy, Backtracking, etc.).
+- **Canonical Striver SDE Sheet:** One-click toggle filtering canonical Striver sheet challenges without redundant routes.
 - **Dedicated Breakdown Routes (`/dsa/[id]`):** In-depth problem breakdowns including time/space complexity analysis, edge case considerations, multi-language solutions, and deep links to LeetCode and TakeUForward tutorials.
 
 ### 3. Resume ATS Checker & Analyzer
@@ -166,18 +166,18 @@ D:\stackup/
 │   │   ├── ChatBot.tsx          # Floating AI assistant interface
 │   │   ├── Navbar.tsx           # Responsive header with 5-tap admin trigger
 │   │   ├── Footer.tsx           # Semantic footer with navigation roadmap
-│   │   ├── ThemeSwitcher.tsx    # 3-palette theme selector
+│   │   ├── ThemeSwitcher.tsx    # Theme selector
 │   │   ├── ThemeToggle.tsx      # Quick light/dark theme switch (Shift+D)
 │   │   └── SessionTimeoutManager.tsx # Universal 30m idle session controller
 │   └── lib/
 │       ├── auth/                # Client session helper and demo login provider
-│       ├── data/                # Verified curriculum and 150 DSA problem datasets
+│       ├── data/                # Verified curriculum and DSA problem datasets
 │       ├── security/            # Scrypt hashing, token signing, CSV sanitization
 │       ├── services/            # ATS parser (pdf-parse, mammoth), JD matcher, scorer
 │       └── supabase/            # Browser and server Supabase database clients
 ├── supabase/
 │   └── migrations/              # Production database migrations with RLS policies
-├── tests/                       # Vitest automated test suite (151 tests)
+├── tests/                       # Vitest automated test suite
 ├── .env.example                 # Documented environment variable template
 ├── package.json                 # Project scripts and dependencies
 └── vitest.config.ts             # Test runner configuration

@@ -744,11 +744,11 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
           {sectionKey === 'core-cs' && (
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
               {[
-                { id: 'all', label: 'All Subjects', count: 15 },
-                { id: 'systems', label: 'Systems & Architecture', count: 6 },
-                { id: 'algo-theory', label: 'Algorithms & Foundations', count: 4 },
-                { id: 'math', label: 'Mathematics', count: 2 },
-                { id: 'software', label: 'Software & Design', count: 3 },
+                { id: 'all', label: 'All Subjects' },
+                { id: 'systems', label: 'Systems & Architecture' },
+                { id: 'algo-theory', label: 'Algorithms & Foundations' },
+                { id: 'math', label: 'Mathematics' },
+                { id: 'software', label: 'Software & Design' },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -759,7 +759,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
                       : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)] hover:bg-slate-100 dark:hover:bg-[#1B2442]'
                   }`}
                 >
-                  {tab.label} ({tab.count})
+                  {tab.label}
                 </button>
               ))}
             </div>

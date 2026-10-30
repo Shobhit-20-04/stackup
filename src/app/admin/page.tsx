@@ -1880,7 +1880,7 @@ export default function AdminDashboardPage() {
                               onClick={() => handleReprocess(currentResume.id)}
                               disabled={reprocessingId === currentResume.id}
                               className="px-3 py-1.5 rounded-lg border border-[#044E62]/50 bg-[#044E62]/20 hover:bg-[#044E62]/40 text-[#E9DEFA] hover:text-white text-xs font-bold inline-flex items-center space-x-1.5 transition-all cursor-pointer disabled:opacity-50"
-                              title="Re-run document parsing and 7-dimension ATS scoring engine"
+                              title="Re-run document parsing and ATS diagnostic scoring engine"
                             >
                               <RotateCcw className={`w-3.5 h-3.5 ${reprocessingId === currentResume.id ? 'animate-spin text-[#E9DEFA]' : ''}`} />
                               <span>{reprocessingId === currentResume.id ? 'Re-scoring...' : 'Reprocess'}</span>
@@ -2046,7 +2046,7 @@ export default function AdminDashboardPage() {
                         {/* VIEW MODE 3: ATS DIAGNOSTICS & KEYWORD GAPS */}
                         {readerViewMode === 'diagnostics' && (
                           <div className="space-y-6">
-                            {/* 4 Category Breakdown Progress Bars */}
+                            {/* Category Breakdown Progress Bars */}
                             {currentResume.analysis?.breakdown && (
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                 <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800">
