@@ -168,33 +168,39 @@ export default function HomePage() {
             <div className="lg:w-80 p-5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-4 shrink-0 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                 <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-[var(--brand-primary)]">
-                  {currentUser ? 'Student Session' : 'Platform Inventory'}
+                  {currentUser ? 'Student Session' : 'Preparation Tracker'}
                 </span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
-                  {currentUser ? 'Authenticated' : 'Open Access'}
+                  {currentUser ? 'Authenticated' : 'Active Session'}
                 </span>
               </div>
 
               <div className="space-y-2.5 text-xs font-mono">
                 <div className="flex items-center justify-between">
                   <span className="text-[var(--foreground-muted)]">DSA Solved</span>
-                  <span className="font-bold text-[var(--foreground)]">{solvedDsaCount} / {DSA_PROBLEMS.length}</span>
+                  <span className="font-bold text-[var(--foreground)]">
+                    {solvedDsaCount > 0 ? `${solvedDsaCount} Completed` : '0 Completed'}
+                  </span>
                 </div>
                 <div className="w-full h-1.5 rounded-full bg-[var(--surface-sunken)] overflow-hidden">
                   <div
-                    className="h-full bg-emerald-600 rounded-full"
-                    style={{ width: `${Math.min(100, (solvedDsaCount / DSA_PROBLEMS.length) * 100)}%` }}
+                    className="h-full bg-emerald-600 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min(100, (solvedDsaCount / (DSA_PROBLEMS.length || 1)) * 100)}%` }}
                   />
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-[var(--foreground-muted)]">Core CS Topics Read</span>
-                  <span className="font-bold text-[var(--foreground)]">{readTopicsCount} Topics</span>
+                  <span className="font-bold text-[var(--foreground)]">
+                    {readTopicsCount > 0 ? `${readTopicsCount} Completed` : '0 Completed'}
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <span className="text-[var(--foreground-muted)]">Exam MCQs Attempted</span>
-                  <span className="font-bold text-[var(--foreground)]">{quizAttemptsCount} Attempts</span>
+                  <span className="font-bold text-[var(--foreground)]">
+                    {quizAttemptsCount > 0 ? `${quizAttemptsCount} Tests Completed` : '0 Completed'}
+                  </span>
                 </div>
               </div>
 
@@ -390,7 +396,7 @@ export default function HomePage() {
 
               <div className="pt-1 flex items-center justify-between text-xs">
                 <span className="text-[var(--foreground-muted)] font-mono text-[11px]">
-                  Showing {sampleProblems.length} of {DSA_PROBLEMS.length} problems
+                  Curated Practice Sample
                 </span>
                 <Link
                   href="/dsa"
