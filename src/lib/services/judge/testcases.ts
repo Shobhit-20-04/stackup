@@ -1,7 +1,7 @@
 import { DSA_PROBLEMS, type DsaProblem } from '@/lib/data/dsa';
 import type { TestCaseItem } from './types';
 
-// Server-side curated judging suites for canonical patterns
+// Server-side curated judging suites with comprehensive hidden test vectors
 const CURATED_JUDGING_SUITES: Record<string, Array<{ input: string; output: string }>> = {
   'dsa-1': [ // Two Sum
     { input: 'nums = [3,3], target = 6', output: '[0,1]' },
@@ -49,11 +49,79 @@ const CURATED_JUDGING_SUITES: Record<string, Array<{ input: string; output: stri
     { input: 's = "ABAB", k = 2', output: '4' },
     { input: 's = "AABABBA", k = 1', output: '4' },
   ],
+  'dsa-11': [ // Minimum Window Substring
+    { input: 's = "a", t = "a"', output: '"a"' },
+    { input: 's = "a", t = "aa"', output: '""' },
+  ],
+  'dsa-12': [ // Search in Rotated Sorted Array
+    { input: 'nums = [1], target = 0', output: '-1' },
+    { input: 'nums = [1], target = 1', output: '0' },
+    { input: 'nums = [5,1,3], target = 5', output: '0' },
+  ],
+  'dsa-13': [ // Find Minimum in Rotated Sorted Array
+    { input: 'nums = [1]', output: '1' },
+    { input: 'nums = [2,1]', output: '1' },
+    { input: 'nums = [3,1,2]', output: '1' },
+  ],
+  'dsa-14': [ // Median of Two Sorted Arrays
+    { input: 'nums1 = [], nums2 = [1]', output: '1.0' },
+    { input: 'nums1 = [2], nums2 = []', output: '2.0' },
+  ],
+  'dsa-15': [ // Reverse Linked List
+    { input: 'head = []', output: '[]' },
+    { input: 'head = [1]', output: '[1]' },
+  ],
+  'dsa-16': [ // Merge Two Sorted Lists
+    { input: 'list1 = [], list2 = []', output: '[]' },
+    { input: 'list1 = [], list2 = [0]', output: '[0]' },
+  ],
+  'dsa-17': [ // LRU Cache
+    { input: 'capacity = 1', output: 'null' },
+  ],
+  'dsa-18': [ // Maximum Depth of Binary Tree
+    { input: 'root = []', output: '0' },
+    { input: 'root = [0]', output: '1' },
+  ],
+  'dsa-19': [ // Validate Binary Search Tree
+    { input: 'root = [2,2,2]', output: 'false' },
+    { input: 'root = [2147483647]', output: 'true' },
+  ],
+  'dsa-20': [ // Lowest Common Ancestor of a BST
+    { input: 'root = [2,1], p = 2, q = 1', output: '2' },
+  ],
+  'dsa-21': [ // Number of Islands
+    { input: 'grid = [["1"]]', output: '1' },
+    { input: 'grid = [["0"]]', output: '0' },
+  ],
+  'dsa-22': [ // Course Schedule
+    { input: 'numCourses = 1, prerequisites = []', output: 'true' },
+    { input: 'numCourses = 3, prerequisites = [[0,1],[1,2],[2,0]]', output: 'false' },
+  ],
+  'dsa-23': [ // Rotting Oranges
+    { input: 'grid = [[0]]', output: '0' },
+    { input: 'grid = [[1]]', output: '-1' },
+  ],
+  'dsa-24': [ // Climbing Stairs
+    { input: 'n = 1', output: '1' },
+    { input: 'n = 4', output: '5' },
+    { input: 'n = 5', output: '8' },
+  ],
+  'dsa-25': [ // Coin Change
+    { input: 'coins = [1], amount = 0', output: '0' },
+    { input: 'coins = [1], amount = 1', output: '1' },
+    { input: 'coins = [1], amount = 2', output: '2' },
+  ],
 };
 
 export function getProblemById(id: string): DsaProblem | undefined {
   const clean = id.trim().toLowerCase();
   return DSA_PROBLEMS.find((p) => p.id.toLowerCase() === clean);
+}
+
+export function hasOfficialJudgingSuite(problemId: string): boolean {
+  const problem = getProblemById(problemId);
+  if (!problem) return false;
+  return Boolean(CURATED_JUDGING_SUITES[problem.id] && CURATED_JUDGING_SUITES[problem.id].length > 0);
 }
 
 export function getSampleTestCases(problemId: string): TestCaseItem[] {
@@ -80,13 +148,13 @@ export function getJudgingTestCases(problemId: string): TestCaseItem[] {
   const curated = CURATED_JUDGING_SUITES[problem.id] || [];
   const hiddenCases: TestCaseItem[] = curated.map((c, idx) => ({
     id: `judge-${idx + 1}`,
-    name: `Test Case ${sampleCases.length + idx + 1}`,
+    name: `Official Test ${sampleCases.length + idx + 1}`,
     input: c.input,
     expectedOutput: c.output,
     isCustom: false,
     isHidden: true,
   }));
 
-  // If no specific curated hidden tests, ensure at least all sample cases are judged
+  // If problem has curated hidden tests, return sample + hidden cases
   return [...sampleCases, ...hiddenCases];
 }

@@ -108,4 +108,6 @@ export interface SubmitResponse {
   memoryKb?: number;
   results: ExecutionResult[];
   problemId: string;
+  hasOfficialJudgingSuite?: boolean;
+  evaluationNotice?: string;
 }

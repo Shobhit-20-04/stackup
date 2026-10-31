@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProblemById, getJudgingTestCases } from '@/lib/services/judge/testcases';
+import { getProblemById, getJudgingTestCases, hasOfficialJudgingSuite } from '@/lib/services/judge/testcases';
 import { executeInJudge0 } from '@/lib/services/judge/judge0';
 import { wrapCodeWithDriver, compareOutputs } from '@/lib/services/judge/adapters';
 import { checkRateLimit, validateCodeSubmission } from '@/lib/services/judge/security';
@@ -134,6 +134,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const isOfficialSuite = hasOfficialJudgingSuite(problem.id);
+    const evaluationNotice = isOfficialSuite
+      ? `Evaluated against official judging suite with ${officialTestCases.length} test cases.`
+      : `Evaluated against sample test cases (${officialTestCases.length} cases). Extended judging suite is pending for this problem.`;
+
     const responsePayload: SubmitResponse = {
       success: true,
       verdict: overallVerdict,
@@ -146,6 +151,8 @@ export async function POST(req: NextRequest) {
       memoryKb: maxMemoryKb,
       results,
       problemId: problem.id,
+      hasOfficialJudgingSuite: isOfficialSuite,
+      evaluationNotice,
     };
 
     return NextResponse.json(responsePayload);

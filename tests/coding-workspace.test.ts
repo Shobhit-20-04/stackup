@@ -17,6 +17,7 @@ import {
   getProblemById,
   getSampleTestCases,
   getJudgingTestCases,
+  hasOfficialJudgingSuite,
 } from '../src/lib/services/judge/testcases';
 import { DSA_PROBLEMS } from '../src/lib/data/dsa';
 
@@ -136,6 +137,11 @@ describe('Coding Workspace - Output Normalization & Comparison', () => {
     expect(compareOutputs('False', 'false')).toBe(true);
   });
 
+  it('compares floating point numbers with tolerance', () => {
+    expect(compareOutputs('2.500000', '2.5')).toBe(true);
+    expect(compareOutputs('1.00000', '1.0')).toBe(true);
+  });
+
   it('correctly reports mismatched answers as false', () => {
     expect(compareOutputs('[0, 1]', '[0, 2]')).toBe(false);
     expect(compareOutputs('true', 'false')).toBe(false);
@@ -161,14 +167,36 @@ describe('Coding Workspace - Starter Code & Driver Harness', () => {
     const jsStarter = getStarterCode(sampleProblem, 'javascript');
     expect(jsStarter.length).toBeGreaterThan(10);
     expect(jsStarter).toContain('twoSum');
+
+    const cStarter = getStarterCode(sampleProblem, 'c');
+    expect(cStarter.length).toBeGreaterThan(10);
+    expect(cStarter).toContain('int main()');
   });
 
-  it('wraps code with driver harness when no main method is present', () => {
+  it('wraps Python class Solution code with driver harness when no main method is present', () => {
     const sampleProblem = DSA_PROBLEMS[0];
     const userCode = 'class Solution:\n    def twoSum(self, nums, target):\n        return [0, 1]';
     const harnessed = wrapCodeWithDriver(userCode, 'python', sampleProblem);
     expect(harnessed).toContain('if __name__ == \'__main__\':');
     expect(harnessed).toContain('parse_input_args');
+  });
+
+  it('wraps C++ class Solution code with driver harness containing main()', () => {
+    const sampleProblem = DSA_PROBLEMS[0];
+    const userCode = 'class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        return {0, 1};\n    }\n};';
+    const harnessed = wrapCodeWithDriver(userCode, 'cpp', sampleProblem);
+    expect(harnessed).toContain('int main()');
+    expect(harnessed).toContain('StackUpDriver::splitArgs');
+    expect(harnessed).toContain('sol.twoSum');
+  });
+
+  it('wraps Java class Solution code with driver harness containing class Main', () => {
+    const sampleProblem = DSA_PROBLEMS[0];
+    const userCode = 'class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        return new int[]{0, 1};\n    }\n}';
+    const harnessed = wrapCodeWithDriver(userCode, 'java', sampleProblem);
+    expect(harnessed).toContain('public class Main');
+    expect(harnessed).toContain('public static void main(String[] args)');
+    expect(harnessed).toContain('sol.twoSum');
   });
 
   it('preserves code unchanged when standard main() or stdin entry point is present', () => {
@@ -205,6 +233,11 @@ describe('Coding Workspace - Test Case Management & Server Security', () => {
     expect(judgingCases.length).toBeGreaterThan(getSampleTestCases('dsa-1').length);
     const hiddenCases = judgingCases.filter((tc) => tc.isHidden);
     expect(hiddenCases.length).toBeGreaterThan(0);
+  });
+
+  it('identifies problems with curated official judging suites', () => {
+    expect(hasOfficialJudgingSuite('dsa-1')).toBe(true);
+    expect(hasOfficialJudgingSuite('dsa-25')).toBe(true);
   });
 
   it('strictly sanitizes hidden test case results to protect test vectors', () => {

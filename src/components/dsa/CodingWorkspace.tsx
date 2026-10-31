@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import {
   Play,
@@ -27,7 +27,12 @@ import {
   Lightbulb,
   Loader2,
   BookOpen,
+  GripHorizontal,
+  GripVertical,
+  AlignLeft,
+  Info,
 } from 'lucide-react';
+import type { editor } from 'monaco-editor';
 import { DSA_PROBLEMS } from '@/lib/data/dsa';
 import {
   SUPPORTED_LANGUAGES,
@@ -45,7 +50,7 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   loading: () => (
     <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-[#0B1020] text-slate-400 font-mono text-xs space-y-2">
       <Loader2 className="w-5 h-5 animate-spin text-[var(--brand-primary)]" />
-      <span>Loading Integrated Code Editor...</span>
+      <span>Loading Code Editor...</span>
     </div>
   ),
 });
@@ -78,38 +83,54 @@ export default function CodingWorkspace({
   const prevProblem = currentIndex > 0 ? DSA_PROBLEMS[currentIndex - 1] : null;
   const nextProblem = currentIndex < DSA_PROBLEMS.length - 1 ? DSA_PROBLEMS[currentIndex + 1] : null;
 
-  // Selected programming language
+  // Selected language, theme, font size
   const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage>('python');
   const [editorTheme, setEditorTheme] = useState<'vs-dark' | 'light'>('vs-dark');
+  const [fontSize, setFontSize] = useState<number>(13);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Left panel tab: 'description' | 'editorial' | 'solutions'
+  // Tab views
   const [leftTab, setLeftTab] = useState<'description' | 'editorial' | 'solutions'>('description');
-
-  // Bottom pane tab: 'testcases' | 'console' | 'submission'
   const [bottomTab, setBottomTab] = useState<'testcases' | 'console' | 'submission'>('testcases');
-
-  // Mobile layout switcher: 'problem' | 'editor' | 'results'
   const [mobileTab, setMobileTab] = useState<'problem' | 'editor' | 'results'>('editor');
 
-  // Code state per problem + language (initialized from storage or starter code)
-  const [code, setCode] = useState<string>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem(`stackup_code_${problem.id}_python`);
-        if (saved) return saved;
-      }
-    } catch {
-      // ignore
-    }
-    return getStarterCode(problem, 'python');
-  });
-
-  // Sample + custom test cases (initialized from problem examples)
-  const [testCases, setTestCases] = useState<TestCaseItem[]>(() => {
-    return getSampleTestCases(problem.id);
-  });
+  // Active sub-case index for Test Cases tab and Run Output tab
   const [activeTestCaseIndex, setActiveTestCaseIndex] = useState(0);
+  const [activeResultIndex, setActiveResultIndex] = useState(0);
+
+  // Resizable pane dimensions (Desktop)
+  const [leftWidthPercent, setLeftWidthPercent] = useState<number>(42);
+  const [bottomHeightPx, setBottomHeightPx] = useState<number>(280);
+  const isDraggingHorizontal = useRef(false);
+  const isDraggingVertical = useRef(false);
+
+  // Monaco editor reference
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+
+  // Helper to load code for problem + language
+  const loadCodeForProblemAndLang = useCallback(
+    (pId: string, lang: SupportedLanguage): string => {
+      try {
+        if (typeof window !== 'undefined') {
+          const saved = localStorage.getItem(`stackup_code_${pId}_${lang}`);
+          if (saved) return saved;
+        }
+      } catch {
+        // ignore
+      }
+      const targetProb = DSA_PROBLEMS.find((p) => p.id === pId) || problem;
+      return getStarterCode(targetProb, lang);
+    },
+    [problem]
+  );
+
+  // Code state and ref (Ref is immediately updated on keystroke; state is debounced)
+  const [code, setCode] = useState<string>(() => loadCodeForProblemAndLang(problem.id, 'python'));
+  const codeRef = useRef<string>(code);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Sample + custom test cases
+  const [testCases, setTestCases] = useState<TestCaseItem[]>(() => getSampleTestCases(problem.id));
 
   // Execution states
   const [isRunning, setIsRunning] = useState(false);
@@ -121,45 +142,90 @@ export default function CodingWorkspace({
   // Solved state
   const [isSolved, setIsSolved] = useState(isSolvedInitially);
 
-  // Handle switching language
+  // Track previous problem ID to reload code & test cases on problem change
+  const prevProblemIdRef = useRef<string>(problem.id);
+  useEffect(() => {
+    if (prevProblemIdRef.current !== problem.id) {
+      prevProblemIdRef.current = problem.id;
+      const loaded = loadCodeForProblemAndLang(problem.id, selectedLanguage);
+      codeRef.current = loaded;
+      setCode(loaded);
+      if (editorRef.current) {
+        editorRef.current.setValue(loaded);
+      }
+      setTestCases(getSampleTestCases(problem.id));
+      setActiveTestCaseIndex(0);
+      setActiveResultIndex(0);
+      setRunResults(null);
+      setSubmitResult(null);
+      setIsSolved(isSolvedInitially);
+    }
+  }, [problem.id, selectedLanguage, isSolvedInitially, loadCodeForProblemAndLang]);
+
+  // Handle switching language (preserves existing language code draft)
   const handleLanguageChange = (newLang: SupportedLanguage) => {
-    setSelectedLanguage(newLang);
-    let loaded = '';
+    // 1. Save current language's latest code
     try {
       if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem(`stackup_code_${problem.id}_${newLang}`);
-        if (saved) loaded = saved;
+        localStorage.setItem(`stackup_code_${problem.id}_${selectedLanguage}`, codeRef.current);
       }
     } catch {
       // ignore
     }
-    if (!loaded) {
-      loaded = getStarterCode(problem, newLang);
-    }
+
+    // 2. Load target language's code
+    setSelectedLanguage(newLang);
+    const loaded = loadCodeForProblemAndLang(problem.id, newLang);
+    codeRef.current = loaded;
     setCode(loaded);
+    if (editorRef.current) {
+      editorRef.current.setValue(loaded);
+    }
   };
 
-  // Persist code changes to localStorage
+  // Debounced code change handler (eliminates typing lag while persisting)
   const handleCodeChange = useCallback(
     (newVal: string | undefined) => {
       const updated = newVal || '';
-      setCode(updated);
-      try {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(`stackup_code_${problem.id}_${selectedLanguage}`, updated);
-        }
-      } catch {
-        // ignore
+      codeRef.current = updated;
+
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
       }
+
+      debounceTimerRef.current = setTimeout(() => {
+        setCode(updated);
+        try {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(`stackup_code_${problem.id}_${selectedLanguage}`, updated);
+          }
+        } catch {
+          // ignore
+        }
+      }, 300);
     },
     [problem.id, selectedLanguage]
   );
 
+  // Clean up debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
   // Reset to starter code with confirmation
   const handleResetCode = () => {
-    if (confirm(`Reset code for ${problem.title} (${SUPPORTED_LANGUAGES[selectedLanguage].name}) to default starter template?`)) {
+    const langName = SUPPORTED_LANGUAGES[selectedLanguage].name;
+    if (confirm(`Reset code for ${problem.title} (${langName}) to default starter template? Current edits will be replaced.`)) {
       const starter = getStarterCode(problem, selectedLanguage);
+      codeRef.current = starter;
       setCode(starter);
+      if (editorRef.current) {
+        editorRef.current.setValue(starter);
+      }
       try {
         if (typeof window !== 'undefined') {
           localStorage.setItem(`stackup_code_${problem.id}_${selectedLanguage}`, starter);
@@ -170,8 +236,16 @@ export default function CodingWorkspace({
     }
   };
 
+  // Format code document
+  const handleFormatCode = () => {
+    if (editorRef.current) {
+      editorRef.current.getAction('editor.action.formatDocument')?.run();
+    }
+  };
+
   // Add custom test case
   const handleAddCustomTest = () => {
+    if (testCases.length >= 8) return;
     const newIdx = testCases.filter((tc) => tc.isCustom).length + 1;
     const newCase: TestCaseItem = {
       id: `custom-${Date.now()}`,
@@ -207,12 +281,15 @@ export default function CodingWorkspace({
     });
   };
 
-  // Execute RUN CODE (against sample + custom test cases)
+  // Execute RUN CODE (runs all sample + custom test cases concurrently)
   const handleRunCode = useCallback(async () => {
     if (isRunning || isSubmitting) return;
     setIsRunning(true);
     setBottomTab('console');
     setMobileTab('results');
+
+    // Always use up-to-the-millisecond code from codeRef
+    const sourceCodeToRun = codeRef.current;
 
     try {
       const res = await fetch('/api/dsa/execute', {
@@ -221,7 +298,7 @@ export default function CodingWorkspace({
         body: JSON.stringify({
           problemId: problem.id,
           language: selectedLanguage,
-          sourceCode: code,
+          sourceCode: sourceCodeToRun,
           testCases: testCases.map((tc) => ({
             id: tc.id,
             name: tc.name,
@@ -234,6 +311,7 @@ export default function CodingWorkspace({
 
       const data: RunCodeResponse = await res.json();
       setRunResults(data);
+      setActiveResultIndex(0);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Execution failed';
       setRunResults({
@@ -246,14 +324,16 @@ export default function CodingWorkspace({
     } finally {
       setIsRunning(false);
     }
-  }, [isRunning, isSubmitting, problem.id, selectedLanguage, code, testCases]);
+  }, [isRunning, isSubmitting, problem.id, selectedLanguage, testCases]);
 
-  // SUBMIT SOLUTION (against official judging suite)
+  // SUBMIT SOLUTION (evaluates against server-side official judging suite)
   const handleSubmit = useCallback(async () => {
     if (isRunning || isSubmitting) return;
     setIsSubmitting(true);
     setBottomTab('submission');
     setMobileTab('results');
+
+    const sourceCodeToSubmit = codeRef.current;
 
     try {
       const res = await fetch('/api/dsa/submit', {
@@ -262,7 +342,7 @@ export default function CodingWorkspace({
         body: JSON.stringify({
           problemId: problem.id,
           language: selectedLanguage,
-          sourceCode: code,
+          sourceCode: sourceCodeToSubmit,
         }),
       });
 
@@ -289,9 +369,32 @@ export default function CodingWorkspace({
     } finally {
       setIsSubmitting(false);
     }
-  }, [isRunning, isSubmitting, problem.id, selectedLanguage, code, onSolvedChange]);
+  }, [isRunning, isSubmitting, problem.id, selectedLanguage, onSolvedChange]);
 
-  // Keyboard shortcut listener (Ctrl+Enter to Run, Ctrl+Shift+Enter to Submit, Escape to exit)
+  // Refs to stabilize shortcut handlers without recreating listeners
+  const runCodeRef = useRef(handleRunCode);
+  const submitRef = useRef(handleSubmit);
+  useEffect(() => {
+    runCodeRef.current = handleRunCode;
+    submitRef.current = handleSubmit;
+  }, [handleRunCode, handleSubmit]);
+
+  // Monaco onMount callback to register commands & configure editor
+  const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor) => {
+    editorRef.current = editorInstance;
+
+    // Register Ctrl+Enter to Run Code
+    editorInstance.addCommand(2048 /* KeyMod.CtrlCmd */ | 3 /* KeyCode.Enter */, () => {
+      runCodeRef.current();
+    });
+
+    // Register Ctrl+Shift+Enter to Submit
+    editorInstance.addCommand(2048 /* KeyMod.CtrlCmd */ | 1024 /* KeyMod.Shift */ | 3 /* KeyCode.Enter */, () => {
+      submitRef.current();
+    });
+  };
+
+  // Window-level Keyboard shortcuts listener (for Esc, Fullscreen, and global keys)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !isFullscreen) {
@@ -301,17 +404,48 @@ export default function CodingWorkspace({
       } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         if (e.shiftKey) {
-          void handleSubmit();
+          submitRef.current();
         } else {
-          void handleRunCode();
+          runCodeRef.current();
         }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isFullscreen, handleRunCode, handleSubmit, onClose]);
+  }, [isFullscreen, onClose]);
+
+  // Split-pane Resizing Mouse Listeners
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDraggingHorizontal.current) {
+        const totalWidth = window.innerWidth;
+        const newPercent = Math.min(65, Math.max(25, (e.clientX / totalWidth) * 100));
+        setLeftWidthPercent(Math.round(newPercent));
+      }
+      if (isDraggingVertical.current) {
+        const windowHeight = window.innerHeight;
+        const newHeight = Math.min(windowHeight * 0.7, Math.max(160, windowHeight - e.clientY));
+        setBottomHeightPx(Math.round(newHeight));
+      }
+    };
+
+    const handleMouseUp = () => {
+      isDraggingHorizontal.current = false;
+      isDraggingVertical.current = false;
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   const activeTestCase = testCases[activeTestCaseIndex] || testCases[0];
+  const activeRunResult = runResults?.results?.[activeResultIndex] || runResults?.results?.[0];
 
   return (
     <div
@@ -322,7 +456,7 @@ export default function CodingWorkspace({
       {/* Workspace Outer Container */}
       <div className="w-full h-full flex flex-col rounded-none sm:rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-2xl overflow-hidden">
         {/* 1. TOP MASTHEAD TOOLBAR */}
-        <header className="h-13 shrink-0 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 px-3 sm:px-4 flex items-center justify-between gap-3 select-none">
+        <header className="h-12 shrink-0 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/70 px-3 sm:px-4 flex items-center justify-between gap-3 select-none">
           {/* Left: Branding & Problem Navigation */}
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
             <span className="text-xs font-mono font-black tracking-wider text-[var(--brand-primary)] shrink-0 hidden sm:inline-block">
@@ -432,11 +566,12 @@ export default function CodingWorkspace({
         </header>
 
         {/* 2. MAIN SPLIT PANE WORKSPACE */}
-        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+        <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden relative">
           {/* ==================== LEFT PANEL: PROBLEM SPECIFICATION ==================== */}
           <div
-            className={`lg:col-span-5 border-b lg:border-b-0 lg:border-r border-[var(--border-subtle)] flex flex-col min-h-0 bg-[var(--surface-card)] ${
-              mobileTab === 'problem' ? 'flex' : 'hidden lg:flex'
+            style={{ width: `${leftWidthPercent}%` }}
+            className={`border-b lg:border-b-0 lg:border-r border-[var(--border-subtle)] flex flex-col min-h-0 bg-[var(--surface-card)] shrink-0 ${
+              mobileTab === 'problem' ? 'flex w-full' : 'hidden lg:flex'
             }`}
           >
             {/* Left Tabs Bar */}
@@ -624,7 +759,7 @@ export default function CodingWorkspace({
                     </div>
                   </div>
 
-                  {/* Video Walkthrough */}
+                  {/* Video Lecture */}
                   {problem.youtube_url && (
                     <div className="pt-2">
                       <a
@@ -677,15 +812,29 @@ export default function CodingWorkspace({
             </div>
           </div>
 
+          {/* ==================== DESKTOP HORIZONTAL RESIZE DIVIDER ==================== */}
+          <div
+            onMouseDown={() => {
+              isDraggingHorizontal.current = true;
+              document.body.style.cursor = 'col-resize';
+              document.body.style.userSelect = 'none';
+            }}
+            onDoubleClick={() => setLeftWidthPercent(42)}
+            className="hidden lg:flex w-1.5 hover:w-2 bg-[var(--border-subtle)] hover:bg-[var(--brand-primary)] cursor-col-resize transition-all items-center justify-center shrink-0 z-20 group"
+            title="Drag to resize panels, double-click to reset"
+          >
+            <GripVertical className="w-3 h-3 text-[var(--foreground-muted)] group-hover:text-white" />
+          </div>
+
           {/* ==================== RIGHT PANEL: CODE EDITOR & TEST BENCH ==================== */}
           <div
-            className={`lg:col-span-7 flex flex-col min-h-0 bg-[var(--background)] ${
+            className={`flex-1 flex flex-col min-h-0 bg-[var(--background)] ${
               mobileTab !== 'problem' ? 'flex' : 'hidden lg:flex'
             }`}
           >
             {/* Editor Top Control Bar */}
-            <div className="h-10 shrink-0 border-b border-[var(--border-subtle)] px-3 flex items-center justify-between bg-[var(--surface-sunken)]/50">
-              {/* Language Selector */}
+            <div className="h-10 shrink-0 border-b border-[var(--border-subtle)] px-3 flex items-center justify-between bg-[var(--surface-sunken)]/50 gap-2">
+              {/* Left Controls: Language, Theme, Font Size */}
               <div className="flex items-center space-x-2">
                 <select
                   value={selectedLanguage}
@@ -699,56 +848,102 @@ export default function CodingWorkspace({
                   ))}
                 </select>
 
-                {/* Theme Selector */}
                 <select
                   value={editorTheme}
                   onChange={(e) => setEditorTheme(e.target.value as 'vs-dark' | 'light')}
                   className="px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[11px] font-mono text-[var(--foreground-muted)] focus:outline-none cursor-pointer hidden sm:block"
                 >
-                  <option value="vs-dark">Dark Theme</option>
-                  <option value="light">Light Theme</option>
+                  <option value="vs-dark">Dark</option>
+                  <option value="light">Light</option>
+                </select>
+
+                <select
+                  value={fontSize}
+                  onChange={(e) => setFontSize(Number(e.target.value))}
+                  className="px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[11px] font-mono text-[var(--foreground-muted)] focus:outline-none cursor-pointer hidden md:block"
+                  title="Editor Font Size"
+                >
+                  <option value={12}>12px</option>
+                  <option value={13}>13px</option>
+                  <option value={14}>14px</option>
+                  <option value={16}>16px</option>
+                  <option value={18}>18px</option>
                 </select>
               </div>
 
-              {/* Reset to starter code */}
+              {/* Right Controls: Format & Reset */}
               <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleFormatCode}
+                  className="px-2 py-1 rounded text-[11px] font-mono text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors inline-flex items-center space-x-1 cursor-pointer hidden sm:inline-flex"
+                  title="Format Document (Shift+Alt+F)"
+                >
+                  <AlignLeft className="w-3 h-3" />
+                  <span>Format</span>
+                </button>
+
                 <button
                   onClick={handleResetCode}
                   className="px-2 py-1 rounded text-[11px] font-mono text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors inline-flex items-center space-x-1 cursor-pointer"
-                  title="Reset to starter code"
+                  title="Reset to starter template"
                 >
                   <RotateCcw className="w-3 h-3" />
-                  <span className="hidden sm:inline">Reset Code</span>
+                  <span className="hidden sm:inline">Reset</span>
                 </button>
               </div>
             </div>
 
             {/* Monaco Editor Container */}
-            <div className="flex-1 min-h-[220px] relative overflow-hidden bg-[#0B1020]">
+            <div className="flex-1 min-h-[160px] relative overflow-hidden bg-[#0B1020]">
               <MonacoEditor
                 height="100%"
                 language={SUPPORTED_LANGUAGES[selectedLanguage].monacoLanguage}
                 theme={editorTheme}
-                value={code}
+                defaultValue={code}
+                onMount={handleEditorDidMount}
                 onChange={handleCodeChange}
                 options={{
-                  fontSize: 13,
+                  fontSize,
                   fontFamily: "'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
                   fontLigatures: true,
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
                   lineNumbers: 'on',
                   automaticLayout: true,
                   tabSize: 4,
                   wordWrap: 'on',
                   bracketPairColorization: { enabled: true },
+                  autoClosingBrackets: 'always',
+                  autoClosingQuotes: 'always',
+                  formatOnPaste: true,
+                  formatOnType: true,
+                  cursorBlinking: 'smooth',
+                  cursorSmoothCaretAnimation: 'on',
+                  smoothScrolling: true,
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
                   padding: { top: 12, bottom: 12 },
                 }}
               />
             </div>
 
+            {/* ==================== DESKTOP VERTICAL RESIZE DIVIDER ==================== */}
+            <div
+              onMouseDown={() => {
+                isDraggingVertical.current = true;
+                document.body.style.cursor = 'row-resize';
+                document.body.style.userSelect = 'none';
+              }}
+              onDoubleClick={() => setBottomHeightPx(280)}
+              className="h-1.5 hover:h-2 bg-[var(--border-subtle)] hover:bg-[var(--brand-primary)] cursor-row-resize transition-all flex items-center justify-center shrink-0 z-20 group"
+              title="Drag to resize test bench, double-click to reset"
+            >
+              <GripHorizontal className="w-4 h-3 text-[var(--foreground-muted)] group-hover:text-white" />
+            </div>
+
             {/* ==================== BOTTOM TEST BENCH & CONSOLE PANEL ==================== */}
-            <div className="h-64 sm:h-72 border-t border-[var(--border-subtle)] flex flex-col min-h-0 bg-[var(--surface-card)] shrink-0">
+            <div
+              style={{ height: `${bottomHeightPx}px` }}
+              className="border-t border-[var(--border-subtle)] flex flex-col min-h-0 bg-[var(--surface-card)] shrink-0"
+            >
               {/* Bottom Tabs */}
               <div className="h-9 shrink-0 border-b border-[var(--border-subtle)] px-3 flex items-center justify-between bg-[var(--surface-sunken)]/60">
                 <div className="flex items-center space-x-1 text-xs">
@@ -826,7 +1021,7 @@ export default function CodingWorkspace({
                           {tc.isCustom && (
                             <span
                               onClick={(e) => handleRemoveCustomTest(tc.id, e)}
-                              className="hover:text-rose-500 cursor-pointer p-0.5"
+                              className="hover:text-rose-500 cursor-pointer p-0.5 ml-1"
                               title="Delete custom test case"
                             >
                               <Trash2 className="w-3 h-3" />
@@ -891,7 +1086,7 @@ export default function CodingWorkspace({
                     {isRunning ? (
                       <div className="flex items-center space-x-2 text-[var(--foreground-muted)] py-6 justify-center">
                         <Loader2 className="w-4 h-4 animate-spin text-[var(--brand-primary)]" />
-                        <span>Compiling and running against test cases on isolated judge...</span>
+                        <span>Compiling and executing test cases concurrently on isolated judge...</span>
                       </div>
                     ) : runResults ? (
                       <div className="space-y-3">
@@ -922,74 +1117,101 @@ export default function CodingWorkspace({
                         {runResults.compileOutput && (
                           <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 space-y-1">
                             <span className="font-bold text-[11px] block">Compiler Output:</span>
-                            <pre className="text-[11px] overflow-x-auto whitespace-pre-wrap">
+                            <pre className="text-[11px] overflow-x-auto whitespace-pre-wrap font-mono">
                               {runResults.compileOutput}
                             </pre>
                           </div>
                         )}
 
-                        {/* Individual test results */}
-                        <div className="space-y-2">
-                          {runResults.results.map((res, idx) => (
-                            <div
-                              key={idx}
-                              className={`p-3 rounded-lg border ${
-                                res.passed
-                                  ? 'bg-emerald-500/5 border-emerald-500/20'
-                                  : 'bg-rose-500/5 border-rose-500/20'
-                              } space-y-1.5`}
-                            >
-                              <div className="flex items-center justify-between text-[11px]">
-                                <span className="font-bold text-[var(--foreground)]">{res.name}</span>
-                                <div className="flex items-center space-x-2 text-[10px] text-[var(--foreground-muted)]">
-                                  <span>{res.executionTimeMs} ms</span>
-                                  <span>•</span>
-                                  <span>{res.memoryKb} KB</span>
+                        {/* Case Selector Tabs for Clean Inspection */}
+                        {runResults.results.length > 0 && (
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-1.5 overflow-x-auto pb-1">
+                              {runResults.results.map((r, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => setActiveResultIndex(idx)}
+                                  className={`px-2.5 py-1 rounded text-xs font-medium border flex items-center space-x-1.5 shrink-0 cursor-pointer ${
+                                    activeResultIndex === idx
+                                      ? 'bg-[var(--surface-sunken)] border-[var(--brand-primary)] text-[var(--foreground)] font-bold'
+                                      : 'bg-[var(--surface-card)] border-[var(--border-subtle)] text-[var(--foreground-muted)]'
+                                  }`}
+                                >
                                   <span
-                                    className={`font-bold px-1.5 py-0.2 rounded ${
-                                      res.passed ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/20 text-rose-600 dark:text-rose-400'
+                                    className={`w-1.5 h-1.5 rounded-full ${
+                                      r.passed ? 'bg-emerald-500' : 'bg-rose-500'
                                     }`}
-                                  >
-                                    {res.verdict}
-                                  </span>
-                                </div>
-                              </div>
-
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1">
-                                <div>
-                                  <span className="text-[10px] text-[var(--foreground-muted)] block">Input:</span>
-                                  <code className="text-[var(--foreground)] bg-[var(--surface-sunken)] px-2 py-0.5 rounded block overflow-x-auto">
-                                    {res.input}
-                                  </code>
-                                </div>
-                                <div>
-                                  <span className="text-[10px] text-[var(--foreground-muted)] block">
-                                    {res.expectedOutput ? 'Expected Output:' : 'Output:'}
-                                  </span>
-                                  <code className="text-emerald-600 dark:text-emerald-400 bg-[var(--surface-sunken)] px-2 py-0.5 rounded block overflow-x-auto">
-                                    {res.expectedOutput || res.actualOutput || '[No output]'}
-                                  </code>
-                                </div>
-                              </div>
-
-                              {res.expectedOutput && !res.passed && (
-                                <div className="text-[11px] pt-1">
-                                  <span className="text-[10px] text-rose-500 block">Actual Output:</span>
-                                  <code className="text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded block overflow-x-auto font-bold">
-                                    {res.actualOutput || '[Empty Output]'}
-                                  </code>
-                                </div>
-                              )}
-
-                              {res.stderr && (
-                                <div className="text-[11px] text-rose-500 pt-1">
-                                  <span className="text-[10px] block">Stderr / Stack Trace:</span>
-                                  <pre className="text-[10px] whitespace-pre-wrap">{res.stderr}</pre>
-                                </div>
-                              )}
+                                  />
+                                  <span>{r.name}</span>
+                                </button>
+                              ))}
                             </div>
-                          ))}
-                        </div>
+
+                            {/* Active Case Inspection View */}
+                            {activeRunResult && (
+                              <div
+                                className={`p-3 rounded-lg border ${
+                                  activeRunResult.passed
+                                    ? 'bg-emerald-500/5 border-emerald-500/20'
+                                    : 'bg-rose-500/5 border-rose-500/20'
+                                } space-y-2`}
+                              >
+                                <div className="flex items-center justify-between text-[11px]">
+                                  <span className="font-bold text-[var(--foreground)]">
+                                    {activeRunResult.name}
+                                  </span>
+                                  <div className="flex items-center space-x-2 text-[10px] text-[var(--foreground-muted)]">
+                                    <span>{activeRunResult.executionTimeMs} ms</span>
+                                    <span>•</span>
+                                    <span>{activeRunResult.memoryKb} KB</span>
+                                    <span
+                                      className={`font-bold px-1.5 py-0.5 rounded ${
+                                        activeRunResult.passed
+                                          ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+                                          : 'bg-rose-500/20 text-rose-600 dark:text-rose-400'
+                                      }`}
+                                    >
+                                      {activeRunResult.verdict}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1">
+                                  <div>
+                                    <span className="text-[10px] text-[var(--foreground-muted)] block">Input:</span>
+                                    <code className="text-[var(--foreground)] bg-[var(--surface-sunken)] px-2 py-0.5 rounded block overflow-x-auto">
+                                      {activeRunResult.input}
+                                    </code>
+                                  </div>
+                                  <div>
+                                    <span className="text-[10px] text-[var(--foreground-muted)] block">
+                                      {activeRunResult.expectedOutput ? 'Expected Output:' : 'Output:'}
+                                    </span>
+                                    <code className="text-emerald-600 dark:text-emerald-400 bg-[var(--surface-sunken)] px-2 py-0.5 rounded block overflow-x-auto">
+                                      {activeRunResult.expectedOutput || activeRunResult.actualOutput || '[No output]'}
+                                    </code>
+                                  </div>
+                                </div>
+
+                                {activeRunResult.expectedOutput && !activeRunResult.passed && (
+                                  <div className="text-[11px] pt-1">
+                                    <span className="text-[10px] text-rose-500 block">Actual Output:</span>
+                                    <code className="text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded block overflow-x-auto font-bold">
+                                      {activeRunResult.actualOutput || '[Empty Output]'}
+                                    </code>
+                                  </div>
+                                )}
+
+                                {activeRunResult.stderr && (
+                                  <div className="text-[11px] text-rose-500 pt-1">
+                                    <span className="text-[10px] block font-bold">Stderr / Diagnostics:</span>
+                                    <pre className="text-[10px] whitespace-pre-wrap font-mono">{activeRunResult.stderr}</pre>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="text-center py-8 text-[var(--foreground-muted)] text-xs">
@@ -1005,7 +1227,7 @@ export default function CodingWorkspace({
                     {isSubmitting ? (
                       <div className="flex items-center space-x-2 text-[var(--foreground-muted)] py-6 justify-center">
                         <Loader2 className="w-4 h-4 animate-spin text-[var(--brand-primary)]" />
-                        <span>Evaluating solution against official server-side judging suite...</span>
+                        <span>Evaluating solution against server-side official judging suite...</span>
                       </div>
                     ) : submitResult ? (
                       <div className="space-y-3">
@@ -1032,6 +1254,12 @@ export default function CodingWorkspace({
                                   ? `Failed at ${submitResult.failedTestName} (${submitResult.passedTests}/${submitResult.totalTests} tests passed)`
                                   : 'Solution encountered an evaluation error.'}
                               </p>
+                              {submitResult.evaluationNotice && (
+                                <p className="text-[10px] opacity-75 font-sans mt-0.5 flex items-center space-x-1">
+                                  <Info className="w-3 h-3 inline shrink-0" />
+                                  <span>{submitResult.evaluationNotice}</span>
+                                </p>
+                              )}
                             </div>
                           </div>
 
@@ -1050,7 +1278,7 @@ export default function CodingWorkspace({
                         {submitResult.compileOutput && (
                           <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 space-y-1">
                             <span className="font-bold text-[11px] block">Compiler Output:</span>
-                            <pre className="text-[11px] overflow-x-auto whitespace-pre-wrap">
+                            <pre className="text-[11px] overflow-x-auto whitespace-pre-wrap font-mono">
                               {submitResult.compileOutput}
                             </pre>
                           </div>
@@ -1058,7 +1286,7 @@ export default function CodingWorkspace({
 
                         {/* Error details if any */}
                         {submitResult.errorDetails && (
-                          <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs">
+                          <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-mono">
                             {submitResult.errorDetails}
                           </div>
                         )}
@@ -1123,7 +1351,7 @@ export default function CodingWorkspace({
                         setIsSolved(checked);
                         if (onSolvedChange) onSolvedChange(problem.id, checked);
                       }}
-                      className="rounded border-[var(--border-subtle)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
+                      className="rounded border-[var(--border-subtle)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)] cursor-pointer"
                     />
                     <span>Mark as Solved</span>
                   </label>

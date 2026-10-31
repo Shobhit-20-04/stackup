@@ -40,13 +40,20 @@ export async function POST(req: NextRequest) {
 
     const wrappedSource = wrapCodeWithDriver(sourceCode, language as SupportedLanguage, problem);
 
+    // Execute all test cases concurrently for minimal latency
+    const rawExecutionResults = await Promise.all(
+      testCasesToRun.map(async (tc, i) => {
+        const judgeOutput = await executeInJudge0(language as SupportedLanguage, wrappedSource, tc.input);
+        return { tc, judgeOutput, index: i };
+      })
+    );
+
     const results: ExecutionResult[] = [];
     let overallVerdict: JudgeVerdict = 'Accepted';
     let sharedCompileOutput: string | null = null;
 
-    for (let i = 0; i < testCasesToRun.length; i++) {
-      const tc = testCasesToRun[i];
-      const judgeOutput = await executeInJudge0(language as SupportedLanguage, wrappedSource, tc.input);
+    for (let i = 0; i < rawExecutionResults.length; i++) {
+      const { tc, judgeOutput } = rawExecutionResults[i];
 
       if (judgeOutput.compileOutput) {
         sharedCompileOutput = judgeOutput.compileOutput;
@@ -102,11 +109,6 @@ export async function POST(req: NextRequest) {
         memoryKb: judgeOutput.memoryKb,
         isCustom: !!tc.isCustom,
       });
-
-      // If compilation error occurred on first test, break early as other tests will also fail compilation
-      if (testVerdict === 'Compilation Error') {
-        break;
-      }
     }
 
     return NextResponse.json({
