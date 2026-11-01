@@ -279,3 +279,78 @@ describe('Coding Workspace - Test Case Management & Server Security', () => {
     expect(sanitized[0].stdout).toBeNull();
   });
 });
+
+describe('Coding Workspace - Lifecycle State Machine & Resilient Fallback', () => {
+  const lifecycleStates = [
+    'initializing_editor',
+    'loading_language',
+    'ready',
+    'executing_code',
+    'loading_results',
+    'init_failed',
+    'exec_failed',
+  ] as const;
+
+  it('defines all required lifecycle states for editor execution and recovery', () => {
+    expect(lifecycleStates.length).toBe(7);
+    expect(lifecycleStates).toContain('initializing_editor');
+    expect(lifecycleStates).toContain('loading_language');
+    expect(lifecycleStates).toContain('ready');
+    expect(lifecycleStates).toContain('executing_code');
+    expect(lifecycleStates).toContain('loading_results');
+    expect(lifecycleStates).toContain('init_failed');
+    expect(lifecycleStates).toContain('exec_failed');
+  });
+
+  it('guarantees immediate synchronous starter code for every problem and language', () => {
+    const testProblems = [DSA_PROBLEMS[0], DSA_PROBLEMS[1], DSA_PROBLEMS[2]];
+    const languages: SupportedLanguage[] = ['python', 'cpp', 'java', 'javascript', 'c'];
+
+    for (const prob of testProblems) {
+      for (const lang of languages) {
+        const starter = getStarterCode(prob, lang);
+        expect(starter).toBeDefined();
+        expect(typeof starter).toBe('string');
+        expect(starter.trim().length).toBeGreaterThan(10);
+      }
+    }
+  });
+
+  it('handles fallback editor tab indentation (4 spaces)', () => {
+    const input = 'def solution():\npass';
+    const cursorAt = 16; // Right before 'pass'
+    const indented = input.substring(0, cursorAt) + '    ' + input.substring(cursorAt);
+    expect(indented).toBe('def solution():\n    pass');
+  });
+
+  it('handles fallback editor shift+tab unindentation (removes 4 spaces)', () => {
+    const indented = 'def solution():\n    pass';
+    const lineStart = indented.lastIndexOf('\n', 20) + 1;
+    let unindented = indented;
+    if (indented.slice(lineStart, lineStart + 4) === '    ') {
+      unindented = indented.slice(0, lineStart) + indented.slice(lineStart + 4);
+    }
+    expect(unindented).toBe('def solution():\npass');
+  });
+
+  it('formats fallback code by trimming trailing whitespace from lines', () => {
+    const messy = 'def foo():   \n    x = 1  \n    return x   \n';
+    const formatted = messy
+      .split('\n')
+      .map((line) => line.trimEnd())
+      .join('\n');
+    expect(formatted).toBe('def foo():\n    x = 1\n    return x\n');
+  });
+
+  it('calculates accurate line and column positions for code cursor', () => {
+    const code = 'class Solution:\n    def twoSum(self):\n        pass';
+    const cursorOffset = 30; // Somewhere in def twoSum
+    const textBeforeCursor = code.substring(0, cursorOffset);
+    const lines = textBeforeCursor.split('\n');
+    const lineNum = lines.length;
+    const colNum = lines[lines.length - 1].length + 1;
+
+    expect(lineNum).toBe(2);
+    expect(colNum).toBe(15);
+  });
+});

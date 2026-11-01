@@ -31,8 +31,12 @@ import {
   GripVertical,
   AlignLeft,
   Info,
+  AlertTriangle,
+  ArrowRight,
+  Zap,
 } from 'lucide-react';
 import type { editor } from 'monaco-editor';
+import { loader } from '@monaco-editor/react';
 import { DSA_PROBLEMS } from '@/lib/data/dsa';
 import {
   SUPPORTED_LANGUAGES,
@@ -44,13 +48,41 @@ import {
 import { getStarterCode } from '@/lib/services/judge/adapters';
 import { getSampleTestCases } from '@/lib/services/judge/testcases';
 
+export type EditorLifecycleStatus =
+  | 'initializing_editor'
+  | 'loading_language'
+  | 'ready'
+  | 'executing_code'
+  | 'loading_results'
+  | 'init_failed'
+  | 'exec_failed';
+
+// Pre-configure Monaco loader with secure CDN
+if (typeof window !== 'undefined') {
+  try {
+    loader.config({
+      paths: {
+        vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs',
+      },
+    });
+  } catch {
+    // ignore
+  }
+}
+
 // Dynamically import Monaco Editor to avoid SSR hydration issues
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-[#0B1020] text-slate-400 font-mono text-xs space-y-2">
-      <Loader2 className="w-5 h-5 animate-spin text-[var(--brand-primary)]" />
-      <span>Loading Code Editor...</span>
+    <div className="w-full h-full min-h-[220px] flex flex-col items-center justify-center bg-[#0B1020] text-slate-300 font-mono text-xs space-y-3 p-6 text-center">
+      <div className="relative flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-2 border-slate-700 border-t-[var(--brand-primary)] animate-spin" />
+        <Terminal className="w-4 h-4 text-[var(--brand-primary)] absolute" />
+      </div>
+      <div className="space-y-1">
+        <div className="font-semibold text-slate-200">Connecting to Code Workspace...</div>
+        <div className="text-[11px] text-slate-400">Fetching editor components</div>
+      </div>
     </div>
   ),
 });
@@ -142,11 +174,74 @@ export default function CodingWorkspace({
   // Solved state
   const [isSolved, setIsSolved] = useState(isSolvedInitially);
 
+  // Editor Lifecycle State Machine
+  const [editorStatus, setEditorStatus] = useState<EditorLifecycleStatus>('initializing_editor');
+  const [initError, setInitError] = useState<string | null>(null);
+  const [useFallbackEditor, setUseFallbackEditor] = useState<boolean>(false);
+  const [isMonacoReady, setIsMonacoReady] = useState<boolean>(false);
+
+  // Fallback Editor Textarea & Gutter refs & cursor tracking
+  const lineNumbersRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [cursorPos, setCursorPos] = useState({ line: 1, col: 1 });
+
+  const updateCursorPosition = (textarea: HTMLTextAreaElement) => {
+    const text = textarea.value.substring(0, textarea.selectionStart);
+    const lines = text.split('\n');
+    setCursorPos({
+      line: lines.length,
+      col: lines[lines.length - 1].length + 1,
+    });
+  };
+
+  // Proactively monitor and timeout Monaco initialization to guarantee the user is NEVER stuck on loading
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (isMonacoReady || useFallbackEditor) return;
+
+    let isMounted = true;
+    const timeoutId = setTimeout(() => {
+      if (isMounted && !isMonacoReady) {
+        console.warn('[CodingWorkspace] Monaco Editor initialization timed out after 6s. Switching to lightweight editor.');
+        setUseFallbackEditor(true);
+        setEditorStatus('init_failed');
+        setInitError('Monaco Editor script took longer than 6 seconds to load. Switched to high-performance lightweight editor.');
+      }
+    }, 6000);
+
+    try {
+      loader
+        .init()
+        .then(() => {
+          if (isMounted) {
+            clearTimeout(timeoutId);
+          }
+        })
+        .catch((err) => {
+          if (isMounted) {
+            console.warn('[CodingWorkspace] Monaco loader.init failed:', err);
+            clearTimeout(timeoutId);
+            setUseFallbackEditor(true);
+            setEditorStatus('init_failed');
+            setInitError('Monaco assets could not be loaded. Switched to lightweight code editor.');
+          }
+        });
+    } catch {
+      // ignore
+    }
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, [isMonacoReady, useFallbackEditor]);
+
   // Track previous problem ID to reload code & test cases on problem change
   const prevProblemIdRef = useRef<string>(problem.id);
   useEffect(() => {
     if (prevProblemIdRef.current !== problem.id) {
       prevProblemIdRef.current = problem.id;
+      setEditorStatus('loading_language');
       const loaded = loadCodeForProblemAndLang(problem.id, selectedLanguage);
       codeRef.current = loaded;
       setCode(loaded);
@@ -159,6 +254,9 @@ export default function CodingWorkspace({
       setRunResults(null);
       setSubmitResult(null);
       setIsSolved(isSolvedInitially);
+      setTimeout(() => {
+        setEditorStatus('ready');
+      }, 50);
     }
   }, [problem.id, selectedLanguage, isSolvedInitially, loadCodeForProblemAndLang]);
 
@@ -173,6 +271,8 @@ export default function CodingWorkspace({
       // ignore
     }
 
+    setEditorStatus('loading_language');
+
     // 2. Load target language's code
     setSelectedLanguage(newLang);
     const loaded = loadCodeForProblemAndLang(problem.id, newLang);
@@ -181,6 +281,10 @@ export default function CodingWorkspace({
     if (editorRef.current) {
       editorRef.current.setValue(loaded);
     }
+
+    setTimeout(() => {
+      setEditorStatus('ready');
+    }, 50);
   };
 
   // Debounced code change handler (eliminates typing lag while persisting)
@@ -238,8 +342,79 @@ export default function CodingWorkspace({
 
   // Format code document
   const handleFormatCode = () => {
-    if (editorRef.current) {
+    if (editorRef.current && !useFallbackEditor) {
       editorRef.current.getAction('editor.action.formatDocument')?.run();
+    } else {
+      // Fallback format: normalize indentation and trim trailing whitespace
+      const formatted = code
+        .split('\n')
+        .map((line) => line.trimEnd())
+        .join('\n');
+      codeRef.current = formatted;
+      setCode(formatted);
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(`stackup_code_${problem.id}_${selectedLanguage}`, formatted);
+        }
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  // Fallback editor Tab & keyboard shortcut handling
+  const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const textarea = e.currentTarget;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const val = textarea.value;
+
+      if (e.shiftKey) {
+        // Unindent 4 spaces
+        const lineStart = val.lastIndexOf('\n', start - 1) + 1;
+        if (val.slice(lineStart, lineStart + 4) === '    ') {
+          const nextVal = val.slice(0, lineStart) + val.slice(lineStart + 4);
+          codeRef.current = nextVal;
+          setCode(nextVal);
+          try {
+            if (typeof window !== 'undefined') {
+              localStorage.setItem(`stackup_code_${problem.id}_${selectedLanguage}`, nextVal);
+            }
+          } catch {
+            // ignore
+          }
+          requestAnimationFrame(() => {
+            textarea.selectionStart = Math.max(lineStart, start - 4);
+            textarea.selectionEnd = Math.max(lineStart, end - 4);
+            updateCursorPosition(textarea);
+          });
+        }
+      } else {
+        // Insert 4 spaces at cursor
+        const nextVal = val.substring(0, start) + '    ' + val.substring(end);
+        codeRef.current = nextVal;
+        setCode(nextVal);
+        try {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(`stackup_code_${problem.id}_${selectedLanguage}`, nextVal);
+          }
+        } catch {
+          // ignore
+        }
+        requestAnimationFrame(() => {
+          textarea.selectionStart = textarea.selectionEnd = start + 4;
+          updateCursorPosition(textarea);
+        });
+      }
+    } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        submitRef.current();
+      } else {
+        runCodeRef.current();
+      }
     }
   };
 
@@ -285,6 +460,7 @@ export default function CodingWorkspace({
   const handleRunCode = useCallback(async () => {
     if (isRunning || isSubmitting) return;
     setIsRunning(true);
+    setEditorStatus('executing_code');
     setBottomTab('console');
     setMobileTab('results');
 
@@ -309,11 +485,14 @@ export default function CodingWorkspace({
         }),
       });
 
+      setEditorStatus('loading_results');
       const data: RunCodeResponse = await res.json();
       setRunResults(data);
       setActiveResultIndex(0);
+      setEditorStatus('ready');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Execution failed';
+      setEditorStatus('exec_failed');
       setRunResults({
         success: false,
         verdict: 'Internal Error',
@@ -330,6 +509,7 @@ export default function CodingWorkspace({
   const handleSubmit = useCallback(async () => {
     if (isRunning || isSubmitting) return;
     setIsSubmitting(true);
+    setEditorStatus('executing_code');
     setBottomTab('submission');
     setMobileTab('results');
 
@@ -346,6 +526,7 @@ export default function CodingWorkspace({
         }),
       });
 
+      setEditorStatus('loading_results');
       const data: SubmitResponse = await res.json();
       setSubmitResult(data);
 
@@ -355,8 +536,10 @@ export default function CodingWorkspace({
           onSolvedChange(problem.id, true);
         }
       }
+      setEditorStatus('ready');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Submission failed';
+      setEditorStatus('exec_failed');
       setSubmitResult({
         success: false,
         verdict: 'Internal Error',
@@ -382,6 +565,14 @@ export default function CodingWorkspace({
   // Monaco onMount callback to register commands & configure editor
   const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor) => {
     editorRef.current = editorInstance;
+    setIsMonacoReady(true);
+    setEditorStatus('ready');
+    setInitError(null);
+
+    // Synchronize editor buffer with codeRef
+    if (codeRef.current && editorInstance.getValue() !== codeRef.current) {
+      editorInstance.setValue(codeRef.current);
+    }
 
     // Register Ctrl+Enter to Run Code
     editorInstance.addCommand(2048 /* KeyMod.CtrlCmd */ | 3 /* KeyCode.Enter */, () => {
@@ -834,7 +1025,7 @@ export default function CodingWorkspace({
           >
             {/* Editor Top Control Bar */}
             <div className="h-10 shrink-0 border-b border-[var(--border-subtle)] px-3 flex items-center justify-between bg-[var(--surface-sunken)]/50 gap-2">
-              {/* Left Controls: Language, Theme, Font Size */}
+              {/* Left Controls: Language, Theme, Font Size & Status Pill */}
               <div className="flex items-center space-x-2">
                 <select
                   value={selectedLanguage}
@@ -869,10 +1060,84 @@ export default function CodingWorkspace({
                   <option value={16}>16px</option>
                   <option value={18}>18px</option>
                 </select>
+
+                {/* Editor Lifecycle Status Pill */}
+                {editorStatus === 'initializing_editor' && (
+                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <span>Loading...</span>
+                  </span>
+                )}
+                {editorStatus === 'loading_language' && (
+                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <span>Loading Template</span>
+                  </span>
+                )}
+                {editorStatus === 'ready' && (
+                  <span className="hidden sm:inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    <span>{useFallbackEditor ? 'Fast Editor' : 'Monaco'} Ready</span>
+                  </span>
+                )}
+                {editorStatus === 'executing_code' && (
+                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <span>Running</span>
+                  </span>
+                )}
+                {editorStatus === 'loading_results' && (
+                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <span>Judging</span>
+                  </span>
+                )}
+                {editorStatus === 'init_failed' && (
+                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    <AlertTriangle className="w-2.5 h-2.5" />
+                    <span>Lightweight Mode</span>
+                  </span>
+                )}
+                {editorStatus === 'exec_failed' && (
+                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                    <XCircle className="w-2.5 h-2.5" />
+                    <span>Exec Error</span>
+                  </span>
+                )}
               </div>
 
-              {/* Right Controls: Format & Reset */}
+              {/* Right Controls: Mode Toggle, Format & Reset */}
               <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (useFallbackEditor) {
+                      setUseFallbackEditor(false);
+                      setEditorStatus('initializing_editor');
+                      setInitError(null);
+                    } else {
+                      setUseFallbackEditor(true);
+                      setEditorStatus('ready');
+                    }
+                  }}
+                  className="px-2 py-1 rounded text-[11px] font-mono border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors inline-flex items-center space-x-1 cursor-pointer"
+                  title={useFallbackEditor ? 'Switch to Monaco IDE Editor' : 'Switch to Lightweight Fast Editor'}
+                >
+                  {useFallbackEditor ? (
+                    <>
+                      <Sparkles className="w-3 h-3 text-[var(--brand-primary)]" />
+                      <span className="hidden xl:inline">Switch to Monaco</span>
+                      <span className="xl:hidden">Monaco</span>
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="w-3 h-3 text-amber-500" />
+                      <span className="hidden xl:inline">Fast Mode</span>
+                      <span className="xl:hidden">Fast</span>
+                    </>
+                  )}
+                </button>
+
                 <button
                   onClick={handleFormatCode}
                   className="px-2 py-1 rounded text-[11px] font-mono text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-card)] transition-colors inline-flex items-center space-x-1 cursor-pointer hidden sm:inline-flex"
@@ -893,36 +1158,148 @@ export default function CodingWorkspace({
               </div>
             </div>
 
-            {/* Monaco Editor Container */}
-            <div className="flex-1 min-h-[160px] relative overflow-hidden bg-[#0B1020]">
-              <MonacoEditor
-                height="100%"
-                language={SUPPORTED_LANGUAGES[selectedLanguage].monacoLanguage}
-                theme={editorTheme}
-                defaultValue={code}
-                onMount={handleEditorDidMount}
-                onChange={handleCodeChange}
-                options={{
-                  fontSize,
-                  fontFamily: "'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
-                  fontLigatures: true,
-                  lineNumbers: 'on',
-                  automaticLayout: true,
-                  tabSize: 4,
-                  wordWrap: 'on',
-                  bracketPairColorization: { enabled: true },
-                  autoClosingBrackets: 'always',
-                  autoClosingQuotes: 'always',
-                  formatOnPaste: true,
-                  formatOnType: true,
-                  cursorBlinking: 'smooth',
-                  cursorSmoothCaretAnimation: 'on',
-                  smoothScrolling: true,
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
-                  padding: { top: 12, bottom: 12 },
-                }}
-              />
+            {/* Editor Canvas Container */}
+            <div
+              className="flex-1 min-h-[200px] relative overflow-hidden bg-[#0B1020]"
+              style={{ minHeight: '200px', height: '100%', width: '100%', position: 'relative' }}
+            >
+              {useFallbackEditor ? (
+                /* ==================== RESILIENT LIGHTWEIGHT CODE EDITOR ==================== */
+                <div className="flex-1 w-full h-full min-h-[200px] flex flex-col bg-[#0B1020] text-slate-100 font-mono text-xs overflow-hidden relative">
+                  {/* Informative Fallback Banner */}
+                  <div className="px-3 py-1.5 bg-amber-500/10 border-b border-amber-500/20 text-amber-400 text-[11px] flex items-center justify-between shrink-0">
+                    <div className="flex items-center space-x-2 truncate">
+                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
+                      <span className="truncate">
+                        Lightweight Editor Active &bull; {initError ? initError : 'Monaco runtime bypassed. Full editing, test runner, and judging remain fully functional.'}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2 shrink-0 ml-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUseFallbackEditor(false);
+                          setEditorStatus('initializing_editor');
+                          setInitError(null);
+                        }}
+                        className="underline hover:text-amber-200 font-semibold cursor-pointer text-[11px]"
+                      >
+                        Retry Monaco
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Editor Body: Line numbers gutter + Textarea */}
+                  <div className="flex-1 flex min-h-0 relative overflow-hidden">
+                    {/* Line Numbers Gutter */}
+                    <div
+                      ref={lineNumbersRef}
+                      className="w-12 py-3 pr-2 text-right select-none bg-[#070b16] text-slate-600 font-mono text-[12px] leading-relaxed border-r border-slate-800/80 overflow-hidden shrink-0"
+                      aria-hidden="true"
+                    >
+                      {Array.from({ length: Math.max(1, code.split('\n').length) }, (_, i) => (
+                        <div key={i + 1}>{i + 1}</div>
+                      ))}
+                    </div>
+
+                    {/* Main Textarea */}
+                    <textarea
+                      ref={textareaRef}
+                      value={code}
+                      onChange={(e) => {
+                        handleCodeChange(e.target.value);
+                        updateCursorPosition(e.target);
+                      }}
+                      onScroll={(e) => {
+                        if (lineNumbersRef.current) {
+                          lineNumbersRef.current.scrollTop = e.currentTarget.scrollTop;
+                        }
+                      }}
+                      onClick={(e) => updateCursorPosition(e.currentTarget)}
+                      onKeyUp={(e) => updateCursorPosition(e.currentTarget)}
+                      onKeyDown={handleTextareaKeyDown}
+                      spellCheck={false}
+                      autoCapitalize="off"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      className="flex-1 h-full w-full bg-transparent text-slate-100 font-mono text-[13px] leading-relaxed p-3 outline-none resize-none overflow-auto whitespace-pre font-mono selection:bg-[#044E62] selection:text-white"
+                      style={{
+                        fontFamily: "'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
+                        fontSize: `${fontSize}px`,
+                        lineHeight: '1.6',
+                      }}
+                      placeholder="// Write your solution here..."
+                    />
+                  </div>
+
+                  {/* Fallback Editor Status Bar */}
+                  <div className="h-6 shrink-0 bg-[#070b16] border-t border-slate-800/80 px-3 flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                    <div className="flex items-center space-x-3">
+                      <span>Ln {cursorPos.line}, Col {cursorPos.col}</span>
+                      <span>{code.length} chars</span>
+                      <span>{code.split('\n').length} lines</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span>Spaces: 4</span>
+                      <span>UTF-8</span>
+                      <span className="uppercase text-[var(--brand-primary)] font-semibold">{selectedLanguage}</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* ==================== MONACO IDE EDITOR ==================== */
+                <MonacoEditor
+                  height="100%"
+                  language={SUPPORTED_LANGUAGES[selectedLanguage].monacoLanguage}
+                  theme={editorTheme}
+                  defaultValue={code}
+                  loading={
+                    <div className="w-full h-full min-h-[220px] flex flex-col items-center justify-center bg-[#0B1020] text-slate-300 font-mono text-xs space-y-3 p-6 text-center">
+                      <div className="relative flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full border-2 border-slate-700 border-t-[var(--brand-primary)] animate-spin" />
+                        <Terminal className="w-4 h-4 text-[var(--brand-primary)] absolute" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="font-semibold text-slate-200">Initializing Monaco Editor Runtime...</div>
+                        <div className="text-[11px] text-slate-400">Loading syntax grammars and language services</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUseFallbackEditor(true);
+                          setEditorStatus('ready');
+                        }}
+                        className="mt-2 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-[11px] font-sans font-medium text-slate-200 border border-slate-700 transition-colors cursor-pointer inline-flex items-center space-x-1.5"
+                      >
+                        <span>Switch to Lightweight Editor immediately</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  }
+                  onMount={handleEditorDidMount}
+                  onChange={handleCodeChange}
+                  options={{
+                    fontSize,
+                    fontFamily: "'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
+                    fontLigatures: true,
+                    lineNumbers: 'on',
+                    automaticLayout: true,
+                    tabSize: 4,
+                    wordWrap: 'on',
+                    bracketPairColorization: { enabled: true },
+                    autoClosingBrackets: 'always',
+                    autoClosingQuotes: 'always',
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    cursorBlinking: 'smooth',
+                    cursorSmoothCaretAnimation: 'on',
+                    smoothScrolling: true,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    padding: { top: 12, bottom: 12 },
+                  }}
+                />
+              )}
             </div>
 
             {/* ==================== DESKTOP VERTICAL RESIZE DIVIDER ==================== */}
