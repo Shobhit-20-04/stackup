@@ -24,6 +24,12 @@ import { DSA_PROBLEMS } from '../src/lib/data/dsa';
 import { authenticateUserRequest } from '../src/lib/auth/server-auth';
 import { createSessionToken } from '../src/lib/security/session-manager';
 import { SESSION_CONFIG } from '../src/lib/security/session-config';
+import {
+  getCachedExecution,
+  setCachedExecution,
+  clearExecutionCache,
+  getExecutionCacheKey,
+} from '../src/lib/services/judge/judge0';
 
 describe('Coding Workspace - Language Configurations', () => {
   const expectedLanguages: SupportedLanguage[] = ['python', 'cpp', 'c', 'java', 'javascript'];
@@ -432,5 +438,35 @@ describe('Coding Workspace - Server-Side Mandatory Authentication Enforcement', 
     const encoded = Buffer.from(codeWithSpecialChars, 'utf8').toString('base64');
     const decoded = Buffer.from(encoded, 'base64').toString('utf8');
     expect(decoded).toBe(codeWithSpecialChars);
+  });
+
+  it('generates consistent deterministic cache keys for identical language, code, and stdin', () => {
+    const key1 = getExecutionCacheKey('python', 'print("hello")', '1 2');
+    const key2 = getExecutionCacheKey('python', 'print("hello")', '1 2');
+    const keyDiff = getExecutionCacheKey('python', 'print("world")', '1 2');
+
+    expect(key1).toBe(key2);
+    expect(key1).not.toBe(keyDiff);
+  });
+
+  it('stores and retrieves cached execution outputs instantly (0ms latency)', () => {
+    clearExecutionCache();
+    const sampleOutput = {
+      rawStdout: '42\n',
+      rawStderr: null,
+      compileOutput: null,
+      executionTimeMs: 45,
+      memoryKb: 1024,
+      verdict: 'Accepted' as const,
+      description: 'Accepted',
+    };
+
+    setCachedExecution('python', 'print(42)', '', sampleOutput);
+    const cached = getCachedExecution('python', 'print(42)', '');
+
+    expect(cached).toBeDefined();
+    expect(cached?.rawStdout).toBe('42\n');
+    expect(cached?.verdict).toBe('Accepted');
+    expect(cached?.executionTimeMs).toBe(45);
   });
 });

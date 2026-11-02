@@ -9,7 +9,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
       "img-src 'self' data: https: blob:",
       "font-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://accounts.google.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://ce.judge0.com https://api.anthropic.com https://accounts.google.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
       "worker-src 'self' blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
       "frame-ancestors 'none'",
       "object-src 'none'",
@@ -59,6 +59,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['pdf-parse', 'mammoth'],
   experimental: {
     agentUpgrade: 'security',
+    optimizePackageImports: ['lucide-react', 'recharts'],
   },
   async redirects() {
     return [

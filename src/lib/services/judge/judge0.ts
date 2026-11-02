@@ -69,6 +69,48 @@ function getJudgeHeaders(apiKey: string, apiHost: string): Record<string, string
   return headers;
 }
 
+// In-Memory Execution Cache for instant identical run turnaround (0ms latency)
+interface CacheEntry {
+  output: JudgeExecutionOutput;
+  timestamp: number;
+}
+const EXECUTION_CACHE = new Map<string, CacheEntry>();
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
+const MAX_CACHE_ENTRIES = 300;
+
+export function getExecutionCacheKey(language: string, sourceCode: string, stdin: string): string {
+  let hash = 0;
+  const str = `${language}:::${sourceCode}:::${stdin}`;
+  for (let i = 0; i < str.length; i++) {
+    hash = (Math.imul(31, hash) + str.charCodeAt(i)) | 0;
+  }
+  return `${language}:${hash}`;
+}
+
+export function getCachedExecution(language: string, sourceCode: string, stdin: string): JudgeExecutionOutput | null {
+  const key = getExecutionCacheKey(language, sourceCode, stdin);
+  const entry = EXECUTION_CACHE.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+    EXECUTION_CACHE.delete(key);
+    return null;
+  }
+  return entry.output;
+}
+
+export function setCachedExecution(language: string, sourceCode: string, stdin: string, output: JudgeExecutionOutput): void {
+  if (EXECUTION_CACHE.size >= MAX_CACHE_ENTRIES) {
+    const oldestKey = EXECUTION_CACHE.keys().next().value;
+    if (oldestKey) EXECUTION_CACHE.delete(oldestKey);
+  }
+  const key = getExecutionCacheKey(language, sourceCode, stdin);
+  EXECUTION_CACHE.set(key, { output, timestamp: Date.now() });
+}
+
+export function clearExecutionCache(): void {
+  EXECUTION_CACHE.clear();
+}
+
 /**
  * Executes a single code submission in Judge0.
  * Uses base64 encoding to prevent encoding corruption of compiler diagnostics and warnings.
@@ -82,6 +124,12 @@ export async function executeInJudge0(
     memoryLimitKb?: number;
   }
 ): Promise<JudgeExecutionOutput> {
+  // 1. Fast Cache Check
+  const cached = getCachedExecution(language, sourceCode, stdin);
+  if (cached) {
+    return cached;
+  }
+
   const langConfig = SUPPORTED_LANGUAGES[language];
   if (!langConfig) {
     throw new Error(`Unsupported language: ${language}`);
@@ -126,7 +174,7 @@ export async function executeInJudge0(
     const statusId = data.status?.id || 13;
     const verdict = parseStatusId(statusId);
 
-    return {
+    const result: JudgeExecutionOutput = {
       rawStdout: decodeBase64(data.stdout),
       rawStderr: decodeBase64(data.stderr),
       compileOutput: decodeBase64(data.compile_output),
@@ -135,6 +183,9 @@ export async function executeInJudge0(
       verdict,
       description: data.status?.description || 'Unknown status',
     };
+
+    setCachedExecution(language, sourceCode, stdin, result);
+    return result;
   } catch (err: unknown) {
     clearTimeout(timeoutId);
     const msg = err instanceof Error ? err.message : 'Execution error';
@@ -188,6 +239,12 @@ export async function executeBatchInJudge0(
   if (items.length === 1) {
     const single = await executeInJudge0(language, sourceCode, items[0].input, options);
     return [single];
+  }
+
+  // Fast Cache Check: If all test case items have cached outputs, return immediately (0ms)
+  const cachedOutputs = items.map((it) => getCachedExecution(language, sourceCode, it.input));
+  if (cachedOutputs.every((c): c is JudgeExecutionOutput => c !== null)) {
+    return cachedOutputs;
   }
 
   const langConfig = SUPPORTED_LANGUAGES[language];
@@ -276,7 +333,7 @@ export async function executeBatchInJudge0(
       const compileErrSub = latestResults.find((s) => s && s.status && s.status.id === 6);
       if (compileErrSub) {
         const decodedCompileOutput = decodeBase64(compileErrSub.compile_output);
-        return items.map(() => ({
+        const ceResults: JudgeExecutionOutput[] = items.map(() => ({
           rawStdout: null,
           rawStderr: null,
           compileOutput: decodedCompileOutput,
@@ -285,6 +342,10 @@ export async function executeBatchInJudge0(
           verdict: 'Compilation Error',
           description: 'Compilation Error',
         }));
+        ceResults.forEach((res, i) => {
+          setCachedExecution(language, sourceCode, items[i].input, res);
+        });
+        return ceResults;
       }
 
       // 2. Check if all submissions have finished processing (status > 2)
@@ -300,8 +361,8 @@ export async function executeBatchInJudge0(
     }
   }
 
-  // Map parsed results in original input order
-  return latestResults.map((raw) => {
+  // Map parsed results in original input order and persist to fast cache
+  const finalResults: JudgeExecutionOutput[] = latestResults.map((raw) => {
     if (!raw || !raw.status) {
       return {
         rawStdout: null,
@@ -329,4 +390,12 @@ export async function executeBatchInJudge0(
       description: raw.status.description || 'Unknown status',
     };
   });
+
+  finalResults.forEach((res, i) => {
+    if (res.verdict !== 'Internal Error') {
+      setCachedExecution(language, sourceCode, items[i].input, res);
+    }
+  });
+
+  return finalResults;
 }

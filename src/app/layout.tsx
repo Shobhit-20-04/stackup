@@ -24,6 +24,24 @@ export const metadata: Metadata = {
   title: 'StackUp — All-in-One Interview Preparation Platform',
   description:
     'Structured notes and quizzes across Aptitude, Core CS Subjects, and DSA, plus an ATS resume checker and AI assistant chatbot — built for real scale.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  openGraph: {
+    title: 'StackUp — All-in-One Interview Preparation Platform',
+    description: 'Master Data Structures & Algorithms, Core Computer Science, and Campus Placements.',
+    url: 'https://stackup.xyz',
+    siteName: 'StackUp',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'StackUp — All-in-One Interview Preparation Platform',
+    description: 'Master Data Structures & Algorithms, Core Computer Science, and Campus Placements.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -40,6 +58,10 @@ export default function RootLayout({
     >
       <head>
         <meta name="color-scheme" content="light dark" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://ce.judge0.com" />
+        <link rel="dns-prefetch" href="https://ce.judge0.com" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

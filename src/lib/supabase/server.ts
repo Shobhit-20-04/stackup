@@ -9,6 +9,23 @@ export async function createClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
 
   return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+    global: {
+      fetch: (input: RequestInfo | URL, init?: RequestInit) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+        if (init?.signal) {
+          init.signal.addEventListener('abort', () => controller.abort());
+        }
+
+        return fetch(input, {
+          ...init,
+          signal: controller.signal,
+        }).finally(() => {
+          clearTimeout(timeoutId);
+        });
+      },
+    },
     cookies: {
       getAll() {
         return cookieStore.getAll();
