@@ -98,13 +98,7 @@ function DsaHubContent() {
       setSelectedCategory('All');
       setSelectedDifficulty('All');
       setShowOnlyUnsolved(false);
-      setExpandedProblemId(target.id);
       setWorkspaceProblemId(target.id);
-
-      const el = document.getElementById(`problem-${target.id}`);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
     }, 100);
 
     return () => clearTimeout(timer);
