@@ -1,0 +1,40 @@
+name: Keep Supabase Active
+
+# Automatically ping Supabase every 3 days to prevent free-tier 7-day inactivity pausing
+on:
+  schedule:
+    # Runs at 06:00 UTC every 3 days (e.g. 1st, 4th, 7th... of the month)
+    - cron: '0 6 */3 * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping-supabase:
+    name: Ping Supabase REST API
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping Supabase Database Gateway
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://iczaspwhfcgicytazppk.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_dcoAfFIDYyd1L2gcUyofTQ_OX7xMiRT' }}
+        run: |
+          echo "Pinging Supabase REST endpoint to keep project active..."
+          
+          # Query PostgREST endpoint with apikey header to register active database query
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 \
+            -X GET "${SUPABASE_URL}/rest/v1/" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+
+          echo "Response code: $HTTP_CODE"
+
+          # 200 OK means PostgREST responded and queried schema cache in PostgreSQL
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ Success: Supabase responded with HTTP 200. Inactivity timer reset."
+          elif [ "$HTTP_CODE" -eq 000 ]; then
+            echo "⚠️ Warning: Could not resolve or connect to Supabase host. (Ensure project is unpaused in Supabase dashboard)."
+            exit 1
+          else
+            echo "ℹ️ Response code $HTTP_CODE received from Supabase gateway."
+          fi
