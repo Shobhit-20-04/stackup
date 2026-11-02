@@ -103,10 +103,14 @@ function DsaHubContent() {
     );
     if (!target) return;
 
-    setSelectedCategory('All');
-    setSelectedDifficulty('All');
-    setShowOnlyUnsolved(false);
-    setWorkspaceProblemId(target.id);
+    const timer = setTimeout(() => {
+      setSelectedCategory('All');
+      setSelectedDifficulty('All');
+      setShowOnlyUnsolved(false);
+      setWorkspaceProblemId(target.id);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [problemParam]);
 
   // Keyboard shortcut: Escape closes workspace, expanded problem drawer or auth modal
