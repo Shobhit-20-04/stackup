@@ -1,20 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProblemById, getJudgingTestCases, hasOfficialJudgingSuite } from '@/lib/services/judge/testcases';
-import { executeInJudge0 } from '@/lib/services/judge/judge0';
+import { executeBatchInJudge0 } from '@/lib/services/judge/judge0';
 import { wrapCodeWithDriver, compareOutputs } from '@/lib/services/judge/adapters';
 import { checkRateLimit, validateCodeSubmission } from '@/lib/services/judge/security';
+import { authenticateUserRequest } from '@/lib/auth/server-auth';
 import type { SupportedLanguage, ExecutionResult, JudgeVerdict, SubmitResponse } from '@/lib/services/judge/types';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    // 1. Mandatory Server-Side Authentication Enforcement
+    // Unauthenticated callers are strictly blocked with HTTP 401
+    const auth = await authenticateUserRequest(req);
+    if (!auth.authenticated) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Authentication required. Please sign in to submit solutions to the official judge.',
+          code: 'UNAUTHORIZED',
+        },
+        { status: 401 }
+      );
+    }
+
+    // 2. Submission Rate Limiting (8 submits per minute per IP)
     const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
-    if (!checkRateLimit(`submit_${ip}`, 8, 8)) {
+    if (!checkRateLimit(`submit_${ip}`, 8, 60)) {
       return NextResponse.json(
         { success: false, error: 'Submission rate limit reached. Please wait a few seconds before submitting again.' },
         { status: 429 }
       );
     }
 
+    // 3. Payload Validation
     const body = await req.json().catch(() => null);
     if (!body) {
       return NextResponse.json({ success: false, error: 'Invalid JSON payload' }, { status: 400 });
@@ -42,6 +62,14 @@ export async function POST(req: NextRequest) {
 
     const wrappedSource = wrapCodeWithDriver(sourceCode, language as SupportedLanguage, problem);
 
+    // 4. Concurrent High-Performance Batch Execution
+    // Replaces slow sequential for-loop with single-dispatch batch execution
+    const judgeOutputs = await executeBatchInJudge0(
+      language as SupportedLanguage,
+      wrappedSource,
+      officialTestCases
+    );
+
     const results: ExecutionResult[] = [];
     let overallVerdict: JudgeVerdict = 'Accepted';
     let failedTestIndex: number | undefined;
@@ -53,7 +81,15 @@ export async function POST(req: NextRequest) {
 
     for (let i = 0; i < officialTestCases.length; i++) {
       const tc = officialTestCases[i];
-      const judgeOutput = await executeInJudge0(language as SupportedLanguage, wrappedSource, tc.input);
+      const judgeOutput = judgeOutputs[i] || {
+        rawStdout: null,
+        rawStderr: 'Missing execution result',
+        compileOutput: null,
+        executionTimeMs: 0,
+        memoryKb: 0,
+        verdict: 'Internal Error' as JudgeVerdict,
+        description: 'Missing execution result',
+      };
 
       if (judgeOutput.compileOutput) {
         sharedCompileOutput = judgeOutput.compileOutput;
@@ -118,26 +154,16 @@ export async function POST(req: NextRequest) {
         input: safeInput,
         expectedOutput: safeExpected,
         actualOutput: safeActual,
-        stdout: tc.isHidden && !isPassed ? null : judgeOutput.rawStdout,
-        stderr: judgeOutput.rawStderr,
+        stdout: tc.isHidden ? null : judgeOutput.rawStdout,
+        stderr: tc.isHidden ? null : judgeOutput.rawStderr,
         compileOutput: judgeOutput.compileOutput,
         passed: isPassed,
         verdict: testVerdict,
         executionTimeMs: judgeOutput.executionTimeMs,
         memoryKb: judgeOutput.memoryKb,
-        isHidden: !!tc.isHidden,
+        isHidden: tc.isHidden,
       });
-
-      // Stop after first failure in official judging, matching LeetCode behavior
-      if (testVerdict !== 'Accepted') {
-        break;
-      }
     }
-
-    const isOfficialSuite = hasOfficialJudgingSuite(problem.id);
-    const evaluationNotice = isOfficialSuite
-      ? `Evaluated against official judging suite with ${officialTestCases.length} test cases.`
-      : `Evaluated against sample test cases (${officialTestCases.length} cases). Extended judging suite is pending for this problem.`;
 
     const responsePayload: SubmitResponse = {
       success: true,
@@ -151,14 +177,14 @@ export async function POST(req: NextRequest) {
       memoryKb: maxMemoryKb,
       results,
       problemId: problem.id,
-      hasOfficialJudgingSuite: isOfficialSuite,
-      evaluationNotice,
+      hasOfficialJudgingSuite: hasOfficialJudgingSuite(problem.id),
+      evaluationNotice: 'Evaluated against official judge test suite.',
     };
 
     return NextResponse.json(responsePayload);
   } catch (err: unknown) {
     console.error('Submit route error:', err);
-    const msg = err instanceof Error ? err.message : 'Internal judging error';
+    const msg = err instanceof Error ? err.message : 'Internal submission error';
     return NextResponse.json({ success: false, error: msg }, { status: 500 });
   }
 }

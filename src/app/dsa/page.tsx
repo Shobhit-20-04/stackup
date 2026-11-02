@@ -60,7 +60,16 @@ function DsaHubContent() {
   
   // Expanded Complete Output panel state
   const [expandedProblemId, setExpandedProblemId] = useState<string | null>(null);
-  const [workspaceProblemId, setWorkspaceProblemId] = useState<string | null>(null);
+  const [workspaceProblemId, setWorkspaceProblemId] = useState<string | null>(() => {
+    if (!problemParam) return null;
+    const target = DSA_PROBLEMS.find(
+      (p) =>
+        p.id.toLowerCase() === problemParam.toLowerCase() ||
+        p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === problemParam.toLowerCase() ||
+        p.title.toLowerCase() === problemParam.toLowerCase().replace(/-/g, ' ')
+    );
+    return target ? target.id : null;
+  });
   const [activeTab, setActiveTab] = useState<'problem' | 'approach' | 'code'>('problem');
   const [activeLang, setActiveLang] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -94,14 +103,10 @@ function DsaHubContent() {
     );
     if (!target) return;
 
-    const timer = setTimeout(() => {
-      setSelectedCategory('All');
-      setSelectedDifficulty('All');
-      setShowOnlyUnsolved(false);
-      setWorkspaceProblemId(target.id);
-    }, 100);
-
-    return () => clearTimeout(timer);
+    setSelectedCategory('All');
+    setSelectedDifficulty('All');
+    setShowOnlyUnsolved(false);
+    setWorkspaceProblemId(target.id);
   }, [problemParam]);
 
   // Keyboard shortcut: Escape closes workspace, expanded problem drawer or auth modal

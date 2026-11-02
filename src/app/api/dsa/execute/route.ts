@@ -1,20 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProblemById, getSampleTestCases } from '@/lib/services/judge/testcases';
-import { executeInJudge0 } from '@/lib/services/judge/judge0';
+import { executeBatchInJudge0, type BatchItemInput } from '@/lib/services/judge/judge0';
 import { wrapCodeWithDriver, compareOutputs } from '@/lib/services/judge/adapters';
 import { checkRateLimit, validateCodeSubmission } from '@/lib/services/judge/security';
+import { authenticateUserRequest } from '@/lib/auth/server-auth';
 import type { SupportedLanguage, ExecutionResult, JudgeVerdict } from '@/lib/services/judge/types';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    // 1. Mandatory Server-Side Authentication Enforcement
+    // Unauthenticated callers are strictly blocked with HTTP 401
+    const auth = await authenticateUserRequest(req);
+    if (!auth.authenticated) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Authentication required. Please sign in to execute code in the workspace.',
+          code: 'UNAUTHORIZED',
+        },
+        { status: 401 }
+      );
+    }
+
+    // 2. IP-based Rate Limiting (12 executions per minute)
     const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
-    if (!checkRateLimit(ip)) {
+    if (!checkRateLimit(`dsa_exec_${ip}`, 12, 60)) {
       return NextResponse.json(
         { success: false, error: 'Rate limit exceeded. Please wait a few seconds before executing code again.' },
         { status: 429 }
       );
     }
 
+    // 3. Payload Extraction & Validation
     const body = await req.json().catch(() => null);
     if (!body) {
       return NextResponse.json({ success: false, error: 'Invalid JSON payload' }, { status: 400 });
@@ -33,27 +53,36 @@ export async function POST(req: NextRequest) {
     }
 
     // If client didn't supply test cases, use problem's built-in sample cases
-    const testCasesToRun =
+    const testCasesToRun: BatchItemInput[] =
       Array.isArray(clientTestCases) && clientTestCases.length > 0
         ? clientTestCases
         : getSampleTestCases(problem.id);
 
     const wrappedSource = wrapCodeWithDriver(sourceCode, language as SupportedLanguage, problem);
 
-    // Execute all test cases concurrently for minimal latency
-    const rawExecutionResults = await Promise.all(
-      testCasesToRun.map(async (tc, i) => {
-        const judgeOutput = await executeInJudge0(language as SupportedLanguage, wrappedSource, tc.input);
-        return { tc, judgeOutput, index: i };
-      })
+    // 4. Concurrent High-Performance Batch Execution
+    // Executes all test cases concurrently via Judge0 Batch API in a single HTTP dispatch
+    const judgeOutputs = await executeBatchInJudge0(
+      language as SupportedLanguage,
+      wrappedSource,
+      testCasesToRun
     );
 
     const results: ExecutionResult[] = [];
     let overallVerdict: JudgeVerdict = 'Accepted';
     let sharedCompileOutput: string | null = null;
 
-    for (let i = 0; i < rawExecutionResults.length; i++) {
-      const { tc, judgeOutput } = rawExecutionResults[i];
+    for (let i = 0; i < testCasesToRun.length; i++) {
+      const tc = testCasesToRun[i];
+      const judgeOutput = judgeOutputs[i] || {
+        rawStdout: null,
+        rawStderr: 'Missing execution result',
+        compileOutput: null,
+        executionTimeMs: 0,
+        memoryKb: 0,
+        verdict: 'Internal Error' as JudgeVerdict,
+        description: 'Missing execution result',
+      };
 
       if (judgeOutput.compileOutput) {
         sharedCompileOutput = judgeOutput.compileOutput;
@@ -80,7 +109,7 @@ export async function POST(req: NextRequest) {
         isPassed = false;
         if (overallVerdict === 'Accepted') overallVerdict = 'Internal Error';
       } else {
-        // Judge ran successfully: compare actual output against expected
+        // Output verification against expected output
         if (tc.expectedOutput) {
           isPassed = compareOutputs(cleanActual, tc.expectedOutput);
           testVerdict = isPassed ? 'Accepted' : 'Wrong Answer';
@@ -88,7 +117,7 @@ export async function POST(req: NextRequest) {
             overallVerdict = 'Wrong Answer';
           }
         } else {
-          // Custom test case with no expected output provided: considered executed successfully
+          // Custom test case without predefined expectation
           isPassed = true;
           testVerdict = 'Accepted';
         }

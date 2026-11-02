@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { NextRequest } from 'next/server';
 import {
   SUPPORTED_LANGUAGES,
   SupportedLanguage,
@@ -20,6 +21,9 @@ import {
   hasOfficialJudgingSuite,
 } from '../src/lib/services/judge/testcases';
 import { DSA_PROBLEMS } from '../src/lib/data/dsa';
+import { authenticateUserRequest } from '../src/lib/auth/server-auth';
+import { createSessionToken } from '../src/lib/security/session-manager';
+import { SESSION_CONFIG } from '../src/lib/security/session-config';
 
 describe('Coding Workspace - Language Configurations', () => {
   const expectedLanguages: SupportedLanguage[] = ['python', 'cpp', 'c', 'java', 'javascript'];
@@ -352,5 +356,81 @@ describe('Coding Workspace - Lifecycle State Machine & Resilient Fallback', () =
 
     expect(lineNum).toBe(2);
     expect(colNum).toBe(15);
+  });
+});
+
+describe('Coding Workspace - Server-Side Mandatory Authentication Enforcement', () => {
+  it('rejects unauthenticated requests without session credentials (returns authenticated: false)', async () => {
+    const req = new NextRequest('http://localhost:3000/api/dsa/execute', {
+      method: 'POST',
+      body: JSON.stringify({ code: 'print(1)', language: 'python' }),
+    });
+    const result = await authenticateUserRequest(req);
+    expect(result.authenticated).toBe(false);
+    expect(result.user).toBeUndefined();
+    expect(result.error).toContain('Authentication required');
+  });
+
+  it('rejects legacy demo and guest accounts from accessing execution APIs', async () => {
+    const demoPayload = JSON.stringify({
+      id: 'student-demo',
+      email: 'guest@stackup.xyz',
+      isDemo: true,
+    });
+    const req = new NextRequest('http://localhost:3000/api/dsa/execute', {
+      method: 'POST',
+      headers: {
+        cookie: `sb-demo-user=${encodeURIComponent(demoPayload)}`,
+      },
+      body: JSON.stringify({ code: 'print(1)', language: 'python' }),
+    });
+    const result = await authenticateUserRequest(req);
+    expect(result.authenticated).toBe(false);
+    expect(result.user).toBeUndefined();
+  });
+
+  it('authorizes requests with valid signed session cookie token', async () => {
+    const { token: signedToken } = createSessionToken({
+      userId: 'usr-verified-coder',
+      email: 'alex@stackup.xyz',
+      role: 'student',
+    });
+    const req = new NextRequest('http://localhost:3000/api/dsa/execute', {
+      method: 'POST',
+      headers: {
+        cookie: `${SESSION_CONFIG.cookieName}=${signedToken}`,
+      },
+      body: JSON.stringify({ code: 'print(1)', language: 'python' }),
+    });
+    const result = await authenticateUserRequest(req);
+    expect(result.authenticated).toBe(true);
+    expect(result.user).toBeDefined();
+    expect(result.user?.id).toBe('usr-verified-coder');
+    expect(result.user?.email).toBe('alex@stackup.xyz');
+  });
+
+  it('authorizes requests with valid Authorization Bearer header', async () => {
+    const { token: signedToken } = createSessionToken({
+      userId: 'usr-bearer-coder',
+      email: 'maya@stackup.xyz',
+      role: 'student',
+    });
+    const req = new NextRequest('http://localhost:3000/api/dsa/submit', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${signedToken}`,
+      },
+      body: JSON.stringify({ code: 'print(1)', language: 'python', problemId: 'dsa-1' }),
+    });
+    const result = await authenticateUserRequest(req);
+    expect(result.authenticated).toBe(true);
+    expect(result.user?.id).toBe('usr-bearer-coder');
+  });
+
+  it('preserves UTF-8 and special quotes in base64 submission payloads', () => {
+    const codeWithSpecialChars = '#include <iostream>\nint main() { std::cout << "“smart quotes” & symbols: — – ≠"; return 0; }';
+    const encoded = Buffer.from(codeWithSpecialChars, 'utf8').toString('base64');
+    const decoded = Buffer.from(encoded, 'base64').toString('utf8');
+    expect(decoded).toBe(codeWithSpecialChars);
   });
 });
