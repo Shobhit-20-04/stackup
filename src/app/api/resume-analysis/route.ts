@@ -1,3 +1,4 @@
+import { authenticateUserRequest } from '@/lib/auth/server-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { createClient } from '@/lib/supabase/server';
@@ -40,34 +41,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Authentication Check: User must be authenticated to analyze and store resumes
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    const demoCookie = req.cookies.get('sb-demo-user')?.value;
-    let localUserId: string | null = null;
-    let localUserEmail: string | null = null;
-    if (demoCookie) {
-      try {
-        const parsed = JSON.parse(decodeURIComponent(demoCookie));
-        if (parsed?.id && parsed?.email && !parsed.isDemo && parsed.id !== 'student-demo' && parsed.email !== 'guest@stackup.xyz') {
-          localUserId = parsed.id;
-          localUserEmail = parsed.email;
-        }
-      } catch {
-        // demo cookie parse error ignored
-      }
-    }
-
-    const effectiveUserId = user?.id || localUserId;
-    const effectiveEmail = user?.email || localUserEmail;
-
-    if (!effectiveUserId) {
+    // 3. Authentication Check: Unified zero-trust validator for resume analysis and storage
+    const auth = await authenticateUserRequest(req);
+    if (!auth.authenticated || !auth.user) {
       return NextResponse.json(
         { error: 'Authentication required. Please sign in or register an account before analyzing your resume.' },
         { status: 401 }
       );
     }
+
+    const effectiveUserId = auth.user.id;
+    const effectiveEmail = auth.user.email || 'user@stackup.xyz';
 
     const contentType = req.headers.get('content-type') || '';
     if (!contentType.includes('multipart/form-data')) {
@@ -177,6 +161,7 @@ export async function POST(req: NextRequest) {
       });
 
       if (dbUserId) {
+        const supabase = await createClient();
         await (supabase.from('resume_analyses') as unknown as {
           insert: (data: Record<string, unknown>) => Promise<unknown>;
         }).insert({

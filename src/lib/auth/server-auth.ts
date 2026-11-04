@@ -20,9 +20,10 @@ export interface AuthVerificationResult {
  * 3. Authenticated Supabase session if Supabase is actively configured
  * 4. Client session cookie (sb-demo-user), strictly verifying it is NOT a demo/guest token
  */
-export async function authenticateUserRequest(req: NextRequest): Promise<AuthVerificationResult> {
+export async function authenticateUserRequest(req: Request | NextRequest): Promise<AuthVerificationResult> {
+  const request = req instanceof NextRequest ? req : new NextRequest(req);
   // 1. Check cryptographically signed session token cookie
-  const sessionToken = req.cookies.get(SESSION_CONFIG.cookieName)?.value;
+  const sessionToken = request.cookies.get(SESSION_CONFIG.cookieName)?.value;
   if (sessionToken) {
     const validation = validateSessionToken(sessionToken);
     if (validation.valid && validation.payload) {
@@ -46,7 +47,7 @@ export async function authenticateUserRequest(req: NextRequest): Promise<AuthVer
   }
 
   // 2. Check Authorization Bearer header if token was passed directly
-  const authHeader = req.headers.get('authorization') || '';
+  const authHeader = request.headers.get('authorization') || '';
   if (authHeader.startsWith('Bearer ')) {
     const bearerToken = authHeader.slice(7).trim();
     const validation = validateSessionToken(bearerToken);
@@ -98,7 +99,7 @@ export async function authenticateUserRequest(req: NextRequest): Promise<AuthVer
   }
 
   // 4. Check client user cookie (sb-demo-user)
-  const userCookie = req.cookies.get('sb-demo-user')?.value;
+  const userCookie = request.cookies.get('sb-demo-user')?.value;
   if (userCookie) {
     try {
       const parsed: UserSession = JSON.parse(decodeURIComponent(userCookie));

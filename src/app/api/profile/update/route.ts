@@ -1,9 +1,8 @@
+import { authenticateUserRequest } from '@/lib/auth/server-auth';
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { sanitizeText, sanitizeUrl, verifyCsrfOrigin } from '@/lib/security/sanitize';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
-import { SESSION_CONFIG } from '@/lib/security/session-config';
-import { validateSessionToken, clearSessionCookies } from '@/lib/security/session-manager';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,61 +23,27 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Server-Side Session Validity Enforcement
-    const cookieHeader = request.headers.get('cookie') || '';
-    const sessionMatch = cookieHeader.match(new RegExp(`${SESSION_CONFIG.cookieName}=([^;]+)`));
-    if (sessionMatch) {
-      const validation = validateSessionToken(sessionMatch[1]);
-      if (!validation.valid) {
-        const res = NextResponse.json(
-          {
-            error: 'Session expired due to inactivity. Please log in again.',
-            code: validation.reason || 'expired_inactivity',
-          },
-          { status: 401 }
-        );
-        clearSessionCookies(res);
-        return res;
-      }
+    // 3. Authenticate User Server-Side (Unified zero-trust validation defending against BOLA / IDOR)
+    const auth = await authenticateUserRequest(request);
+    if (!auth.authenticated || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || 'Authentication required to update profile.' },
+        { status: 401 }
+      );
     }
 
     const body = await request.json().catch(() => ({}));
     const { userId: explicitUserId, fullName, phone, targetRole, college, gradYear, githubUrl, linkedinUrl } = body;
 
-    // 3. Authenticate User Server-Side (Defends against BOLA / IDOR)
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
     // Enforce that user can only update their own profile
-    if (user && explicitUserId && user.id !== explicitUserId) {
+    if (explicitUserId && auth.user.id !== explicitUserId) {
       return NextResponse.json(
         { error: 'Forbidden: You are not authorized to update another user’s profile.' },
         { status: 403 }
       );
     }
 
-    let demoUserId: string | null = null;
-    if (!user) {
-      // Allow demo session updates only if caller presents authentic sb-demo-user cookie
-      const cookieHeader = request.headers.get('cookie') || '';
-      const match = cookieHeader.match(/sb-demo-user=([^;]+)/);
-      if (match) {
-        try {
-          const parsed = JSON.parse(decodeURIComponent(match[1]));
-          if (parsed && typeof parsed.id === 'string' && !parsed.isDemo && parsed.id !== 'student-demo' && (!explicitUserId || parsed.id === explicitUserId)) {
-            demoUserId = parsed.id;
-          }
-        } catch {
-          demoUserId = null;
-        }
-      }
-    }
-
-    const effectiveUserId = user?.id || demoUserId;
-
-    if (!effectiveUserId) {
-      return NextResponse.json({ error: 'Authentication required to update profile.' }, { status: 401 });
-    }
+    const effectiveUserId = auth.user.id;
 
     // 4. Strict Input Sanitization (Defends against XSS and injection)
     const cleanFullName = sanitizeText(fullName, 100);
@@ -92,30 +57,34 @@ export async function POST(request: Request) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const isLive = supabaseUrl && !supabaseUrl.includes('placeholder');
 
-    if (isLive && user) {
+    if (isLive) {
       try {
-        // Update user metadata in auth.users
-        await supabase.auth.updateUser({
-          data: {
-            full_name: cleanFullName,
-            target_role: cleanTargetRole,
-            college: cleanCollege,
-            grad_year: cleanGradYear,
-            github_url: cleanGithubUrl,
-            linkedin_url: cleanLinkedinUrl,
-          },
-        });
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && user.id === effectiveUserId) {
+          // Update user metadata in auth.users
+          await supabase.auth.updateUser({
+            data: {
+              full_name: cleanFullName,
+              target_role: cleanTargetRole,
+              college: cleanCollege,
+              grad_year: cleanGradYear,
+              github_url: cleanGithubUrl,
+              linkedin_url: cleanLinkedinUrl,
+            },
+          });
 
-        // Update public.profiles table (parameterized via Supabase client, RLS enforced)
-        await (supabase
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .from('profiles') as any)
-          .update({
-            full_name: cleanFullName || null,
-            phone: cleanPhone || null,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', user.id);
+          // Update public.profiles table (parameterized via Supabase client, RLS enforced)
+          await (supabase
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .from('profiles') as any)
+            .update({
+              full_name: cleanFullName || null,
+              phone: cleanPhone || null,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', user.id);
+        }
       } catch (err) {
         console.warn('Supabase remote profile sync note:', err);
       }

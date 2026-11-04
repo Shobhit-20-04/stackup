@@ -1,10 +1,9 @@
+import { authenticateUserRequest } from '@/lib/auth/server-auth';
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { SECTION_TOTAL_ITEMS } from '@/lib/services/progress';
 import { checkRateLimit, getClientIp } from '@/lib/services/rate-limit';
 import { sanitizeText, verifyCsrfOrigin } from '@/lib/security/sanitize';
-import { SESSION_CONFIG } from '@/lib/security/session-config';
-import { validateSessionToken } from '@/lib/security/session-manager';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,31 +38,18 @@ export async function POST(request: Request) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const isLive = supabaseUrl && !supabaseUrl.includes('placeholder');
 
-    if (isLive) {
+    const auth = await authenticateUserRequest(request);
+
+    // Enforce user ownership: Authenticated user can only submit for their own id.
+    if (auth.authenticated && auth.user && explicitUserId && auth.user.id !== explicitUserId) {
+      return NextResponse.json({ error: 'Forbidden: Cannot submit attempt for another user.' }, { status: 403 });
+    }
+
+    const effectiveUserId = auth.authenticated && auth.user ? auth.user.id : null;
+
+    if (isLive && effectiveUserId) {
       try {
         const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        // Check server session validity if session token cookie is present
-        const cookieHeader = request.headers.get('cookie') || '';
-        const sessionMatch = cookieHeader.match(new RegExp(`${SESSION_CONFIG.cookieName}=([^;]+)`));
-        if (sessionMatch) {
-          const validation = validateSessionToken(sessionMatch[1]);
-          if (!validation.valid) {
-            return NextResponse.json(
-              { error: 'Session expired due to inactivity. Please log in again.', code: validation.reason },
-              { status: 401 }
-            );
-          }
-        }
-
-        // Enforce user ownership: Authenticated user can only submit for their own id.
-        // Unauthenticated callers cannot forge a userId to mutate remote database records.
-        if (user && explicitUserId && user.id !== explicitUserId) {
-          return NextResponse.json({ error: 'Forbidden: Cannot submit attempt for another user.' }, { status: 403 });
-        }
-
-        const effectiveUserId = user?.id || null;
 
         if (effectiveUserId) {
           // 1. Resolve section ID from sections table if available

@@ -144,14 +144,28 @@ function LoginForm() {
           ? fullName.trim() 
           : email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
+        const generatedUserId = `usr-${Date.now()}`;
+
         setDemoUserSession({
-          id: `usr-${Date.now()}`,
+          id: generatedUserId,
           email: email.trim(),
           full_name: studentName,
           avatar_url: null,
           phone: null,
           isDemo: false,
         });
+
+        // Initialize server-side signed HttpOnly session cookie
+        await fetch('/api/auth/session/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: generatedUserId,
+            email: email.trim(),
+            role: 'student',
+            rememberMe,
+          }),
+        }).catch(() => {});
 
         // Record login audit event
         fetch('/api/auth/record-login', {
@@ -161,7 +175,7 @@ function LoginForm() {
           body: JSON.stringify({
             email: email.trim(),
             fullName: studentName,
-            userId: `usr-${Date.now()}`,
+            userId: generatedUserId,
             authMethod: isSignUp ? 'Email & Password (New Registration)' : 'Email & Password',
             rememberMe,
           }),
@@ -194,6 +208,18 @@ function LoginForm() {
         }
 
         if (data.user) {
+          // Initialize server-side signed HttpOnly session cookie
+          await fetch('/api/auth/session/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: data.user.id,
+              email: data.user.email || email.trim(),
+              role: 'student',
+              rememberMe,
+            }),
+          }).catch(() => {});
+
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -226,6 +252,18 @@ function LoginForm() {
         }
 
         if (data.user) {
+          // Initialize server-side signed HttpOnly session cookie
+          await fetch('/api/auth/session/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: data.user.id,
+              email: data.user.email || email.trim(),
+              role: 'student',
+              rememberMe,
+            }),
+          }).catch(() => {});
+
           fetch('/api/auth/record-login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -245,8 +283,11 @@ function LoginForm() {
         router.refresh();
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Authentication failed. Please verify your credentials.';
-      setErrorMsg(msg);
+      const rawMsg = err instanceof Error ? err.message : 'Authentication failed. Please verify your credentials.';
+      const cleanMsg = rawMsg.toLowerCase().includes('fetch')
+        ? 'Unable to reach the authentication service. Please check your network connection or try again shortly.'
+        : rawMsg;
+      setErrorMsg(cleanMsg);
     } finally {
       setPassword('');
       setLoading(false);

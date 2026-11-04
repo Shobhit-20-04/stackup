@@ -417,14 +417,14 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <Link
-                  href="/login?next=/resume-checker"
+                  href="/login?redirect=/resume-checker"
                   className="w-full sm:w-auto px-5 py-2.5 bg-[var(--brand-primary)] hover:opacity-95 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-xs inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
                 >
                   <span>Sign In to Continue</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
-                  href="/login?next=/resume-checker"
+                  href="/login?redirect=/resume-checker"
                   className="w-full sm:w-auto px-5 py-2.5 border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground)] text-xs sm:text-sm font-medium rounded-lg transition-all cursor-pointer"
                 >
                   <span>Create Account</span>

@@ -96,5 +96,45 @@ describe('StackUp Phase 1: Environment & Config Validation', () => {
     // In node/server test environment without window/localStorage, getFastCachedUser returns null safely
     expect(getFastCachedUser()).toBeNull();
   });
-});
+  it('should verify authenticateUserRequest works seamlessly with standard Request and NextRequest', async () => {
+    const { authenticateUserRequest } = await import('../src/lib/auth/server-auth');
+    const { createSessionToken } = await import('../src/lib/security/session-manager');
+    const { SESSION_CONFIG } = await import('../src/lib/security/session-config');
 
+    const { token } = createSessionToken({
+      userId: 'usr-student-test',
+      email: 'student@example.com',
+      role: 'student',
+      rememberMe: false,
+    });
+
+    // 1. Standard Request with Cookie
+    const stdReq = new Request('http://localhost:3000/api/profile/update', {
+      headers: {
+        cookie: `${SESSION_CONFIG.cookieName}=${token}`,
+      },
+    });
+
+    const res1 = await authenticateUserRequest(stdReq);
+    expect(res1.authenticated).toBe(true);
+    expect(res1.user?.id).toBe('usr-student-test');
+    expect(res1.user?.email).toBe('student@example.com');
+
+    // 2. Standard Request with Bearer header
+    const bearerReq = new Request('http://localhost:3000/api/profile/update', {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    const res2 = await authenticateUserRequest(bearerReq);
+    expect(res2.authenticated).toBe(true);
+    expect(res2.user?.id).toBe('usr-student-test');
+
+    // 3. Unauthenticated Request
+    const unauthReq = new Request('http://localhost:3000/api/profile/update');
+    const res3 = await authenticateUserRequest(unauthReq);
+    expect(res3.authenticated).toBe(false);
+    expect(res3.user).toBeUndefined();
+  });
+});
