@@ -27,6 +27,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import LearningIntelligenceHub from '@/components/learning-intelligence/LearningIntelligenceHub';
 
 const QuizScoreChart = dynamic(() => import('@/components/profile/QuizScoreChart'), {
   ssr: false,
@@ -728,6 +729,9 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Learning Intelligence & Smart Revision System */}
+      <LearningIntelligenceHub />
 
       {/* Per-Section Real Progress Bars */}
       <div className="p-6 sm:p-7 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs space-y-5">

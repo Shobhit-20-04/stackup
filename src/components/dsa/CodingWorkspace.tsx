@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
+import { addMistake } from '@/lib/services/learning-intelligence/intelligence-engine';
 import {
   Play,
   Send,
@@ -29,6 +30,7 @@ import {
   FileText,
   Loader2,
   BookOpen,
+  BookMarked,
   GripHorizontal,
   GripVertical,
   AlignLeft,
@@ -266,6 +268,28 @@ export default function CodingWorkspace({
   const [executionLatencyMs, setExecutionLatencyMs] = useState<number | null>(null);
   const [runResults, setRunResults] = useState<RunCodeResponse | null>(null);
   const [submitResult, setSubmitResult] = useState<SubmitResponse | null>(null);
+  const [mistakeLoggedForSubmit, setMistakeLoggedForSubmit] = useState(false);
+
+  const handleLogSubmissionMistake = (result: SubmitResponse) => {
+    let mistakeType = 'wrong_answer';
+    const v = result.verdict.toLowerCase();
+    if (v.includes('time limit')) mistakeType = 'time_limit_exceeded';
+    else if (v.includes('runtime') || v.includes('error')) mistakeType = 'runtime_error';
+    else if (v.includes('memory')) mistakeType = 'memory_limit_exceeded';
+    else if (v.includes('wrong')) mistakeType = 'wrong_answer';
+
+    addMistake({
+      userId: 'student',
+      module: 'dsa',
+      resourceId: problem.id,
+      resourceTitle: problem.title,
+      category: problem.pattern_tag || 'Algorithms',
+      mistakeType,
+      userNotes: `Submission returned ${result.verdict}. ${result.failedTestName ? 'Failed on test: ' + result.failedTestName : ''}`,
+      keyTakeaway: `Review optimal time and space complexity for ${problem.pattern_tag}. Check boundary conditions and edge cases.`,
+    });
+    setMistakeLoggedForSubmit(true);
+  };
 
   // Solved state
   const [isSolved, setIsSolved] = useState(isSolvedInitially);
@@ -323,6 +347,7 @@ export default function CodingWorkspace({
       setActiveResultIndex(0);
       setRunResults(null);
       setSubmitResult(null);
+    setMistakeLoggedForSubmit(false);
       setExecutionLatencyMs(null);
       setIsSolved(isSolvedInitially);
       setProblemPickerOpen(false);
@@ -2356,6 +2381,23 @@ export default function CodingWorkspace({
                                   ? `Failed at ${submitResult.failedTestName} (${submitResult.passedTests}/${submitResult.totalTests} tests passed)`
                                   : 'Solution encountered an evaluation error.'}
                               </p>
+                              {submitResult.verdict !== 'Accepted' && (
+                                <div className="mt-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleLogSubmissionMistake(submitResult)}
+                                    disabled={mistakeLoggedForSubmit}
+                                    className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                                      mistakeLoggedForSubmit
+                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                        : 'bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40'
+                                    }`}
+                                  >
+                                    <BookMarked className="w-3 h-3" />
+                                    <span>{mistakeLoggedForSubmit ? 'Logged in Spaced Revision' : 'Add to Mistake Journal & SM-2'}</span>
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
 
