@@ -12,6 +12,7 @@
     "admin:reset": "node scripts/reset-admin-passcode.js"
   },
   "dependencies": {
+    "@google/genai": "^3.0.0",
     "@monaco-editor/react": "^4.7.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.1",

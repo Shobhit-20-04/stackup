@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/learning-intelligence
- * Adds a new mistake entry to the user's journal or deletes an existing one.
+ * Adds, edits, or deletes a mistake entry in the user's journal.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -80,6 +80,47 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (action === 'update_mistake') {
+      const mistakeId = sanitizeText(body.mistakeId, 64);
+      if (!mistakeId) {
+        return NextResponse.json({ error: 'Mistake ID required for update.' }, { status: 400 });
+      }
+
+      const userNotes = sanitizeText(body.userNotes, 2000);
+      const keyTakeaway = sanitizeText(body.keyTakeaway, 1000);
+      const category = sanitizeText(body.category, 100);
+      const mistakeType = sanitizeText(body.mistakeType, 50);
+
+      if (!keyTakeaway) {
+        return NextResponse.json({ error: 'Key takeaway cannot be empty.' }, { status: 400 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        updated: {
+          id: mistakeId,
+          userNotes,
+          keyTakeaway,
+          category,
+          mistakeType,
+          updatedAt: new Date().toISOString(),
+        },
+      });
+    }
+
+    if (action === 'toggle_resolved') {
+      const mistakeId = sanitizeText(body.mistakeId, 64);
+      if (!mistakeId) {
+        return NextResponse.json({ error: 'Mistake ID required.' }, { status: 400 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        id: mistakeId,
+        isResolved: Boolean(body.isResolved),
+      });
+    }
+
     // Default action: add_mistake
     const rawModule = body.module as LearningModule;
     const validModules: LearningModule[] = ['dsa', 'core-cs', 'aptitude'];
@@ -109,6 +150,7 @@ export async function POST(req: NextRequest) {
       mistakeType: mistakeType || 'edge_case',
       userNotes: userNotes || '',
       keyTakeaway,
+      isResolved: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

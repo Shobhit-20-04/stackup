@@ -29,6 +29,7 @@ export interface MistakeEntry {
   userNotes: string;
   keyTakeaway: string;
   codeSnippet?: string;
+  isResolved?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -59,6 +60,15 @@ export interface RevisionItem {
   lastRating?: SM2Rating;
 }
 
+export type RevisionBucket = 'overdue' | 'due_today' | 'upcoming' | 'recently_reviewed';
+
+export type WeakTopicStatus = 
+  | 'needs_attention'
+  | 'revisit_recommended'
+  | 'improving'
+  | 'consistently_well'
+  | 'insufficient_activity';
+
 export interface WeakTopicInsight {
   topicName: string;
   module: LearningModule;
@@ -66,6 +76,8 @@ export interface WeakTopicInsight {
   totalAttempts: number;
   accuracyPercentage: number;
   masteryLevel: 'critical' | 'developing' | 'proficient' | 'mastered';
+  status: WeakTopicStatus;
+  supportingDataText: string;
   reason: string;
   actionUrl: string;
 }
@@ -79,6 +91,7 @@ export type RecommendationType =
 export interface DailyRecommendation {
   id: string;
   type: RecommendationType;
+  resourceId: string;
   title: string;
   description: string;
   module: LearningModule;
@@ -86,15 +99,32 @@ export interface DailyRecommendation {
   priority: 'high' | 'medium' | 'low';
   estimatedMinutes: number;
   badge: string;
+  supportingActivityRef: string;
+  createdAt: string;
+  isDismissed?: boolean;
+}
+
+export interface LearningHistoryMetrics {
+  reviewsCompletedCount: number;
+  mistakesResolvedCount: number;
+  previouslyFailedNowSolvedCount: number;
+  revisionConsistencyStreak: number;
 }
 
 export interface LearningIntelligenceSummary {
   totalMistakesLogged: number;
   dueRevisionsCount: number;
+  overdueCount: number;
+  upcomingCount: number;
+  recentlyReviewedCount: number;
   masteredTopicsCount: number;
   retentionScore: number; // 0-100 percentage based on SM-2 ease and successful recalls
   dueRevisions: RevisionItem[];
+  overdueRevisions: RevisionItem[];
+  upcomingRevisions: RevisionItem[];
+  recentlyReviewedRevisions: RevisionItem[];
   recentMistakes: MistakeEntry[];
   weakTopics: WeakTopicInsight[];
   dailyRecommendations: DailyRecommendation[];
+  historyMetrics: LearningHistoryMetrics;
 }

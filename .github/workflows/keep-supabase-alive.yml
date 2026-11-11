@@ -23,7 +23,7 @@ jobs:
           
           # Query PostgREST endpoint with apikey header to register active database query
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 \
-            -X GET "${SUPABASE_URL}/rest/v1/" \
+            -X GET "${SUPABASE_URL}/rest/v1/profiles?select=count" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
 

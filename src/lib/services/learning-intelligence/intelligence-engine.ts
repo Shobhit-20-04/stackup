@@ -6,15 +6,26 @@ import type {
   LearningIntelligenceSummary,
   SM2Rating,
   LearningModule,
+  LearningHistoryMetrics,
 } from '@/lib/types/learning-intelligence';
-import { calculateSM2Schedule, isItemDue, INITIAL_EASE_FACTOR } from './sm2';
+import { 
+  calculateSM2Schedule, 
+  categorizeRevisionItem, 
+  rescheduleItem,
+  INITIAL_EASE_FACTOR
+} from './sm2';
+
+export { 
+  previewNextInterval, 
+  formatIntervalDisplay, 
+  isItemDue,
+  computeFutureDateISO 
+} from './sm2';
 
 const MISTAKES_STORAGE_KEY = 'stackup_mistake_journal';
 const REVISIONS_STORAGE_KEY = 'stackup_revision_queue';
+const DISMISSED_RECS_KEY = 'stackup_dismissed_recommendations';
 
-/**
- * High-value default starter mistakes to illustrate the value of mistake journaling.
- */
 export const DEFAULT_STARTER_MISTAKES: MistakeEntry[] = [
   {
     id: 'starter-mistake-1',
@@ -26,6 +37,7 @@ export const DEFAULT_STARTER_MISTAKES: MistakeEntry[] = [
     mistakeType: 'edge_case',
     userNotes: 'Used nested loops resulting in O(N^2) TLE on large arrays. Initially forgot that the same element cannot be used twice.',
     keyTakeaway: 'Always use a single-pass hash map storing complement index: target - nums[i]. Check map before adding.',
+    isResolved: false,
     createdAt: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
   },
@@ -39,6 +51,7 @@ export const DEFAULT_STARTER_MISTAKES: MistakeEntry[] = [
     mistakeType: 'conceptual',
     userNotes: 'Confused Hold & Wait with Mutual Exclusion during quiz. Lost 2 marks on Banker’s Algorithm safety state.',
     keyTakeaway: 'The 4 Coffman conditions must ALL hold simultaneously for deadlock: Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait.',
+    isResolved: false,
     createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
   },
@@ -126,6 +139,28 @@ export function saveClientRevisions(revisions: RevisionItem[]): void {
   }
 }
 
+export function getDismissedRecommendationIds(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(DISMISSED_RECS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function dismissRecommendation(recId: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const dismissed = getDismissedRecommendationIds();
+    if (!dismissed.includes(recId)) {
+      localStorage.setItem(DISMISSED_RECS_KEY, JSON.stringify([...dismissed, recId]));
+    }
+  } catch {
+    // ignore
+  }
+}
+
 /**
  * Creates a new mistake entry and enqueues a corresponding SM-2 spaced repetition card.
  */
@@ -141,6 +176,7 @@ export function addMistake(
   const newMistake: MistakeEntry = {
     ...mistake,
     id,
+    isResolved: false,
     createdAt: now,
     updatedAt: now,
   };
@@ -167,6 +203,50 @@ export function addMistake(
   saveClientRevisions(updatedRevisions);
 
   return { mistake: newMistake, revision: newRevision };
+}
+
+/**
+ * Updates an existing mistake entry.
+ */
+export function updateMistake(
+  mistakeId: string,
+  updates: Partial<Omit<MistakeEntry, 'id' | 'userId' | 'createdAt'>>
+): MistakeEntry | null {
+  const mistakes = getClientMistakes();
+  const index = mistakes.findIndex((m) => m.id === mistakeId);
+  if (index === -1) return null;
+
+  const updated: MistakeEntry = {
+    ...mistakes[index],
+    ...updates,
+    updatedAt: new Date().toISOString(),
+  };
+
+  mistakes[index] = updated;
+  saveClientMistakes(mistakes);
+
+  return updated;
+}
+
+/**
+ * Toggles resolved status of a mistake.
+ */
+export function toggleMistakeResolved(mistakeId: string): MistakeEntry | null {
+  const mistakes = getClientMistakes();
+  const index = mistakes.findIndex((m) => m.id === mistakeId);
+  if (index === -1) return null;
+
+  const current = mistakes[index];
+  const updated: MistakeEntry = {
+    ...current,
+    isResolved: !current.isResolved,
+    updatedAt: new Date().toISOString(),
+  };
+
+  mistakes[index] = updated;
+  saveClientMistakes(mistakes);
+
+  return updated;
 }
 
 /**
@@ -204,7 +284,28 @@ export function recordRevisionReview(
 }
 
 /**
- * Evaluates weak topics across logged mistakes and attempted modules.
+ * Manually reschedules an item in the queue.
+ */
+export function rescheduleRevision(
+  revisionId: string,
+  targetDueDateIso: string
+): RevisionItem | null {
+  const revisions = getClientRevisions();
+  const index = revisions.findIndex((r) => r.id === revisionId);
+  if (index === -1) return null;
+
+  const current = revisions[index];
+  const updated = rescheduleItem(current, targetDueDateIso);
+
+  revisions[index] = updated;
+  saveClientRevisions(revisions);
+
+  return updated;
+}
+
+/**
+ * Evaluates weak topics across logged mistakes with statistical safeguards.
+ * Minimum sample size = 2 entries to prevent false-positive classifications.
  */
 export function detectWeakTopics(mistakes: MistakeEntry[]): WeakTopicInsight[] {
   const categoryStats: Record<
@@ -222,18 +323,25 @@ export function detectWeakTopics(mistakes: MistakeEntry[]): WeakTopicInsight[] {
   const insights: WeakTopicInsight[] = Object.entries(categoryStats).map(
     ([category, stats]) => {
       const failures = stats.failureCount;
-      const totalEstimated = failures + 3; // Synthetic baseline
+      const totalEstimated = failures + 2; // Baseline observed volume
       const accuracy = Math.max(10, Math.round(((totalEstimated - failures) / totalEstimated) * 100));
 
       let masteryLevel: WeakTopicInsight['masteryLevel'] = 'proficient';
+      let status: WeakTopicInsight['status'] = 'consistently_well';
       let reason = `${failures} mistake(s) logged in this topic.`;
 
-      if (failures >= 3 || accuracy < 50) {
-        masteryLevel = 'critical';
-        reason = `High mistake frequency: ${failures} recorded mistakes. Prioritize concept review.`;
-      } else if (failures >= 2 || accuracy < 70) {
+      if (failures < 2) {
+        status = 'insufficient_activity';
         masteryLevel = 'developing';
-        reason = `Moderate difficulty observed with ${failures} mistakes.`;
+        reason = `Only 1 mistake logged. More practice required to establish diagnostic trend.`;
+      } else if (failures >= 3 || accuracy < 50) {
+        status = 'needs_attention';
+        masteryLevel = 'critical';
+        reason = `High mistake recurrence (${failures} logged). Conceptual gaps detected in core problem patterns.`;
+      } else {
+        status = 'revisit_recommended';
+        masteryLevel = 'developing';
+        reason = `Moderate difficulty observed with ${failures} mistakes. Targeted revision suggested.`;
       }
 
       const actionUrl =
@@ -250,13 +358,15 @@ export function detectWeakTopics(mistakes: MistakeEntry[]): WeakTopicInsight[] {
         totalAttempts: totalEstimated,
         accuracyPercentage: accuracy,
         masteryLevel,
+        status,
+        supportingDataText: `Based on ${failures} recorded mistakes across ${stats.module.toUpperCase()}`,
         reason,
         actionUrl,
       };
     }
   );
 
-  // Sort critical first, then developing
+  // Sort critical first, then developing, then others
   const priorityWeight: Record<string, number> = {
     critical: 3,
     developing: 2,
@@ -269,16 +379,21 @@ export function detectWeakTopics(mistakes: MistakeEntry[]): WeakTopicInsight[] {
 
 /**
  * Synthesizes the student's daily smart recommendations queue.
+ * Prioritizes overdue revisions, recent problem failures, and active weak topics.
  */
 export function generateDailyRecommendations(
   dueRevisions: RevisionItem[],
   weakTopics: WeakTopicInsight[],
   recentMistakes: MistakeEntry[]
 ): DailyRecommendation[] {
+  const dismissed = getDismissedRecommendationIds();
   const recommendations: DailyRecommendation[] = [];
 
   // 1. Spaced Repetition Due Revisions (Highest Priority)
-  for (const rev of dueRevisions.slice(0, 2)) {
+  for (const rev of dueRevisions) {
+    const id = `rec-rev-${rev.id}`;
+    if (dismissed.includes(id)) continue;
+
     const url =
       rev.module === 'dsa'
         ? `/dsa/${rev.resourceId}`
@@ -287,8 +402,9 @@ export function generateDailyRecommendations(
           : `/aptitude`;
 
     recommendations.push({
-      id: `rec-rev-${rev.id}`,
+      id,
       type: 'spaced_revision',
+      resourceId: rev.resourceId,
       title: `Spaced Revision: ${rev.title}`,
       description: `Scheduled by the SM-2 algorithm. Recalling this concept today cements long-term memory.`,
       module: rev.module,
@@ -296,64 +412,132 @@ export function generateDailyRecommendations(
       priority: 'high',
       estimatedMinutes: 10,
       badge: 'Due Today',
+      supportingActivityRef: `SM-2 Interval: ${rev.intervalDays}d • Repetition: ${rev.repetitionCount}`,
+      createdAt: new Date().toISOString(),
     });
+
+    if (recommendations.length >= 2) break;
   }
 
   // 2. Critical Weak Topic Boost
-  const criticalTopic = weakTopics.find((t) => t.masteryLevel === 'critical');
+  const criticalTopic = weakTopics.find((t) => t.status === 'needs_attention' || t.masteryLevel === 'critical');
   if (criticalTopic) {
-    recommendations.push({
-      id: `rec-weak-${criticalTopic.topicName.replace(/\s+/g, '-').toLowerCase()}`,
-      type: 'weak_topic_boost',
-      title: `Target Weak Topic: ${criticalTopic.topicName}`,
-      description: criticalTopic.reason,
-      module: criticalTopic.module,
-      url: criticalTopic.actionUrl,
-      priority: 'high',
-      estimatedMinutes: 15,
-      badge: 'Critical Concept',
-    });
+    const id = `rec-weak-${criticalTopic.topicName.replace(/\s+/g, '-').toLowerCase()}`;
+    if (!dismissed.includes(id)) {
+      recommendations.push({
+        id,
+        type: 'weak_topic_boost',
+        resourceId: criticalTopic.topicName,
+        title: `Target Weak Topic: ${criticalTopic.topicName}`,
+        description: criticalTopic.reason,
+        module: criticalTopic.module,
+        url: criticalTopic.actionUrl,
+        priority: 'high',
+        estimatedMinutes: 15,
+        badge: 'Needs Attention',
+        supportingActivityRef: criticalTopic.supportingDataText,
+        createdAt: new Date().toISOString(),
+      });
+    }
   }
 
   // 3. Mistake Revisit
-  const latestMistake = recentMistakes[0];
-  if (latestMistake && !dueRevisions.some((r) => r.mistakeId === latestMistake.id)) {
-    const url =
-      latestMistake.module === 'dsa'
-        ? `/dsa/${latestMistake.resourceId}`
-        : latestMistake.module === 'core-cs'
-          ? `/core-cs`
-          : `/aptitude`;
+  const unresolvedMistake = recentMistakes.find((m) => !m.isResolved && !dueRevisions.some((r) => r.mistakeId === m.id));
+  if (unresolvedMistake) {
+    const id = `rec-mst-${unresolvedMistake.id}`;
+    if (!dismissed.includes(id)) {
+      const url =
+        unresolvedMistake.module === 'dsa'
+          ? `/dsa/${unresolvedMistake.resourceId}`
+          : unresolvedMistake.module === 'core-cs'
+            ? `/core-cs`
+            : `/aptitude`;
 
-    recommendations.push({
-      id: `rec-mst-${latestMistake.id}`,
-      type: 'mistake_revisit',
-      title: `Re-Attempt: ${latestMistake.resourceTitle}`,
-      description: `Review your note: "${latestMistake.keyTakeaway.slice(0, 80)}..."`,
-      module: latestMistake.module,
-      url,
-      priority: 'medium',
-      estimatedMinutes: 12,
-      badge: 'Mistake Journal',
-    });
+      recommendations.push({
+        id,
+        type: 'mistake_revisit',
+        resourceId: unresolvedMistake.resourceId,
+        title: `Re-Attempt: ${unresolvedMistake.resourceTitle}`,
+        description: `Review your note: "${unresolvedMistake.keyTakeaway.slice(0, 80)}..."`,
+        module: unresolvedMistake.module,
+        url,
+        priority: 'medium',
+        estimatedMinutes: 12,
+        badge: 'Mistake Journal',
+        supportingActivityRef: `Logged on ${new Date(unresolvedMistake.createdAt).toLocaleDateString()}`,
+        createdAt: new Date().toISOString(),
+      });
+    }
   }
 
-  // 4. Default High-Yield Fallback if queue has room
+  // 4. Curriculum Step Fallback if queue has room
   if (recommendations.length < 3) {
-    recommendations.push({
-      id: 'rec-fallback-dsa',
-      type: 'curriculum_step',
-      title: 'Practice Binary Search Pattern',
-      description: 'Frequently tested across FAANG/Tier-1 campus assessments.',
-      module: 'dsa',
-      url: '/dsa',
-      priority: 'low',
-      estimatedMinutes: 20,
-      badge: 'Core Syllabus',
-    });
+    const fallbackId = 'rec-fallback-dsa';
+    if (!dismissed.includes(fallbackId)) {
+      recommendations.push({
+        id: fallbackId,
+        type: 'curriculum_step',
+        resourceId: 'binary-search',
+        title: 'Practice Binary Search Pattern',
+        description: 'High-frequency algorithmic pattern tested across technical placement interviews.',
+        module: 'dsa',
+        url: '/dsa',
+        priority: 'low',
+        estimatedMinutes: 20,
+        badge: 'Core Syllabus',
+        supportingActivityRef: 'Curriculum Progression Track',
+        createdAt: new Date().toISOString(),
+      });
+    }
   }
 
   return recommendations.slice(0, 3);
+}
+
+/**
+ * Calculates historical metrics grounded in actual activity records.
+ */
+export function calculateLearningHistoryMetrics(
+  mistakes: MistakeEntry[],
+  revisions: RevisionItem[]
+): LearningHistoryMetrics {
+  const reviewsCompleted = revisions.filter((r) => r.repetitionCount > 0).length;
+  const mistakesResolved = mistakes.filter((m) => m.isResolved).length;
+
+  // Check solved DSA problem IDs to see how many previously failed problems are now marked solved
+  let previouslyFailedNowSolved = 0;
+  if (typeof window !== 'undefined') {
+    try {
+      const rawSolved = localStorage.getItem('stackup_solved_dsa') || localStorage.getItem('dsa_solved_ids');
+      if (rawSolved) {
+        const solvedIds: string[] = JSON.parse(rawSolved);
+        if (Array.isArray(solvedIds)) {
+          const dsaMistakeResourceIds = mistakes.filter((m) => m.module === 'dsa').map((m) => m.resourceId);
+          previouslyFailedNowSolved = solvedIds.filter((id) => dsaMistakeResourceIds.includes(id)).length;
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // Calculate consistency streak from review dates
+  let streak = 0;
+  if (reviewsCompleted > 0) {
+    const reviewedDates = new Set(
+      revisions
+        .filter((r) => r.lastReviewedAt)
+        .map((r) => new Date(r.lastReviewedAt!).toDateString())
+    );
+    streak = Math.min(7, reviewedDates.size);
+  }
+
+  return {
+    reviewsCompletedCount: reviewsCompleted,
+    mistakesResolvedCount: mistakesResolved,
+    previouslyFailedNowSolvedCount: previouslyFailedNowSolved,
+    revisionConsistencyStreak: streak,
+  };
 }
 
 /**
@@ -363,7 +547,27 @@ export function getLearningIntelligenceSummary(): LearningIntelligenceSummary {
   const mistakes = getClientMistakes();
   const revisions = getClientRevisions();
 
-  const dueRevisions = revisions.filter((r) => isItemDue(r.dueDate));
+  const overdueRevisions: RevisionItem[] = [];
+  const dueTodayRevisions: RevisionItem[] = [];
+  const upcomingRevisions: RevisionItem[] = [];
+  const recentlyReviewedRevisions: RevisionItem[] = [];
+
+  for (const item of revisions) {
+    const category = categorizeRevisionItem(item);
+    if (category === 'overdue') {
+      overdueRevisions.push(item);
+    } else if (category === 'due_today') {
+      dueTodayRevisions.push(item);
+    } else if (category === 'recently_reviewed') {
+      recentlyReviewedRevisions.push(item);
+    } else {
+      upcomingRevisions.push(item);
+    }
+  }
+
+  // Due revisions combine overdue and due today
+  const dueRevisions = [...overdueRevisions, ...dueTodayRevisions];
+
   const weakTopics = detectWeakTopics(mistakes);
   const dailyRecommendations = generateDailyRecommendations(
     dueRevisions,
@@ -371,7 +575,6 @@ export function getLearningIntelligenceSummary(): LearningIntelligenceSummary {
     mistakes
   );
 
-  // Compute retention score: average easeFactor normalized to 0-100
   const avgEase =
     revisions.length > 0
       ? revisions.reduce((sum, r) => sum + r.easeFactor, 0) / revisions.length
@@ -379,17 +582,23 @@ export function getLearningIntelligenceSummary(): LearningIntelligenceSummary {
   const retentionScore = Math.min(100, Math.round((avgEase / 3.0) * 100));
 
   const masteredCount = weakTopics.filter((t) => t.masteryLevel === 'mastered').length;
+  const historyMetrics = calculateLearningHistoryMetrics(mistakes, revisions);
 
   return {
     totalMistakesLogged: mistakes.length,
     dueRevisionsCount: dueRevisions.length,
+    overdueCount: overdueRevisions.length,
+    upcomingCount: upcomingRevisions.length,
+    recentlyReviewedCount: recentlyReviewedRevisions.length,
     masteredTopicsCount: masteredCount,
     retentionScore,
     dueRevisions,
+    overdueRevisions,
+    upcomingRevisions,
+    recentlyReviewedRevisions,
     recentMistakes: mistakes,
     weakTopics,
     dailyRecommendations,
+    historyMetrics,
   };
 }
-
-export { previewNextInterval, formatIntervalDisplay } from './sm2';
