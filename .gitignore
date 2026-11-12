@@ -43,5 +43,9 @@ yarn-error.log*
 next-env.d.ts
 scratch/
 
-# persistent local data
-data/*.json
+# persistent local data and uploads
+/data/*
+!/data/.gitkeep
+
+# load testing telemetry artifacts
+scripts/load-test-results.json

@@ -35,35 +35,35 @@ export async function parseResumeDocument(
     const bufferStr = fileBuffer.toString('latin1', 0, Math.min(fileBuffer.length, 4096));
     if (bufferStr.includes('/Encrypt')) {
       isEncrypted = true;
-    }
-
-    try {
-      const uint8 = new Uint8Array(fileBuffer);
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { PDFParse } = require('pdf-parse');
-      const parser = new PDFParse({ data: uint8 });
-      
-      const pdfData = await parser.getText();
-      rawText = pdfData?.text ? pdfData.text.trim() : '';
-
+    } else {
       try {
-        const info = await parser.getInfo();
-        if (info?.pages && typeof info.pages === 'number') {
-          pageCount = info.pages;
+        const uint8 = new Uint8Array(fileBuffer);
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { PDFParse } = require('pdf-parse');
+        const parser = new PDFParse({ data: uint8 });
+        
+        const pdfData = await parser.getText();
+        rawText = pdfData?.text ? pdfData.text.trim() : '';
+
+        try {
+          const info = await parser.getInfo();
+          if (info?.pages && typeof info.pages === 'number') {
+            pageCount = info.pages;
+          }
+        } catch {
+          // Info retrieval is optional
         }
-      } catch {
-        // Info retrieval is optional
-      }
 
-      try {
-        await parser.destroy();
-      } catch {
-        // Ignore destroy cleanup notice
-      }
-    } catch (err: unknown) {
-      const errStr = String(err);
-      if (errStr.includes('Password') || errStr.includes('encrypted')) {
-        isEncrypted = true;
+        try {
+          await parser.destroy();
+        } catch {
+          // Ignore destroy cleanup notice
+        }
+      } catch (err: unknown) {
+        const errStr = String(err);
+        if (errStr.includes('Password') || errStr.includes('encrypted')) {
+          isEncrypted = true;
+        }
       }
     }
 

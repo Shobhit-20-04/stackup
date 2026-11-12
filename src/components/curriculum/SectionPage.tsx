@@ -77,6 +77,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
   const [subjectCluster, setSubjectCluster] = useState<'all' | 'systems' | 'algo-theory' | 'math' | 'software'>('all');
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
   const [cheatsheetSearch, setCheatsheetSearch] = useState('');
   const deferredCheatsheetSearch = useDeferredValue(cheatsheetSearch);
   const [cheatsheetCategory, setCheatsheetCategory] = useState<string>('all');
@@ -88,7 +89,9 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (isCheatsheetOpen) {
+        if (authPromptOpen) {
+          setAuthPromptOpen(false);
+        } else if (isCheatsheetOpen) {
           setIsCheatsheetOpen(false);
         } else if (activeView !== 'list') {
           setActiveView('list');
@@ -97,7 +100,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCheatsheetOpen, activeView]);
+  }, [authPromptOpen, isCheatsheetOpen, activeView]);
 
   // Synchronize category selection when URL hash changes (e.g. /core-cs#os or /aptitude#quant-apt)
   useEffect(() => {
@@ -136,23 +139,12 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
 
   // Authentication state for gating interactive quizzes
   const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
-  const [authPromptOpen, setAuthPromptOpen] = useState(false);
 
   useEffect(() => {
     void getCurrentUser().then((u) => setCurrentUser(u));
   }, []);
 
-  // Keyboard escape for modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsCheatsheetOpen(false);
-        setAuthPromptOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+
 
   const handleStartQuiz = (topic: Topic) => {
     if (!currentUser) {

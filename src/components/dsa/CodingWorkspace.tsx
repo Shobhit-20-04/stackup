@@ -279,7 +279,7 @@ export default function CodingWorkspace({
     else if (v.includes('wrong')) mistakeType = 'wrong_answer';
 
     addMistake({
-      userId: 'student',
+      userId: initialUser?.id || 'student',
       module: 'dsa',
       resourceId: problem.id,
       resourceTitle: problem.title,
