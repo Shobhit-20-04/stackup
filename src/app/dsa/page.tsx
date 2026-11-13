@@ -133,8 +133,20 @@ function DsaHubContent() {
   }, [expandedProblemId, authPromptOpen, workspaceProblemId]);
 
   // Problem of the Day (POTD) and Streak tracking
-  const potd = useMemo(() => getProblemOfTheDay(), []);
+  const [potd, setPotd] = useState<DsaProblem>(() => getProblemOfTheDay());
   const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  // Hydrate with any admin-published daily challenge for today
+  useEffect(() => {
+    fetch('/api/dsa/potd')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.problem) {
+          setPotd(data.problem);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const [potdStreak, setPotdStreak] = useState<number>(() => {
     if (typeof window === 'undefined') return 0;

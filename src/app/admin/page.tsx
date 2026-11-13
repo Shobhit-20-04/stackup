@@ -37,7 +37,11 @@ import {
   History,
   CheckSquare,
   Square,
+  Code2,
+  Globe,
 } from 'lucide-react';
+import type { DsaProblem } from '@/lib/data/dsa';
+import type { CustomProblemRecord } from '@/lib/services/dsa/leetcode-sync';
 
 interface ResumeRecord {
   id: string;
@@ -287,8 +291,27 @@ export default function AdminDashboardPage() {
   const [resetSuccess, setResetSuccess] = useState('');
   const [resetEmailDispatched, setResetEmailDispatched] = useState<boolean>(true);
 
-  // Primary tab view: 'workspace', 'table', 'users', 'skills', 'logins'
-  const [activeTab, setActiveTab] = useState<'workspace' | 'table' | 'users' | 'skills' | 'logins'>('workspace');
+  // Primary tab view: 'workspace', 'table', 'users', 'skills', 'logins', 'dsa-manager'
+  const [activeTab, setActiveTab] = useState<'workspace' | 'table' | 'users' | 'skills' | 'logins' | 'dsa-manager'>('workspace');
+
+  // DSA & POTD Manager state
+  const [customProblems, setCustomProblems] = useState<CustomProblemRecord[]>([]);
+  const [liveLeetCode, setLiveLeetCode] = useState<{
+    title: string;
+    titleSlug: string;
+    difficulty: string;
+    date: string;
+    topicTags: string[];
+    link?: string;
+  } | null>(null);
+  const [dsaLoading, setDsaLoading] = useState(false);
+  const [dsaSyncing, setDsaSyncing] = useState(false);
+  const [dsaPublishing, setDsaPublishing] = useState(false);
+  const [dsaCustomInput, setDsaCustomInput] = useState('');
+  const [dsaPreview, setDsaPreview] = useState<DsaProblem | null>(null);
+  const [dsaScheduledDate, setDsaScheduledDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [dsaFeedback, setDsaFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [dsaLangTab, setDsaLangTab] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
 
   // Search & Filter state for resumes
   const [searchQuery, setSearchQuery] = useState('');
@@ -325,6 +348,109 @@ export default function AdminDashboardPage() {
   const [actionFeedback, setActionFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const searchInputId = useId();
+
+  const fetchDsaData = useCallback(async () => {
+    try {
+      setDsaLoading(true);
+      const res = await fetch('/api/admin/dsa');
+      if (res.ok) {
+        const json = await res.json();
+        setCustomProblems(json.customProblems || []);
+        setLiveLeetCode(json.liveLeetCodeDaily || null);
+      }
+    } catch (err) {
+      console.error('Failed to load DSA admin data:', err);
+    } finally {
+      setDsaLoading(false);
+    }
+  }, []);
+
+  const handlePreviewDaily = async () => {
+    try {
+      setDsaSyncing(true);
+      setDsaFeedback(null);
+      const res = await fetch('/api/admin/dsa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'preview-daily' }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch daily challenge');
+      setDsaPreview(data.problem);
+      setDsaFeedback({ type: 'success', message: `Fetched & generated multi-language solutions for "${data.problem.title}"!` });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Sync failed.';
+      setDsaFeedback({ type: 'error', message: msg });
+    } finally {
+      setDsaSyncing(false);
+    }
+  };
+
+  const handlePreviewCustom = async () => {
+    if (!dsaCustomInput.trim()) return;
+    try {
+      setDsaSyncing(true);
+      setDsaFeedback(null);
+      const res = await fetch('/api/admin/dsa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'preview-slug', slug: dsaCustomInput.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch problem');
+      setDsaPreview(data.problem);
+      setDsaFeedback({ type: 'success', message: `Fetched & generated multi-language solutions for "${data.problem.title}"!` });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Sync failed.';
+      setDsaFeedback({ type: 'error', message: msg });
+    } finally {
+      setDsaSyncing(false);
+    }
+  };
+
+  const handlePublishProblem = async () => {
+    if (!dsaPreview) return;
+    try {
+      setDsaPublishing(true);
+      setDsaFeedback(null);
+      const res = await fetch('/api/admin/dsa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'publish',
+          problem: dsaPreview,
+          scheduledForDate: dsaScheduledDate,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to publish');
+      setDsaFeedback({ type: 'success', message: data.message || 'Problem published to StackUp!' });
+      setDsaPreview(null);
+      setDsaCustomInput('');
+      fetchDsaData();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Publish failed.';
+      setDsaFeedback({ type: 'error', message: msg });
+    } finally {
+      setDsaPublishing(false);
+    }
+  };
+
+  const handleDeleteCustomProblem = async (id: string) => {
+    if (!confirm('Remove this custom problem from StackUp?')) return;
+    try {
+      const res = await fetch('/api/admin/dsa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id }),
+      });
+      if (res.ok) {
+        fetchDsaData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchAdminData = useCallback(async () => {
     try {
@@ -1519,6 +1645,23 @@ export default function AdminDashboardPage() {
             <LogIn className="w-3.5 h-3.5" />
             <span>Login &amp; Access Audit ({data?.loginLogs?.length ?? 0})</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('dsa-manager')}
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
+              activeTab === 'dsa-manager'
+                ? 'bg-[#0D08CB] text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
+            }`}
+          >
+            <Code2 className="w-3.5 h-3.5" />
+            <span>DSA &amp; POTD Manager</span>
+            {customProblems.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px]">
+                {customProblems.length}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* ========================================================================= */}
@@ -2491,6 +2634,368 @@ export default function AdminDashboardPage() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 6: PRIVATE DSA & DAILY CHALLENGE MANAGER                             */}
+        {/* ========================================================================= */}
+        {activeTab === 'dsa-manager' && (
+          <div className="space-y-6">
+            {/* Header Card */}
+            <div className="bg-[#151D35] p-5 sm:p-6 rounded-xl border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
+                    <Code2 className="w-4 h-4" />
+                  </div>
+                  <h2 className="text-base sm:text-lg font-extrabold text-white">
+                    DSA &amp; Daily Challenge Manager
+                  </h2>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase">
+                    Private Admin Control
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 mt-1 max-w-3xl leading-relaxed">
+                  Sync official daily challenges or import any LeetCode problem. StackUp uses Google Gemini 2.5 Flash to automatically author clean problem write-ups, approach intuition, Big-O bounds, and complete multi-language solutions (Python, C++, Java, TypeScript). When published, problems appear on the student website as official StackUp challenges with zero external branding.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={fetchDsaData}
+                disabled={dsaLoading}
+                className="px-3 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-slate-300 transition-colors flex items-center space-x-1.5 shrink-0 self-start md:self-auto cursor-pointer"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${dsaLoading ? 'animate-spin' : ''}`} />
+                <span>Refresh Data</span>
+              </button>
+            </div>
+
+            {/* Action Cards: Live LeetCode Sync & Custom URL Import */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Card 1: Today's Official Challenge Sync */}
+              <div className="bg-[#151D35] p-5 rounded-xl border border-zinc-800 space-y-3.5 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
+                      <Globe className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
+                      Live LeetCode Daily Challenge
+                    </span>
+                    {liveLeetCode?.date && (
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        {liveLeetCode.date}
+                      </span>
+                    )}
+                  </div>
+
+                  {liveLeetCode ? (
+                    <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-bold text-white">
+                          {liveLeetCode.title}
+                        </h4>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          liveLeetCode.difficulty === 'Easy'
+                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
+                            : liveLeetCode.difficulty === 'Medium'
+                            ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20'
+                            : 'bg-rose-500/15 text-rose-400 border border-rose-500/20'
+                        }`}>
+                          {liveLeetCode.difficulty}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1 text-[10px] text-slate-400 pt-1">
+                        {liveLeetCode.topicTags.map((tag) => (
+                          <span key={tag} className="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700/60">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 text-xs text-slate-400">
+                      Loading today&apos;s active challenge...
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handlePreviewDaily}
+                  disabled={dsaSyncing || !liveLeetCode}
+                  className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                >
+                  {dsaSyncing ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Syncing &amp; Generating Solutions with Gemini...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Sync Today&apos;s Challenge &amp; Auto-Generate</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Card 2: Custom Slug or URL Import */}
+              <div className="bg-[#151D35] p-5 rounded-xl border border-zinc-800 space-y-3.5 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
+                      <Code2 className="w-3.5 h-3.5 mr-1.5 text-blue-400" />
+                      Import Custom Problem by URL or Slug
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mb-2">
+                    Paste any LeetCode problem URL or slug (e.g. <code>trapping-rain-water</code>) to fetch its statement and generate multi-language solutions.
+                  </p>
+                  <input
+                    type="text"
+                    value={dsaCustomInput}
+                    onChange={(e) => setDsaCustomInput(e.target.value)}
+                    placeholder="https://leetcode.com/problems/lru-cache/ or lru-cache"
+                    className="w-full px-3 py-2 rounded-lg bg-[#0B1020] border border-zinc-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handlePreviewCustom}
+                  disabled={dsaSyncing || !dsaCustomInput.trim()}
+                  className="w-full py-2.5 px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition-all border border-zinc-700 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                >
+                  {dsaSyncing ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Generating with Gemini AI...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                      <span>Fetch &amp; Auto-Generate Problem</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Notification / Feedback Banner */}
+            {dsaFeedback && (
+              <div className={`p-4 rounded-lg border text-xs flex items-center justify-between ${
+                dsaFeedback.type === 'success'
+                  ? 'bg-emerald-950/40 border-emerald-900 text-emerald-300'
+                  : 'bg-rose-950/40 border-rose-900 text-rose-300'
+              }`}>
+                <div className="flex items-center space-x-2">
+                  {dsaFeedback.type === 'success' ? (
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                  )}
+                  <span>{dsaFeedback.message}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDsaFeedback(null)}
+                  className="p-1 text-slate-400 hover:text-white cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* Problem Preview & Publishing Workspace */}
+            {dsaPreview && (
+              <div className="bg-[#151D35] p-5 sm:p-6 rounded-xl border border-blue-500/40 shadow-xl space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
+                      Problem Preview (Ready to Publish)
+                    </span>
+                    <h3 className="text-lg font-bold text-white mt-0.5">
+                      {dsaPreview.title}
+                    </h3>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                      dsaPreview.difficulty === 'Easy'
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        : dsaPreview.difficulty === 'Medium'
+                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                    }`}>
+                      {dsaPreview.difficulty}
+                    </span>
+                    <span className="px-2 py-0.5 rounded text-xs bg-zinc-800 text-slate-300 border border-zinc-700">
+                      {dsaPreview.pattern_tag}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Summary & Approach */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-1">
+                    <span className="text-[10px] font-bold uppercase text-slate-400">Concept &amp; Summary</span>
+                    <p className="text-slate-300 leading-relaxed">{dsaPreview.summary}</p>
+                    <div className="pt-2 text-[11px] text-slate-400 flex items-center space-x-3">
+                      <span><strong>Time:</strong> {dsaPreview.timeComplexity}</span>
+                      <span>•</span>
+                      <span><strong>Space:</strong> {dsaPreview.spaceComplexity}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-1">
+                    <span className="text-[10px] font-bold uppercase text-slate-400">Optimal Approach Intuition</span>
+                    <p className="text-slate-300 leading-relaxed line-clamp-4">{dsaPreview.approach}</p>
+                  </div>
+                </div>
+
+                {/* Solutions Multi-Language Code Tabs */}
+                <div className="p-4 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-2.5">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <span className="text-xs font-bold text-slate-300">Generated Reference Solutions:</span>
+                    <div className="flex space-x-1">
+                      {(['python', 'cpp', 'java', 'typescript'] as const).map((lang) => (
+                        <button
+                          key={lang}
+                          type="button"
+                          onClick={() => setDsaLangTab(lang)}
+                          className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold transition-all cursor-pointer ${
+                            dsaLangTab === lang
+                              ? 'bg-blue-600 text-white'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {lang.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <pre className="p-3 rounded bg-black/40 text-emerald-400 font-mono text-xs overflow-x-auto max-h-56 leading-relaxed">
+                    {dsaPreview.solutions[dsaLangTab]}
+                  </pre>
+                </div>
+
+                {/* Publish Bar */}
+                <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center space-x-2">
+                    <label className="text-xs text-slate-400 font-medium">Schedule for Date:</label>
+                    <input
+                      type="date"
+                      value={dsaScheduledDate}
+                      onChange={(e) => setDsaScheduledDate(e.target.value)}
+                      className="px-2.5 py-1.5 rounded bg-[#0B1020] border border-zinc-700 text-xs text-white focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => setDsaPreview(null)}
+                      className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-slate-300 text-xs font-bold cursor-pointer"
+                    >
+                      Discard
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handlePublishProblem}
+                      disabled={dsaPublishing}
+                      className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center space-x-1.5 shadow-md cursor-pointer disabled:opacity-50"
+                    >
+                      {dsaPublishing ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>Publishing to StackUp...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Publish to StackUp</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* List of Published Custom Challenges */}
+            <div className="bg-[#151D35] p-5 sm:p-6 rounded-xl border border-zinc-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-white">
+                    Published Challenges ({customProblems.length})
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Problems listed here are active on StackUp as Problems of the Day for their scheduled dates.
+                  </p>
+                </div>
+              </div>
+
+              {customProblems.length === 0 ? (
+                <div className="py-10 text-center text-slate-500 text-xs rounded-lg border border-dashed border-zinc-800">
+                  No custom challenges published yet. Click &quot;Sync Today&apos;s Challenge&quot; above to publish your first one!
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-zinc-800 text-slate-400 font-mono text-[10px] uppercase">
+                        <th className="py-2.5 px-3">Date</th>
+                        <th className="py-2.5 px-3">Title</th>
+                        <th className="py-2.5 px-3">Difficulty</th>
+                        <th className="py-2.5 px-3">Pattern</th>
+                        <th className="py-2.5 px-3">Companies</th>
+                        <th className="py-2.5 px-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-800">
+                      {customProblems.map((cp) => (
+                        <tr key={cp.id} className="hover:bg-zinc-850/50">
+                          <td className="py-3 px-3 font-mono font-bold text-blue-400">
+                            {cp.scheduledForDate || 'Anytime'}
+                          </td>
+                          <td className="py-3 px-3 font-semibold text-white">
+                            {cp.title}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              cp.difficulty === 'Easy'
+                                ? 'bg-emerald-500/20 text-emerald-400'
+                                : cp.difficulty === 'Medium'
+                                ? 'bg-amber-500/20 text-amber-400'
+                                : 'bg-rose-500/20 text-rose-400'
+                            }`}>
+                              {cp.difficulty}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-slate-400">
+                            {cp.pattern_tag}
+                          </td>
+                          <td className="py-3 px-3 text-slate-400">
+                            {cp.companies?.slice(0, 2).join(', ') || 'General'}
+                          </td>
+                          <td className="py-3 px-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCustomProblem(cp.id)}
+                              className="p-1.5 rounded text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                              title="Delete from custom list"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         )}
