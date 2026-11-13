@@ -5679,3 +5679,40 @@ export const DSA_PROBLEMS: DsaProblem[] = [
     }
   }
 ];
+
+export const TOP_DSA_COMPANIES = [
+  'All',
+  'Amazon',
+  'Google',
+  'Microsoft',
+  'Meta',
+  'Apple',
+  'Bloomberg',
+  'Uber',
+  'Goldman Sachs',
+  'Adobe'
+] as const;
+
+export type TopDsaCompany = (typeof TOP_DSA_COMPANIES)[number];
+
+export function getTopCompanies(): { name: string; count: number }[] {
+  const map: Record<string, number> = {};
+  for (const p of DSA_PROBLEMS) {
+    for (const c of p.companies) {
+      map[c] = (map[c] || 0) + 1;
+    }
+  }
+  return Object.entries(map)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count]) => ({ name, count }));
+}
+
+export function getProblemOfTheDay(date: Date = new Date()): DsaProblem {
+  const year = date.getFullYear();
+  const start = new Date(year, 0, 0);
+  const diff = date.getTime() - start.getTime();
+  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const index = Math.abs(dayOfYear) % DSA_PROBLEMS.length;
+  return DSA_PROBLEMS[index];
+}
+

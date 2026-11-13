@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { DSA_PROBLEMS, DSA_CATEGORIES } from '../src/lib/data/dsa';
+import { 
+  DSA_PROBLEMS, 
+  DSA_CATEGORIES, 
+  TOP_DSA_COMPANIES, 
+  getTopCompanies, 
+  getProblemOfTheDay 
+} from '../src/lib/data/dsa';
 
 describe('DSA Hub Dataset', () => {
   it('contains at least 150 high-frequency problems (NeetCode 150 standard)', () => {
@@ -53,5 +59,28 @@ describe('DSA Hub Dataset', () => {
       expect(problem.solutions.typescript.trim().length).toBeGreaterThan(10);
     }
   });
+
+  it('provides top company distribution and curated company lists', () => {
+    expect(TOP_DSA_COMPANIES).toContain('Amazon');
+    expect(TOP_DSA_COMPANIES).toContain('Google');
+    expect(TOP_DSA_COMPANIES).toContain('Microsoft');
+
+    const topCompanies = getTopCompanies();
+    expect(topCompanies.length).toBeGreaterThan(5);
+    expect(topCompanies[0].name).toBe('Amazon');
+    expect(topCompanies[0].count).toBeGreaterThanOrEqual(140);
+  });
+
+  it('calculates deterministic Problem of the Day (POTD)', () => {
+    const fixedDate = new Date('2026-11-13T12:00:00Z');
+    const potd1 = getProblemOfTheDay(fixedDate);
+    const potd2 = getProblemOfTheDay(fixedDate);
+
+    expect(potd1).toBeDefined();
+    expect(potd1.id).toBe(potd2.id);
+    expect(potd1.title).toBe(potd2.title);
+    expect(potd1.difficulty).toMatch(/^(Easy|Medium|Hard)$/);
+  });
 });
+
 

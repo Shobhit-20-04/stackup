@@ -13,6 +13,7 @@ import {
   RotateCcw, 
   Check, 
   Building2,
+  Flame,
   ChevronDown,
   ChevronUp,
   ChevronLeft,
@@ -29,7 +30,7 @@ import {
   Lock,
   ArrowRight
 } from 'lucide-react';
-import { DSA_PROBLEMS, DSA_CATEGORIES, type DsaProblem } from '@/lib/data/dsa';
+import { DSA_PROBLEMS, DSA_CATEGORIES, TOP_DSA_COMPANIES, getProblemOfTheDay, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
 import { getCurrentUser, getFastCachedUser, type UserSession } from '@/lib/auth/session';
 import CodingWorkspace from '@/components/dsa/CodingWorkspace';
@@ -53,6 +54,7 @@ function DsaHubContent() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
+  const [selectedCompany, setSelectedCompany] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const showSearchSpinner = searchQuery !== deferredSearchQuery;
@@ -130,6 +132,29 @@ function DsaHubContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [expandedProblemId, authPromptOpen, workspaceProblemId]);
 
+  // Problem of the Day (POTD) and Streak tracking
+  const potd = useMemo(() => getProblemOfTheDay(), []);
+  const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  const [potdStreak, setPotdStreak] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      const stored = localStorage.getItem('stackup_potd_streak');
+      return stored ? parseInt(stored, 10) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  const [potdLastSolved, setPotdLastSolved] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      return localStorage.getItem('stackup_potd_last_solved');
+    } catch {
+      return null;
+    }
+  });
+
   // Solved problem IDs persisted in localStorage (lazy initializer for SSR & React 19)
   const [solvedIds, setSolvedIds] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -140,6 +165,8 @@ function DsaHubContent() {
       return [];
     }
   });
+
+  const isPotdSolvedToday = solvedIds.includes(potd.id);
 
   // Save to localStorage and update section progress for profile
   const toggleSolved = (id: string) => {
@@ -154,6 +181,29 @@ function DsaHubContent() {
       : [...solvedIds, id];
     
     setSolvedIds(nextSolved);
+
+    // If solving POTD for the first time today, update streak
+    if (id === potd.id && !solvedIds.includes(id)) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().slice(0, 10);
+
+      let nextStreak = potdStreak;
+      if (potdLastSolved === yesterdayStr) {
+        nextStreak += 1;
+      } else if (potdLastSolved !== todayStr) {
+        nextStreak = 1;
+      }
+      setPotdStreak(nextStreak);
+      setPotdLastSolved(todayStr);
+      try {
+        localStorage.setItem('stackup_potd_streak', nextStreak.toString());
+        localStorage.setItem('stackup_potd_last_solved', todayStr);
+      } catch {
+        // ignore
+      }
+    }
+
     try {
       localStorage.setItem('stackup_solved_dsa', JSON.stringify(nextSolved));
       const percentage = Math.round((nextSolved.length / DSA_PROBLEMS.length) * 100);
@@ -186,6 +236,10 @@ function DsaHubContent() {
       if (selectedDifficulty !== 'All' && problem.difficulty !== selectedDifficulty) {
         return false;
       }
+      // Company filter
+      if (selectedCompany !== 'All' && !problem.companies.some((c) => c.toLowerCase() === selectedCompany.toLowerCase())) {
+        return false;
+      }
       // Solved filter
       if (showOnlyUnsolved && solvedIds.includes(problem.id)) {
         return false;
@@ -200,10 +254,10 @@ function DsaHubContent() {
       }
       return true;
     });
-  }, [selectedCategory, selectedDifficulty, showOnlyUnsolved, deferredSearchQuery, solvedIds]);
+  }, [selectedCategory, selectedDifficulty, selectedCompany, showOnlyUnsolved, deferredSearchQuery, solvedIds]);
 
   // Reset currentPage to 1 whenever filters change (React render-phase pattern)
-  const filterKey = `${selectedCategory}-${selectedDifficulty}-${deferredSearchQuery}-${showOnlyUnsolved}-${pageSize}`;
+  const filterKey = `${selectedCategory}-${selectedDifficulty}-${selectedCompany}-${deferredSearchQuery}-${showOnlyUnsolved}-${pageSize}`;
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
   if (prevFilterKey !== filterKey) {
     setPrevFilterKey(filterKey);
@@ -353,6 +407,77 @@ function DsaHubContent() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
         
+        {/* Problem of the Day (POTD) Banner */}
+        <div className="bg-gradient-to-r from-[var(--surface-card)] via-[var(--surface-sunken)] to-[var(--surface-card)] p-4 sm:p-5 rounded-xl border border-[var(--border-subtle)] shadow-xs mb-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="flex items-center space-x-2">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                  <Flame className="w-3.5 h-3.5 mr-1 fill-amber-500 text-amber-500 animate-pulse" />
+                  Problem of the Day
+                </span>
+                <span className="text-xs text-[var(--foreground-muted)] font-mono">
+                  {new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                </span>
+                {potdStreak > 0 && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30">
+                    🔥 {potdStreak} Day Streak
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight">
+                  {potd.title}
+                </h2>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                  potd.difficulty === 'Easy'
+                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                    : potd.difficulty === 'Medium'
+                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                    : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                }`}>
+                  {potd.difficulty}
+                </span>
+                <span className="text-xs text-[var(--foreground-muted)] px-2 py-0.5 bg-[var(--surface-sunken)] rounded border border-[var(--border-subtle)]">
+                  {potd.pattern_tag}
+                </span>
+                {potd.companies.slice(0, 3).map((comp) => (
+                  <span key={comp} className="text-[11px] text-[var(--foreground-muted)] flex items-center">
+                    <Building2 className="w-3 h-3 mr-0.5 opacity-70" />
+                    {comp}
+                  </span>
+                ))}
+              </div>
+              <p className="text-xs text-[var(--foreground-muted)] line-clamp-1 pt-0.5 max-w-2xl">
+                {potd.summary || (potd.description ? potd.description.slice(0, 140) + '...' : '')}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                onClick={() => toggleSolved(potd.id)}
+                className={`px-3 py-2 rounded-lg text-xs font-semibold flex items-center transition-all cursor-pointer ${
+                  isPotdSolvedToday
+                    ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                    : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border-subtle)]'
+                }`}
+                title={isPotdSolvedToday ? 'Mark as unsolved' : 'Mark as solved'}
+              >
+                <CheckCircle2 className={`w-4 h-4 mr-1.5 ${isPotdSolvedToday ? 'text-emerald-500' : 'opacity-40'}`} />
+                {isPotdSolvedToday ? 'Completed Today' : 'Mark Complete'}
+              </button>
+              <button
+                onClick={() => setWorkspaceProblemId(potd.id)}
+                className="px-4 py-2 bg-[var(--brand-primary)] hover:opacity-90 text-white font-medium rounded-lg text-xs flex items-center transition-all shadow-xs cursor-pointer"
+              >
+                <Code2 className="w-4 h-4 mr-1.5" />
+                Solve in Workspace
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Controls: Search, Filters */}
         <div className="bg-[var(--surface-card)] p-4 sm:p-5 rounded-xl border border-[var(--border-subtle)] shadow-xs space-y-3.5 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
@@ -435,6 +560,38 @@ function DsaHubContent() {
               </button>
             ))}
           </div>
+
+          {/* Company Target / Placement Playlists - Scrollable Horizontally */}
+          <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-[#1E2B4D] overflow-x-auto pb-1 scrollbar-none">
+            <span className="text-xs font-semibold text-[var(--foreground-muted)] uppercase tracking-wider pl-1 mr-1 shrink-0 flex items-center">
+              <Building2 className="w-3.5 h-3.5 mr-1 text-[var(--foreground-muted)]" />
+              Company:
+            </span>
+            {TOP_DSA_COMPANIES.map((company) => {
+              const count = company === 'All' 
+                ? DSA_PROBLEMS.length 
+                : DSA_PROBLEMS.filter(p => p.companies.some(c => c.toLowerCase() === company.toLowerCase())).length;
+              const isSelected = selectedCompany === company;
+              return (
+                <button
+                  key={company}
+                  onClick={() => setSelectedCompany(company)}
+                  className={`px-3 py-1 rounded-md text-xs font-medium transition-colors shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-blue-600 text-white shadow-xs font-semibold'
+                      : 'bg-[var(--surface-sunken)] text-slate-700 dark:text-[#8E9FC8] hover:bg-slate-200 dark:hover:bg-[#223055]'
+                  }`}
+                >
+                  <span>{company}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                    isSelected ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-[var(--foreground-muted)]'
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Dynamic Problem Count Header & View Switcher */}
@@ -442,7 +599,20 @@ function DsaHubContent() {
           <div className="flex items-center space-x-2">
             <span className="font-semibold text-[var(--foreground)]">
               {filteredProblems.length} {filteredProblems.length === 1 ? 'problem' : 'problems'} found
+              {selectedCompany !== 'All' && (
+                <span className="ml-1 text-blue-600 dark:text-blue-400 font-bold">
+                  at {selectedCompany}
+                </span>
+              )}
             </span>
+            {selectedCompany !== 'All' && (
+              <button
+                onClick={() => setSelectedCompany('All')}
+                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 cursor-pointer"
+              >
+                Clear company ✕
+              </button>
+            )}
             {viewMode === 'list' && pageSize !== -1 && totalPages > 1 && (
               <span className="px-2 py-0.5 rounded-md bg-[var(--surface-sunken)] text-slate-600 dark:text-[var(--foreground-muted)] font-medium">
                 Page {effectivePage} of {totalPages}
