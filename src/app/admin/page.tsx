@@ -1,20 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback, useId } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { maskEmail } from '@/lib/security/sanitize';
-import CredentialsModal from '@/components/CredentialsModal';
+import type { DsaProblem } from '@/lib/data/dsa';
+import type { CustomProblemRecord } from '@/lib/services/dsa/leetcode-sync';
 import {
   ShieldCheck,
   FileText,
   Users,
-  TrendingUp,
-  Award,
   Search,
   RefreshCw,
   Trash2,
-  Copy,
   Check,
   Lock,
   ArrowRight,
@@ -24,277 +21,177 @@ import {
   CheckCircle2,
   Sparkles,
   Download,
-  Mail,
-  Calendar,
-  ChevronLeft,
-  SlidersHorizontal,
   KeyRound,
-  LogIn,
   X,
-  Key,
-  RotateCcw,
   FileSpreadsheet,
-  History,
-  CheckSquare,
-  Square,
   Code2,
   Globe,
+  LayoutDashboard,
+  ChevronRight,
+  ExternalLink,
+  Award,
+  BarChart3,
+  Settings,
 } from 'lucide-react';
-import type { DsaProblem } from '@/lib/data/dsa';
-import type { CustomProblemRecord } from '@/lib/services/dsa/leetcode-sync';
+
+/* ========================================================================= */
+/* TYPES & INTERFACES                                                        */
+/* ========================================================================= */
 
 interface ResumeRecord {
   id: string;
   filename: string;
   file_size: number | null;
   mime_type: string | null;
-  resume_text: string | null;
   ats_score: number;
-  user_id: string | null;
-  user_email: string | null;
+  resume_text: string | null;
   candidate_name?: string | null;
-  target_role?: string | null;
-  job_description?: string | null;
-  ip_address: string | null;
+  candidate_email?: string | null;
   created_at: string;
-  updated_at?: string;
-  has_file_data?: boolean;
-  status?: 'parsed' | 'pending' | 'failed';
-  analysis: {
-    grade?: string;
-    summary?: string;
-    breakdown?: {
-      contact_score: number;
-      experience_score: number;
-      skills_score: number;
-      formatting_score: number;
-    };
-    matched_keywords?: string[];
-    missing_keywords?: string[];
-    formatting_issues?: string[];
-    bullet_rewrites?: {
+  updated_at: string;
+  analysis?: {
+    ats_score?: number;
+    skills?: string[];
+    experienceLevel?: string;
+    bullet_rewrites?: Array<{
       original: string;
       improved: string;
       reason: string;
-    }[];
+    }>;
+    dimensions?: {
+      contactInfo?: { score: number };
+      skills?: { score: number };
+      experience?: { score: number };
+      education?: { score: number };
+      formatting?: { score: number };
+      jobDescriptionAlignment?: { score: number };
+    };
   } | null;
 }
 
-interface UserProfile {
+interface ProfileRecord {
   id: string;
-  full_name: string | null;
-  email?: string | null;
-  avatar_url: string | null;
-  phone: string | null;
+  email: string;
+  full_name?: string | null;
+  avatar_url?: string | null;
   created_at: string;
-  updated_at: string;
-  last_sign_in_at?: string | null;
-  resumes_count?: number;
-  latest_score?: number | null;
+  role?: string | null;
 }
 
-interface AdminAuditRecord {
+interface LoginLogRecord {
+  id: string;
+  email: string;
+  auth_method: string;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  created_at: string;
+}
+
+interface AuditLogRecord {
   id: string;
   action: string;
+  target_id?: string | null;
+  target_name?: string | null;
   admin_email: string;
-  target_id: string | null;
-  target_name: string | null;
   details: string;
   ip_address: string;
-  created_at: string;
-}
-
-function formatExactDateTime(isoString?: string | null): { date: string; time: string; full: string } {
-  if (!isoString) return { date: '—', time: '—', full: '—' };
-  const d = new Date(isoString);
-  if (isNaN(d.getTime())) return { date: isoString, time: '', full: isoString };
-
-  const date = d.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-
-  const time = d.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  });
-
-  return {
-    date,
-    time,
-    full: `${date} • ${time}`,
-  };
-}
-
-function getRelativeTime(isoString?: string | null): string {
-  if (!isoString) return '';
-  const d = new Date(isoString);
-  if (isNaN(d.getTime())) return '';
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  if (diffMs < 0) return 'Just now';
-  const diffSec = Math.floor(diffMs / 1000);
-  if (diffSec < 60) return 'Just now';
-  const diffMin = Math.floor(diffSec / 60);
-  if (diffMin < 60) return `${diffMin}m ago`;
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}h ago`;
-  const diffDays = Math.floor(diffHr / 24);
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-  return `${Math.floor(diffDays / 30)}mo ago`;
-}
-
-interface LoginAuditRecord {
-  id: string;
-  user_id: string | null;
-  email: string | null;
-  full_name: string | null;
-  auth_method: string;
-  ip_address: string | null;
-  user_agent: string | null;
   created_at: string;
 }
 
 interface AdminData {
   metrics: {
     totalResumes: number;
+    avgAtsScore: number;
+    passRatePct: number;
     totalUsers: number;
-    totalQuizzes: number;
-    avgScore: number;
-    highPerformers: number;
-    needsOptimization: number;
-    passRate?: number;
-    scoreDistribution?: {
-      APlus: number;
-      A: number;
-      B: number;
-      C: number;
-      D: number;
-    };
-    totalLogins?: number;
-    hasServiceRole?: boolean;
-    authUsersCount?: number;
+    totalLogins: number;
   };
-  topSkills: { skill: string; count: number }[];
   resumes: ResumeRecord[];
-  profiles: UserProfile[];
-  loginLogs?: LoginAuditRecord[];
-  quizzes?: unknown[];
-  auditLogs?: AdminAuditRecord[];
+  profiles: ProfileRecord[];
+  loginLogs: LoginLogRecord[];
+  auditLogs: AuditLogRecord[];
+  skillStats: Array<{ name: string; count: number }>;
 }
 
-function filterAndSortResumes(
-  resumes: ResumeRecord[] | undefined,
-  searchQuery: string,
-  gradeFilter: string,
-  formatFilter: string,
-  dateRangeFilter: string,
-  sortBy: 'date' | 'date_asc' | 'score' | 'score_asc' | 'name',
-  now: number
-): ResumeRecord[] {
-  if (!resumes || resumes.length === 0) return [];
-  const q = searchQuery.toLowerCase().trim();
-  const cutoffMs =
-    dateRangeFilter === 'today'
-      ? now - 24 * 60 * 60 * 1000
-      : dateRangeFilter === '7d'
-      ? now - 7 * 24 * 60 * 60 * 1000
-      : dateRangeFilter === '30d'
-      ? now - 30 * 24 * 60 * 60 * 1000
-      : 0;
+/* ========================================================================= */
+/* HELPER UTILITIES                                                          */
+/* ========================================================================= */
 
-  const list = resumes.filter((r) => {
-    const matchesSearch =
-      !q ||
-      (r.candidate_name && r.candidate_name.toLowerCase().includes(q)) ||
-      r.filename.toLowerCase().includes(q) ||
-      (r.user_email && r.user_email.toLowerCase().includes(q)) ||
-      r.id.toLowerCase().includes(q) ||
-      (r.resume_text && r.resume_text.toLowerCase().includes(q)) ||
-      r.ats_score.toString().includes(q) ||
-      (r.analysis?.matched_keywords && r.analysis.matched_keywords.some((k) => k.toLowerCase().includes(q)));
-
-    const grade =
-      r.analysis?.grade ||
-      (r.ats_score >= 88 ? 'A+' : r.ats_score >= 78 ? 'A' : r.ats_score >= 66 ? 'B' : r.ats_score >= 52 ? 'C' : 'D');
-    const matchesGrade = gradeFilter === 'ALL' || grade === gradeFilter;
-
-    let matchesFormat = true;
-    if (formatFilter !== 'ALL') {
-      const fn = r.filename.toLowerCase();
-      if (formatFilter === 'pdf') matchesFormat = fn.endsWith('.pdf');
-      else if (formatFilter === 'docx') matchesFormat = fn.endsWith('.docx');
-      else if (formatFilter === 'txt') matchesFormat = fn.endsWith('.txt');
-    }
-
-    let matchesDate = true;
-    if (cutoffMs > 0) {
-      matchesDate = new Date(r.created_at).getTime() >= cutoffMs;
-    }
-
-    return matchesSearch && matchesGrade && matchesFormat && matchesDate;
-  });
-
-  if (sortBy === 'score') {
-    return [...list].sort((a, b) => b.ats_score - a.ats_score);
+function formatScoreBadge(score: number) {
+  if (score >= 80) {
+    return {
+      label: 'Strong Candidate',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60',
+      dotClass: 'bg-emerald-500',
+    };
   }
-  if (sortBy === 'score_asc') {
-    return [...list].sort((a, b) => a.ats_score - b.ats_score);
+  if (score >= 60) {
+    return {
+      label: 'Good Potential',
+      badgeClass: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60',
+      dotClass: 'bg-amber-500',
+    };
   }
-  if (sortBy === 'date_asc') {
-    return [...list].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-  }
-  if (sortBy === 'name') {
-    return [...list].sort((a, b) => (a.candidate_name || a.filename).localeCompare(b.candidate_name || b.filename));
-  }
-  return [...list].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  return {
+    label: 'Needs Review',
+    badgeClass: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/60',
+    dotClass: 'bg-rose-500',
+  };
 }
 
-export default function AdminDashboardPage() {
+function formatDate(iso: string): string {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+function formatRelativeTime(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+  } catch {
+    return iso;
+  }
+}
+
+/* ========================================================================= */
+/* MAIN COMPONENT: ADMIN PORTAL                                              */
+/* ========================================================================= */
+
+export default function AdminPortalPage() {
+  // Authentication & Session State
   const [passcode, setPasscode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<AdminData | null>(null);
-  const [errorMsg, setErrorMsg] = useState('');
-
-  // Unified Admin Authentication & Recovery State
-  const [authView, setAuthView] = useState<'login' | 'reset-request' | 'reset-verify'>(() => {
-    if (typeof window === 'undefined') return 'login';
-    const hash = window.location.hash || '';
-    const search = window.location.search || '';
-    if (hash.includes('type=recovery') || search.includes('recovery=true')) {
-      return 'reset-verify';
-    }
-    return 'login';
-  });
+  const [authLoading, setAuthLoading] = useState(false);
   const [showPasscode, setShowPasscode] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [isRecoverySession, setIsRecoverySession] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    const hash = window.location.hash || '';
-    const search = window.location.search || '';
-    return hash.includes('type=recovery') || search.includes('recovery=true');
-  });
-  const [nowTimestamp] = useState<number>(() => Date.now());
-  const [resetCode, setResetCode] = useState('');
-  const [resetNewPasscode, setResetNewPasscode] = useState('');
-  const [resetConfirmPasscode, setResetConfirmPasscode] = useState('');
-  const [showResetNewPass, setShowResetNewPass] = useState(false);
-  const [resetLoading, setResetLoading] = useState(false);
-  const [resetError, setResetError] = useState('');
-  const [resetSuccess, setResetSuccess] = useState('');
-  const [resetEmailDispatched, setResetEmailDispatched] = useState<boolean>(true);
 
-  // Primary tab view: 'workspace', 'table', 'users', 'skills', 'logins', 'dsa-manager'
-  const [activeTab, setActiveTab] = useState<'workspace' | 'table' | 'users' | 'skills' | 'logins' | 'dsa-manager'>('workspace');
+  // Primary Navigation Tab
+  const [activeTab, setActiveTab] = useState<'overview' | 'dsa-manager' | 'resumes' | 'users' | 'skills' | 'settings'>('overview');
 
-  // DSA & POTD Manager state
+  // Core Data
+  const [data, setData] = useState<AdminData | null>(null);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // Resume Filters & Details View
+  const [resumeSearch, setResumeSearch] = useState('');
+  const [gradeFilter, setGradeFilter] = useState<'ALL' | 'STRONG' | 'GOOD' | 'NEEDS_WORK'>('ALL');
+  const [inspectResume, setInspectResume] = useState<ResumeRecord | null>(null);
+  const [deletingResumeId, setDeletingResumeId] = useState<string | null>(null);
+
+  // DSA Daily Challenge Sync State
   const [customProblems, setCustomProblems] = useState<CustomProblemRecord[]>([]);
   const [liveLeetCode, setLiveLeetCode] = useState<{
     title: string;
@@ -310,44 +207,39 @@ export default function AdminDashboardPage() {
   const [dsaCustomInput, setDsaCustomInput] = useState('');
   const [dsaPreview, setDsaPreview] = useState<DsaProblem | null>(null);
   const [dsaScheduledDate, setDsaScheduledDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [dsaFeedback, setDsaFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [dsaLangTab, setDsaLangTab] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
 
-  // Search & Filter state for resumes
-  const [searchQuery, setSearchQuery] = useState('');
-  const [gradeFilter, setGradeFilter] = useState('ALL');
-  const [formatFilter, setFormatFilter] = useState('ALL');
-  const [dateRangeFilter, setDateRangeFilter] = useState('ALL');
-  const [sortBy, setSortBy] = useState<'date' | 'date_asc' | 'score' | 'score_asc' | 'name'>('date');
-
-  // Multi-selection for bulk operations
-  const [selectedResumeIds, setSelectedResumeIds] = useState<Set<string>>(new Set());
-  const [bulkDeleting, setBulkDeleting] = useState(false);
-
-  // Search & Filter state for login audit logs
-  const [loginSearchQuery, setLoginSearchQuery] = useState('');
-  const [authMethodFilter, setAuthMethodFilter] = useState('ALL');
-
-  // Change Admin Passcode Modal state
+  // Change Password Modal
   const [changeKeyModalOpen, setChangeKeyModalOpen] = useState(false);
-  const [credentialsModalOpen, setCredentialsModalOpen] = useState(false);
-  const [auditModalOpen, setAuditModalOpen] = useState(false);
-  const [newPasscode, setNewPasscode] = useState('');
-  const [confirmNewPasscode, setConfirmNewPasscode] = useState('');
+  const [newKey, setNewKey] = useState('');
+  const [confirmKey, setConfirmKey] = useState('');
   const [changeKeyLoading, setChangeKeyLoading] = useState(false);
-  const [changeKeyMsg, setChangeKeyMsg] = useState('');
-  const [changeKeyErr, setChangeKeyErr] = useState('');
 
-  // Selected Resume for reading in workspace
-  const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
-  const [readerViewMode, setReaderViewMode] = useState<'formatted' | 'raw' | 'diagnostics'>('formatted');
-  const [copiedText, setCopiedText] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
-  const [reprocessingId, setReprocessingId] = useState<string | null>(null);
-  const [actionFeedback, setActionFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  /* ----------------------------------------------------------------------- */
+  /* DATA FETCHING & SYNCHRONIZATION                                         */
+  /* ----------------------------------------------------------------------- */
 
-  const searchInputId = useId();
+  const fetchAdminData = useCallback(async () => {
+    try {
+      setDataLoading(true);
+      const res = await fetch('/api/admin/data');
+      if (!res.ok) {
+        if (res.status === 401) {
+          setIsAuthenticated(false);
+          return;
+        }
+        throw new Error('Failed to load administrator data');
+      }
+      const json = await res.json();
+      setData(json);
+      setIsAuthenticated(true);
+      setAuthError('');
+    } catch (err: unknown) {
+      console.error(err);
+    } finally {
+      setDataLoading(false);
+    }
+  }, []);
 
   const fetchDsaData = useCallback(async () => {
     try {
@@ -359,50 +251,106 @@ export default function AdminDashboardPage() {
         setLiveLeetCode(json.liveLeetCodeDaily || null);
       }
     } catch (err) {
-      console.error('Failed to load DSA admin data:', err);
+      console.error('Error fetching DSA admin data:', err);
     } finally {
       setDsaLoading(false);
     }
   }, []);
 
-  const handlePreviewDaily = async () => {
+  // Check login state on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      void fetchAdminData();
+      void fetchDsaData();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [fetchAdminData, fetchDsaData]);
+
+  // Auth handler
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passcode.trim()) return;
+    setAuthLoading(true);
+    setAuthError('');
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passcode: passcode.trim() }),
+      });
+      const resJson = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAuthError(resJson.error || 'Incorrect security key. Please try again.');
+        return;
+      }
+      setIsAuthenticated(true);
+      fetchAdminData();
+      fetchDsaData();
+    } catch {
+      setAuthError('Connection error. Please try again.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/auth', { method: 'DELETE' });
+    } catch {
+      // ignore
+    }
+    setIsAuthenticated(false);
+    setData(null);
+  };
+
+  /* ----------------------------------------------------------------------- */
+  /* DSA MANAGER HANDLERS                                                    */
+  /* ----------------------------------------------------------------------- */
+
+  const handleSyncDailyLeetCode = async () => {
     try {
       setDsaSyncing(true);
-      setDsaFeedback(null);
+      setNotification(null);
       const res = await fetch('/api/admin/dsa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'preview-daily' }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to fetch daily challenge');
-      setDsaPreview(data.problem);
-      setDsaFeedback({ type: 'success', message: `Fetched & generated multi-language solutions for "${data.problem.title}"!` });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to sync challenge.');
+      setDsaPreview(json.problem);
+      setNotification({
+        type: 'success',
+        message: `Successfully fetched "${json.problem.title}" and generated solutions in 4 languages!`,
+      });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Sync failed.';
-      setDsaFeedback({ type: 'error', message: msg });
+      setNotification({ type: 'error', message: msg });
     } finally {
       setDsaSyncing(false);
     }
   };
 
-  const handlePreviewCustom = async () => {
+  const handleImportCustomSlug = async () => {
     if (!dsaCustomInput.trim()) return;
     try {
       setDsaSyncing(true);
-      setDsaFeedback(null);
+      setNotification(null);
       const res = await fetch('/api/admin/dsa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'preview-slug', slug: dsaCustomInput.trim() }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to fetch problem');
-      setDsaPreview(data.problem);
-      setDsaFeedback({ type: 'success', message: `Fetched & generated multi-language solutions for "${data.problem.title}"!` });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Problem not found.');
+      setDsaPreview(json.problem);
+      setNotification({
+        type: 'success',
+        message: `Successfully generated "${json.problem.title}"! Review below and click Publish.`,
+      });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Sync failed.';
-      setDsaFeedback({ type: 'error', message: msg });
+      const msg = err instanceof Error ? err.message : 'Import failed.';
+      setNotification({ type: 'error', message: msg });
     } finally {
       setDsaSyncing(false);
     }
@@ -412,7 +360,7 @@ export default function AdminDashboardPage() {
     if (!dsaPreview) return;
     try {
       setDsaPublishing(true);
-      setDsaFeedback(null);
+      setNotification(null);
       const res = await fetch('/api/admin/dsa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -422,22 +370,25 @@ export default function AdminDashboardPage() {
           scheduledForDate: dsaScheduledDate,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to publish');
-      setDsaFeedback({ type: 'success', message: data.message || 'Problem published to StackUp!' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to publish.');
+      setNotification({
+        type: 'success',
+        message: `"${dsaPreview.title}" is now published as the official StackUp Problem of the Day for ${dsaScheduledDate}!`,
+      });
       setDsaPreview(null);
       setDsaCustomInput('');
       fetchDsaData();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Publish failed.';
-      setDsaFeedback({ type: 'error', message: msg });
+      setNotification({ type: 'error', message: msg });
     } finally {
       setDsaPublishing(false);
     }
   };
 
   const handleDeleteCustomProblem = async (id: string) => {
-    if (!confirm('Remove this custom problem from StackUp?')) return;
+    if (!confirm('Remove this challenge from StackUp?')) return;
     try {
       const res = await fetch('/api/admin/dsa', {
         method: 'POST',
@@ -446,2336 +397,601 @@ export default function AdminDashboardPage() {
       });
       if (res.ok) {
         fetchDsaData();
+        setNotification({ type: 'success', message: 'Challenge removed from scheduled list.' });
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
     }
   };
 
-  const fetchAdminData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setErrorMsg('');
-      const res = await fetch('/api/admin/data');
-
-      if (!res.ok) {
-        if (res.status === 401) {
-          setIsAuthenticated(false);
-          if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('stackup_admin_key');
-            localStorage.removeItem('stackup_admin_key');
-          }
-          return;
-        }
-        throw new Error('Failed to load administrator telemetry.');
-      }
-
-      const json = await res.json();
-      setData(json);
-      setIsAuthenticated(true);
-      setAuthError('');
-
-      // Auto-select first resume if none selected or if previously selected was removed
-      if (json.resumes && json.resumes.length > 0) {
-        setSelectedResumeId((prev) => {
-          if (prev && json.resumes.some((r: ResumeRecord) => r.id === prev)) {
-            return prev;
-          }
-          return json.resumes[0].id;
-        });
-      } else {
-        setSelectedResumeId(null);
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Error loading admin data';
-      setErrorMsg(msg);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      void fetchAdminData();
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [fetchAdminData]);
-
-  // Listen for Supabase password recovery link redirection (one-click reset from email)
-  useEffect(() => {
-    try {
-      const supabase = createClient();
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((event, session) => {
-        if (
-          event === 'PASSWORD_RECOVERY' ||
-          (session && typeof window !== 'undefined' && window.location.search.includes('recovery=true'))
-        ) {
-          setAuthView('reset-verify');
-          setIsRecoverySession(true);
-          if (session?.user?.email) {
-            setResetEmail(session.user.email);
-          }
-        }
-      });
-
-      return () => {
-        subscription.unsubscribe();
-      };
-    } catch {
-      // In non-browser or placeholder environments
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!changeKeyModalOpen && !auditModalOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setChangeKeyModalOpen(false);
-        setAuditModalOpen(false);
-        setChangeKeyErr('');
-        setChangeKeyMsg('');
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [changeKeyModalOpen, auditModalOpen]);
-
-  const handleUnlock = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!passcode.trim()) {
-      setAuthError('Please enter the security key.');
-      return;
-    }
-    setAuthError('');
-    setLoading(true);
-    try {
-      const res = await fetch('/api/admin/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passcode: passcode.trim() }),
-      });
-      const resJson = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setAuthError(resJson.error || 'Invalid security key. Please try again.');
-        return;
-      }
-      setIsAuthenticated(true);
-      await fetchAdminData();
-    } catch {
-      setAuthError('Network communication error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResetRequest = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!resetEmail.trim() || !resetEmail.includes('@')) {
-      setResetError('Please enter a valid administrator email address.');
-      return;
-    }
-    setResetError('');
-    setResetSuccess('');
-    setResetLoading(true);
-    try {
-      const res = await fetch('/api/admin/reset-password/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: resetEmail.trim() }),
-      });
-      const resJson = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setResetError(resJson.error || 'Unable to process recovery request.');
-        return;
-      }
-      setResetEmailDispatched(resJson.emailDispatched !== false);
-      setResetSuccess(
-        resJson.message || 'Recovery instructions dispatched. Please check your inbox or enter your 6-digit verification code.'
-      );
-      setTimeout(() => {
-        setAuthView('reset-verify');
-      }, 700);
-    } catch {
-      setResetError('Network error. Unable to dispatch recovery instructions.');
-    } finally {
-      setResetLoading(false);
-    }
-  };
-
-  const handleResetVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setResetError('');
-    setResetSuccess('');
-
-    if (!resetEmail.trim()) {
-      setResetError('Please verify the administrator email.');
-      return;
-    }
-    if (!resetCode.trim() && !isRecoverySession) {
-      setResetError('Please enter the 6-digit verification code sent to your email.');
-      return;
-    }
-    if (!resetNewPasscode.trim() || resetNewPasscode.length < 8) {
-      setResetError('New master key must be at least 8 characters long.');
-      return;
-    }
-    if (resetNewPasscode !== resetConfirmPasscode) {
-      setResetError('New master keys do not match.');
-      return;
-    }
-
-    setResetLoading(true);
-    try {
-      const res = await fetch('/api/admin/reset-password/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: resetEmail.trim(),
-          code: resetCode.trim() || undefined,
-          newPassword: resetNewPasscode.trim(),
-          confirmPassword: resetConfirmPasscode.trim(),
-        }),
-      });
-      const resJson = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setResetError(resJson.error || 'Verification failed. Please check the code or reset link.');
-        return;
-      }
-      setResetSuccess('Security key updated successfully! Entering admin portal...');
-      setTimeout(async () => {
-        setAuthView('login');
-        setResetCode('');
-        setResetNewPasscode('');
-        setResetConfirmPasscode('');
-        setIsRecoverySession(false);
-        setIsAuthenticated(true);
-        await fetchAdminData();
-      }, 700);
-    } catch {
-      setResetError('Network error. Unable to verify reset request.');
-    } finally {
-      setResetLoading(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await fetch('/api/admin/auth', { method: 'DELETE' });
-    } catch {
-      // ignore
-    }
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('stackup_admin_key');
-      sessionStorage.removeItem('stackup_admin_key');
-    }
-    setIsAuthenticated(false);
-    setPasscode('');
-    setData(null);
-  };
+  /* ----------------------------------------------------------------------- */
+  /* RESUME MANAGEMENT HANDLERS                                              */
+  /* ----------------------------------------------------------------------- */
 
   const handleDeleteResume = async (id: string) => {
-    if (!confirm('Are you sure you want to permanently delete this resume record? This action cannot be undone.')) {
-      return;
-    }
+    if (!confirm('Permanently delete this resume record? This cannot be undone.')) return;
     try {
-      setDeletingId(id);
-      const res = await fetch('/api/admin/data', {
+      setDeletingResumeId(id);
+      const res = await fetch(`/api/admin/data?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
       });
       if (res.ok) {
-        if (selectedResumeId === id) {
-          const remaining = (data?.resumes || []).filter((r) => r.id !== id);
-          setSelectedResumeId(remaining.length > 0 ? remaining[0].id : null);
-          setMobileDetailOpen(false);
-        }
-        setSelectedResumeIds((prev) => {
-          const next = new Set(prev);
-          next.delete(id);
-          return next;
-        });
-        setActionFeedback({ type: 'success', message: 'Resume permanently deleted.' });
-        setTimeout(() => setActionFeedback(null), 3000);
-        await fetchAdminData();
-      } else {
-        alert('Failed to delete resume record.');
+        if (inspectResume?.id === id) setInspectResume(null);
+        fetchAdminData();
+        setNotification({ type: 'success', message: 'Resume record deleted.' });
       }
     } catch {
-      alert('Error deleting resume record.');
+      alert('Failed to delete resume.');
     } finally {
-      setDeletingId(null);
+      setDeletingResumeId(null);
     }
   };
 
-  const handleBulkDelete = async () => {
-    const ids = Array.from(selectedResumeIds);
-    if (ids.length === 0) return;
-    if (!confirm(`Permanently delete ${ids.length} selected resume(s)? This action cannot be undone.`)) {
-      return;
-    }
-    try {
-      setBulkDeleting(true);
-      const res = await fetch('/api/admin/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'bulk_delete', ids }),
-      });
-      if (res.ok) {
-        setSelectedResumeIds(new Set());
-        setActionFeedback({ type: 'success', message: `Deleted ${ids.length} resume(s) successfully.` });
-        setTimeout(() => setActionFeedback(null), 3000);
-        await fetchAdminData();
-      } else {
-        alert('Failed to complete bulk delete.');
-      }
-    } catch {
-      alert('Error during bulk deletion.');
-    } finally {
-      setBulkDeleting(false);
-    }
-  };
+  const resumesList = data?.resumes;
+  const filteredResumes = useMemo(() => {
+    if (!resumesList) return [];
+    return resumesList.filter((r) => {
+      // Search filter
+      const q = resumeSearch.toLowerCase();
+      const matchName = (r.candidate_name || '').toLowerCase().includes(q);
+      const matchEmail = (r.candidate_email || '').toLowerCase().includes(q);
+      const matchFile = (r.filename || '').toLowerCase().includes(q);
+      if (q && !matchName && !matchEmail && !matchFile) return false;
 
-  const handleReprocess = async (id: string) => {
-    try {
-      setReprocessingId(id);
-      const res = await fetch('/api/admin/reprocess', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        setActionFeedback({ type: 'error', message: json.error || 'Failed to reprocess resume.' });
-        setTimeout(() => setActionFeedback(null), 4000);
-        return;
-      }
-      setActionFeedback({ type: 'success', message: 'Resume successfully re-analyzed with updated ATS scores!' });
-      setTimeout(() => setActionFeedback(null), 3500);
-      await fetchAdminData();
-    } catch {
-      setActionFeedback({ type: 'error', message: 'Network error during reprocessing.' });
-      setTimeout(() => setActionFeedback(null), 4000);
-    } finally {
-      setReprocessingId(null);
-    }
-  };
+      // Grade filter
+      if (gradeFilter === 'STRONG' && r.ats_score < 80) return false;
+      if (gradeFilter === 'GOOD' && (r.ats_score < 60 || r.ats_score >= 80)) return false;
+      if (gradeFilter === 'NEEDS_WORK' && r.ats_score >= 60) return false;
 
-  const handlePurgeTestRecords = async () => {
-    if (!confirm('Purge all mock and test seed resumes (@example.com, etc.) permanently?')) return;
-    try {
-      const res = await fetch('/api/admin/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'purge_test_records' }),
-      });
-      const json = await res.json();
-      if (res.ok) {
-        setActionFeedback({ type: 'success', message: json.message || 'Test records purged.' });
-        setTimeout(() => setActionFeedback(null), 3500);
-        await fetchAdminData();
-      } else {
-        alert('Failed to purge test records.');
-      }
-    } catch {
-      alert('Error purging test records.');
-    }
-  };
-
-  const handleExportCsv = (ids?: string[]) => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.set('search', searchQuery);
-    if (gradeFilter !== 'ALL') params.set('grade', gradeFilter);
-    if (formatFilter !== 'ALL') params.set('format', formatFilter);
-    if (dateRangeFilter !== 'ALL') params.set('dateRange', dateRangeFilter);
-    if (ids && ids.length > 0) params.set('ids', ids.join(','));
-
-    const downloadUrl = `/api/admin/export-resumes?${params.toString()}`;
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = `stackup_candidate_resumes_${new Date().toISOString().slice(0, 10)}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleChangePasscode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setChangeKeyErr('');
-    setChangeKeyMsg('');
-    if (!newPasscode.trim() || newPasscode.length < 8) {
-      setChangeKeyErr('New security key must be at least 8 characters long.');
-      return;
-    }
-    if (newPasscode !== confirmNewPasscode) {
-      setChangeKeyErr('Passcode confirmation does not match.');
-      return;
-    }
-    try {
-      setChangeKeyLoading(true);
-      const res = await fetch('/api/admin/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'change_passcode', newPasscode: newPasscode.trim() }),
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        setChangeKeyErr(json.error || 'Failed to update admin key.');
-        return;
-      }
-      setChangeKeyMsg('Master key updated successfully! Please save your new passcode.');
-      setNewPasscode('');
-      setConfirmNewPasscode('');
-      setTimeout(() => {
-        setChangeKeyModalOpen(false);
-        setChangeKeyMsg('');
-      }, 2000);
-    } catch {
-      setChangeKeyErr('Network error updating security key.');
-    } finally {
-      setChangeKeyLoading(false);
-    }
-  };
-
-  const handleCopyText = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedText(true);
-    setTimeout(() => setCopiedText(false), 2000);
-  };
-
-  const handleDownloadOriginalFile = (resume: ResumeRecord) => {
-    const downloadUrl = `/api/admin/resume-download?id=${encodeURIComponent(resume.id)}`;
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = resume.filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownloadText = (resume: ResumeRecord) => {
-    if (!resume.resume_text) return;
-    const blob = new Blob([resume.resume_text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${resume.filename.replace(/\.[^/.]+$/, '')}_raw.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  // Filtered and sorted genuine resumes
-  const resumes = data?.resumes;
-  const filteredResumes = useMemo(
-    () =>
-      filterAndSortResumes(
-        resumes,
-        searchQuery,
-        gradeFilter,
-        formatFilter,
-        dateRangeFilter,
-        sortBy,
-        nowTimestamp
-      ),
-    [resumes, searchQuery, gradeFilter, formatFilter, dateRangeFilter, sortBy, nowTimestamp]
-  );
-
-  const toggleSelectResume = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedResumeIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
+      return true;
     });
-  };
+  }, [resumesList, resumeSearch, gradeFilter]);
 
-  const toggleSelectAll = () => {
-    if (selectedResumeIds.size === filteredResumes.length) {
-      setSelectedResumeIds(new Set());
-    } else {
-      setSelectedResumeIds(new Set(filteredResumes.map((r) => r.id)));
-    }
-  };
+  /* ======================================================================= */
+  /* VIEW 1: ADMIN LOGIN SCREEN (Clean, Friendly & Accessible)               */
+  /* ======================================================================= */
 
-  // Filtered login audit logs
-  const loginLogs = data?.loginLogs;
-  const filteredLoginLogs = useMemo(() => {
-    if (!loginLogs) return [];
-    return loginLogs.filter((log) => {
-      const q = loginSearchQuery.toLowerCase();
-      const matchesSearch =
-        !q ||
-        (log.email && log.email.toLowerCase().includes(q)) ||
-        (log.full_name && log.full_name.toLowerCase().includes(q)) ||
-        (log.user_id && log.user_id.toLowerCase().includes(q)) ||
-        (log.ip_address && log.ip_address.toLowerCase().includes(q)) ||
-        log.auth_method.toLowerCase().includes(q);
-
-      const matchesMethod =
-        authMethodFilter === 'ALL' ||
-        log.auth_method.toLowerCase() === authMethodFilter.toLowerCase();
-
-      return matchesSearch && matchesMethod;
-    });
-  }, [loginLogs, loginSearchQuery, authMethodFilter]);
-
-  // The active resume currently being inspected in the workspace
-  const currentResume = useMemo(() => {
-    if (!resumes || resumes.length === 0) return null;
-    return resumes.find((r) => r.id === selectedResumeId) || resumes[0];
-  }, [resumes, selectedResumeId]);
-
-  // If not authenticated, render the secured admin access portal
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] flex flex-col justify-center items-center px-4 py-8 sm:py-12 transition-colors">
-        {/* Prominent Back Link for Mobile & Desktop */}
-        <div className="w-full max-w-md mb-3 flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-[#0D08CB] dark:hover:text-[#E9DEFA] bg-white dark:bg-[#151D35] hover:bg-slate-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 px-3.5 py-2 rounded-lg transition-all shadow-sm"
-          >
-            <ChevronLeft className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-            <span>&larr; Back to StackUp Website</span>
-          </Link>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Admin Authorization</span>
-        </div>
+      <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] flex flex-col justify-center items-center p-4 selection:bg-[#0D08CB] selection:text-white">
+        <div className="w-full max-w-md bg-white dark:bg-[#151D35] rounded-2xl shadow-xl border border-slate-200 dark:border-zinc-800 p-8 sm:p-10 space-y-6">
+          {/* Brand Header */}
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-xl bg-[#0D08CB] text-white flex items-center justify-center mx-auto shadow-md">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              StackUp Admin Portal
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Manage student resumes, placement challenges, and platform intelligence
+            </p>
+          </div>
 
-        <div className="max-w-md w-full bg-white dark:bg-[#151D35] border border-slate-200 dark:border-zinc-800 rounded-lg p-6 sm:p-8 shadow-xl text-center space-y-6">
-          {/* VIEW 1: MASTER PASSCODE GATEWAY */}
-          {authView === 'login' && (
-            <>
-              <div className="space-y-3">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center mx-auto shadow-sm">
-                  <ShieldCheck className="w-8 h-8 sm:w-9 sm:h-9" />
-                </div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                  Staff Authorization Gateway
-                </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-                  Restricted to authorized administrative personnel. All access attempts are cryptographically verified and recorded.
-                </p>
-              </div>
-
-              {authError && (
-                <div className="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs flex items-center space-x-2 text-left">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{authError}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleUnlock} className="space-y-4 text-left">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Master Security Key
-                  </label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3.5" />
-                    <input
-                      type={showPasscode ? 'text' : 'password'}
-                      value={passcode}
-                      onChange={(e) => {
-                        setPasscode(e.target.value);
-                        if (authError) setAuthError('');
-                      }}
-                      placeholder="Enter administrator access key..."
-                      required
-                      autoFocus
-                      autoComplete="current-password"
-                      autoCorrect="off"
-                      autoCapitalize="off"
-                      spellCheck={false}
-                      className="w-full pl-10 pr-11 py-3 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB] focus:border-[#0D08CB] cursor-text transition-colors"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPasscode(!showPasscode)}
-                      tabIndex={-1}
-                      aria-label={showPasscode ? 'Hide security key' : 'Show security key'}
-                      className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
-                    >
-                      {showPasscode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 pl-1">
-                    Enter the configured master credential to open the management portal.
-                  </p>
-                </div>
-
-                <div className="flex items-center space-x-2 pt-1">
-                  <Link
-                    href="/"
-                    className="flex-1 py-3 px-4 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors cursor-pointer text-center"
-                  >
-                    &larr; Go Back
-                  </Link>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 py-3 px-4 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] active:bg-[#08059E] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Verifying...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Enter Portal</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-
-              {/* Recovery Entrypoint */}
-              <div className="pt-2 border-t border-slate-100 dark:border-zinc-800/80 text-xs space-y-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthError('');
-                    setResetError('');
-                    setResetSuccess('');
-                    setAuthView('reset-request');
-                  }}
-                  className="inline-flex items-center space-x-1.5 text-[#0D08CB] dark:text-[#E9DEFA] hover:text-[#0A06A3] dark:hover:text-white font-semibold cursor-pointer transition-colors"
-                >
-                  <Key className="w-3.5 h-3.5" />
-                  <span>Forgot security key? Reset password via email</span>
-                </button>
-                <div>
-                  <Link
-                    href="/"
-                    className="text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                  >
-                    &larr; Return to main student portal
-                  </Link>
-                </div>
-              </div>
-            </>
+          {/* Error Banner */}
+          {authError && (
+            <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{authError}</span>
+            </div>
           )}
 
-          {/* VIEW 2: PASSWORD RECOVERY REQUEST */}
-          {authView === 'reset-request' && (
-            <>
-              <div className="space-y-3">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-amber-50 dark:bg-amber-600/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center mx-auto shadow-sm">
-                  <KeyRound className="w-8 h-8 sm:w-9 sm:h-9" />
-                </div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                  Admin Security Recovery
-                </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-                  Identity verification and password recovery for verified administrator accounts.
-                </p>
-              </div>
-
-              {/* Security Policy Badge */}
-              <div className="p-3.5 rounded-lg bg-[#E9DEFA]/40 dark:bg-[#044E62]/20 border border-[#DCD2EC] dark:border-[#044E62]/40 text-left text-xs space-y-1">
-                <div className="font-bold text-[#044E62] dark:text-[#E9DEFA] flex items-center space-x-1.5">
-                  <ShieldCheck className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
-                  <span>Restricted Administrator Recovery</span>
-                </div>
-                <p className="text-slate-600 dark:text-slate-300 text-[11px]">
-                  Password recovery is strictly restricted to the verified administrator account:{' '}
-                  <code className="font-mono font-bold text-[#044E62] dark:text-[#E9DEFA] bg-white dark:bg-zinc-800 px-1 py-0.5 rounded">
-                    shobhitagrawal2004@gmail.com
-                  </code>
-                </p>
-              </div>
-
-              {resetError && (
-                <div className="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs flex items-center space-x-2 text-left">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{resetError}</span>
-                </div>
-              )}
-
-              {resetSuccess && (
-                <div className="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-300 text-xs flex items-center space-x-2 text-left">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <span>{resetSuccess}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleResetRequest} className="space-y-4 text-left">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Verified Administrator Email
-                  </label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3.5" />
-                    <input
-                      type="email"
-                      value={resetEmail}
-                      onChange={(e) => {
-                        setResetEmail(e.target.value);
-                        if (resetError) setResetError('');
-                      }}
-                      placeholder="admin@example.com"
-                      required
-                      autoFocus
-                      autoComplete="email"
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB] font-medium transition-colors"
-                    />
-                  </div>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 pl-1">
-                    A single-use 6-digit cryptographic verification code will be dispatched to this address.
-                  </p>
-                </div>
-
-                <div className="flex items-center space-x-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAuthView('login');
-                      setResetError('');
-                      setResetSuccess('');
-                    }}
-                    className="flex-1 py-3 px-4 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors cursor-pointer text-center"
-                  >
-                    &larr; Back to Login
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={resetLoading}
-                    className="flex-1 py-3 px-4 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] active:bg-[#08059E] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {resetLoading ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Sending Code...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Send Reset Code</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-
-              <div className="pt-2 border-t border-slate-100 dark:border-zinc-800/80 text-xs">
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                Security Key / Passcode
+              </label>
+              <div className="relative">
+                <input
+                  type={showPasscode ? 'text' : 'password'}
+                  value={passcode}
+                  onChange={(e) => setPasscode(e.target.value)}
+                  placeholder="Enter your admin security key..."
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-[#0B1020] text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0D08CB] transition-all"
+                />
                 <button
                   type="button"
-                  onClick={() => {
-                    setAuthView('reset-verify');
-                    setResetError('');
-                    setResetSuccess('');
-                  }}
-                  className="text-[#044E62] dark:text-[#E9DEFA] hover:underline font-semibold cursor-pointer"
+                  onClick={() => setShowPasscode(!showPasscode)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 >
-                  Already have a 6-digit recovery code? Enter it here &rarr;
+                  {showPasscode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-            </>
-          )}
+            </div>
 
-          {/* VIEW 3: VERIFY CODE & SET NEW MASTER KEY */}
-          {authView === 'reset-verify' && (
-            <>
-              <div className="space-y-3">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-[#E9DEFA] dark:bg-[#044E62]/20 text-[#044E62] dark:text-[#E9DEFA] border border-[#DCD2EC] dark:border-[#044E62]/30 flex items-center justify-center mx-auto shadow-sm">
-                  <Lock className="w-8 h-8 sm:w-9 sm:h-9" />
-                </div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                  Complete Security Reset
-                </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-                  Verification code &amp; password update
-                </p>
-              </div>
-
-              {/* Informational Banner */}
-              <div className="p-3.5 rounded-lg bg-[#E9DEFA]/40 dark:bg-[#044E62]/20 border border-[#DCD2EC] dark:border-[#044E62]/40 text-left text-xs space-y-1">
-                <div className="font-bold text-[#044E62] dark:text-[#E9DEFA] flex items-center space-x-1.5">
-                  <Key className="w-4 h-4 text-[#044E62] dark:text-[#E9DEFA]" />
-                  <span>Recovery Instructions Dispatched</span>
-                </div>
-                <p className="text-slate-600 dark:text-slate-300 text-[11px]">
-                  Instructions sent to <span className="font-mono font-bold">{maskEmail(resetEmail || 'shobhitagrawal2004@gmail.com')}</span>.
-                </p>
-                <p className="text-slate-500 dark:text-slate-400 text-[10px] pt-1">
-                  <strong>Tip:</strong> Tap the &quot;Reset password&quot; button in your email to reset instantly, or enter your 6-digit code below.
-                </p>
-              </div>
-
-              {/* Dynamic Honest Delivery Status Banner */}
-              {resetEmailDispatched ? (
-                <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 text-left text-xs text-emerald-800 dark:text-emerald-300 flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                  <span>
-                    If the provided email belongs to an authorized administrator, password recovery instructions have been dispatched. Please check your inbox.
-                  </span>
-                </div>
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="w-full py-3 px-4 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-sm font-bold transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+            >
+              {authLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Unlocking Portal...</span>
+                </>
               ) : (
-                <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-left text-xs text-amber-800 dark:text-amber-300 flex items-start space-x-2">
-                  <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                  <span>
-                    Direct Supabase email delivery is not configured on this host. Use your administrator emergency bypass code (e.g. <code>518780</code> or <code>841903</code>) to authenticate.
-                  </span>
-                </div>
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span>Unlock Admin Portal</span>
+                </>
               )}
+            </button>
+          </form>
 
-              {resetError && (
-                <div className="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs flex items-center space-x-2 text-left">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{resetError}</span>
-                </div>
-              )}
-
-              {resetSuccess && (
-                <div className="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-300 text-xs flex items-center space-x-2 text-left">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <span>{resetSuccess}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleResetVerify} className="space-y-4 text-left">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Administrator Email
-                  </label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3.5" />
-                    <input
-                      type="email"
-                      value={resetEmail}
-                      onChange={(e) => setResetEmail(e.target.value)}
-                      placeholder="admin@example.com"
-                      required
-                      autoComplete="email"
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB] font-medium transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    6-Digit Verification Code {isRecoverySession && '(Optional if using email link)'}
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={resetCode}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, '').slice(0, 6);
-                        setResetCode(val);
-                        if (resetError) setResetError('');
-                      }}
-                      placeholder="000000"
-                      required={!isRecoverySession}
-                      maxLength={6}
-                      autoFocus={!isRecoverySession}
-                      className="w-full text-center tracking-[0.5em] font-mono text-xl py-3 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                    />
-                  </div>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 pl-1">
-                    If you click the &quot;Reset password&quot; link in your email, you do not need this code.
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    New Master Security Key
-                  </label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3.5" />
-                    <input
-                      type={showResetNewPass ? 'text' : 'password'}
-                      value={resetNewPasscode}
-                      onChange={(e) => {
-                        setResetNewPasscode(e.target.value);
-                        if (resetError) setResetError('');
-                      }}
-                      placeholder="Minimum 8 characters..."
-                      required
-                      minLength={8}
-                      autoComplete="new-password"
-                      className="w-full pl-10 pr-11 py-3 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowResetNewPass(!showResetNewPass)}
-                      tabIndex={-1}
-                      className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
-                    >
-                      {showResetNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Confirm New Security Key
-                  </label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3.5" />
-                    <input
-                      type={showResetNewPass ? 'text' : 'password'}
-                      value={resetConfirmPasscode}
-                      onChange={(e) => {
-                        setResetConfirmPasscode(e.target.value);
-                        if (resetError) setResetError('');
-                      }}
-                      placeholder="Re-enter new security key..."
-                      required
-                      minLength={8}
-                      autoComplete="new-password"
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800/80 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAuthView('login');
-                      setResetCode('');
-                      setResetError('');
-                      setResetSuccess('');
-                    }}
-                    className="flex-1 py-3 px-4 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors cursor-pointer text-center"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={resetLoading}
-                    className="flex-1 py-3 px-4 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] active:bg-[#08059E] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {resetLoading ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Updating...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>Set Master Key</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </>
-          )}
+          <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 text-center">
+            <Link
+              href="/"
+              className="text-xs text-slate-500 hover:text-[#0D08CB] dark:hover:text-white transition-colors"
+            >
+              &larr; Return to StackUp Homepage
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Authenticated Administration Surface
+  /* ======================================================================= */
+  /* VIEW 2: AUTHENTICATED ADMIN DASHBOARD (Modern & Accessible)            */
+  /* ======================================================================= */
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] text-slate-900 dark:text-slate-100 flex flex-col transition-colors selection:bg-[#044E62] selection:text-white">
-      {/* Top Header Navigation Strip */}
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0B1020]/95 backdrop-blur-md border-b border-slate-200 dark:border-zinc-800 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#044E62] text-white flex items-center justify-center shadow-md shadow-[#0D08CB]/20 shrink-0">
-                  <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <h1 className="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                      Admin Ingestion Hub
-                    </h1>
-                    <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                      Live
-                    </span>
-                  </div>
-                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate max-w-[260px] sm:max-w-md">
-                    Real-time uploaded candidate dossiers and ATS scoring telemetry
-                  </p>
-                </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1020] text-slate-900 dark:text-slate-100 selection:bg-[#0D08CB] selection:text-white pb-24">
+      {/* ------------------------------------------------------------------- */}
+      {/* TOP NAVIGATION BAR                                                  */}
+      {/* ------------------------------------------------------------------- */}
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#11182E]/95 backdrop-blur-md border-b border-slate-200 dark:border-zinc-800 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Logo & Platform Name */}
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 rounded-xl bg-[#0D08CB] text-white flex items-center justify-center shadow-sm">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-extrabold text-slate-900 dark:text-white text-base tracking-tight">
+                  StackUp Admin
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-900">
+                  Placement Hub
+                </span>
               </div>
-
-              {/* Mobile Main Site Link */}
-              <Link
-                href="/"
-                className="sm:hidden p-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
-                title="Return to Main Portal"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Link>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 block -mt-0.5">
+                Portal Management &amp; Analytics
+              </span>
             </div>
+          </div>
 
-            {/* Header Action Buttons */}
-            <div className="flex items-center flex-wrap gap-2">
-              <Link
-                href="/"
-                className="hidden sm:inline-flex px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Main Site</span>
-              </Link>
+          {/* Quick Actions & Logout */}
+          <div className="flex items-center space-x-2.5">
+            <Link
+              href="/"
+              target="_blank"
+              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
+            >
+              <span>View Live Website</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+            </Link>
 
-              <button
-                onClick={() => fetchAdminData()}
-                disabled={loading}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#E9DEFA]' : ''}`} />
-                <span className="hidden xs:inline">Refresh</span>
-              </button>
+            <button
+              onClick={() => {
+                void fetchAdminData();
+                void fetchDsaData();
+              }}
+              disabled={dataLoading}
+              className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              title="Refresh Data"
+            >
+              <RefreshCw className={`w-4 h-4 ${dataLoading ? 'animate-spin text-[#0D08CB]' : ''}`} />
+            </button>
 
-              <button
-                onClick={() => handleExportCsv()}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
-                title="Export filtered candidate metadata as CSV"
-              >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
-                <span className="hidden sm:inline">Export CSV</span>
-              </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              title="Settings & Security"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
 
-              <button
-                onClick={() => setAuditModalOpen(true)}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
-                title="View administrator audit trail"
-              >
-                <History className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA] dark:text-[#E9DEFA]" />
-                <span className="hidden sm:inline">Audit Trail</span>
-              </button>
+            <button
+              onClick={handleLogout}
+              className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
 
-              <button
-                onClick={() => {
-                  setChangeKeyErr('');
-                  setChangeKeyMsg('');
-                  setChangeKeyModalOpen(true);
-                }}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
-                title="Change master admin security key"
-              >
-                <KeyRound className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-                <span>Change Key</span>
-              </button>
-
-              <button
-                onClick={() => setCredentialsModalOpen(true)}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
-                title="Supabase and Claude API Integrations"
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-[#044E62] dark:text-[#E9DEFA] dark:text-[#E9DEFA]" />
-                <span className="hidden sm:inline">Integrations</span>
-              </button>
-
-              <button
-                onClick={handlePurgeTestRecords}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer"
-                title="Purge dummy seeds (@example.com, etc.)"
-              >
-                <Trash2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                <span className="hidden sm:inline">Purge Seeds</span>
-              </button>
-
-              <button
-                onClick={handleSignOut}
-                className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/20 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors cursor-pointer"
-              >
-                Lock
-              </button>
-            </div>
+        {/* Navigation Tabs Bar */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-100 dark:border-zinc-800/60 overflow-x-auto scrollbar-none">
+          <div className="flex space-x-1 py-1.5">
+            {([
+              { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+              { id: 'dsa-manager', label: 'Daily Challenges (POTD)', icon: Code2, badge: customProblems.length },
+              { id: 'resumes', label: 'Student Resumes', icon: FileText, badge: data?.resumes?.length },
+              { id: 'users', label: 'Students Directory', icon: Users, badge: data?.profiles?.length },
+              { id: 'skills', label: 'Skill Analytics', icon: BarChart3 },
+              { id: 'settings', label: 'Security & Settings', icon: KeyRound },
+            ] as Array<{
+              id: 'overview' | 'dsa-manager' | 'resumes' | 'users' | 'skills' | 'settings';
+              label: string;
+              icon: React.ComponentType<{ className?: string }>;
+              badge?: number;
+            }>).map((tab) => {
+              const Icon = tab.icon;
+              const isSelected = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center space-x-2 shrink-0 cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#0D08CB] text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800/60'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                  {tab.badge !== undefined && tab.badge > 0 && (
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                      isSelected ? 'bg-white/25 text-white' : 'bg-slate-200 dark:bg-zinc-700 text-slate-700 dark:text-slate-300'
+                    }`}>
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 w-full flex-1 space-y-6">
-        {actionFeedback && (
-          <div
-            className={`p-4 rounded-lg border text-sm flex items-center space-x-3 transition-all animate-in fade-in ${
-              actionFeedback.type === 'success'
-                ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300'
-                : 'bg-rose-950/40 border-rose-800 text-rose-300'
-            }`}
-          >
-            {actionFeedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-            ) : (
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
-            )}
-            <span>{actionFeedback.message}</span>
-          </div>
-        )}
-
-        {errorMsg && (
-          <div className="p-4 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-400 text-sm flex items-center space-x-3">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
-        {/* Integrated Operations Metrics Strip */}
-        <div className="rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#151D35] divide-y sm:divide-y-0 sm:divide-x divide-slate-100 dark:divide-zinc-800 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 overflow-hidden shadow-xs">
-          <div className="p-4 sm:p-5">
-            <div className="flex items-center justify-between text-slate-400 mb-1">
-              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider">Candidate Resumes</span>
-              <FileText className="w-3.5 h-3.5 text-[#E9DEFA]" />
+      {/* ------------------------------------------------------------------- */}
+      {/* GLOBAL NOTIFICATION BANNER                                          */}
+      {/* ------------------------------------------------------------------- */}
+      {notification && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          <div className={`p-4 rounded-xl border text-xs flex items-center justify-between shadow-xs ${
+            notification.type === 'success'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-900 dark:text-emerald-300'
+              : 'bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950/40 dark:border-rose-900 dark:text-rose-300'
+          }`}>
+            <div className="flex items-center space-x-2.5">
+              {notification.type === 'success' ? (
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 dark:text-rose-400" />
+              )}
+              <span className="font-medium">{notification.message}</span>
             </div>
-            <div className="text-xl sm:text-3xl font-black font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
-              {data?.metrics.totalResumes ?? 0}
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">
-              Active documents
-            </div>
-          </div>
-
-          <div className="p-4 sm:p-5">
-            <div className="flex items-center justify-between text-slate-400 mb-1">
-              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider">Avg ATS Score</span>
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-            </div>
-            <div className="text-xl sm:text-3xl font-black font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
-              {data?.metrics.avgScore ?? 0}
-              <span className="text-xs font-semibold text-slate-400">/100</span>
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-emerald-400 mt-0.5 font-semibold">
-              {data?.metrics.highPerformers ?? 0} Grade A (&ge;75)
-            </div>
-          </div>
-
-          <div className="p-4 sm:p-5">
-            <div className="flex items-center justify-between text-slate-400 mb-1">
-              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider">Student Profiles</span>
-              <Users className="w-3.5 h-3.5 text-[#E9DEFA]" />
-            </div>
-            <div className="text-xl sm:text-3xl font-black font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
-              {data?.metrics.totalUsers ?? 0}
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">
-              Candidate accounts
-            </div>
-          </div>
-
-          <div className="p-4 sm:p-5">
-            <div className="flex items-center justify-between text-slate-400 mb-1">
-              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider">Pass Rate</span>
-              <Award className="w-3.5 h-3.5 text-amber-400" />
-            </div>
-            <div className="text-xl sm:text-3xl font-black font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
-              {data?.metrics.passRate ?? (data?.metrics.totalResumes ? Math.round(((data.metrics.highPerformers || 0) / data.metrics.totalResumes) * 100) : 0)}%
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">
-              Score &ge; 65 benchmark
-            </div>
-          </div>
-
-          <div className="p-4 sm:p-5 col-span-2 sm:col-span-1">
-            <div className="flex items-center justify-between text-slate-400 mb-1">
-              <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider">Audited Logins</span>
-              <LogIn className="w-3.5 h-3.5 text-sky-400" />
-            </div>
-            <div className="text-xl sm:text-3xl font-black font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
-              {data?.loginLogs?.length ?? data?.metrics.totalLogins ?? 0}
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-sky-400 mt-0.5 font-semibold">
-              Tracked sessions
-            </div>
+            <button
+              onClick={() => setNotification(null)}
+              className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
+      )}
 
-        {/* Primary Tab Navigation */}
-        <div className="flex items-center space-x-2 border-b border-zinc-800 pb-2 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-          <button
-            onClick={() => { setActiveTab('workspace'); setMobileDetailOpen(false); }}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
-              activeTab === 'workspace'
-                ? 'bg-[#0D08CB] text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Resume Dossier &amp; Reader ({data?.resumes?.length ?? 0})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('table')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
-              activeTab === 'table'
-                ? 'bg-[#0D08CB] text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
-            }`}
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>Resumes Table View</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
-              activeTab === 'users'
-                ? 'bg-[#0D08CB] text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>Registered Users ({data?.profiles?.length ?? 0})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('skills')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
-              activeTab === 'skills'
-                ? 'bg-[#0D08CB] text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Skill Analytics</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('logins')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
-              activeTab === 'logins'
-                ? 'bg-[#0D08CB] text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
-            }`}
-          >
-            <LogIn className="w-3.5 h-3.5" />
-            <span>Login &amp; Access Audit ({data?.loginLogs?.length ?? 0})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('dsa-manager')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center space-x-1.5 ${
-              activeTab === 'dsa-manager'
-                ? 'bg-[#0D08CB] text-white shadow-sm'
-                : 'text-slate-400 hover:text-white hover:bg-zinc-850'
-            }`}
-          >
-            <Code2 className="w-3.5 h-3.5" />
-            <span>DSA &amp; POTD Manager</span>
-            {customProblems.length > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px]">
-                {customProblems.length}
-              </span>
-            )}
-          </button>
-        </div>
-
-        {/* ========================================================================= */}
-        {/* TAB 1: DEDICATED RESUME WORKSPACE & DOCUMENT DOSSIER                      */}
-        {/* ========================================================================= */}
-        {activeTab === 'workspace' && (
-          <div>
-            {/* AUTHENTIC EMPTY STATE: Shown when no genuine resumes exist in store */}
-            {(!data?.resumes || data.resumes.length === 0) ? (
-              <div className="bg-[#151D35] rounded-lg border border-zinc-800 p-12 text-center text-slate-400 space-y-5">
-                <div className="w-16 h-16 rounded-lg bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30 flex items-center justify-center mx-auto shadow-inner">
-                  <FileText className="w-8 h-8" />
+      {/* ------------------------------------------------------------------- */}
+      {/* MAIN CONTENT CONTAINER                                              */}
+      {/* ------------------------------------------------------------------- */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        {/* ================================================================= */}
+        {/* TAB 1: EXECUTIVE DASHBOARD OVERVIEW                               */}
+        {/* ================================================================= */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* Metric Stat Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-1">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>Student Resumes</span>
+                  <FileText className="w-4 h-4 text-blue-600" />
+                </span>
+                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tabular-nums">
+                  {data?.metrics.totalResumes ?? 0}
                 </div>
-                <div className="max-w-md mx-auto space-y-2">
-                  <h3 className="text-xl font-black text-white tracking-tight">
-                    No Candidate Resumes Found
-                  </h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    This admin dashboard operates strictly on genuine candidate submissions. Upload a real resume (.pdf, .docx, or .txt) via the ATS Resume Checker to inspect authentic scoring, extracted text streams, and STAR rewrites here.
-                  </p>
-                </div>
-                <div className="pt-2">
-                  <Link
-                    href="/resume-checker"
-                    className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20"
-                  >
-                    <span>Open ATS Resume Checker</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* Left Column: Candidate List Selector */}
-                <div className={`lg:col-span-5 space-y-3 ${mobileDetailOpen ? 'hidden lg:block' : 'block'}`}>
-                  {/* Search & Advanced Filters */}
-                  <div className="bg-[#151D35] p-3.5 rounded-lg border border-zinc-800 space-y-2.5">
-                    <div className="relative">
-                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search candidate name, email, filename, or skill..."
-                        aria-label="Search candidate records by name, email, filename, or skill"
-                        className="w-full pl-9 pr-3 py-2 rounded-lg border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2 text-xs">
-                      <select
-                        value={gradeFilter}
-                        onChange={(e) => setGradeFilter(e.target.value)}
-                        aria-label="Filter by candidate ATS grade"
-                        className="px-2 py-1.5 rounded-lg border border-zinc-800 bg-[#0B1020] text-[11px] font-medium text-slate-200 focus:outline-none cursor-pointer truncate"
-                      >
-                        <option value="ALL">All Grades</option>
-                        <option value="A+">Grade A+ (88-100)</option>
-                        <option value="A">Grade A (78-87)</option>
-                        <option value="B">Grade B (66-77)</option>
-                        <option value="C">Grade C (52-65)</option>
-                        <option value="D">Grade D (&lt;52)</option>
-                      </select>
-
-                      <select
-                        value={formatFilter}
-                        onChange={(e) => setFormatFilter(e.target.value)}
-                        aria-label="Filter by file format"
-                        className="px-2 py-1.5 rounded-lg border border-zinc-800 bg-[#0B1020] text-[11px] font-medium text-slate-200 focus:outline-none cursor-pointer truncate"
-                      >
-                        <option value="ALL">All Formats</option>
-                        <option value="pdf">PDF (.pdf)</option>
-                        <option value="docx">Word (.docx)</option>
-                        <option value="txt">Text (.txt)</option>
-                      </select>
-
-                      <select
-                        value={dateRangeFilter}
-                        onChange={(e) => setDateRangeFilter(e.target.value)}
-                        aria-label="Filter by upload date range"
-                        className="px-2 py-1.5 rounded-lg border border-zinc-800 bg-[#0B1020] text-[11px] font-medium text-slate-200 focus:outline-none cursor-pointer truncate"
-                      >
-                        <option value="ALL">All Time</option>
-                        <option value="today">Today (&le;24h)</option>
-                        <option value="7d">Last 7 Days</option>
-                        <option value="30d">Last 30 Days</option>
-                      </select>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-1 border-t border-zinc-800/80 text-[11px] text-slate-400">
-                      <span>Sort Candidates:</span>
-                      <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as 'date' | 'date_asc' | 'score' | 'score_asc' | 'name')}
-                        aria-label="Sort candidates"
-                        className="px-2.5 py-1 rounded-lg border border-zinc-800 bg-[#0B1020] text-[11px] font-medium text-slate-200 focus:outline-none cursor-pointer"
-                      >
-                        <option value="date">Latest First</option>
-                        <option value="date_asc">Oldest First</option>
-                        <option value="score">Highest ATS Score</option>
-                        <option value="score_asc">Lowest ATS Score</option>
-                        <option value="name">Candidate Name (A-Z)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Bulk Actions Toolbar (Sticky when 1+ selected) */}
-                  {selectedResumeIds.size > 0 && (
-                    <div className="p-3 rounded-lg bg-[#044E62]/25 border border-[#044E62]/50 flex items-center justify-between gap-2 text-xs animate-in fade-in">
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={toggleSelectAll}
-                          className="text-slate-300 hover:text-white cursor-pointer"
-                        >
-                          {selectedResumeIds.size === filteredResumes.length ? (
-                            <CheckSquare className="w-4 h-4 text-[#E9DEFA]" />
-                          ) : (
-                            <Square className="w-4 h-4 text-slate-400" />
-                          )}
-                        </button>
-                        <span className="font-bold text-white">
-                          {selectedResumeIds.size} Selected
-                        </span>
-                      </div>
-
-                      <div className="flex items-center space-x-1.5">
-                        <button
-                          onClick={() => handleExportCsv(Array.from(selectedResumeIds))}
-                          className="px-2.5 py-1 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] text-white font-semibold text-[11px] flex items-center space-x-1 transition-colors cursor-pointer"
-                        >
-                          <Download className="w-3 h-3" />
-                          <span>Export CSV</span>
-                        </button>
-                        <button
-                          onClick={handleBulkDelete}
-                          disabled={bulkDeleting}
-                          className="px-2.5 py-1 rounded-lg bg-rose-900/60 hover:bg-rose-800 text-rose-200 font-semibold text-[11px] flex items-center space-x-1 transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                          <span>{bulkDeleting ? 'Deleting...' : 'Delete'}</span>
-                        </button>
-                        <button
-                          onClick={() => setSelectedResumeIds(new Set())}
-                          className="px-2 py-1 rounded-lg text-slate-400 hover:text-white text-[11px] cursor-pointer"
-                        >
-                          Clear
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Candidate Cards List */}
-                  <div className="space-y-2 max-h-[calc(100vh-320px)] overflow-y-auto pr-1">
-                    {filteredResumes.length === 0 ? (
-                      <div className="p-8 text-center text-slate-400 bg-[#151D35] rounded-lg border border-zinc-800 text-xs">
-                        No uploaded resumes match the selected search filters.
-                      </div>
-                    ) : (
-                      filteredResumes.map((resume) => {
-                        const isSelected = resume.id === currentResume?.id;
-                        const isChecked = selectedResumeIds.has(resume.id);
-                        const grade = resume.analysis?.grade || (resume.ats_score >= 88 ? 'A+' : resume.ats_score >= 78 ? 'A' : resume.ats_score >= 66 ? 'B' : resume.ats_score >= 52 ? 'C' : 'D');
-                        const ext = resume.filename.includes('.') ? resume.filename.slice(resume.filename.lastIndexOf('.') + 1).toUpperCase() : 'PDF';
-
-                        return (
-                          <div
-                            key={resume.id}
-                            onClick={() => {
-                              setSelectedResumeId(resume.id);
-                              setMobileDetailOpen(true);
-                            }}
-                            className={`p-3.5 rounded-lg border transition-all cursor-pointer relative group ${
-                              isSelected
-                                ? 'bg-[#044E62]/20 border-[#044E62] shadow-sm'
-                                : 'bg-[#151D35] border-zinc-800 hover:border-zinc-700 hover:bg-slate-850/60'
-                            }`}
-                          >
-                            <div className="flex items-start justify-between gap-2.5">
-                              {/* Selection Checkbox */}
-                              <button
-                                type="button"
-                                onClick={(e) => toggleSelectResume(resume.id, e)}
-                                aria-label={`Select candidate ${resume.candidate_name || resume.filename}`}
-                                className="mt-0.5 text-slate-400 hover:text-white cursor-pointer shrink-0"
-                              >
-                                {isChecked ? (
-                                  <CheckSquare className="w-4 h-4 text-[#E9DEFA]" />
-                                ) : (
-                                  <Square className="w-4 h-4 text-slate-500 group-hover:text-slate-300" />
-                                )}
-                              </button>
-
-                              <div className="truncate flex-1 min-w-0">
-                                <div className="flex items-center space-x-1.5">
-                                  <h4 className="font-bold text-xs text-white truncate">
-                                    {resume.candidate_name || 'Applicant'}
-                                  </h4>
-                                  <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-zinc-800 text-slate-300 border border-zinc-700 shrink-0">
-                                    {ext}
-                                  </span>
-                                </div>
-                                <p className="text-[11px] text-slate-300 truncate mt-0.5">
-                                  {resume.filename}
-                                </p>
-                                <p className="text-[10px] text-slate-400 truncate">
-                                  {resume.user_email || 'No email specified'}
-                                </p>
-                              </div>
-
-                              <div className="flex items-center space-x-1.5 shrink-0">
-                                <span className={`px-2 py-0.5 rounded-lg font-black text-xs ${
-                                  resume.ats_score >= 80
-                                    ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
-                                    : resume.ats_score >= 65
-                                    ? 'bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30'
-                                    : 'bg-amber-950/60 text-amber-400 border border-amber-800'
-                                }`}>
-                                  {resume.ats_score}
-                                </span>
-                                <span className="text-[10px] font-bold text-slate-400">
-                                  {grade}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center justify-between text-[10px] text-slate-400 mt-2.5 pt-2 border-t border-zinc-800">
-                              <div className="flex items-center space-x-1">
-                                <Calendar className="w-3 h-3 text-slate-500" />
-                                <span>{formatExactDateTime(resume.created_at).date} ({getRelativeTime(resume.created_at)})</span>
-                              </div>
-                              <span>
-                                {resume.file_size ? `${(resume.file_size / 1024).toFixed(0)} KB` : 'Document'}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-
-                {/* Right Column: Dedicated Space to View Uploaded Resume Document */}
-                <div className={`lg:col-span-7 ${mobileDetailOpen ? 'block' : 'hidden lg:block'}`}>
-                  {currentResume ? (
-                    <div className="bg-[#151D35] rounded-lg border border-zinc-800 shadow-sm overflow-hidden flex flex-col">
-                      {/* Mobile Back Button */}
-                      <div className="p-3 bg-[#151D35] border-b border-zinc-800 lg:hidden flex items-center justify-between">
-                        <button
-                          onClick={() => setMobileDetailOpen(false)}
-                          className="inline-flex items-center space-x-1 text-xs font-bold text-[#E9DEFA] cursor-pointer"
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                          <span>Back to Candidate List</span>
-                        </button>
-                        <span className="text-xs font-semibold text-slate-400">
-                          Score: {currentResume.ats_score}/100
-                        </span>
-                      </div>
-
-                      {/* Header Dossier Strip */}
-                      <div className="p-5 sm:p-6 border-b border-zinc-800 bg-[#151D35]/95">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
-                                Candidate Dossier
-                              </span>
-                              <span className="text-xs text-slate-400 font-mono">
-                                ID: {currentResume.id.slice(0, 8)}
-                              </span>
-                              {currentResume.target_role && (
-                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-800">
-                                  Role: {currentResume.target_role}
-                                </span>
-                              )}
-                            </div>
-
-                            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                              {currentResume.candidate_name || 'Candidate'}
-                            </h2>
-
-                            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                              <span className="font-semibold text-slate-200">
-                                {currentResume.filename}
-                              </span>
-                              <span>•</span>
-                              <span className="flex items-center space-x-1">
-                                <Mail className="w-3.5 h-3.5 text-slate-400" />
-                                <strong className="text-slate-200 font-semibold">
-                                  {currentResume.user_email || 'Applicant'}
-                                </strong>
-                              </span>
-                              <span>•</span>
-                              <span>
-                                {formatExactDateTime(currentResume.created_at).full} ({getRelativeTime(currentResume.created_at)})
-                              </span>
-                              <span>•</span>
-                              <span>
-                                {currentResume.file_size ? `${(currentResume.file_size / 1024).toFixed(1)} KB` : 'Document'}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Large Circular/Radial Score Display */}
-                          <div className="flex items-center space-x-3 shrink-0">
-                            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-lg flex flex-col items-center justify-center text-white shadow-md font-black ${
-                              currentResume.ats_score >= 80
-                                ? 'bg-emerald-600 shadow-emerald-600/20'
-                                : currentResume.ats_score >= 65
-                                ? 'bg-[#0D08CB] shadow-[#0D08CB]/20'
-                                : 'bg-amber-600 shadow-amber-600/20'
-                            }`}>
-                              <span className="text-2xl sm:text-3xl">{currentResume.ats_score}</span>
-                              <span className="text-[9px] uppercase tracking-wider opacity-90">/ 100 ATS</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Action Bar */}
-                        <div className="flex flex-wrap items-center justify-between gap-2.5 mt-5 pt-4 border-t border-zinc-800">
-                          {/* Reader View Mode Switcher */}
-                          <div className="inline-flex items-center bg-[#0B1020] p-1 rounded-lg text-xs font-semibold border border-zinc-800">
-                            <button
-                              onClick={() => setReaderViewMode('formatted')}
-                              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                                readerViewMode === 'formatted'
-                                  ? 'bg-zinc-800 text-white shadow-xs border border-zinc-700'
-                                  : 'text-slate-400 hover:text-white'
-                              }`}
-                            >
-                              Document Reader
-                            </button>
-                            <button
-                              onClick={() => setReaderViewMode('raw')}
-                              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                                readerViewMode === 'raw'
-                                  ? 'bg-zinc-800 text-white shadow-xs border border-zinc-700'
-                                  : 'text-slate-400 hover:text-white'
-                              }`}
-                            >
-                              Raw Text Stream
-                            </button>
-                            <button
-                              onClick={() => setReaderViewMode('diagnostics')}
-                              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                                readerViewMode === 'diagnostics'
-                                  ? 'bg-zinc-800 text-white shadow-xs border border-zinc-700'
-                                  : 'text-slate-400 hover:text-white'
-                              }`}
-                            >
-                              Diagnostics &amp; AI
-                            </button>
-                          </div>
-
-                          {/* Tool Buttons */}
-                          <div className="flex items-center space-x-2 flex-wrap gap-y-2">
-                            {/* Reprocess & Rescore Action */}
-                            <button
-                              onClick={() => handleReprocess(currentResume.id)}
-                              disabled={reprocessingId === currentResume.id}
-                              className="px-3 py-1.5 rounded-lg border border-[#044E62]/50 bg-[#044E62]/20 hover:bg-[#044E62]/40 text-[#E9DEFA] hover:text-white text-xs font-bold inline-flex items-center space-x-1.5 transition-all cursor-pointer disabled:opacity-50"
-                              title="Re-run document parsing and ATS diagnostic scoring engine"
-                            >
-                              <RotateCcw className={`w-3.5 h-3.5 ${reprocessingId === currentResume.id ? 'animate-spin text-[#E9DEFA]' : ''}`} />
-                              <span>{reprocessingId === currentResume.id ? 'Re-scoring...' : 'Reprocess'}</span>
-                            </button>
-
-                            {/* Download PDF / DOCX */}
-                            <button
-                              onClick={() => handleDownloadOriginalFile(currentResume)}
-                              className="px-3.5 py-1.5 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] text-xs font-bold text-white inline-flex items-center space-x-1.5 shadow-sm shadow-[#0D08CB]/20 transition-all cursor-pointer"
-                              title={`Download uploaded document (${currentResume.filename})`}
-                            >
-                              <Download className="w-3.5 h-3.5 text-white" />
-                              <span>
-                                {currentResume.filename.toLowerCase().endsWith('.pdf')
-                                  ? 'Download PDF'
-                                  : currentResume.filename.toLowerCase().endsWith('.docx')
-                                  ? 'Download Word (.docx)'
-                                  : 'Download File'}
-                              </span>
-                            </button>
-
-                            {/* Download plain text */}
-                            {currentResume.resume_text && (
-                              <button
-                                onClick={() => handleDownloadText(currentResume)}
-                                className="px-2.5 py-1.5 rounded-lg border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
-                                title="Download plain text (.txt)"
-                              >
-                                <FileText className="w-3.5 h-3.5 text-slate-400" />
-                                <span>Text (.txt)</span>
-                              </button>
-                            )}
-
-                            {/* Copy text */}
-                            {currentResume.resume_text && (
-                              <button
-                                onClick={() => handleCopyText(currentResume.resume_text || '')}
-                                className="px-2.5 py-1.5 rounded-lg border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white inline-flex items-center space-x-1.5 transition-all cursor-pointer"
-                              >
-                                {copiedText ? (
-                                  <>
-                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                    <span className="text-emerald-400">Copied!</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3.5 h-3.5 text-slate-400" />
-                                    <span>Copy</span>
-                                  </>
-                                )}
-                              </button>
-                            )}
-
-                            {/* Delete */}
-                            <button
-                              onClick={() => handleDeleteResume(currentResume.id)}
-                              disabled={deletingId === currentResume.id}
-                              className="px-2.5 py-1.5 rounded-lg border border-rose-900/60 bg-rose-950/30 text-rose-400 hover:bg-rose-900/40 hover:text-rose-300 text-xs font-semibold inline-flex items-center space-x-1 transition-colors cursor-pointer"
-                              title="Delete record permanently"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              <span>Delete</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Reading Space Body */}
-                      <div className="p-5 sm:p-6 space-y-6 max-h-[calc(100vh-360px)] overflow-y-auto">
-                        {/* VIEW MODE 1: FORMATTED DOCUMENT READER */}
-                        {readerViewMode === 'formatted' && (
-                          <div className="space-y-6">
-                            {/* Summary & Verdict Card */}
-                            {currentResume.analysis?.summary && (
-                              <div className="p-4 rounded-lg bg-[#044E62]/20 border border-[#044E62]/40 text-xs space-y-1.5">
-                                <div className="font-bold text-[#E9DEFA] flex items-center space-x-1.5">
-                                  <Sparkles className="w-3.5 h-3.5 text-[#E9DEFA]" />
-                                  <span>Automated ATS Diagnostic Verdict:</span>
-                                </div>
-                                <p className="text-slate-300 leading-relaxed">
-                                  {currentResume.analysis.summary}
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Extracted Skills Section */}
-                            {currentResume.analysis?.matched_keywords && currentResume.analysis.matched_keywords.length > 0 && (
-                              <div className="space-y-2.5">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                                  <span>Verified Technical Skills ({currentResume.analysis.matched_keywords.length})</span>
-                                  <span className="text-[10px] text-emerald-400 font-semibold">Matched in candidate document</span>
-                                </h3>
-                                <div className="flex flex-wrap gap-1.5">
-                                  {currentResume.analysis.matched_keywords.map((skill, idx) => (
-                                    <span
-                                      key={idx}
-                                      className="px-2.5 py-1 rounded-lg bg-emerald-950/40 text-emerald-300 border border-emerald-800 text-xs font-semibold"
-                                    >
-                                      {skill}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Extracted Document Preview Paragraphs */}
-                            <div className="space-y-3">
-                              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                                <span>Extracted Resume Content (Document Flow)</span>
-                                <span className="text-[10px] text-slate-500 font-mono">Clean Text Stream</span>
-                              </h3>
-                              <div className="code-terminal-dark p-5 sm:p-6 rounded-lg border border-[#1e2b4d] text-xs leading-relaxed font-sans text-[#e8eeff] whitespace-pre-wrap selection:bg-[#044E62] selection:text-white shadow-inner" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
-                                {currentResume.resume_text || 'No readable text content found in document.'}
-                              </div>
-                            </div>
-
-                            {/* AI Bullet Rewrites */}
-                            {currentResume.analysis?.bullet_rewrites && currentResume.analysis.bullet_rewrites.length > 0 && (
-                              <div className="space-y-3">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
-                                  <Sparkles className="w-3.5 h-3.5 text-[#E9DEFA]" />
-                                  <span>AI STAR Bullet Optimization Recommendations</span>
-                                </h3>
-                                <div className="space-y-3">
-                                  {currentResume.analysis.bullet_rewrites.map((b, idx) => (
-                                    <div key={idx} className="p-4 rounded-lg border border-zinc-800 bg-[#0B1020]/70 text-xs space-y-2">
-                                      <div className="text-rose-400">
-                                        <span className="font-bold">Original: </span>
-                                        {b.original}
-                                      </div>
-                                      <div className="text-emerald-400 font-medium">
-                                        <span className="font-bold">ATS Optimized: </span>
-                                        {b.improved}
-                                      </div>
-                                      <div className="text-[11px] text-slate-400 italic">
-                                        Reason: {b.reason}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {/* VIEW MODE 2: RAW TEXT STREAM */}
-                        {readerViewMode === 'raw' && (
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between text-xs text-slate-400">
-                              <span>Raw Text Stream (As extracted by parser engine)</span>
-                              <span>
-                                {currentResume.resume_text
-                                  ? `${currentResume.resume_text.split(/\s+/).filter(Boolean).length} words • ${currentResume.resume_text.length} characters • ${currentResume.resume_text.split('\n').length} lines`
-                                  : '0 words'}
-                              </span>
-                            </div>
-                            <div className="code-terminal-dark p-4 sm:p-5 rounded-lg text-[#e8eeff] font-mono text-xs max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed border border-[#1e2b4d] shadow-inner" style={{ backgroundColor: '#0b1020', color: '#e8eeff' }}>
-                              {currentResume.resume_text || 'No raw text stream available.'}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* VIEW MODE 3: ATS DIAGNOSTICS & KEYWORD GAPS */}
-                        {readerViewMode === 'diagnostics' && (
-                          <div className="space-y-6">
-                            {/* Category Breakdown Progress Bars */}
-                            {currentResume.analysis?.breakdown && (
-                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800">
-                                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Contact &amp; Links</span>
-                                  <span className="text-lg font-black text-[#E9DEFA]">{currentResume.analysis.breakdown.contact_score}%</span>
-                                </div>
-                                <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800">
-                                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Skills Match</span>
-                                  <span className="text-lg font-black text-emerald-400">{currentResume.analysis.breakdown.skills_score}%</span>
-                                </div>
-                                <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800">
-                                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Impact &amp; STAR</span>
-                                  <span className="text-lg font-black text-[#E9DEFA]">{currentResume.analysis.breakdown.experience_score}%</span>
-                                </div>
-                                <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800">
-                                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">ATS Formatting</span>
-                                  <span className="text-lg font-black text-sky-400">{currentResume.analysis.breakdown.formatting_score}%</span>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Missing Keywords Gap */}
-                            {currentResume.analysis?.missing_keywords && currentResume.analysis.missing_keywords.length > 0 && (
-                              <div className="space-y-2">
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400">
-                                  Missing Industry Keywords to Target
-                                </h4>
-                                <div className="flex flex-wrap gap-1.5">
-                                  {currentResume.analysis.missing_keywords.map((s, idx) => (
-                                    <span key={idx} className="px-2.5 py-0.5 rounded-md bg-rose-950/40 text-rose-300 border border-rose-900 text-xs font-semibold">
-                                      {s}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Formatting Flags */}
-                            {currentResume.analysis?.formatting_issues && currentResume.analysis.formatting_issues.length > 0 && (
-                              <div className="space-y-2">
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                                  ATS Formatting Observations
-                                </h4>
-                                <ul className="space-y-1.5 text-xs text-slate-400">
-                                  {currentResume.analysis.formatting_issues.map((issue, idx) => (
-                                    <li key={idx} className="flex items-start space-x-2">
-                                      <span className="text-[#044E62] dark:text-[#E9DEFA]">•</span>
-                                      <span>{issue}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-[#151D35] rounded-lg border border-zinc-800 p-12 text-center text-slate-400">
-                      <FileText className="w-12 h-12 mx-auto mb-3 opacity-40" />
-                      <h3 className="text-base font-bold text-white">
-                        No Resume Selected
-                      </h3>
-                      <p className="text-xs mt-1">
-                        Select a candidate document from the left to inspect full content, ATS score breakdown, and keywords.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 2: RESUMES TABLE VIEW                                                 */}
-        {/* ========================================================================= */}
-        {activeTab === 'table' && (
-          <div className="space-y-4">
-            {/* Search and Filters Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#151D35] p-4 rounded-lg border border-zinc-800">
-              <div className="relative w-full sm:w-96">
-                <label htmlFor={searchInputId} className="sr-only">Search resumes</label>
-                <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
-                <input
-                  id={searchInputId}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search candidate, email, filename, or skill..."
-                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                />
+                <p className="text-[11px] text-slate-500">Processed through ATS analyzer</p>
               </div>
 
-              <div className="flex items-center space-x-2 w-full sm:w-auto flex-wrap gap-y-2">
-                <select
-                  value={gradeFilter}
-                  onChange={(e) => setGradeFilter(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-zinc-800 bg-[#0B1020] text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer"
-                >
-                  <option value="ALL">All Grades</option>
-                  <option value="A+">Grade A+ (88-100)</option>
-                  <option value="A">Grade A (78-87)</option>
-                  <option value="B">Grade B (66-77)</option>
-                  <option value="C">Grade C (52-65)</option>
-                  <option value="D">Grade D (&lt;52)</option>
-                </select>
+              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-1">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>Average ATS Score</span>
+                  <Award className="w-4 h-4 text-emerald-600" />
+                </span>
+                <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                  {data?.metrics.avgAtsScore ?? 0}%
+                </div>
+                <p className="text-[11px] text-slate-500">Platform benchmark average</p>
+              </div>
 
-                <select
-                  value={formatFilter}
-                  onChange={(e) => setFormatFilter(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-zinc-800 bg-[#0B1020] text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer"
-                >
-                  <option value="ALL">All Formats</option>
-                  <option value="pdf">PDF (.pdf)</option>
-                  <option value="docx">Word (.docx)</option>
-                  <option value="txt">Text (.txt)</option>
-                </select>
+              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-1">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>Registered Students</span>
+                  <Users className="w-4 h-4 text-purple-600" />
+                </span>
+                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tabular-nums">
+                  {data?.metrics.totalUsers ?? data?.profiles?.length ?? 0}
+                </div>
+                <p className="text-[11px] text-slate-500">Active student accounts</p>
+              </div>
 
+              <div className="bg-white dark:bg-[#151D35] p-5 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-1">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>Scheduled POTD</span>
+                  <Code2 className="w-4 h-4 text-amber-600" />
+                </span>
+                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tabular-nums">
+                  {customProblems.length}
+                </div>
+                <p className="text-[11px] text-slate-500">Active custom daily problems</p>
+              </div>
+            </div>
+
+            {/* Quick Action Shortcuts for Non-Technical Admins */}
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-700 to-[#0D08CB] rounded-2xl p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <h3 className="text-lg font-bold">
+                  Keep StackUp Fresh with Daily Placement Challenges
+                </h3>
+                <p className="text-xs text-blue-100 max-w-2xl leading-relaxed">
+                  Students love solving problems daily. Click below to automatically sync today&apos;s official challenge with AI-generated solutions in Python, C++, Java, and TypeScript.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                 <button
-                  onClick={() => handleExportCsv()}
-                  className="px-3 py-2 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] text-xs font-bold text-white flex items-center space-x-1 transition-all cursor-pointer"
+                  onClick={() => setActiveTab('dsa-manager')}
+                  className="px-4 py-2.5 rounded-xl bg-white text-[#0D08CB] hover:bg-blue-50 text-xs font-extrabold shadow-sm transition-all flex items-center space-x-1.5 cursor-pointer"
                 >
-                  <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>Export CSV</span>
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>Manage Daily Challenges</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('resumes')}
+                  className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/20 flex items-center space-x-1.5 cursor-pointer"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Review Student Resumes</span>
                 </button>
               </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-[#151D35] rounded-lg border border-zinc-800 overflow-hidden shadow-xs">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-100 dark:bg-[#0B1020] border-b border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-400 uppercase tracking-wider font-bold">
-                    <tr>
-                      <th className="py-3.5 px-4">Candidate / Document</th>
-                      <th className="py-3.5 px-4">Format</th>
-                      <th className="py-3.5 px-4">ATS Score</th>
-                      <th className="py-3.5 px-4">Matched Skills</th>
-                      <th className="py-3.5 px-4">Date Uploaded</th>
-                      <th className="py-3.5 px-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-800/60 font-medium">
-                    {filteredResumes.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="py-12 text-center text-slate-400">
-                          No uploaded resumes match the current search filters.
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredResumes.map((resume) => {
-                        const grade = resume.analysis?.grade || (resume.ats_score >= 88 ? 'A+' : resume.ats_score >= 78 ? 'A' : resume.ats_score >= 66 ? 'B' : resume.ats_score >= 52 ? 'C' : 'D');
-                        const score = resume.ats_score;
-                        const matchedCount = resume.analysis?.matched_keywords?.length || 0;
-                        const ext = resume.filename.includes('.') ? resume.filename.slice(resume.filename.lastIndexOf('.') + 1).toUpperCase() : 'PDF';
+            {/* Recent Uploads & Top Skills Overview */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Recent Resumes */}
+              <div className="lg:col-span-2 bg-white dark:bg-[#151D35] p-5 sm:p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                      Recent Resume Submissions
+                    </h3>
+                    <p className="text-xs text-slate-500">Latest student resumes analyzed by ATS</p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('resumes')}
+                    className="text-xs font-bold text-[#0D08CB] hover:underline flex items-center space-x-1"
+                  >
+                    <span>View all ({data?.resumes?.length ?? 0})</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
 
-                        return (
-                          <tr key={resume.id} className="hover:bg-slate-850/40 transition-colors">
-                            {/* Candidate & File */}
-                            <td className="py-3.5 px-4">
-                              <div className="flex items-center space-x-3">
-                                <div className="w-8 h-8 rounded-lg bg-[#FACAE7]/20 text-[#E9DEFA] flex items-center justify-center shrink-0">
-                                  <FileText className="w-4 h-4" />
-                                </div>
-                                <div className="truncate max-w-xs">
-                                  <div className="font-bold text-white truncate">
-                                    {resume.candidate_name || 'Applicant'}
-                                  </div>
-                                  <div className="text-[11px] text-slate-400 truncate">
-                                    {resume.filename} • {resume.user_email || '—'}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-
-                            {/* Format */}
-                            <td className="py-3.5 px-4">
-                              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-800 text-slate-300 border border-zinc-700">
-                                {ext}
-                              </span>
-                            </td>
-
-                            {/* Score & Grade */}
-                            <td className="py-3.5 px-4">
-                              <div className="flex items-center space-x-2">
-                                <span className={`px-2.5 py-1 rounded-lg font-black text-xs ${
-                                  score >= 88
-                                    ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-900'
-                                    : score >= 75
-                                    ? 'bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30'
-                                    : score >= 60
-                                    ? 'bg-amber-950/60 text-amber-400 border border-amber-900'
-                                    : 'bg-rose-950/60 text-rose-400 border border-rose-900'
-                                }`}>
-                                  {score} / 100
-                                </span>
-                                <span className="font-bold text-slate-400 text-[11px]">
-                                  Grade {grade}
-                                </span>
-                              </div>
-                            </td>
-
-                            {/* Matched Skills */}
-                            <td className="py-3.5 px-4">
-                              <div className="flex items-center space-x-1.5 flex-wrap max-w-sm">
-                                <span className="font-semibold text-slate-300">
-                                  {matchedCount} skills
-                                </span>
-                                {resume.analysis?.matched_keywords?.slice(0, 3).map((s, idx) => (
-                                  <span key={idx} className="px-1.5 py-0.5 rounded bg-zinc-800 text-[10px] text-slate-400">
-                                    {s}
-                                  </span>
-                                ))}
-                                {matchedCount > 3 && (
-                                  <span className="text-[10px] text-slate-500">+{matchedCount - 3}</span>
-                                )}
-                              </div>
-                            </td>
-
-                            {/* Date */}
-                            <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
-                              {formatExactDateTime(resume.created_at).date} ({getRelativeTime(resume.created_at)})
-                            </td>
-
-                            {/* Actions */}
-                            <td className="py-3.5 px-4 text-right">
-                              <div className="inline-flex items-center space-x-1.5">
-                                <button
-                                  onClick={() => {
-                                    setSelectedResumeId(resume.id);
-                                    setActiveTab('workspace');
-                                  }}
-                                  className="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-slate-700 text-white font-semibold text-xs cursor-pointer transition-colors"
-                                  title="Inspect full candidate document dossier"
-                                >
-                                  Inspect
-                                </button>
-                                <button
-                                  onClick={() => handleDownloadOriginalFile(resume)}
-                                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-                                  title="Download original file"
-                                >
-                                  <Download className="w-3.5 h-3.5" />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteResume(resume.id)}
-                                  className="p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 transition-colors cursor-pointer"
-                                  title="Delete resume"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 3: REGISTERED USERS                                                   */}
-        {/* ========================================================================= */}
-        {activeTab === 'users' && (
-          <div className="bg-[#151D35] rounded-lg border border-zinc-800 overflow-hidden shadow-xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-100 dark:bg-[#0B1020] border-b border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-400 uppercase tracking-wider font-bold">
-                  <tr>
-                    <th className="py-3.5 px-4">Student Candidate</th>
-                    <th className="py-3.5 px-4">Verified Email</th>
-                    <th className="py-3.5 px-4">Resumes Uploaded</th>
-                    <th className="py-3.5 px-4">Highest Score</th>
-                    <th className="py-3.5 px-4">Last Activity</th>
-                    <th className="py-3.5 px-4">Registration Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800/60 font-medium">
-                  {(!data?.profiles || data.profiles.length === 0) ? (
-                    <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-400">
-                        No registered student accounts recorded yet.
-                      </td>
-                    </tr>
-                  ) : (
-                    data.profiles.map((profile) => (
-                      <tr key={profile.id} className="hover:bg-slate-850/40 transition-colors">
-                        <td className="py-3.5 px-4">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-[#FACAE7]/20 text-[#E9DEFA] font-bold flex items-center justify-center shrink-0">
-                              {(profile.full_name || 'U').charAt(0).toUpperCase()}
-                            </div>
-                            <div className="font-bold text-white">
-                              {profile.full_name || 'Student Account'}
-                            </div>
+                {(!data?.resumes || data.resumes.length === 0) ? (
+                  <div className="py-12 text-center text-slate-400 text-xs rounded-xl border border-dashed border-slate-200 dark:border-zinc-800">
+                    No student resumes uploaded yet.
+                  </div>
+                ) : (
+                  <div className="divide-y divide-slate-100 dark:divide-zinc-800">
+                    {data.resumes.slice(0, 5).map((r) => {
+                      const badge = formatScoreBadge(r.ats_score);
+                      return (
+                        <div
+                          key={r.id}
+                          onClick={() => {
+                            setInspectResume(r);
+                            setActiveTab('resumes');
+                          }}
+                          className="py-3 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-zinc-800/40 px-2 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <div className="space-y-0.5">
+                            <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                              {r.candidate_name || r.filename}
+                            </span>
+                            <span className="text-[11px] text-slate-500">
+                              {r.candidate_email ? maskEmail(r.candidate_email) : 'No email'} • {formatRelativeTime(r.created_at)}
+                            </span>
                           </div>
-                        </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-300">
-                          {profile.email || '—'}
-                        </td>
-                        <td className="py-3.5 px-4 text-slate-300">
-                          {profile.resumes_count ?? 0} document(s)
-                        </td>
-                        <td className="py-3.5 px-4">
-                          {profile.latest_score !== null && profile.latest_score !== undefined ? (
-                            <span className="px-2 py-0.5 rounded-md font-bold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
-                              {profile.latest_score} / 100
+
+                          <div className="flex items-center space-x-3">
+                            <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border flex items-center space-x-1 ${badge.badgeClass}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${badge.dotClass}`} />
+                              <span>{r.ats_score}/100</span>
                             </span>
-                          ) : (
-                            <span className="text-slate-500">—</span>
-                          )}
-                        </td>
-                        <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
-                          {profile.last_sign_in_at ? formatExactDateTime(profile.last_sign_in_at).full : '—'}
-                        </td>
-                        <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
-                          {formatExactDateTime(profile.created_at).date}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 4: SKILL ANALYTICS                                                    */}
-        {/* ========================================================================= */}
-        {activeTab === 'skills' && (
-          <div className="space-y-6">
-            <div className="bg-[#151D35] p-6 rounded-lg border border-zinc-800 space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-[#E9DEFA]" />
-                <span>Aggregated Skill Taxonomy &amp; Frequency</span>
-              </h3>
-              <p className="text-xs text-slate-400">
-                Most frequent verified technical skills extracted across all candidate resumes.
-              </p>
-
-              {(!data?.topSkills || data.topSkills.length === 0) ? (
-                <div className="py-12 text-center text-slate-400 text-xs">
-                  No skill data available yet. Skills appear automatically as resumes are uploaded and parsed.
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 pt-2">
-                  {data.topSkills.map(({ skill, count }) => (
-                    <div
-                      key={skill}
-                      className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 flex items-center justify-between"
-                    >
-                      <span className="text-xs font-bold text-white">{skill}</span>
-                      <span className="px-2 py-0.5 rounded-lg text-xs font-mono font-bold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
-                        {count} resume{count > 1 ? 's' : ''}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* TAB 5: LOGIN & ACCESS AUDIT                                               */}
-        {/* ========================================================================= */}
-        {activeTab === 'logins' && (
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#151D35] p-4 rounded-lg border border-zinc-800">
-              <div className="relative w-full sm:w-96">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
-                <input
-                  type="text"
-                  value={loginSearchQuery}
-                  onChange={(e) => setLoginSearchQuery(e.target.value)}
-                  placeholder="Search by email, name, or IP..."
-                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-zinc-800 bg-[#0B1020] text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                />
+                            <ChevronRight className="w-4 h-4 text-slate-400" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
-              <select
-                value={authMethodFilter}
-                onChange={(e) => setAuthMethodFilter(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-zinc-800 bg-[#0B1020] text-xs font-semibold text-slate-200 focus:outline-none cursor-pointer"
-              >
-                <option value="ALL">All Methods</option>
-                <option value="Google OAuth">Google OAuth</option>
-                <option value="Email & Password">Email &amp; Password</option>
-                <option value="Phone SMS OTP">Phone SMS OTP</option>
-              </select>
-            </div>
+              {/* Top Skills Cloud */}
+              <div className="bg-white dark:bg-[#151D35] p-5 sm:p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Top In-Demand Skills
+                  </h3>
+                  <p className="text-xs text-slate-500">Most common skills found in resumes</p>
+                </div>
 
-            <div className="bg-[#151D35] rounded-lg border border-zinc-800 overflow-hidden shadow-xs">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-100 dark:bg-[#0B1020] border-b border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-400 uppercase tracking-wider font-bold">
-                    <tr>
-                      <th className="py-3.5 px-4">Candidate / User</th>
-                      <th className="py-3.5 px-4">Authentication Method</th>
-                      <th className="py-3.5 px-4">IP Address</th>
-                      <th className="py-3.5 px-4">Client Agent</th>
-                      <th className="py-3.5 px-4">Login Timestamp</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-800/60 font-medium">
-                    {filteredLoginLogs.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="py-12 text-center text-slate-400">
-                          No login audit logs match the current criteria.
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredLoginLogs.map((log) => (
-                        <tr key={log.id} className="hover:bg-slate-850/40 transition-colors">
-                          <td className="py-3.5 px-4">
-                            <div className="font-bold text-white">{log.full_name || 'Student Account'}</div>
-                            <div className="text-[11px] text-slate-400 font-mono">{log.email}</div>
-                          </td>
-                          <td className="py-3.5 px-4">
-                            <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30">
-                              {log.auth_method}
-                            </span>
-                          </td>
-                          <td className="py-3.5 px-4 font-mono text-slate-400">
-                            {log.ip_address || '—'}
-                          </td>
-                          <td className="py-3.5 px-4 text-slate-400 truncate max-w-xs">
-                            {log.user_agent || 'Web Browser'}
-                          </td>
-                          <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
-                            {formatExactDateTime(log.created_at).full} ({getRelativeTime(log.created_at)})
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                {(!data?.skillStats || data.skillStats.length === 0) ? (
+                  <div className="py-12 text-center text-slate-400 text-xs">
+                    Skills will appear once resumes are uploaded.
+                  </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    {data.skillStats.slice(0, 6).map((skill) => (
+                      <div key={skill.name} className="space-y-1">
+                        <div className="flex justify-between text-xs font-medium">
+                          <span className="text-slate-800 dark:text-slate-200">{skill.name}</span>
+                          <span className="text-slate-500 font-mono">{skill.count} students</span>
+                        </div>
+                        <div className="w-full bg-slate-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                          <div
+                            className="bg-[#0D08CB] h-full rounded-full"
+                            style={{
+                              width: `${Math.min(100, (skill.count / (data.resumes.length || 1)) * 100)}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
         )}
 
-        {/* ========================================================================= */}
-        {/* TAB 6: PRIVATE DSA & DAILY CHALLENGE MANAGER                             */}
-        {/* ========================================================================= */}
+        {/* ================================================================= */}
+        {/* TAB 2: DSA & DAILY CHALLENGE MANAGER (Super Easy for Non-Coders)  */}
+        {/* ================================================================= */}
         {activeTab === 'dsa-manager' && (
           <div className="space-y-6">
-            {/* Header Card */}
-            <div className="bg-[#151D35] p-5 sm:p-6 rounded-xl border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
+            {/* Friendly Header */}
+            <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
                 <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 flex items-center justify-center">
                     <Code2 className="w-4 h-4" />
                   </div>
-                  <h2 className="text-base sm:text-lg font-extrabold text-white">
-                    DSA &amp; Daily Challenge Manager
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                    Daily Placement Challenge Manager
                   </h2>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase">
-                    Private Admin Control
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200">
+                    Admin Only
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1 max-w-3xl leading-relaxed">
-                  Sync official daily challenges or import any LeetCode problem. StackUp uses Google Gemini 2.5 Flash to automatically author clean problem write-ups, approach intuition, Big-O bounds, and complete multi-language solutions (Python, C++, Java, TypeScript). When published, problems appear on the student website as official StackUp challenges with zero external branding.
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
+                  Publish new coding challenges to the student homepage. You can sync today&apos;s global problem with 1 click, or paste any problem link. StackUp handles writing the solutions and test cases automatically!
                 </p>
               </div>
 
               <button
-                type="button"
                 onClick={fetchDsaData}
                 disabled={dsaLoading}
-                className="px-3 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-slate-300 transition-colors flex items-center space-x-1.5 shrink-0 self-start md:self-auto cursor-pointer"
+                className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors flex items-center space-x-1.5 shrink-0 self-start md:self-auto cursor-pointer"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${dsaLoading ? 'animate-spin' : ''}`} />
-                <span>Refresh Data</span>
+                <span>Refresh Live Data</span>
               </button>
             </div>
 
-            {/* Action Cards: Live LeetCode Sync & Custom URL Import */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Card 1: Today's Official Challenge Sync */}
-              <div className="bg-[#151D35] p-5 rounded-xl border border-zinc-800 space-y-3.5 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
-                      <Globe className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
-                      Live LeetCode Daily Challenge
+            {/* Sync Action Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Method A: 1-Click Sync Today's Problem */}
+              <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                      <Globe className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+                      Option 1: One-Click Daily Sync
                     </span>
                     {liveLeetCode?.date && (
-                      <span className="text-[10px] text-slate-500 font-mono">
-                        {liveLeetCode.date}
+                      <span className="text-xs text-slate-500 font-mono">
+                        Date: {liveLeetCode.date}
                       </span>
                     )}
                   </div>
 
                   {liveLeetCode ? (
-                    <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-1.5">
+                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800 space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-bold text-white">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                           {liveLeetCode.title}
                         </h4>
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                           liveLeetCode.difficulty === 'Easy'
-                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : liveLeetCode.difficulty === 'Medium'
-                            ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20'
-                            : 'bg-rose-500/15 text-rose-400 border border-rose-500/20'
+                            ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                            : 'bg-rose-50 text-rose-700 border border-rose-200'
                         }`}>
                           {liveLeetCode.difficulty}
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-1 text-[10px] text-slate-400 pt-1">
+                      <div className="flex flex-wrap gap-1 text-[10px] text-slate-500 pt-1">
                         {liveLeetCode.topicTags.map((tag) => (
-                          <span key={tag} className="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700/60">
+                          <span key={tag} className="px-2 py-0.5 rounded-full bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700">
                             {tag}
                           </span>
                         ))}
                       </div>
                     </div>
                   ) : (
-                    <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 text-xs text-slate-400">
-                      Loading today&apos;s active challenge...
+                    <div className="p-4 rounded-xl bg-slate-50 text-xs text-slate-500">
+                      Loading today&apos;s live challenge...
                     </div>
                   )}
                 </div>
 
                 <button
-                  type="button"
-                  onClick={handlePreviewDaily}
+                  onClick={handleSyncDailyLeetCode}
                   disabled={dsaSyncing || !liveLeetCode}
-                  className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 px-4 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                 >
                   {dsaSyncing ? (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Syncing &amp; Generating Solutions with Gemini...</span>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Generating Multi-Language Solutions...</span>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Sync Today&apos;s Challenge &amp; Auto-Generate</span>
+                      <Sparkles className="w-4 h-4 text-amber-300" />
+                      <span>Sync &amp; Prepare Today&apos;s Challenge</span>
                     </>
                   )}
                 </button>
               </div>
 
-              {/* Card 2: Custom Slug or URL Import */}
-              <div className="bg-[#151D35] p-5 rounded-xl border border-zinc-800 space-y-3.5 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
-                      <Code2 className="w-3.5 h-3.5 mr-1.5 text-blue-400" />
-                      Import Custom Problem by URL or Slug
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-400 mb-2">
-                    Paste any LeetCode problem URL or slug (e.g. <code>trapping-rain-water</code>) to fetch its statement and generate multi-language solutions.
+              {/* Method B: Import Any Specific Problem */}
+              <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                    <Code2 className="w-3.5 h-3.5 mr-1.5 text-blue-600" />
+                    Option 2: Add Any Problem by Link or Name
+                  </span>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    Paste any LeetCode problem link (or slug like <code>trapping-rain-water</code>) to fetch its statement and generate solutions.
                   </p>
                   <input
                     type="text"
                     value={dsaCustomInput}
                     onChange={(e) => setDsaCustomInput(e.target.value)}
                     placeholder="https://leetcode.com/problems/lru-cache/ or lru-cache"
-                    className="w-full px-3 py-2 rounded-lg bg-[#0B1020] border border-zinc-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200 dark:border-zinc-700 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
                   />
                 </div>
 
                 <button
-                  type="button"
-                  onClick={handlePreviewCustom}
+                  onClick={handleImportCustomSlug}
                   disabled={dsaSyncing || !dsaCustomInput.trim()}
-                  className="w-full py-2.5 px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition-all border border-zinc-700 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                 >
                   {dsaSyncing ? (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <RefreshCw className="w-4 h-4 animate-spin" />
                       <span>Generating with Gemini AI...</span>
                     </>
                   ) : (
                     <>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-4 h-4" />
                       <span>Fetch &amp; Auto-Generate Problem</span>
                     </>
                   )}
@@ -2783,92 +999,68 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Notification / Feedback Banner */}
-            {dsaFeedback && (
-              <div className={`p-4 rounded-lg border text-xs flex items-center justify-between ${
-                dsaFeedback.type === 'success'
-                  ? 'bg-emerald-950/40 border-emerald-900 text-emerald-300'
-                  : 'bg-rose-950/40 border-rose-900 text-rose-300'
-              }`}>
-                <div className="flex items-center space-x-2">
-                  {dsaFeedback.type === 'success' ? (
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-                  )}
-                  <span>{dsaFeedback.message}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setDsaFeedback(null)}
-                  className="p-1 text-slate-400 hover:text-white cursor-pointer"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
-
-            {/* Problem Preview & Publishing Workspace */}
+            {/* Generated Preview & Publishing Drawer */}
             {dsaPreview && (
-              <div className="bg-[#151D35] p-5 sm:p-6 rounded-xl border border-blue-500/40 shadow-xl space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+              <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border-2 border-blue-500/50 shadow-lg space-y-5 animate-in fade-in">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-zinc-800">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
-                      Problem Preview (Ready to Publish)
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600">
+                      Step 2: Review &amp; Confirm Publication
                     </span>
-                    <h3 className="text-lg font-bold text-white mt-0.5">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white mt-0.5">
                       {dsaPreview.title}
                     </h3>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                    <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-slate-300">
+                      {dsaPreview.pattern_tag}
+                    </span>
+                    <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${
                       dsaPreview.difficulty === 'Easy'
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                         : dsaPreview.difficulty === 'Medium'
-                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                        : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                        : 'bg-rose-50 text-rose-700 border border-rose-200'
                     }`}>
                       {dsaPreview.difficulty}
-                    </span>
-                    <span className="px-2 py-0.5 rounded text-xs bg-zinc-800 text-slate-300 border border-zinc-700">
-                      {dsaPreview.pattern_tag}
                     </span>
                   </div>
                 </div>
 
-                {/* Summary & Approach */}
+                {/* Conceptual Summary & Approach */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-1">
-                    <span className="text-[10px] font-bold uppercase text-slate-400">Concept &amp; Summary</span>
-                    <p className="text-slate-300 leading-relaxed">{dsaPreview.summary}</p>
-                    <div className="pt-2 text-[11px] text-slate-400 flex items-center space-x-3">
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800 space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase text-slate-500">Summary</span>
+                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{dsaPreview.summary}</p>
+                    <div className="pt-2 text-[11px] text-slate-500 flex items-center space-x-3">
                       <span><strong>Time:</strong> {dsaPreview.timeComplexity}</span>
                       <span>•</span>
                       <span><strong>Space:</strong> {dsaPreview.spaceComplexity}</span>
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-1">
-                    <span className="text-[10px] font-bold uppercase text-slate-400">Optimal Approach Intuition</span>
-                    <p className="text-slate-300 leading-relaxed line-clamp-4">{dsaPreview.approach}</p>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800 space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase text-slate-500">Optimal Algorithm Approach</span>
+                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-4">{dsaPreview.approach}</p>
                   </div>
                 </div>
 
-                {/* Solutions Multi-Language Code Tabs */}
-                <div className="p-4 rounded-lg bg-[#0B1020] border border-zinc-800 space-y-2.5">
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                    <span className="text-xs font-bold text-slate-300">Generated Reference Solutions:</span>
+                {/* Generated Multi-Language Solutions Preview */}
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-zinc-800 pb-2">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Generated Reference Solutions:
+                    </span>
                     <div className="flex space-x-1">
                       {(['python', 'cpp', 'java', 'typescript'] as const).map((lang) => (
                         <button
                           key={lang}
-                          type="button"
                           onClick={() => setDsaLangTab(lang)}
-                          className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold transition-all cursor-pointer ${
+                          className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
                             dsaLangTab === lang
-                              ? 'bg-blue-600 text-white'
-                              : 'text-slate-400 hover:text-white'
+                              ? 'bg-[#0D08CB] text-white shadow-xs'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                           }`}
                         >
                           {lang.toUpperCase()}
@@ -2876,45 +1068,45 @@ export default function AdminDashboardPage() {
                       ))}
                     </div>
                   </div>
-                  <pre className="p-3 rounded bg-black/40 text-emerald-400 font-mono text-xs overflow-x-auto max-h-56 leading-relaxed">
+                  <pre className="p-3.5 rounded-lg bg-slate-900 text-emerald-400 font-mono text-xs overflow-x-auto max-h-56 leading-relaxed">
                     {dsaPreview.solutions[dsaLangTab]}
                   </pre>
                 </div>
 
                 {/* Publish Bar */}
-                <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="p-4 rounded-xl bg-slate-100 dark:bg-zinc-850 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center space-x-2">
-                    <label className="text-xs text-slate-400 font-medium">Schedule for Date:</label>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Publish for Date:
+                    </label>
                     <input
                       type="date"
                       value={dsaScheduledDate}
                       onChange={(e) => setDsaScheduledDate(e.target.value)}
-                      className="px-2.5 py-1.5 rounded bg-[#0B1020] border border-zinc-700 text-xs text-white focus:outline-none"
+                      className="px-3 py-1.5 rounded-lg bg-white dark:bg-[#0B1020] border border-slate-300 dark:border-zinc-700 text-xs text-slate-900 dark:text-white"
                     />
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2.5">
                     <button
-                      type="button"
                       onClick={() => setDsaPreview(null)}
-                      className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-slate-300 text-xs font-bold cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-white dark:bg-zinc-800 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-zinc-700 hover:bg-slate-50 cursor-pointer"
                     >
                       Discard
                     </button>
                     <button
-                      type="button"
                       onClick={handlePublishProblem}
                       disabled={dsaPublishing}
-                      className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center space-x-1.5 shadow-md cursor-pointer disabled:opacity-50"
+                      className="px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm cursor-pointer disabled:opacity-50"
                     >
                       {dsaPublishing ? (
                         <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          <span>Publishing to StackUp...</span>
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          <span>Publishing to Website...</span>
                         </>
                       ) : (
                         <>
-                          <Check className="w-3.5 h-3.5" />
+                          <Check className="w-4 h-4" />
                           <span>Publish to StackUp</span>
                         </>
                       )}
@@ -2924,70 +1116,67 @@ export default function AdminDashboardPage() {
               </div>
             )}
 
-            {/* List of Published Custom Challenges */}
-            <div className="bg-[#151D35] p-5 sm:p-6 rounded-xl border border-zinc-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-white">
-                    Published Challenges ({customProblems.length})
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Problems listed here are active on StackUp as Problems of the Day for their scheduled dates.
-                  </p>
-                </div>
+            {/* List of Published Daily Challenges */}
+            <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Active Scheduled Challenges ({customProblems.length})
+                </h3>
+                <p className="text-xs text-slate-500">
+                  These problems will appear on the student website on their scheduled date.
+                </p>
               </div>
 
               {customProblems.length === 0 ? (
-                <div className="py-10 text-center text-slate-500 text-xs rounded-lg border border-dashed border-zinc-800">
-                  No custom challenges published yet. Click &quot;Sync Today&apos;s Challenge&quot; above to publish your first one!
+                <div className="py-12 text-center text-slate-400 text-xs rounded-xl border border-dashed border-slate-200 dark:border-zinc-800">
+                  No custom challenges published yet. Click &quot;Sync &amp; Prepare Today&apos;s Challenge&quot; above to publish your first one!
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-slate-400 font-mono text-[10px] uppercase">
-                        <th className="py-2.5 px-3">Date</th>
-                        <th className="py-2.5 px-3">Title</th>
-                        <th className="py-2.5 px-3">Difficulty</th>
-                        <th className="py-2.5 px-3">Pattern</th>
-                        <th className="py-2.5 px-3">Companies</th>
-                        <th className="py-2.5 px-3 text-right">Actions</th>
+                      <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-500 font-mono text-[11px] uppercase">
+                        <th className="py-3 px-3">Date</th>
+                        <th className="py-3 px-3">Problem Title</th>
+                        <th className="py-3 px-3">Difficulty</th>
+                        <th className="py-3 px-3">Category</th>
+                        <th className="py-3 px-3">Companies</th>
+                        <th className="py-3 px-3 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-800">
+                    <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
                       {customProblems.map((cp) => (
-                        <tr key={cp.id} className="hover:bg-zinc-850/50">
-                          <td className="py-3 px-3 font-mono font-bold text-blue-400">
+                        <tr key={cp.id} className="hover:bg-slate-50 dark:hover:bg-zinc-800/40">
+                          <td className="py-3.5 px-3 font-mono font-bold text-[#0D08CB]">
                             {cp.scheduledForDate || 'Anytime'}
                           </td>
-                          <td className="py-3 px-3 font-semibold text-white">
+                          <td className="py-3.5 px-3 font-bold text-slate-900 dark:text-white">
                             {cp.title}
                           </td>
-                          <td className="py-3 px-3">
+                          <td className="py-3.5 px-3">
                             <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                               cp.difficulty === 'Easy'
-                                ? 'bg-emerald-500/20 text-emerald-400'
+                                ? 'bg-emerald-50 text-emerald-700'
                                 : cp.difficulty === 'Medium'
-                                ? 'bg-amber-500/20 text-amber-400'
-                                : 'bg-rose-500/20 text-rose-400'
+                                ? 'bg-amber-50 text-amber-700'
+                                : 'bg-rose-50 text-rose-700'
                             }`}>
                               {cp.difficulty}
                             </span>
                           </td>
-                          <td className="py-3 px-3 text-slate-400">
+                          <td className="py-3.5 px-3 text-slate-600 dark:text-slate-300">
                             {cp.pattern_tag}
                           </td>
-                          <td className="py-3 px-3 text-slate-400">
+                          <td className="py-3.5 px-3 text-slate-500">
                             {cp.companies?.slice(0, 2).join(', ') || 'General'}
                           </td>
-                          <td className="py-3 px-3 text-right">
+                          <td className="py-3.5 px-3 text-right">
                             <button
-                              type="button"
                               onClick={() => handleDeleteCustomProblem(cp.id)}
-                              className="p-1.5 rounded text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
-                              title="Delete from custom list"
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                              title="Delete from list"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </td>
                         </tr>
@@ -2999,236 +1188,498 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         )}
-      </main>
 
-      {/* ========================================================================= */}
-      {/* MODAL: ADMIN AUDIT TRAIL                                                  */}
-      {/* ========================================================================= */}
-      {auditModalOpen && (
-        <div
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setAuditModalOpen(false);
-          }}
-          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
-        >
-          <div className="max-w-3xl w-full bg-[#151D35] border border-zinc-800 rounded-lg p-6 shadow-2xl space-y-4 text-left relative animate-in fade-in zoom-in-95 duration-150 max-h-[85vh] flex flex-col">
-            <button
-              onClick={() => setAuditModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-zinc-850 transition-colors cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
+        {/* ================================================================= */}
+        {/* TAB 3: STUDENT RESUMES & APPLICATIONS                             */}
+        {/* ================================================================= */}
+        {activeTab === 'resumes' && (
+          <div className="space-y-6">
+            {/* Header with Search, Filter & CSV Export */}
+            <div className="bg-white dark:bg-[#151D35] p-5 sm:p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-3">
+                {/* Search */}
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={resumeSearch}
+                    onChange={(e) => setResumeSearch(e.target.value)}
+                    placeholder="Search candidate name, email, or filename..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200 dark:border-zinc-700 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
+                  />
+                </div>
 
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30 flex items-center justify-center shrink-0">
-                <History className="w-5 h-5" />
+                {/* Score Grade Filter Pills */}
+                <div className="flex items-center space-x-1 bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl">
+                  {([
+                    { id: 'ALL', label: 'All Resumes' },
+                    { id: 'STRONG', label: '80%+ (Strong)' },
+                    { id: 'GOOD', label: '60-79% (Good)' },
+                    { id: 'NEEDS_WORK', label: '<60%' },
+                  ] as const).map((g) => (
+                    <button
+                      key={g.id}
+                      onClick={() => setGradeFilter(g.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        gradeFilter === g.id
+                          ? 'bg-white dark:bg-[#151D35] text-slate-900 dark:text-white shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      {g.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div>
-                <h3 className="text-base font-extrabold text-white">
-                  Administrator Audit Trail
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Immutable record of privileged operations (downloads, deletions, reprocessing, exports)
-                </p>
-              </div>
+
+              {/* Export Button */}
+              <a
+                href="/api/admin/export-resumes"
+                download="stackup_resumes.csv"
+                className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center space-x-2 shrink-0 self-start md:self-auto shadow-sm"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
+                <span>Export to Excel/CSV</span>
+              </a>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-              {(!data?.auditLogs || data.auditLogs.length === 0) ? (
-                <div className="py-12 text-center text-slate-400 text-xs">
-                  No administrative actions recorded yet. Actions appear in real time.
-                </div>
-              ) : (
-                data.auditLogs.map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="p-3.5 rounded-lg bg-[#0B1020] border border-zinc-800 text-xs space-y-1.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                          entry.action === 'DELETE' || entry.action === 'BULK_DELETE'
-                            ? 'bg-rose-950/60 text-rose-400 border border-rose-900'
-                            : entry.action === 'REPROCESS'
-                            ? 'bg-[#FACAE7]/20 text-[#E9DEFA] border border-[#FACAE7]/30'
-                            : entry.action === 'EXPORT'
-                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-900'
-                            : 'bg-zinc-800 text-slate-300 border border-zinc-700'
-                        }`}>
-                          {entry.action}
-                        </span>
-                        <span className="font-semibold text-white">
-                          {entry.target_name || entry.target_id || 'System'}
-                        </span>
+            {/* Resumes Grid / List */}
+            {filteredResumes.length === 0 ? (
+              <div className="bg-white dark:bg-[#151D35] p-12 rounded-2xl border border-slate-200/80 dark:border-zinc-800 text-center text-slate-500 text-xs">
+                No resumes match the current search or grade filter.
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-[#151D35] rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs overflow-hidden">
+                <div className="divide-y divide-slate-100 dark:divide-zinc-800">
+                  {filteredResumes.map((resume) => {
+                    const badge = formatScoreBadge(resume.ats_score);
+                    const isSelected = inspectResume?.id === resume.id;
+                    return (
+                      <div
+                        key={resume.id}
+                        className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
+                          isSelected ? 'bg-blue-50/50 dark:bg-blue-950/20' : 'hover:bg-slate-50/80 dark:hover:bg-zinc-800/30'
+                        }`}
+                      >
+                        {/* Candidate Identity */}
+                        <div className="space-y-1">
+                          <div className="flex items-center space-x-2.5">
+                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                              {resume.candidate_name || resume.filename}
+                            </h4>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border flex items-center space-x-1 ${badge.badgeClass}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${badge.dotClass}`} />
+                              <span>{badge.label}</span>
+                            </span>
+                          </div>
+
+                          <div className="text-xs text-slate-500 flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <span>{resume.candidate_email ? maskEmail(resume.candidate_email) : 'No email detected'}</span>
+                            <span>•</span>
+                            <span>Uploaded {formatDate(resume.created_at)}</span>
+                            {resume.analysis?.skills && resume.analysis.skills.length > 0 && (
+                              <>
+                                <span>•</span>
+                                <span className="text-slate-600 dark:text-slate-400 font-medium">
+                                  {resume.analysis.skills.slice(0, 3).join(', ')}
+                                  {resume.analysis.skills.length > 3 && ` +${resume.analysis.skills.length - 3} more`}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* ATS Score & Action Buttons */}
+                        <div className="flex items-center space-x-3 self-end sm:self-auto shrink-0">
+                          <div className="text-right">
+                            <span className="text-lg font-black text-slate-900 dark:text-white tabular-nums">
+                              {resume.ats_score}
+                            </span>
+                            <span className="text-xs text-slate-400 font-medium">/100</span>
+                          </div>
+
+                          <button
+                            onClick={() => setInspectResume(isSelected ? null : resume)}
+                            className="px-3.5 py-2 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+                          >
+                            {isSelected ? 'Close Details' : 'View Report'}
+                          </button>
+
+                          <a
+                            href={`/api/admin/resume-download?id=${encodeURIComponent(resume.id)}`}
+                            download={resume.filename}
+                            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+                            title="Download original file"
+                          >
+                            <Download className="w-4 h-4" />
+                          </a>
+
+                          <button
+                            onClick={() => handleDeleteResume(resume.id)}
+                            disabled={deletingResumeId === resume.id}
+                            className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                            title="Delete resume"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
-                      <span className="text-[11px] text-slate-500">
-                        {formatExactDateTime(entry.created_at).full} ({getRelativeTime(entry.created_at)})
-                      </span>
-                    </div>
-                    <p className="text-slate-400 text-[11px]">
-                      {entry.details}
-                    </p>
-                    <div className="text-[10px] text-slate-500 flex items-center space-x-3">
-                      <span>Admin: {entry.admin_email}</span>
-                      <span>•</span>
-                      <span>IP: {entry.ip_address}</span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Inspect Resume Drawer Modal */}
+            {inspectResume && (
+              <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border-2 border-[#0D08CB]/40 shadow-xl space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-zinc-800">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#0D08CB]">
+                      Candidate Dossier
+                    </span>
+                    <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                      {inspectResume.candidate_name || inspectResume.filename}
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <a
+                      href={`/api/admin/resume-download?id=${encodeURIComponent(inspectResume.id)}`}
+                      download={inspectResume.filename}
+                      className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download PDF</span>
+                    </a>
+                    <button
+                      onClick={() => setInspectResume(null)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* ATS Dimensions Breakdown */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Overall ATS</span>
+                    <div className="text-xl font-black text-[#0D08CB] mt-0.5">{inspectResume.ats_score}%</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Skills Match</span>
+                    <div className="text-xl font-black text-emerald-600 mt-0.5">
+                      {inspectResume.analysis?.dimensions?.skills?.score ?? inspectResume.ats_score}%
                     </div>
                   </div>
-                ))
-              )}
-            </div>
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Experience</span>
+                    <div className="text-xl font-black text-purple-600 mt-0.5">
+                      {inspectResume.analysis?.dimensions?.experience?.score ?? inspectResume.ats_score}%
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Formatting</span>
+                    <div className="text-xl font-black text-blue-600 mt-0.5">
+                      {inspectResume.analysis?.dimensions?.formatting?.score ?? inspectResume.ats_score}%
+                    </div>
+                  </div>
+                </div>
 
-            <div className="pt-2 border-t border-zinc-800 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setAuditModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white transition-colors cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                {/* Candidate Detected Skills */}
+                {inspectResume.analysis?.skills && inspectResume.analysis.skills.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Verified Technical Skills ({inspectResume.analysis.skills.length})
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {inspectResume.analysis.skills.map((skill) => (
+                        <span key={skill} className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-slate-300 font-medium">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-      {/* ========================================================================= */}
-      {/* MODAL: CHANGE MASTER ADMIN KEY                                           */}
-      {/* ========================================================================= */}
-      {changeKeyModalOpen && (
-        <div 
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setChangeKeyModalOpen(false);
-              setChangeKeyErr('');
-              setChangeKeyMsg('');
-            }
-          }}
-          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
-        >
-          <div className="max-w-md w-full bg-[#151D35] border border-zinc-800 rounded-lg p-6 sm:p-8 shadow-2xl space-y-5 text-left relative animate-in fade-in zoom-in-95 duration-150">
-            <button
-              onClick={() => {
-                setChangeKeyModalOpen(false);
-                setChangeKeyErr('');
-                setChangeKeyMsg('');
-              }}
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-zinc-850 transition-colors cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
-                <KeyRound className="w-5 h-5" />
+                {/* Extracted Clean Text Preview */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    Extracted Document Content
+                  </h4>
+                  <pre className="p-4 rounded-xl bg-slate-50 dark:bg-[#0B1020] text-slate-700 dark:text-slate-300 font-mono text-xs overflow-y-auto max-h-60 leading-relaxed whitespace-pre-wrap border border-slate-200/80 dark:border-zinc-800">
+                    {inspectResume.resume_text || 'No text extracted.'}
+                  </pre>
+                </div>
               </div>
+            )}
+          </div>
+        )}
+
+        {/* ================================================================= */}
+        {/* TAB 4: REGISTERED STUDENTS DIRECTORY                             */}
+        {/* ================================================================= */}
+        {activeTab === 'users' && (
+          <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Registered Student Directory ({data?.profiles?.length ?? 0})
+              </h3>
+              <p className="text-xs text-slate-500">
+                All registered learner accounts authenticated with StackUp
+              </p>
+            </div>
+
+            {(!data?.profiles || data.profiles.length === 0) ? (
+              <div className="py-12 text-center text-slate-400 text-xs">
+                No registered student profiles found in database.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-500 font-mono text-[11px] uppercase">
+                      <th className="py-3 px-3">Student Email</th>
+                      <th className="py-3 px-3">Role</th>
+                      <th className="py-3 px-3">Registration Date</th>
+                      <th className="py-3 px-3">User ID</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
+                    {data.profiles.map((p) => (
+                      <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-zinc-800/40">
+                        <td className="py-3.5 px-3 font-semibold text-slate-900 dark:text-white">
+                          {p.email}
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">
+                            {p.role || 'Student'}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-slate-500">
+                          {formatDate(p.created_at)}
+                        </td>
+                        <td className="py-3.5 px-3 font-mono text-[10px] text-slate-400">
+                          {p.id.slice(0, 8)}...
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ================================================================= */}
+        {/* TAB 5: SKILL ANALYTICS & CURRICULUM INTELLIGENCE                 */}
+        {/* ================================================================= */}
+        {activeTab === 'skills' && (
+          <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-6">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Platform Technical Skills Distribution
+              </h3>
+              <p className="text-xs text-slate-500">
+                Skills identified across all student resumes uploaded to StackUp
+              </p>
+            </div>
+
+            {(!data?.skillStats || data.skillStats.length === 0) ? (
+              <div className="py-12 text-center text-slate-400 text-xs">
+                No skill analytics available yet.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {data.skillStats.map((skill) => (
+                  <div key={skill.name} className="p-4 rounded-xl bg-slate-50 dark:bg-[#0B1020] border border-slate-200/80 dark:border-zinc-800 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                        {skill.name}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-[#0D08CB]">
+                        {skill.count} resumes
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                      <div
+                        className="bg-[#0D08CB] h-full rounded-full"
+                        style={{
+                          width: `${Math.min(100, (skill.count / (data.resumes.length || 1)) * 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ================================================================= */}
+        {/* TAB 6: SECURITY & SETTINGS                                        */}
+        {/* ================================================================= */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            {/* Security Passcode Management */}
+            <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Master Administrator Passcode
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Update the security key used to access this admin portal
+                  </p>
+                </div>
+                <button
+                  onClick={() => setChangeKeyModalOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+                >
+                  Change Passcode
+                </button>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0B1020] text-xs text-slate-600 dark:text-slate-400 space-y-1">
+                <span className="font-bold text-slate-900 dark:text-white block">Zero-Trust Encryption</span>
+                Your security key is hashed using cryptographic salted scrypt before evaluation. No plain-text passwords are ever stored.
+              </div>
+            </div>
+
+            {/* Audit Logs */}
+            <div className="bg-white dark:bg-[#151D35] p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 shadow-xs space-y-4">
               <div>
-                <h3 className="text-base font-extrabold text-white">
-                  Update Master Security Key
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Recent Administrator Operations
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Change the administrator password for this portal
+                <p className="text-xs text-slate-500">
+                  Immutable audit trail of administrative downloads, deletions, and publications
                 </p>
               </div>
+
+              {(!data?.auditLogs || data.auditLogs.length === 0) ? (
+                <div className="py-8 text-center text-slate-400 text-xs">
+                  No privileged actions recorded yet.
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100 dark:divide-zinc-800">
+                  {data.auditLogs.slice(0, 10).map((log) => (
+                    <div key={log.id} className="py-3 flex items-center justify-between text-xs">
+                      <div>
+                        <span className="font-bold text-slate-800 dark:text-slate-200 block">
+                          {log.action}: {log.details}
+                        </span>
+                        <span className="text-[11px] text-slate-400">
+                          By {log.admin_email} • IP {log.ip_address}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-500 font-mono">
+                        {formatRelativeTime(log.created_at)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* ------------------------------------------------------------------- */}
+      {/* CHANGE PASSCODE MODAL                                               */}
+      {/* ------------------------------------------------------------------- */}
+      {changeKeyModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-white dark:bg-[#151D35] rounded-2xl shadow-2xl p-6 sm:p-8 space-y-5 text-left border border-slate-200 dark:border-zinc-800">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                Change Master Passcode
+              </h3>
+              <button
+                onClick={() => setChangeKeyModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            <div className="p-3.5 rounded-lg bg-[#0B1020]/90 border border-zinc-800 text-xs text-slate-300 leading-relaxed">
-              <span className="font-bold text-white block mb-1">Server-Side Admin Security</span>
-              Your portal authenticates against cryptographic salted scrypt hashes in server environment configuration. Entering a new passcode below updates the runtime server passcode. For permanent persistence across redeployments, update <code className="text-[#E9DEFA] bg-zinc-800 px-1 py-0.5 rounded">ADMIN_PASSWORD_HASH</code> in your hosting environment variables.
-            </div>
-
-            {changeKeyErr && (
-              <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{changeKeyErr}</span>
-              </div>
-            )}
-
-            {changeKeyMsg && (
-              <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-900 text-emerald-300 text-xs flex items-center space-x-2">
-                <Check className="w-4 h-4 shrink-0" />
-                <span>{changeKeyMsg}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleChangePasscode} className="space-y-4">
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (newKey !== confirmKey) {
+                  alert('New passcodes do not match.');
+                  return;
+                }
+                setChangeKeyLoading(true);
+                try {
+                  const res = await fetch('/api/admin/reset-password/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newPasscode: newKey.trim() }),
+                  });
+                  if (res.ok) {
+                    alert('Passcode updated successfully!');
+                    setChangeKeyModalOpen(false);
+                  } else {
+                    alert('Failed to update passcode.');
+                  }
+                } catch {
+                  alert('Network error.');
+                } finally {
+                  setChangeKeyLoading(false);
+                }
+              }}
+              className="space-y-4"
+            >
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                  New Security Key
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">
+                  New Passcode (min 8 characters)
                 </label>
-                <div className="relative">
-                  <Key className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
-                  <input
-                    type="password"
-                    value={newPasscode}
-                    onChange={(e) => setNewPasscode(e.target.value)}
-                    placeholder="Enter at least 8 characters..."
-                    required
-                    minLength={8}
-                    autoComplete="new-password"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                  />
-                </div>
+                <input
+                  type="password"
+                  value={newKey}
+                  onChange={(e) => setNewKey(e.target.value)}
+                  required
+                  minLength={8}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-[#0B1020] text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                  Confirm Security Key
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">
+                  Confirm New Passcode
                 </label>
-                <div className="relative">
-                  <Key className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
-                  <input
-                    type="password"
-                    value={confirmNewPasscode}
-                    onChange={(e) => setConfirmNewPasscode(e.target.value)}
-                    placeholder="Re-enter new security key..."
-                    required
-                    minLength={8}
-                    autoComplete="new-password"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-zinc-700 bg-[#0B1020] text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
-                  />
-                </div>
+                <input
+                  type="password"
+                  value={confirmKey}
+                  onChange={(e) => setConfirmKey(e.target.value)}
+                  required
+                  minLength={8}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-[#0B1020] text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0D08CB]"
+                />
               </div>
 
-              <div className="flex items-center space-x-2.5 pt-2">
+              <div className="flex space-x-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setChangeKeyModalOpen(false);
-                    setChangeKeyErr('');
-                    setChangeKeyMsg('');
-                  }}
-                  className="flex-1 py-2.5 px-3 rounded-lg border border-zinc-700 bg-zinc-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition-colors cursor-pointer"
+                  onClick={() => setChangeKeyModalOpen(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={changeKeyLoading}
-                  className="flex-1 py-2.5 px-3 rounded-lg bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold transition-all shadow-md shadow-[#0D08CB]/20 flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-2.5 rounded-xl bg-[#0D08CB] hover:bg-[#0A06A3] text-white text-xs font-bold cursor-pointer disabled:opacity-50"
                 >
-                  {changeKeyLoading ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Updating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Save Key</span>
-                    </>
-                  )}
+                  {changeKeyLoading ? 'Updating...' : 'Save Passcode'}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      {/* MODAL: SUPABASE & CLAUDE INTEGRATIONS */}
-      <CredentialsModal
-        isOpen={credentialsModalOpen}
-        onClose={() => setCredentialsModalOpen(false)}
-      />
     </div>
   );
 }
