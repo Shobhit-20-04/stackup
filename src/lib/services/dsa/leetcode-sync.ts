@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { GoogleGenAI } from '@google/genai';
 import type { DsaProblem, DsaSolutions, DsaExample } from '@/lib/data/dsa';
 
@@ -20,8 +21,45 @@ export interface CustomProblemRecord extends DsaProblem {
   source?: string;
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const CUSTOM_PROBLEMS_FILE = path.join(DATA_DIR, 'custom_dsa_problems.json');
+// In-memory cache to preserve custom problems across serverless invocations
+const globalForDsa = globalThis as unknown as {
+  __customDsaProblems?: CustomProblemRecord[];
+};
+
+/**
+ * Resolves the writable file path for persisting custom DSA problems.
+ * On serverless platforms (e.g. Vercel Lambda where /var/task is read-only),
+ * safely redirects writes to os.tmpdir() / 'stackup_data'.
+ */
+function resolveStorageFile(): string {
+  if (process.env.STORAGE_DIR) {
+    return path.join(process.env.STORAGE_DIR, 'custom_dsa_problems.json');
+  }
+
+  const projectDataDir = path.join(process.cwd(), 'data');
+  const projectFile = path.join(projectDataDir, 'custom_dsa_problems.json');
+
+  try {
+    if (!fs.existsSync(projectDataDir)) {
+      fs.mkdirSync(projectDataDir, { recursive: true });
+    }
+    const testFile = path.join(projectDataDir, `.test_write_${process.pid}_${Date.now()}`);
+    fs.writeFileSync(testFile, '1');
+    fs.unlinkSync(testFile);
+    return projectFile;
+  } catch {
+    // Read-only serverless environment (e.g. /var/task on Vercel)
+    const tmpDataDir = path.join(os.tmpdir(), 'stackup_data');
+    try {
+      if (!fs.existsSync(tmpDataDir)) {
+        fs.mkdirSync(tmpDataDir, { recursive: true });
+      }
+    } catch {
+      // Ignore directory creation warnings in locked sandbox
+    }
+    return path.join(tmpDataDir, 'custom_dsa_problems.json');
+  }
+}
 
 /**
  * Strips HTML tags and decodes common HTML entities to generate clean markdown.
@@ -292,29 +330,44 @@ export async function buildCompleteDsaProblem(raw: LeetCodeRawQuestion): Promise
 }
 
 /**
- * Reads all custom published problems from data/custom_dsa_problems.json.
+ * Reads all custom published problems, checking in-memory cache,
+ * writable /tmp storage, and bundled project data file in order.
  */
 export function getCustomDsaProblems(): CustomProblemRecord[] {
-  try {
-    if (!fs.existsSync(CUSTOM_PROBLEMS_FILE)) {
-      return [];
-    }
-    const data = fs.readFileSync(CUSTOM_PROBLEMS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error('Error reading custom DSA problems:', err);
-    return [];
+  if (globalForDsa.__customDsaProblems && Array.isArray(globalForDsa.__customDsaProblems)) {
+    return globalForDsa.__customDsaProblems;
   }
+
+  const candidatePaths = [
+    resolveStorageFile(),
+    path.join(process.cwd(), 'data', 'custom_dsa_problems.json'),
+    path.join(os.tmpdir(), 'stackup_data', 'custom_dsa_problems.json'),
+  ];
+
+  for (const filePath of candidatePaths) {
+    try {
+      if (fs.existsSync(/*turbopackIgnore: true*/ filePath)) {
+        const raw = fs.readFileSync(/*turbopackIgnore: true*/ filePath, 'utf-8');
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          globalForDsa.__customDsaProblems = parsed;
+          return parsed;
+        }
+      }
+    } catch (err) {
+      console.warn(`Notice: Unable to read custom DSA problems from ${filePath}:`, err);
+    }
+  }
+
+  globalForDsa.__customDsaProblems = [];
+  return [];
 }
 
 /**
- * Saves a new custom published problem to data/custom_dsa_problems.json.
+ * Saves a new custom published problem with in-memory persistence and safe file writing.
+ * Never throws ENOENT on read-only serverless filesystems.
  */
 export function saveCustomDsaProblem(problem: DsaProblem, scheduledForDate?: string): CustomProblemRecord {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
   const existing = getCustomDsaProblems();
   const dateKey = scheduledForDate || new Date().toISOString().slice(0, 10);
 
@@ -329,6 +382,42 @@ export function saveCustomDsaProblem(problem: DsaProblem, scheduledForDate?: str
   const filtered = existing.filter((p) => p.id !== problem.id && p.scheduledForDate !== dateKey);
   filtered.unshift(record);
 
-  fs.writeFileSync(CUSTOM_PROBLEMS_FILE, JSON.stringify(filtered, null, 2), 'utf-8');
+  // Update in-memory state immediately
+  globalForDsa.__customDsaProblems = filtered;
+
+  // Persist to disk safely
+  try {
+    const targetFile = resolveStorageFile();
+    const dir = path.dirname(targetFile);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(targetFile, JSON.stringify(filtered, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('Notice: Non-blocking in-memory fallback for custom DSA problem persistence:', err);
+  }
+
   return record;
+}
+
+/**
+ * Removes a custom published problem by ID with in-memory and disk updates.
+ */
+export function deleteCustomDsaProblem(id: string): boolean {
+  const existing = getCustomDsaProblems();
+  const filtered = existing.filter((p) => p.id !== id);
+  globalForDsa.__customDsaProblems = filtered;
+
+  try {
+    const targetFile = resolveStorageFile();
+    const dir = path.dirname(targetFile);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(targetFile, JSON.stringify(filtered, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('Notice: Non-blocking in-memory fallback on deleting custom DSA problem:', err);
+  }
+
+  return true;
 }

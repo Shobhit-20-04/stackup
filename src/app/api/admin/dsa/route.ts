@@ -7,15 +7,11 @@ import {
   buildCompleteDsaProblem,
   getCustomDsaProblems,
   saveCustomDsaProblem,
+  deleteCustomDsaProblem,
 } from '@/lib/services/dsa/leetcode-sync';
-import fs from 'fs';
-import path from 'path';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const DATA_DIR = path.join(process.cwd(), 'data');
-const CUSTOM_PROBLEMS_FILE = path.join(DATA_DIR, 'custom_dsa_problems.json');
 
 /**
  * GET: Fetches list of custom problems and live LeetCode POTD metadata for the Admin.
@@ -125,9 +121,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Problem ID required.' }, { status: 400 });
       }
 
-      const existing = getCustomDsaProblems();
-      const filtered = existing.filter((p) => p.id !== id);
-      fs.writeFileSync(CUSTOM_PROBLEMS_FILE, JSON.stringify(filtered, null, 2), 'utf-8');
+      deleteCustomDsaProblem(id);
 
       return NextResponse.json({
         success: true,

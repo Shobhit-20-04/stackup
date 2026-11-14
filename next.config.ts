@@ -57,6 +57,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   serverExternalPackages: ['pdf-parse', 'mammoth'],
+  outputFileTracingIncludes: {
+    '/api/**/*': ['./data/**/*'],
+    '/dsa/**/*': ['./data/**/*'],
+  },
   experimental: {
     agentUpgrade: 'security',
     optimizePackageImports: ['lucide-react', 'recharts'],

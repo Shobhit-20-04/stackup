@@ -4,8 +4,14 @@ import {
   DSA_CATEGORIES, 
   TOP_DSA_COMPANIES, 
   getTopCompanies, 
-  getProblemOfTheDay 
+  getProblemOfTheDay,
+  type DsaProblem 
 } from '../src/lib/data/dsa';
+import {
+  saveCustomDsaProblem,
+  getCustomDsaProblems,
+  deleteCustomDsaProblem,
+} from '../src/lib/services/dsa/leetcode-sync';
 
 describe('DSA Hub Dataset', () => {
   it('contains at least 150 high-frequency problems (NeetCode 150 standard)', () => {
@@ -80,6 +86,58 @@ describe('DSA Hub Dataset', () => {
     expect(potd1.id).toBe(potd2.id);
     expect(potd1.title).toBe(potd2.title);
     expect(potd1.difficulty).toMatch(/^(Easy|Medium|Hard)$/);
+  });
+
+  describe('Custom Daily Problem Persistence & Resiliency', () => {
+    const mockProblem: DsaProblem = {
+      id: 'custom-min-pos-sub',
+      title: 'Minimum Positive Sum Subarray',
+      difficulty: 'Easy',
+      pattern_tag: 'Sliding Window',
+      leetcode_url: 'https://leetcode.com/problems/minimum-positive-sum-subarray/',
+      striver_url: null,
+      youtube_url: 'https://www.youtube.com',
+      companies: ['Amazon', 'Google'],
+      summary: 'Find the minimum positive sum of a subarray of size between l and r.',
+      description: 'Given an array of integers nums and two positive integers l and r...',
+      examples: [{ input: 'nums = [3, -2, 1, 4], l = 2, r = 3', output: '1' }],
+      constraints: ['1 <= nums.length <= 100'],
+      approach: 'Use sliding window to compute prefix sums.',
+      timeComplexity: 'O(N * (r - l + 1))',
+      spaceComplexity: 'O(1)',
+      solutions: {
+        python: 'class Solution: pass',
+        cpp: 'class Solution {};',
+        java: 'class Solution {}',
+        typescript: 'function minPositiveSumSubarray() {}',
+      },
+    };
+
+    it('saves and retrieves a custom published problem safely without throwing ENOENT', () => {
+      const scheduledDate = '2026-11-14';
+      const saved = saveCustomDsaProblem(mockProblem, scheduledDate);
+
+      expect(saved).toBeDefined();
+      expect(saved.id).toBe('custom-min-pos-sub');
+      expect(saved.scheduledForDate).toBe(scheduledDate);
+      expect(saved.title).toBe('Minimum Positive Sum Subarray');
+
+      const allCustom = getCustomDsaProblems();
+      expect(allCustom.length).toBeGreaterThanOrEqual(1);
+
+      const found = allCustom.find((p) => p.id === 'custom-min-pos-sub');
+      expect(found).toBeDefined();
+      expect(found?.scheduledForDate).toBe(scheduledDate);
+    });
+
+    it('deletes a custom published problem cleanly', () => {
+      const deleted = deleteCustomDsaProblem('custom-min-pos-sub');
+      expect(deleted).toBe(true);
+
+      const allCustom = getCustomDsaProblems();
+      const found = allCustom.find((p) => p.id === 'custom-min-pos-sub');
+      expect(found).toBeUndefined();
+    });
   });
 });
 
