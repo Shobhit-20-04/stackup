@@ -1,4 +1,7 @@
 import type { CurriculumSection } from './types';
+import { DIGITAL_FOUNDATIONS_CATEGORY } from './digital-foundations';
+import { PROGRAMMING_FUNDAMENTALS_CATEGORY } from './programming-fundamentals';
+import { WEB_DEVELOPMENT_CATEGORY } from './web-development';
 import { C_PROGRAMMING_CATEGORY } from './c-programming';
 import { DATA_STRUCTURES_CATEGORY } from './data-structures';
 import { ALGORITHMS_CATEGORY } from './algorithms';
@@ -20,6 +23,9 @@ import {
 } from './aptitude';
 
 export * from './types';
+export * from './digital-foundations';
+export * from './programming-fundamentals';
+export * from './web-development';
 export * from './c-programming';
 export * from './data-structures';
 export * from './algorithms';
@@ -48,10 +54,13 @@ export const CURRICULUM_DATA: Record<string, CurriculumSection> = {
     ]
   },
   "core-cs": {
-    "name": "Core Computer Science",
+    "name": "Core CS",
     "slug": "core-cs",
-    "description": "Comprehensive engineering curriculum covering C Programming, Data Structures, Algorithms, Discrete & Engineering Math, Digital Logic, COA, TOC, Compilers, OS, DBMS, Networks, and Software Engineering.",
+    "description": "Comprehensive engineering curriculum from zero-knowledge Digital Foundations and Web Development to Algorithms, OS, DBMS, Networks, and Software Architecture.",
     "categories": [
+      DIGITAL_FOUNDATIONS_CATEGORY,
+      PROGRAMMING_FUNDAMENTALS_CATEGORY,
+      WEB_DEVELOPMENT_CATEGORY,
       C_PROGRAMMING_CATEGORY,
       DATA_STRUCTURES_CATEGORY,
       ALGORITHMS_CATEGORY,

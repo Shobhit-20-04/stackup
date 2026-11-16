@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import crypto from 'crypto';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
@@ -55,7 +56,14 @@ export interface AdminAuditLogEntry {
   created_at: string;
 }
 
-const DATA_DIR = process.env.STORAGE_DIR || path.join(process.cwd(), 'data');
+const isServerless = Boolean(
+  process.env.VERCEL ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT ||
+  (typeof process.cwd === 'function' && process.cwd().startsWith('/var/task'))
+);
+
+const DATA_DIR = process.env.STORAGE_DIR || (isServerless ? path.join(os.tmpdir(), 'stackup_data') : path.join(process.cwd(), 'data'));
 const RESUMES_FILE = path.join(DATA_DIR, 'uploaded-resumes.json');
 const AUDIT_FILE = path.join(DATA_DIR, 'admin-audit-log.json');
 

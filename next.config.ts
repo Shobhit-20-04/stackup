@@ -68,6 +68,21 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/topics',
+        destination: '/core-cs',
+        permanent: false,
+      },
+      {
+        source: '/practice',
+        destination: '/dsa',
+        permanent: false,
+      },
+      {
+        source: '/career',
+        destination: '/resume-checker',
+        permanent: false,
+      },
+      {
         source: '/admin/login',
         destination: '/admin',
         permanent: true,

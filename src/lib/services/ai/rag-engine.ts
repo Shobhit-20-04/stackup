@@ -109,7 +109,9 @@ function searchCurriculumTopics(
         }
 
         const topicWords = topicTitleLower.split(/[^a-z0-9]/).filter((w) => w.length > 2 && !STOP_WORDS.has(w));
-        const matchedTitleWords = topicWords.filter((tw) => qLower.includes(tw));
+        const matchedTitleWords = topicWords.filter((tw) =>
+          qLower.includes(tw) || tokens.some((t) => t.length >= 4 && (tw.startsWith(t) || t.startsWith(tw)))
+        );
         if (matchedTitleWords.length >= 2) {
           score += 40;
         }
@@ -120,10 +122,11 @@ function searchCurriculumTopics(
 
         // Token overlap
         for (const token of tokens) {
-          if (topicTitleLower.includes(token)) score += 12;
-          if (descLower.includes(token)) score += 4;
-          if (catTitleLower.includes(token)) score += 6;
-          if (topic.keyTakeaways?.some((k) => k.toLowerCase().includes(token))) score += 5;
+          const stem = token.length >= 4 ? token.slice(0, -1) : token;
+          if (topicTitleLower.includes(token) || topicTitleLower.includes(stem)) score += 12;
+          if (descLower.includes(token) || descLower.includes(stem)) score += 4;
+          if (catTitleLower.includes(token) || catTitleLower.includes(stem)) score += 6;
+          if (topic.keyTakeaways?.some((k) => k.toLowerCase().includes(token) || k.toLowerCase().includes(stem))) score += 5;
         }
 
         if (score >= 10) {
@@ -212,7 +215,7 @@ export function retrieveRelevantKnowledge(
     }
   } else if (sectionFilter === 'core-cs') {
     for (const m of curriculumMatches) {
-      if (m.category.includes('Core CS')) {
+      if (m.category.includes('Core CS') || m.category.includes('Computer Science')) {
         m.relevanceScore += 25;
       }
     }

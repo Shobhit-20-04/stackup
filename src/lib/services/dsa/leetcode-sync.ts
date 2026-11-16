@@ -36,6 +36,26 @@ function resolveStorageFile(): string {
     return path.join(process.env.STORAGE_DIR, 'custom_dsa_problems.json');
   }
 
+  // Proactively detect serverless / read-only container runtimes (e.g. Vercel Lambda where /var/task is read-only)
+  const isServerless = Boolean(
+    process.env.VERCEL ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME ||
+    process.env.LAMBDA_TASK_ROOT ||
+    (typeof process.cwd === 'function' && process.cwd().startsWith('/var/task'))
+  );
+
+  if (isServerless) {
+    const tmpDataDir = path.join(os.tmpdir(), 'stackup_data');
+    try {
+      if (!fs.existsSync(tmpDataDir)) {
+        fs.mkdirSync(tmpDataDir, { recursive: true });
+      }
+    } catch {
+      // Ignore directory creation warnings in locked sandbox
+    }
+    return path.join(tmpDataDir, 'custom_dsa_problems.json');
+  }
+
   const projectDataDir = path.join(process.cwd(), 'data');
   const projectFile = path.join(projectDataDir, 'custom_dsa_problems.json');
 
@@ -48,7 +68,7 @@ function resolveStorageFile(): string {
     fs.unlinkSync(testFile);
     return projectFile;
   } catch {
-    // Read-only serverless environment (e.g. /var/task on Vercel)
+    // Read-only serverless environment fallback
     const tmpDataDir = path.join(os.tmpdir(), 'stackup_data');
     try {
       if (!fs.existsSync(tmpDataDir)) {

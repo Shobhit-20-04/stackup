@@ -5,619 +5,516 @@ import Link from 'next/link';
 import { 
   Code2, 
   Cpu, 
-  FileCheck2, 
   ArrowRight, 
-  Check,
-  Compass
+  Check, 
+  Compass, 
+  Terminal, 
+  Globe, 
+  FolderGit2, 
+  Sparkles, 
+  BookA, 
+  Play, 
+  CheckCircle2, 
+  GraduationCap,
+  ChevronRight
 } from 'lucide-react';
-import { CURRICULUM_DATA } from '@/lib/data/curriculum';
-import { DSA_PROBLEMS } from '@/lib/data/dsa';
 import { getFastCachedUser, getCurrentUser, type UserSession } from '@/lib/auth/session';
-import { getReadTopicIds, getLocalQuizAttempts } from '@/lib/services/progress';
+
+type PersonaId = 'beginner' | 'developer' | 'cs_student' | 'placement';
 
 export default function HomePage() {
   const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
-  const [activeStage, setActiveStage] = useState<number>(1);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
-
-  // Study progress metrics
-  const [solvedDsaCount] = useState<number>(() => {
-    if (typeof window === 'undefined') return 0;
-    try {
-      const stored = localStorage.getItem('stackup_solved_dsa') || localStorage.getItem('dsa_solved_ids');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) return parsed.length;
-      }
-    } catch {
-      // ignore
-    }
-    return 0;
-  });
-
-  const [readTopicsCount] = useState<number>(() => {
-    if (typeof window === 'undefined') return 0;
-    try {
-      return getReadTopicIds().length;
-    } catch {
-      return 0;
-    }
-  });
-
-  const [quizAttemptsCount] = useState<number>(() => {
-    if (typeof window === 'undefined') return 0;
-    try {
-      return getLocalQuizAttempts().length;
-    } catch {
-      return 0;
-    }
-  });
+  const [selectedPersona, setSelectedPersona] = useState<PersonaId>('beginner');
+  const [interactiveLang, setInteractiveLang] = useState<'python' | 'javascript'>('python');
+  const [hasExecutedInteractive, setHasExecutedInteractive] = useState(false);
 
   useEffect(() => {
     void getCurrentUser().then((u) => setCurrentUser(u));
   }, []);
 
-  const coreCsCategories = CURRICULUM_DATA['core-cs'].categories;
-  const aptitudeCategories = CURRICULUM_DATA['aptitude'].categories;
-
-  // Curriculum Stage Roadmap (roadmap.sh inspired progressive learning pipeline)
+  // 6-Stage Beginner-to-Career Roadmap
   const roadmapStages = useMemo(() => [
     {
       stage: 1,
-      title: '01. Engineering Foundations',
-      description: 'C programming, Discrete Mathematics, and Algorithmic Complexity analysis.',
-      href: '/core-cs',
-      stats: 'Curated Topics • Exam MCQs',
-      subjects: ['Programming in C', 'Engineering Mathematics', 'Discrete Mathematics'],
+      title: '01. Digital Foundations',
+      description: 'How computers work, CPU/RAM, operating systems, internet, and code editor setup.',
+      href: '/learn#stage-1',
+      badge: 'Zero Prerequisites',
+      icon: Terminal,
+      color: 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+      highlights: ['Computer Hardware', 'How the Internet Works', 'What is Code?', 'VS Code Setup']
     },
     {
       stage: 2,
-      title: '02. Data Structures & Algorithms',
-      description: 'Arrays, Two Pointers, Trees, Graphs, Dynamic Programming & LeetCode patterns.',
-      href: '/dsa',
-      stats: 'Pattern-Based Coding Library',
-      subjects: ['Arrays & Hashing', 'Trees & BST', 'Dynamic Programming', 'Graphs'],
+      title: '02. Programming Fundamentals',
+      description: 'Variables, data types, if/else conditions, loops, functions, lists, and logic building.',
+      href: '/learn#stage-2',
+      badge: 'Hands-on Logic',
+      icon: Code2,
+      color: 'text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20',
+      highlights: ['Variables & Types', 'Decision If/Else', 'Loops Automation', 'Reusable Functions']
     },
     {
       stage: 3,
-      title: '03. Computer Systems & Architecture',
-      description: 'Operating Systems internals, Database engines, Computer Networks, and System Design.',
-      href: '/core-cs',
-      stats: 'Systems Architecture & Engineering Notes',
-      subjects: ['Operating Systems', 'DBMS', 'Computer Networks', 'System Design'],
+      title: '03. Web & Software Development',
+      description: 'HTML5, CSS3, JavaScript DOM, REST APIs, PostgreSQL databases, and Git/GitHub.',
+      href: '/learn#stage-3',
+      badge: 'Full-Stack Builder',
+      icon: Globe,
+      color: 'text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+      highlights: ['HTML & CSS Layout', 'JavaScript DOM', 'Backend REST APIs', 'SQL & Git/GitHub']
     },
     {
       stage: 4,
-      title: '04. Campus Aptitude Assessments',
-      description: 'Quantitative aptitude, logical deduction, verbal ability, and spatial aptitude tests.',
-      href: '/aptitude',
-      stats: 'Quantitative & Analytical Practice',
-      subjects: ['Quantitative Aptitude', 'Logical Reasoning', 'Verbal Ability'],
+      title: '04. Computer Science & Architecture',
+      description: 'Operating Systems, DBMS internals, Computer Networks, and System Design fundamentals.',
+      href: '/core-cs',
+      badge: 'Deep Systems',
+      icon: Cpu,
+      color: 'text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20',
+      highlights: ['Operating Systems (OS)', 'DBMS & Indexing', 'Networks & TCP/IP', 'System Design']
     },
     {
       stage: 5,
-      title: '05. ATS Resume & Placement Readiness',
-      description: 'Automated ATS resume diagnostics, Google XYZ bullet rewriter, and interview practice.',
-      href: '/resume-checker',
-      stats: 'Multi-Criteria Diagnostic Rubric',
-      subjects: ['STAR Bullet Rewriter', 'Format Scanner', 'Keyword Matching'],
+      title: '05. Practical Project Development',
+      description: 'Guided projects from personal calculators to full-stack cloud notes and real-time boards.',
+      href: '/projects',
+      badge: 'Portfolio Ready',
+      icon: FolderGit2,
+      color: 'text-purple-600 dark:text-purple-400 bg-purple-500/10 border-purple-500/20',
+      highlights: ['Calculator & Todo App', 'Weather API Dashboard', 'Authenticated Notes', 'Real-Time Sync']
     },
+    {
+      stage: 6,
+      title: '06. Career & Placement Preparation',
+      description: 'Pattern-based DSA (150 problems), campus aptitude, and automated ATS resume diagnostics.',
+      href: '/resume-checker',
+      badge: 'Interview Tested',
+      icon: GraduationCap,
+      color: 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20',
+      highlights: ['NeetCode 150 Patterns', 'Problem of the Day', 'Aptitude Screening', 'ATS Resume Scorer']
+    }
   ], []);
 
-  // Filtered DSA Problem ledger sample (LeetCode style)
-  const sampleProblems = useMemo(() => {
-    let list = DSA_PROBLEMS;
-    if (selectedDifficulty !== 'All') {
-      list = list.filter((p) => p.difficulty === selectedDifficulty);
+  const interactiveCode = useMemo(() => {
+    if (interactiveLang === 'python') {
+      return {
+        code: `# Your first program in Python!
+name = "Future Developer"
+goals = ["Digital Foundations", "Build Web Apps", "Master DSA"]
+
+print("Welcome to StackUp, " + name + "!")
+for item in goals:
+    print("  -> Ready to master: " + item)`,
+        output: `Welcome to StackUp, Future Developer!
+  -> Ready to master: Digital Foundations
+  -> Ready to master: Build Web Apps
+  -> Ready to master: Master DSA`
+      };
+    } else {
+      return {
+        code: `// Your first program in JavaScript!
+const student = { name: "Future Developer", level: 1 };
+
+function levelUp(user) {
+  user.level += 1;
+  return \`Welcome to StackUp, \${user.name}! You are now Level \${user.level}.\`;
+}
+
+console.log(levelUp(student));`,
+        output: `Welcome to StackUp, Future Developer! You are now Level 2.`
+      };
     }
-    return list.slice(0, 8);
-  }, [selectedDifficulty]);
+  }, [interactiveLang]);
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors">
       
-      {/* 1. TECHNICAL COMMAND CENTER MASTHEAD */}
-      <section className="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/40 py-10 sm:py-14">
+      {/* 1. BEGINNER-FIRST HERO MASTHEAD */}
+      <section className="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/40 py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
             
-            {/* Left: Core Positioning */}
-            <div className="max-w-2xl space-y-3.5">
-              <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-card)] text-xs font-mono text-[var(--brand-primary)]">
-                <span className="w-2 h-2 rounded-full bg-[var(--brand-primary)]" />
-                <span>STACKUP // ENGINEERING PREPARATION WORKBENCH</span>
+            {/* Left Column: Mission & Progressive Framing */}
+            <div className="max-w-2xl space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-[var(--brand-primary)]/20 bg-[var(--brand-primary)]/10 text-xs font-bold text-[var(--brand-primary)]">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>ZERO TECHNICAL KNOWLEDGE &rarr; CAREER-READY BUILDER</span>
+                </div>
+                {currentUser && (
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    👋 Welcome back, {currentUser.email.split('@')[0]}
+                  </span>
+                )}
               </div>
 
-              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--foreground)] leading-[1.12]">
-                Structured technical curriculum for software placement.
+              <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--foreground)] leading-[1.12]">
+                The beginner-first platform for learning technology.
               </h1>
 
-              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed font-normal max-w-xl">
-                A disciplined developer workbench replacing fragmented tutorials. High-frequency algorithmic patterns with optimal multi-language solutions, core computer science disciplines, campus recruitment aptitude tests, and automated ATS resume diagnostics.
+              <p className="text-sm sm:text-base text-[var(--foreground-muted)] leading-relaxed font-normal max-w-xl">
+                Never written code? Confused by jargon? StackUp provides a guided, progressive roadmap—from digital foundations and programming basics to full-stack web development, computer science, and career placement.
               </p>
 
               {/* Action Toolbar */}
-              <div className="pt-2 flex flex-wrap items-center gap-2.5">
+              <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/dsa"
-                  className="px-4 py-2 rounded-md font-medium text-xs text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] transition-colors inline-flex items-center space-x-1.5 shadow-xs cursor-pointer"
+                  href="/learn"
+                  className="px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] transition-all flex items-center space-x-2 shadow-xs cursor-pointer"
                 >
-                  <Code2 className="w-3.5 h-3.5" />
-                  <span>Start DSA Practice</span>
+                  <Compass className="w-4 h-4" />
+                  <span>Start Learning (Stage 1)</span>
                 </Link>
 
                 <Link
-                  href="/core-cs"
-                  className="px-4 py-2 rounded-md font-medium text-xs text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-colors inline-flex items-center space-x-1.5 cursor-pointer"
+                  href="/projects"
+                  className="px-4 py-2.5 rounded-xl font-bold text-xs text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-all flex items-center space-x-1.5 cursor-pointer shadow-2xs"
                 >
-                  <Cpu className="w-3.5 h-3.5" />
-                  <span>Explore Core CS Disciplines</span>
+                  <FolderGit2 className="w-4 h-4 text-[var(--brand-primary)]" />
+                  <span>Guided Projects</span>
                 </Link>
 
                 <Link
-                  href="/resume-checker"
-                  className="px-4 py-2 rounded-md font-medium text-xs text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors inline-flex items-center space-x-1"
+                  href="/glossary"
+                  className="px-4 py-2.5 rounded-xl font-bold text-xs text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors flex items-center space-x-1.5"
                 >
-                  <FileCheck2 className="w-3.5 h-3.5" />
-                  <span>ATS Resume Checker &rarr;</span>
+                  <BookA className="w-4 h-4" />
+                  <span>Plain-English Glossary &rarr;</span>
                 </Link>
+              </div>
+
+              {/* Confidence Guarantee */}
+              <div className="pt-2 flex items-center space-x-4 text-xs text-[var(--foreground-muted)]">
+                <span className="flex items-center space-x-1">
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>No prior experience needed</span>
+                </span>
+                <span className="flex items-center space-x-1">
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Zero-jargon explanations</span>
+                </span>
+                <span className="flex items-center space-x-1">
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>100% Free & Open</span>
+                </span>
               </div>
             </div>
 
-            {/* Right: Live Telemetry & Preparation Activity Box */}
-            <div className="lg:w-80 p-5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-4 shrink-0 shadow-xs">
+            {/* Right Column: Interactive "Run Your First Program" Live Box */}
+            <div className="lg:w-96 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-5 space-y-4 shadow-sm shrink-0">
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
-                <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-[var(--brand-primary)]">
-                  {currentUser ? 'Student Session' : 'Preparation Activity'}
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
-                  {currentUser ? 'Authenticated' : 'Active Session'}
-                </span>
-              </div>
-
-              <div className="space-y-3 text-xs">
-                {/* DSA Solved Row */}
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--foreground-muted)] text-[11px] font-medium">DSA Practice</span>
-                    {solvedDsaCount > 0 ? (
-                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs">
-                        {solvedDsaCount} Solved
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-medium text-[var(--foreground-muted)]">
-                        Ready to start
-                      </span>
-                    )}
-                  </div>
-                  {solvedDsaCount > 0 ? (
-                    <div className="w-full h-1.5 rounded-full bg-[var(--surface-sunken)] overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-600 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.min(100, Math.round((solvedDsaCount / (DSA_PROBLEMS.length || 1)) * 100))}%` }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between text-[10px] text-[var(--foreground-muted)]">
-                      <span>Problem set available</span>
-                      <Link href="/dsa" className="text-[var(--brand-primary)] hover:underline font-medium">
-                        Start practice &rarr;
-                      </Link>
-                    </div>
-                  )}
+                <div className="flex items-center space-x-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-bold text-[var(--foreground)]">Try Your First Line of Code</span>
                 </div>
-
-                {/* Core CS Row */}
-                <div className="space-y-1 pt-1 border-t border-[var(--border-subtle)]/60">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--foreground-muted)] text-[11px] font-medium">Core CS Syllabus</span>
-                    {readTopicsCount > 0 ? (
-                      <span className="font-mono font-bold text-[var(--foreground)] text-xs">
-                        {readTopicsCount} Reviewed
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-medium text-[var(--foreground-muted)]">
-                        Available to explore
-                      </span>
-                    )}
-                  </div>
-                  {readTopicsCount === 0 && (
-                    <div className="flex items-center justify-between text-[10px] text-[var(--foreground-muted)]">
-                      <span>Syllabus notes ready</span>
-                      <Link href="/core-cs" className="text-[var(--brand-primary)] hover:underline font-medium">
-                        Browse topics &rarr;
-                      </Link>
-                    </div>
-                  )}
-                </div>
-
-                {/* Exam MCQs Row */}
-                <div className="space-y-1 pt-1 border-t border-[var(--border-subtle)]/60">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--foreground-muted)] text-[11px] font-medium">Timed Assessments</span>
-                    {quizAttemptsCount > 0 ? (
-                      <span className="font-mono font-bold text-[var(--foreground)] text-xs">
-                        {quizAttemptsCount} Completed
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-medium text-[var(--foreground-muted)]">
-                        Ready to test
-                      </span>
-                    )}
-                  </div>
-                  {quizAttemptsCount === 0 && (
-                    <div className="flex items-center justify-between text-[10px] text-[var(--foreground-muted)]">
-                      <span>Self-tests available</span>
-                      <Link href="/aptitude" className="text-[var(--brand-primary)] hover:underline font-medium">
-                        Try quiz &rarr;
-                      </Link>
-                    </div>
-                  )}
+                {/* Language Switcher */}
+                <div className="flex items-center bg-[var(--surface-sunken)] p-0.5 rounded-lg text-[10px] font-bold">
+                  <button
+                    onClick={() => { setInteractiveLang('python'); setHasExecutedInteractive(false); }}
+                    className={`px-2 py-1 rounded-md transition-all ${interactiveLang === 'python' ? 'bg-[var(--brand-primary)] text-white' : 'text-[var(--foreground-muted)]'}`}
+                  >
+                    Python
+                  </button>
+                  <button
+                    onClick={() => { setInteractiveLang('javascript'); setHasExecutedInteractive(false); }}
+                    className={`px-2 py-1 rounded-md transition-all ${interactiveLang === 'javascript' ? 'bg-[var(--brand-primary)] text-white' : 'text-[var(--foreground-muted)]'}`}
+                  >
+                    JavaScript
+                  </button>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px]">
-                <Link
-                  href="/profile"
-                  className="font-medium text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+              {/* Code Box */}
+              <div className="p-3.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto leading-relaxed">
+                <pre><code>{interactiveCode.code}</code></pre>
+              </div>
+
+              {/* Execution Output */}
+              {hasExecutedInteractive ? (
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-800 dark:text-emerald-300 space-y-1">
+                  <div className="flex items-center space-x-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Program Executed Successfully:</span>
+                  </div>
+                  <pre className="text-[11px] whitespace-pre-wrap">{interactiveCode.output}</pre>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setHasExecutedInteractive(true)}
+                  className="w-full py-2.5 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-xs font-bold flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-xs"
                 >
-                  <span>Open Full Candidate Profile</span>
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  <Play className="w-3.5 h-3.5 fill-white" />
+                  <span>Run Program & See Output</span>
+                </button>
+              )}
+
+              <p className="text-[11px] text-[var(--foreground-muted)] text-center">
+                That is real code running! Next step: <Link href="/learn" className="text-[var(--brand-primary)] font-bold hover:underline">Explore Stage 1</Link>
+              </p>
             </div>
 
           </div>
         </div>
       </section>
 
-      {/* 2. PROGRESSIVE LEARNING ROADMAP (roadmap.sh & The Odin Project Inspired) */}
-      <section className="py-12 border-b border-[var(--border-subtle)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-            <div>
-              <div className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-                <Compass className="w-3.5 h-3.5" />
-                <span>Curriculum Progression Pipeline</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] tracking-tight mt-1">
-                Linear milestone roadmap from foundations to placement.
-              </h2>
-            </div>
-            <p className="text-xs text-[var(--foreground-muted)] max-w-sm">
-              Follow each sequential stage to prevent tutorial traps and guarantee syllabus coverage.
+      {/* 2. "WHERE ARE YOU STARTING FROM?" PATH SELECTOR */}
+      <section className="py-12 border-b border-[var(--border-subtle)] bg-[var(--background)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">
+              Tailored For Your Background
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+              Where Are You Starting From?
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--foreground-muted)]">
+              StackUp adjusts to where you are. Choose your current experience level to view your custom path.
             </p>
           </div>
 
-          {/* Sequential Stage Navigator Strip */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-2.5">
-            {roadmapStages.map((stage) => {
-              const isActive = activeStage === stage.stage;
-              return (
-                <button
-                  key={stage.stage}
-                  onClick={() => setActiveStage(stage.stage)}
-                  className={`p-3.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between space-y-2 ${
-                    isActive
-                      ? 'border-[var(--brand-primary)] bg-[var(--surface-card)] shadow-xs ring-1 ring-[var(--brand-primary)]/20'
-                      : 'border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:bg-[var(--surface-card)] text-[var(--foreground-muted)]'
-                  }`}
-                >
-                  <div>
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)] block">
-                      Stage 0{stage.stage}
-                    </span>
-                    <h3 className={`text-xs font-bold mt-0.5 ${isActive ? 'text-[var(--foreground)]' : 'text-[var(--foreground)]'}`}>
-                      {stage.title.split('. ')[1]}
-                    </h3>
-                  </div>
-                  <span className="font-mono text-[10px] text-[var(--foreground-muted)]">
-                    {stage.stats.split(' • ')[0]}
-                  </span>
-                </button>
-              );
-            })}
+          {/* Persona Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {[
+              { id: 'beginner', label: '1. Complete Beginner (Zero Tech Knowledge)' },
+              { id: 'developer', label: '2. Know Basics, Want to Build Real Apps' },
+              { id: 'cs_student', label: '3. CS Student (Need Systems & Algorithms)' },
+              { id: 'placement', label: '4. Preparing for Placements & Jobs' },
+            ].map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setSelectedPersona(p.id as PersonaId)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedPersona === p.id
+                    ? 'bg-[var(--brand-primary)] text-white shadow-xs'
+                    : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border-subtle)]'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
           </div>
 
-          {/* Active Stage Detailed Drawer */}
-          {(() => {
-            const currentStage = roadmapStages.find((s) => s.stage === activeStage) || roadmapStages[0];
-            return (
-              <div className="p-5 sm:p-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="space-y-2 max-w-2xl">
-                  <div className="flex items-center space-x-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--surface-sunken)] text-[var(--brand-primary)] border border-[var(--border-subtle)]">
-                      MILESTONE {currentStage.stage} OF 5
-                    </span>
-                    <span className="text-xs font-mono text-[var(--foreground-muted)]">{currentStage.stats}</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-[var(--foreground)] tracking-tight">
-                    {currentStage.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
-                    {currentStage.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {currentStage.subjects.map((sub, sIdx) => (
-                      <span
-                        key={sIdx}
-                        className="px-2 py-0.5 rounded text-[11px] font-medium bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--foreground)]"
-                      >
-                        {sub}
-                      </span>
-                    ))}
-                  </div>
+          {/* Dynamic Persona Card */}
+          <div className="max-w-4xl mx-auto p-6 sm:p-8 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] shadow-xs space-y-4">
+            {selectedPersona === 'beginner' && (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>Welcome! You are in the right place.</span>
                 </div>
-
-                <div className="shrink-0">
-                  <Link
-                    href={currentStage.href}
-                    className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-md text-xs font-semibold bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-hover)] transition-colors shadow-xs cursor-pointer"
-                  >
-                    <span>Launch Milestone Tracks</span>
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                  We assume you have never touched a terminal or written a line of code. We start with how computers store memory, how web browsers load pages, what code is, and write simple Python exercises with real-world analogies.
+                </p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">Recommended: Stage 1 Digital Foundations</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">Followed by: Stage 2 Programming Fundamentals</span>
+                </div>
+                <div className="pt-2">
+                  <Link href="/learn#stage-1" className="inline-flex items-center space-x-1.5 text-xs font-bold text-[var(--brand-primary)] hover:underline">
+                    <span>Start Stage 1 Lessons</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>
-            );
-          })()}
+            )}
+
+            {selectedPersona === 'developer' && (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
+                  <Globe className="w-5 h-5" />
+                  <span>Time to build full applications!</span>
+                </div>
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                  You know what variables and loops are. Now connect them into functional software: HTML/CSS structure, JavaScript DOM event listeners, REST APIs, PostgreSQL tables, and step-by-step portfolio projects.
+                </p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">Recommended: Stage 3 Web Development</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">Followed by: Stage 5 Guided Projects</span>
+                </div>
+                <div className="pt-2">
+                  <Link href="/projects" className="inline-flex items-center space-x-1.5 text-xs font-bold text-[var(--brand-primary)] hover:underline">
+                    <span>View Guided Project Milestones</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {selectedPersona === 'cs_student' && (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2 text-amber-600 dark:text-amber-400 font-bold text-sm">
+                  <Cpu className="w-5 h-5" />
+                  <span>Core Computer Science & Deep Systems</span>
+                </div>
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                  Deep-dive into 221 verified engineering topics with interactive notes and exam MCQs: Operating Systems (paging, deadlocks), DBMS (indexing, ACID), Networks (TCP/IP), and asymptotic algorithm complexity.
+                </p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">Recommended: Stage 4 Core CS Syllabus</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">221 Curated Engineering Topics</span>
+                </div>
+                <div className="pt-2">
+                  <Link href="/core-cs" className="inline-flex items-center space-x-1.5 text-xs font-bold text-[var(--brand-primary)] hover:underline">
+                    <span>Explore Core CS Disciplines</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {selectedPersona === 'placement' && (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 font-bold text-sm">
+                  <GraduationCap className="w-5 h-5" />
+                  <span>Placement & Career Preparation</span>
+                </div>
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                  Prepare for company recruitment drives: solve our 150 NeetCode-aligned DSA patterns, practice timed campus aptitude assessments, and run your resume through our automated ATS scanner with STAR bullet rewriting.
+                </p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">Recommended: Stage 6 Placement Suite</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[var(--surface-sunken)] text-[var(--foreground)]">DSA Hub + ATS Resume Checker</span>
+                </div>
+                <div className="pt-2">
+                  <Link href="/resume-checker" className="inline-flex items-center space-x-1.5 text-xs font-bold text-[var(--brand-primary)] hover:underline">
+                    <span>Scan Resume with ATS Checker</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
       </section>
 
-      {/* 3. DUAL ENGINEERING WORKBENCH (LeetCode Problem Index & MDN Subject Directory) */}
-      <section className="py-12 border-b border-[var(--border-subtle)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Left 7 Cols: LeetCode-Inspired Problem Ledger */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
-                <div>
-                  <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center space-x-2">
-                    <Code2 className="w-4 h-4 text-[var(--brand-primary)]" />
-                    <span>Algorithmic Problem Index</span>
-                  </h2>
-                  <p className="text-[11px] text-[var(--foreground-muted)]">
-                    Curated patterns with multi-language code drawers and verified LeetCode portals.
-                  </p>
-                </div>
+      {/* 3. THE 6-STAGE ROADMAP AT A GLANCE */}
+      <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">
+              Curriculum Architecture
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+              The 6 Stages to Technical Independence
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--foreground-muted)] max-w-xl">
+              Each stage builds on the previous one. No magic tricks, no unexplained leaps in difficulty.
+            </p>
+          </div>
 
-                {/* Difficulty Filters */}
-                <div className="inline-flex rounded-md p-0.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs font-medium">
-                  {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
-                    <button
-                      key={diff}
-                      onClick={() => setSelectedDifficulty(diff)}
-                      className={`px-2 py-0.5 rounded text-[11px] transition-colors cursor-pointer ${
-                        selectedDifficulty === diff
-                          ? 'bg-[var(--surface-card)] text-[var(--foreground)] font-bold shadow-xs'
-                          : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-                      }`}
-                    >
-                      {diff}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <Link
+            href="/learn"
+            className="px-4 py-2 rounded-xl text-xs font-bold text-[var(--brand-primary)] hover:bg-[var(--surface-card)] border border-[var(--border-subtle)] transition-all flex items-center space-x-1.5 self-start md:self-auto"
+          >
+            <span>Open Complete Roadmap Hub</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
 
-              {/* Problem Rows Table */}
-              <div className="border border-[var(--border-subtle)] rounded-lg overflow-hidden bg-[var(--surface-card)] divide-y divide-[var(--border-subtle)]">
-                {sampleProblems.map((prob) => (
-                  <div
-                    key={prob.id}
-                    className="p-3 sm:px-4 flex items-center justify-between gap-3 hover:bg-[var(--surface-sunken)]/60 transition-colors"
-                  >
-                    <div className="min-w-0 space-y-0.5">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-mono text-[10px] text-[var(--foreground-muted)]">#{prob.id}</span>
-                        <Link
-                          href={`/dsa?problem=${prob.id}`}
-                          className="text-xs font-bold text-[var(--foreground)] hover:text-[var(--brand-primary)] transition-colors truncate"
-                        >
-                          {prob.title}
-                        </Link>
-                      </div>
-                      <div className="flex items-center space-x-2 text-[11px] text-[var(--foreground-muted)]">
-                        <span>{prob.pattern_tag}</span>
-                        <span>&bull;</span>
-                        <span
-                          className={`font-semibold font-mono text-[10px] ${
-                            prob.difficulty === 'Easy'
-                              ? 'text-emerald-600 dark:text-emerald-400'
-                              : prob.difficulty === 'Medium'
-                              ? 'text-amber-600 dark:text-amber-400'
-                              : 'text-rose-600 dark:text-rose-400'
-                          }`}
-                        >
-                          {prob.difficulty}
+        {/* 6 Stage Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {roadmapStages.map((stage) => {
+            const Icon = stage.icon;
+            return (
+              <div
+                key={stage.stage}
+                className="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-slate-300 dark:hover:border-zinc-700 transition-all flex flex-col justify-between space-y-6 shadow-xs group"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${stage.color}`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--surface-sunken)] text-[var(--foreground-muted)]">
+                      {stage.badge}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3 className="text-base font-bold text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
+                      {stage.title}
+                    </h3>
+                    <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                      {stage.description}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5 pt-2 border-t border-[var(--border-subtle)]/60">
+                    <span className="text-[10px] font-bold uppercase text-[var(--foreground-muted)] block">Key Topics:</span>
+                    <div className="flex flex-wrap gap-1">
+                      {stage.highlights.map((h, i) => (
+                        <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-[var(--surface-sunken)] text-[var(--foreground-muted)]">
+                          {h}
                         </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2 shrink-0">
-                      <Link
-                        href={`/dsa?problem=${prob.id}`}
-                        className="px-2.5 py-1 rounded text-xs font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground)] transition-colors cursor-pointer"
-                      >
-                        Solve
-                      </Link>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
 
-              <div className="pt-1 flex items-center justify-between text-xs">
-                <span className="text-[var(--foreground-muted)] font-mono text-[11px]">
-                  Curated Practice Sample
-                </span>
                 <Link
-                  href="/dsa"
-                  className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
+                  href={stage.href}
+                  className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-bold text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform"
                 >
-                  <span>Open Full DSA Practice Hub</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Explore Stage</span>
+                  <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 4. GUIDED PROJECT DEVELOPMENT CALLOUT */}
+      <section className="py-12 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-[var(--surface-card)] rounded-2xl border border-[var(--border-subtle)] p-8 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-xs">
+            <div className="space-y-3 max-w-xl">
+              <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                Stage 5 // Learning By Building
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+                Stop watching tutorials. Build real software.
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                Choose from beginner projects (Personal Profile, Interactive Calculator, Task Tracker) to advanced full-stack apps (Weather Dashboard, Cloud Notes, Real-Time Collaboration). Every project includes starter code, milestones, testing steps, and grading rubrics.
+              </p>
             </div>
 
-            {/* Right 5 Cols: Core CS Engineering Directory */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="pb-2 border-b border-[var(--border-subtle)]">
-                <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] flex items-center space-x-2">
-                  <Cpu className="w-4 h-4 text-[var(--brand-primary)]" />
-                  <span>Computer Science Directory</span>
-                </h2>
-                <p className="text-[11px] text-[var(--foreground-muted)]">
-                  Comprehensive engineering and aptitude disciplines with deep architectural notes and exam MCQs.
-                </p>
-              </div>
-
-              {/* Grouped Subjects */}
-              <div className="space-y-2.5">
-                {/* Systems Cluster */}
-                <div className="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-2">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-                    Systems &amp; Architecture
-                  </span>
-                  <div className="grid grid-cols-2 gap-1.5 text-xs">
-                    {coreCsCategories.filter((c) => ['os', 'dbms', 'cn', 'coa', 'dld'].includes(c.id)).map((cat) => (
-                      <Link
-                        key={cat.id}
-                        href={`/core-cs#${cat.id}`}
-                        className="p-1.5 rounded hover:bg-[var(--surface-sunken)] transition-colors flex items-center justify-between text-[var(--foreground)] group"
-                      >
-                        <span className="font-medium truncate group-hover:text-[var(--brand-primary)]">{cat.title.split(' (')[0]}</span>
-                        <span className="font-mono text-[10px] text-[var(--foreground-muted)] shrink-0 ml-1">{cat.topics.length}T</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Practical Software & Engineering */}
-                <div className="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-2">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-                    Software &amp; Design
-                  </span>
-                  <div className="grid grid-cols-2 gap-1.5 text-xs">
-                    {coreCsCategories.filter((c) => ['system-design', 'oops', 'swe-git', 'c-prog', 'dsa-core'].includes(c.id)).map((cat) => (
-                      <Link
-                        key={cat.id}
-                        href={`/core-cs#${cat.id}`}
-                        className="p-1.5 rounded hover:bg-[var(--surface-sunken)] transition-colors flex items-center justify-between text-[var(--foreground)] group"
-                      >
-                        <span className="font-medium truncate group-hover:text-[var(--brand-primary)]">{cat.title.split(' (')[0]}</span>
-                        <span className="font-mono text-[10px] text-[var(--foreground-muted)] shrink-0 ml-1">{cat.topics.length}T</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Foundations & Theory */}
-                <div className="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-2">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-                    Theory &amp; Foundations
-                  </span>
-                  <div className="grid grid-cols-2 gap-1.5 text-xs">
-                    {coreCsCategories.filter((c) => ['toc', 'cd', 'algo-core', 'discrete-math', 'engg-math'].includes(c.id)).map((cat) => (
-                      <Link
-                        key={cat.id}
-                        href={`/core-cs#${cat.id}`}
-                        className="p-1.5 rounded hover:bg-[var(--surface-sunken)] transition-colors flex items-center justify-between text-[var(--foreground)] group"
-                      >
-                        <span className="font-medium truncate group-hover:text-[var(--brand-primary)]">{cat.title.split(' (')[0]}</span>
-                        <span className="font-mono text-[10px] text-[var(--foreground-muted)] shrink-0 ml-1">{cat.topics.length}T</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Aptitude & Problem Solving */}
-                <div className="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-2">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-                    Aptitude &amp; Placement Reasoning
-                  </span>
-                  <div className="grid grid-cols-2 gap-1.5 text-xs">
-                    {aptitudeCategories.map((cat) => (
-                      <Link
-                        key={cat.id}
-                        href={`/aptitude#${cat.id}`}
-                        className="p-1.5 rounded hover:bg-[var(--surface-sunken)] transition-colors flex items-center justify-between text-[var(--foreground)] group"
-                      >
-                        <span className="font-medium truncate group-hover:text-[var(--brand-primary)]">{cat.title.split(' (')[0]}</span>
-                        <span className="font-mono text-[10px] text-[var(--foreground-muted)] shrink-0 ml-1">{cat.topics.length}T</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-1 flex items-center justify-between text-xs">
-                <Link
-                  href="/core-cs"
-                  className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
-                >
-                  <span>Explore Core CS</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-                <Link
-                  href="/aptitude"
-                  className="font-semibold text-[var(--brand-primary)] hover:underline inline-flex items-center space-x-1"
-                >
-                  <span>Explore Aptitude</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-
+            <Link
+              href="/projects"
+              className="px-6 py-3 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-xs font-bold flex items-center space-x-2 transition-all shadow-sm shrink-0"
+            >
+              <FolderGit2 className="w-4 h-4" />
+              <span>Browse All Guided Projects</span>
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 4. ATS RESUME VERIFICATION RUBRIC */}
-      <section className="py-12 bg-[var(--surface-sunken)]/20">
+      {/* 5. PLAIN-ENGLISH GLOSSARY BANNER */}
+      <section className="py-12 border-t border-[var(--border-subtle)] bg-[var(--background)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-6 sm:p-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-                <FileCheck2 className="w-3.5 h-3.5" />
-                <span>Automated ATS Resume Diagnostics</span>
+          <div className="p-8 rounded-2xl border border-amber-500/20 bg-amber-500/5 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-2 max-w-2xl">
+              <div className="flex items-center space-x-2 text-amber-700 dark:text-amber-400 font-bold text-sm">
+                <BookA className="w-4 h-4" />
+                <span>Stuck on confusing technical words?</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] tracking-tight">
-                Benchmark your technical resume against strict applicant tracking standards.
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
-                Parse `.pdf` and `.docx` engineering resumes directly in your browser. Get actionable STAR bullet rewrites, hard metric calculations, and keyword matching tailored to software roles.
+              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                Our interconnected glossary defines over 50 essential industry terms—including API, Compiler, Algorithm, DOM, Git, and Database—with real-world analogies and direct links to lessons.
               </p>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono text-[11px] text-[var(--foreground-muted)]">
-                <div className="flex items-center space-x-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>STAR Rewriter</span>
-                </div>
-                <div className="flex items-center space-x-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Keyword Scan</span>
-                </div>
-                <div className="flex items-center space-x-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Diagnostic Rubric</span>
-                </div>
-                <div className="flex items-center space-x-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Client-Side Parser</span>
-                </div>
-              </div>
             </div>
 
-            <div className="shrink-0">
-              <Link
-                href="/resume-checker"
-                className="inline-flex items-center space-x-2 px-6 py-3 rounded-md text-xs font-bold bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary-hover)] transition-colors shadow-xs cursor-pointer"
-              >
-                <span>Audit Your Resume</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            <Link
+              href="/glossary"
+              className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-2xs shrink-0"
+            >
+              Open Technical Glossary
+            </Link>
           </div>
         </div>
       </section>

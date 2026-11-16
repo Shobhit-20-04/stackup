@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { getCurrentUser, getFastCachedUser, signOutUser } from '@/lib/auth/session';
 import { 
-  BookOpen, 
   Cpu, 
   Code2, 
   FileCheck2, 
@@ -15,7 +14,10 @@ import {
   Layers, 
   Menu, 
   X,
-  Home
+  Home,
+  Compass,
+  FolderGit2,
+  BookA
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -130,10 +132,12 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '/', icon: Home },
-    { name: 'DSA Hub', href: '/dsa', icon: Code2 },
-    { name: 'Core CS', href: '/core-cs', icon: Cpu },
-    { name: 'Aptitude', href: '/aptitude', icon: BookOpen },
-    { name: 'ATS Resume', href: '/resume-checker', icon: FileCheck2 },
+    { name: 'Start Learning', href: '/learn', icon: Compass },
+    { name: 'Explore Topics', href: '/core-cs', icon: Cpu },
+    { name: 'Practice', href: '/dsa', icon: Code2 },
+    { name: 'Projects', href: '/projects', icon: FolderGit2 },
+    { name: 'Career', href: '/resume-checker', icon: FileCheck2 },
+    { name: 'Glossary', href: '/glossary', icon: BookA },
   ];
 
   return (
