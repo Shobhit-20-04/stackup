@@ -183,6 +183,17 @@ export default function ProjectsPage() {
                   <span className="font-semibold text-[var(--foreground)]">{activeProject.techChoices.deployment}</span>
                 </div>
               </div>
+
+              {/* Encouraging Mentor Note */}
+              <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 text-xs flex items-start space-x-3">
+                <span className="text-base select-none shrink-0 mt-0.5">✨</span>
+                <div className="space-y-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">Mentor Tip for this Project</span>
+                  <p className="leading-relaxed text-[var(--foreground-muted)]">
+                    Don&apos;t worry about making the UI look pixel-perfect on your first try. Focus on completing each milestone in order. Once the data flows and your buttons work, you can always polish the styles!
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Problem Statement & Key Features */}

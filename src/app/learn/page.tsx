@@ -32,6 +32,7 @@ interface StageDefinition {
   badge: string;
   targetAudience: string;
   learningOutcome: string;
+  mentorNote: string;
   href: string;
   modules: Array<{
     title: string;
@@ -127,6 +128,7 @@ export default function LearnRoadmapPage() {
       badge: 'Zero Prerequisites',
       targetAudience: 'Anyone who has never studied technology and wants to understand how computers and software actually work.',
       learningOutcome: 'You understand computer hardware (CPU/RAM/SSD), the internet, browsers, servers, what code is, and have your code editor installed.',
+      mentorNote: 'There are zero silly questions here. Every senior engineer you respect once looked at a black terminal screen wondering what "cd" meant. Breathe, take your time, and enjoy the discovery.',
       href: '/core-cs#how-computers-work-hardware-software',
       modules: [
         {
@@ -169,6 +171,7 @@ export default function LearnRoadmapPage() {
       badge: 'Hands-On Logic',
       targetAudience: 'Learners ready to write their first programs, solve logical puzzles, and automate tasks.',
       learningOutcome: 'You can write clean programs independently using variables, conditional branching, loops, functions, and collections.',
+      mentorNote: 'Programming is just teaching a computer to follow a recipe. When your code throws an error, don\'t feel discouraged—bugs are normal clues, and debugging is 90% of what real engineers do.',
       href: '/core-cs#variables-data-types-memory-boxes',
       modules: [
         {
@@ -218,6 +221,7 @@ export default function LearnRoadmapPage() {
       badge: 'Full-Stack Practical',
       targetAudience: 'Learners who want to create functional websites, connect databases, and collaborate with Git.',
       learningOutcome: 'You understand frontend UI, backend APIs, relational SQL databases, and team collaboration on GitHub.',
+      mentorNote: 'Building for the web is magical because you can write code tonight and share it with anyone on Earth with a single URL. Focus on making things work first; polish comes with practice.',
       href: '/core-cs#html-css-structure-and-styling',
       modules: [
         {
@@ -267,6 +271,7 @@ export default function LearnRoadmapPage() {
       badge: 'Core CS Foundations',
       targetAudience: 'Learners preparing for technical depth, college engineering exams, and system engineering discussions.',
       learningOutcome: 'You understand deep system internals: memory management, process concurrency, relational transactions (ACID), and network protocols.',
+      mentorNote: 'This is where you pull back the curtain and see the engine humming under the car hood. Understanding how the CPU, memory, and operating system work gives you superpowers as an architect.',
       href: '/core-cs',
       modules: [
         {
@@ -305,6 +310,7 @@ export default function LearnRoadmapPage() {
       badge: 'Portfolio Ready',
       targetAudience: 'Learners who want tangible software projects to demonstrate their abilities to hiring managers.',
       learningOutcome: 'You have designed, implemented, tested, and deployed full projects independently on GitHub.',
+      mentorNote: 'Don\'t wait until you feel 100% "ready" to build projects. You get ready BY building. Break things, get your hands dirty, and celebrate every working milestone.',
       href: '/projects',
       modules: [
         {
@@ -343,6 +349,7 @@ export default function LearnRoadmapPage() {
       badge: 'Job Ready',
       targetAudience: 'Students and job-seekers preparing for screening rounds, coding assessments, and technical interviews.',
       learningOutcome: 'You have an interview-tested DSA foundation, verified aptitude speed, and an ATS-optimized technical resume.',
+      mentorNote: 'Technical interviews are a distinct skill separate from programming. Prepare systematically, practice explaining your thought process out loud, and walk in feeling calm and confident.',
       href: '/resume-checker',
       modules: [
         {
@@ -586,6 +593,17 @@ export default function LearnRoadmapPage() {
                   <div className="p-3.5 rounded-xl bg-[var(--surface-sunken)]/60 border border-[var(--border-subtle)]/60 space-y-1">
                     <span className="font-bold text-[10px] uppercase text-emerald-600 dark:text-emerald-400">Learning Outcome</span>
                     <p className="text-[var(--foreground)]">{stage.learningOutcome}</p>
+                  </div>
+                </div>
+
+                {/* Supportive Mentor Callout */}
+                <div className="p-4 rounded-xl bg-[var(--surface-sunken)]/40 border border-[var(--border-subtle)] text-xs flex items-start space-x-3 mb-4">
+                  <span className="text-base select-none shrink-0 mt-0.5">💬</span>
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">Mentor Perspective</span>
+                    <p className="leading-relaxed text-[var(--foreground)] font-medium">
+                      {stage.mentorNote}
+                    </p>
                   </div>
                 </div>
 

@@ -367,10 +367,10 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 <span>Production-Ready ATS Engine</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-[var(--foreground)] tracking-tight">
-                Software Engineering Resume ATS Evaluator
+                Get Your Engineering Resume Interview-Ready
               </h1>
               <p className="mt-2 text-sm text-[var(--foreground-muted)] max-w-2xl leading-relaxed">
-                Benchmark your engineering resume with transparent diagnostic scoring, job-description alignment, scanned PDF detection, and fact-preserving Google XYZ bullet point rewrites.
+                See your resume through the eyes of real tech recruiters and ATS scanners. Get friendly, actionable feedback on your formatting, quantify your genuine engineering achievements, and polish your bullet points—without fake buzzwords or fluff.
               </p>
             </div>
 
@@ -410,10 +410,10 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 Authentication Required
               </span>
               <h3 className="text-xl font-bold text-[var(--foreground)]">
-                Sign in to analyze and benchmark your resume
+                Sign in to save your resume progress
               </h3>
               <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-1.5 mb-6 leading-relaxed">
-                Resume scanning, diagnostic scoring, job description matching, and XYZ bullet optimization require an active student account to save scores to your preparation profile.
+                Connect your free StackUp account so your ATS scores, targeted role alignments, and polished bullet point suggestions are securely saved to your career dashboard.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <Link

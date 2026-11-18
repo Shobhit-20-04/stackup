@@ -432,9 +432,13 @@ function DsaHubContent() {
                 <span className="text-xs text-[var(--foreground-muted)] font-mono">
                   {new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 </span>
-                {potdStreak > 0 && (
+                {potdStreak > 0 ? (
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30">
                     🔥 {potdStreak} Day Streak
+                  </span>
+                ) : (
+                  <span className="hidden sm:inline-flex items-center text-[11px] text-[var(--foreground-muted)]">
+                    🌱 Solve today to kick off your streak!
                   </span>
                 )}
               </div>
@@ -477,7 +481,7 @@ function DsaHubContent() {
                 title={isPotdSolvedToday ? 'Mark as unsolved' : 'Mark as solved'}
               >
                 <CheckCircle2 className={`w-4 h-4 mr-1.5 ${isPotdSolvedToday ? 'text-emerald-500' : 'opacity-40'}`} />
-                {isPotdSolvedToday ? 'Completed Today' : 'Mark Complete'}
+                {isPotdSolvedToday ? '🎉 Completed Today!' : 'Mark Complete'}
               </button>
               <button
                 onClick={() => setWorkspaceProblemId(potd.id)}

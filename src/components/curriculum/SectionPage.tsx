@@ -75,7 +75,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
   });
   const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'Easy' | 'Medium' | 'Hard'>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'completed' | 'incomplete'>('all');
-  const [subjectCluster, setSubjectCluster] = useState<'all' | 'systems' | 'algo-theory' | 'math' | 'software'>('all');
+  const [subjectCluster, setSubjectCluster] = useState<'all' | 'foundations' | 'systems' | 'algo-theory' | 'math' | 'software'>('all');
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
   const [cheatsheetSearch, setCheatsheetSearch] = useState('');
@@ -309,14 +309,16 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     if (sectionKey !== 'core-cs' || subjectCluster === 'all') return section.categories;
     
     switch (subjectCluster) {
+      case 'foundations':
+        return section.categories.filter((c) => ['digital-foundations', 'programming-fundamentals', 'web-development'].includes(c.id));
       case 'systems':
         return section.categories.filter((c) => ['os', 'dbms', 'cn', 'coa', 'compiler-design', 'dld'].includes(c.id));
       case 'algo-theory':
-        return section.categories.filter((c) => ['c-prog', 'data-structures', 'algorithms', 'toc'].includes(c.id));
+        return section.categories.filter((c) => ['programming-fundamentals', 'c-prog', 'data-structures', 'algorithms', 'toc'].includes(c.id));
       case 'math':
         return section.categories.filter((c) => ['discrete-math', 'eng-math'].includes(c.id));
       case 'software':
-        return section.categories.filter((c) => ['oops', 'system-design', 'swe-git'].includes(c.id));
+        return section.categories.filter((c) => ['web-development', 'oops', 'system-design', 'swe-git'].includes(c.id));
       default:
         return section.categories;
     }
@@ -745,14 +747,15 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
               {[
                 { id: 'all', label: 'All Subjects' },
+                { id: 'foundations', label: '🌱 Beginner & Foundations' },
                 { id: 'systems', label: 'Systems & Architecture' },
-                { id: 'algo-theory', label: 'Algorithms & Foundations' },
+                { id: 'algo-theory', label: 'Algorithms & Theory' },
                 { id: 'math', label: 'Mathematics' },
-                { id: 'software', label: 'Software & Design' },
+                { id: 'software', label: 'Software & Web' },
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setSubjectCluster(tab.id as 'all' | 'systems' | 'algo-theory' | 'math' | 'software')}
+                  onClick={() => setSubjectCluster(tab.id as 'all' | 'foundations' | 'systems' | 'algo-theory' | 'math' | 'software')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
                     subjectCluster === tab.id
                       ? 'bg-[var(--brand-primary)] text-white shadow-xs'

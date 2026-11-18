@@ -150,11 +150,11 @@ console.log(levelUp(student));`,
               </div>
 
               <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[var(--foreground)] leading-[1.12]">
-                The beginner-first platform for learning technology.
+                Learn technology from the ground up, with zero confusion.
               </h1>
 
               <p className="text-sm sm:text-base text-[var(--foreground-muted)] leading-relaxed font-normal max-w-xl">
-                Never written code? Confused by jargon? StackUp provides a guided, progressive roadmap—from digital foundations and programming basics to full-stack web development, computer science, and career placement.
+                Never written a line of code? Stared at computer jargon and felt overwhelmed? You are in the right place. StackUp is a friendly, guided journey—from understanding your computer to building real software and landing your dream tech role.
               </p>
 
               {/* Action Toolbar */}
@@ -232,12 +232,23 @@ console.log(levelUp(student));`,
 
               {/* Execution Output */}
               {hasExecutedInteractive ? (
-                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-800 dark:text-emerald-300 space-y-1">
-                  <div className="flex items-center space-x-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Program Executed Successfully:</span>
+                <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-800 dark:text-emerald-300 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>🎉 High five! You just ran real code.</span>
+                    </div>
+                    <button
+                      onClick={() => setHasExecutedInteractive(false)}
+                      className="text-[10px] font-sans font-semibold text-emerald-700 dark:text-emerald-300 hover:underline cursor-pointer"
+                    >
+                      Reset
+                    </button>
                   </div>
-                  <pre className="text-[11px] whitespace-pre-wrap">{interactiveCode.output}</pre>
+                  <pre className="text-[11px] whitespace-pre-wrap p-2 rounded bg-black/5 dark:bg-black/30 font-mono">{interactiveCode.output}</pre>
+                  <p className="text-[10px] font-sans text-emerald-700 dark:text-emerald-300">
+                    See? You gave structured instructions, and the machine followed them line-by-line. That is all software development is.
+                  </p>
                 </div>
               ) : (
                 <button
@@ -245,7 +256,7 @@ console.log(levelUp(student));`,
                   className="w-full py-2.5 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-xs font-bold flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-xs"
                 >
                   <Play className="w-3.5 h-3.5 fill-white" />
-                  <span>Run Program & See Output</span>
+                  <span>Run Code &amp; See Magic Happen</span>
                 </button>
               )}
 
@@ -387,6 +398,65 @@ console.log(levelUp(student));`,
             )}
           </div>
 
+        </div>
+      </section>
+
+      {/* 2.5 WHY STACKUP FEELS DIFFERENT (Human-First Pedagogy) */}
+      <section className="py-14 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">
+              Human-First Learning
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+              Designed For Humans, Not Compilers
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--foreground-muted)]">
+              Most coding sites throw dry syntax at you and hope for the best. We built StackUp to be the supportive, encouraging mentor we wished we had.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">
+                🌱
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)]">Zero Gatekeeping</h3>
+              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                Every concept starts in plain English with everyday metaphors before any code is shown. No assumed prerequisites.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-lg">
+                💡
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)]">Vivid Analogies</h3>
+              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                Functions are vending machines, variables are labeled storage boxes, and APIs are restaurant waiters. You learn intuition first.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-lg">
+                🛡️
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)]">Safe to Make Mistakes</h3>
+              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                Errors aren&apos;t failures—they are how real engineers learn. We explain bug messages kindly and show you how to fix them calmly.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-lg">
+                🚀
+              </div>
+              <h3 className="text-sm font-bold text-[var(--foreground)]">Real Portfolio Proof</h3>
+              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                You won&apos;t just solve isolated puzzles. You&apos;ll build, test, and deploy genuine applications you can proudly link on your resume.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
