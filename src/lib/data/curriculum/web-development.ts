@@ -553,7 +553,7 @@ UPDATE users
 SET email = 'new_maya@example.com'
 WHERE id = 1;
 \`\`\`
-*⚠️ Danger Warning:* Always include a \`WHERE\` clause when updating! If you forget \`WHERE id = 1\`, you will overwrite EVERY user's email in the entire database!
+*Important Safety Rule:* Always include a \`WHERE\` clause when updating! If you forget \`WHERE id = 1\`, you will overwrite EVERY user's email in the entire database!
 
 ### 4. DELETE (Remove)
 \`\`\`sql

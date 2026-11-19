@@ -12,7 +12,8 @@ import {
   Rocket, 
   ShieldCheck, 
   BookOpen, 
-  Filter
+  Filter,
+  Lightbulb
 } from 'lucide-react';
 import { PRACTICAL_PROJECTS, type PracticalProject } from '@/lib/data/projects';
 
@@ -186,7 +187,7 @@ export default function ProjectsPage() {
 
               {/* Encouraging Mentor Note */}
               <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 text-xs flex items-start space-x-3">
-                <span className="text-base select-none shrink-0 mt-0.5">✨</span>
+                <Lightbulb className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
                 <div className="space-y-0.5">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">Mentor Tip for this Project</span>
                   <p className="leading-relaxed text-[var(--foreground-muted)]">

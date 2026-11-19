@@ -28,7 +28,8 @@ import {
   FileText,
   Terminal,
   Lock,
-  ArrowRight
+  ArrowRight,
+  X
 } from 'lucide-react';
 import { DSA_PROBLEMS, DSA_CATEGORIES, TOP_DSA_COMPANIES, getProblemOfTheDay, type DsaProblem } from '@/lib/data/dsa';
 import { setLocalSectionProgress } from '@/lib/services/progress';
@@ -51,6 +52,8 @@ function getPageNumbers(current: number, total: number): (number | '...')[] {
 function DsaHubContent() {
   const searchParams = useSearchParams();
   const problemParam = searchParams.get('problem');
+  const tabParam = searchParams.get('tab');
+  const sheetParam = searchParams.get('sheet');
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
@@ -76,8 +79,9 @@ function DsaHubContent() {
   const [activeLang, setActiveLang] = useState<'python' | 'cpp' | 'java' | 'typescript'>('python');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Structured Pagination & View Mode State
-  const [viewMode, setViewMode] = useState<'list' | 'pattern'>('list');
+  // Structured Pagination & View Mode State (defaults to pattern view if deep-linked to striver sheet)
+  const isStriverTab = tabParam === 'striver' || sheetParam === 'striver';
+  const [viewMode, setViewMode] = useState<'list' | 'pattern'>(() => (isStriverTab ? 'pattern' : 'list'));
   const [pageSize, setPageSize] = useState<number>(12);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const problemContainerRef = useRef<HTMLDivElement>(null);
@@ -434,11 +438,12 @@ function DsaHubContent() {
                 </span>
                 {potdStreak > 0 ? (
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30">
-                    🔥 {potdStreak} Day Streak
+                    <Flame className="w-3.5 h-3.5 mr-1 text-orange-500" />
+                    <span>{potdStreak} Day Streak</span>
                   </span>
                 ) : (
                   <span className="hidden sm:inline-flex items-center text-[11px] text-[var(--foreground-muted)]">
-                    🌱 Solve today to kick off your streak!
+                    Solve today to kick off your streak.
                   </span>
                 )}
               </div>
@@ -481,7 +486,7 @@ function DsaHubContent() {
                 title={isPotdSolvedToday ? 'Mark as unsolved' : 'Mark as solved'}
               >
                 <CheckCircle2 className={`w-4 h-4 mr-1.5 ${isPotdSolvedToday ? 'text-emerald-500' : 'opacity-40'}`} />
-                {isPotdSolvedToday ? '🎉 Completed Today!' : 'Mark Complete'}
+                {isPotdSolvedToday ? 'Completed Today' : 'Mark Complete'}
               </button>
               <button
                 onClick={() => setWorkspaceProblemId(potd.id)}
@@ -624,9 +629,10 @@ function DsaHubContent() {
             {selectedCompany !== 'All' && (
               <button
                 onClick={() => setSelectedCompany('All')}
-                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 cursor-pointer"
+                className="inline-flex items-center text-[10px] px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 cursor-pointer"
               >
-                Clear company ✕
+                <span>Clear company filter</span>
+                <X className="w-3 h-3 ml-1" />
               </button>
             )}
             {viewMode === 'list' && pageSize !== -1 && totalPages > 1 && (

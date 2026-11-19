@@ -60,6 +60,7 @@ const isServerless = Boolean(
   process.env.VERCEL ||
   process.env.AWS_LAMBDA_FUNCTION_NAME ||
   process.env.LAMBDA_TASK_ROOT ||
+  process.env.NODE_ENV === 'production' ||
   (typeof process.cwd === 'function' && process.cwd().startsWith('/var/task'))
 );
 

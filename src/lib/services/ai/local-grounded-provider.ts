@@ -73,7 +73,7 @@ Based on your active learning history on StackUp:
 
 ${personal.weakTopics && personal.weakTopics.length > 0 ? `#### Identified Weak Topics Needing Attention:\n${personal.weakTopics.map((t) => `- **${t}**`).join('\n')}\n` : ''}
 ${personal.dueRevisionsCount ? `#### Spaced Repetition Due Today:\n- You have **${personal.dueRevisionsCount} item(s)** scheduled for active recall review.\n` : ''}
-${personal.overdueRevisionsCount ? `#### Overdue Reviews:\n- ⚠️ **${personal.overdueRevisionsCount} item(s)** are currently overdue in your SM-2 queue. Prioritize reviewing these first to prevent knowledge decay.\n` : ''}
+${personal.overdueRevisionsCount ? `#### Overdue Reviews:\n- **${personal.overdueRevisionsCount} item(s)** are currently overdue in your SM-2 queue. Prioritize reviewing these first to prevent knowledge decay.\n` : ''}
 ${personal.recentlyFailedProblems && personal.recentlyFailedProblems.length > 0 ? `#### Recent Mistake Journal Entries:\n${personal.recentlyFailedProblems.map((p) => `- ${p}`).join('\n')}\n` : ''}
 
 **Recommended Action:** Head to your [Profile Dashboard](/profile) to review your active flashcards and tackle a targeted practice set!`;

@@ -15,7 +15,8 @@ import {
   Clock, 
   Check, 
   BookOpen, 
-  Award
+  Award,
+  MessageSquareQuote
 } from 'lucide-react';
 import { getReadTopicIds, getLocalQuizAttempts } from '@/lib/services/progress';
 
@@ -115,6 +116,12 @@ export default function LearnRoadmapPage() {
     } catch {
       // ignore
     }
+    setTimeout(() => {
+      const el = document.getElementById(`stage-${stage}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const stages: StageDefinition[] = useMemo(() => [
@@ -598,7 +605,7 @@ export default function LearnRoadmapPage() {
 
                 {/* Supportive Mentor Callout */}
                 <div className="p-4 rounded-xl bg-[var(--surface-sunken)]/40 border border-[var(--border-subtle)] text-xs flex items-start space-x-3 mb-4">
-                  <span className="text-base select-none shrink-0 mt-0.5">💬</span>
+                  <MessageSquareQuote className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--brand-primary)]">Mentor Perspective</span>
                     <p className="leading-relaxed text-[var(--foreground)] font-medium">

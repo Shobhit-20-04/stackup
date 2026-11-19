@@ -440,10 +440,10 @@ while countdown > 0:
     print(countdown)
     countdown = countdown - 1  # Crucial! Decreases the counter
 
-print("Blast off! 🚀")
+print("Countdown complete!")
 \`\`\`
 
-### ⚠️ What Is an Infinite Loop?
+### What Is an Infinite Loop?
 If you forget to change the variable inside the loop:
 \`\`\`python
 # DANGEROUS CODE:

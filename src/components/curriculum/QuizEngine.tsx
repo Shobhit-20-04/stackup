@@ -150,7 +150,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
 
   const copyResultSummary = () => {
     const percentage = Math.round((score / activeQuestions.length) * 100);
-    const summary = `🏆 StackUp Quiz Result: "${topic.title}"\n📊 Score: ${score}/${activeQuestions.length} (${percentage}% Accuracy)\n⏱️ Time: ${formatTime(quizMode === 'exam' ? initialTimeSeconds - timeLeft : timeElapsed)}\n🎯 Prep Track: ${sectionSlug.toUpperCase()} Hub\nPractice at: https://stackup-zeta.vercel.app`;
+    const summary = `StackUp Assessment Result: "${topic.title}"\nScore: ${score}/${activeQuestions.length} (${percentage}% Accuracy)\nTime: ${formatTime(quizMode === 'exam' ? initialTimeSeconds - timeLeft : timeElapsed)}\nPrep Track: ${sectionSlug.toUpperCase()} Hub\nPractice at: https://stackup-zeta.vercel.app`;
     navigator.clipboard.writeText(summary);
     setCopiedSummary(true);
     setTimeout(() => setCopiedSummary(false), 2000);

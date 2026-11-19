@@ -201,12 +201,12 @@ export default function ResumeCheckerPage() {
   const handleCopyReport = () => {
     if (!result) return;
     const dims = result.dimensions;
-    const reportText = `📄 StackUp ATS Resume Report: ${result.filename}
-🎯 Overall ATS Score: ${result.ats_score}/100 (Grade: ${result.grade})
+    const reportText = `StackUp ATS Resume Evaluation: ${result.filename}
+Overall ATS Score: ${result.ats_score}/100 (Grade: ${result.grade})
 Mode: ${result.isGeneralQualityScore ? 'General Resume Quality (Rebalanced Weights)' : `Target Role Alignment (${result.jobDescriptionMatch.targetRoleTitle || 'Custom JD'})`}
 Experience Level: ${result.experienceLevel}
 
-📊 Comprehensive ATS Scoring Dimensions:
+ATS Scoring Breakdown:
   1. Job-Description Alignment: ${dims.jobDescriptionAlignment.score}% (Weight: ${dims.jobDescriptionAlignment.weightPct}%, Contribution: ${dims.jobDescriptionAlignment.weightedScore} pts)
   2. Skills & Qualifications: ${dims.skillsAndQualifications.score}% (Weight: ${dims.skillsAndQualifications.weightPct}%, Contribution: ${dims.skillsAndQualifications.weightedScore} pts)
   3. Experience & Projects: ${dims.experienceAndProjects.score}% (Weight: ${dims.experienceAndProjects.weightPct}%, Contribution: ${dims.experienceAndProjects.weightedScore} pts)
@@ -215,16 +215,16 @@ Experience Level: ${result.experienceLevel}
   6. ATS Compatibility: ${dims.atsCompatibility.score}% (Weight: ${dims.atsCompatibility.weightPct}%, Contribution: ${dims.atsCompatibility.weightedScore} pts)
   7. Education & Credentials: ${dims.educationAndCredentials.score}% (Weight: ${dims.educationAndCredentials.weightPct}%, Contribution: ${dims.educationAndCredentials.weightedScore} pts)
 
-✅ Matched Keywords (${result.matched_keywords.length}):
+Matched Keywords (${result.matched_keywords.length}):
 ${result.matched_keywords.join(', ') || 'None detected'}
 
-⚠️ Suggested Keywords to Add (${result.missing_keywords.length}):
+Suggested Keywords to Add (${result.missing_keywords.length}):
 ${result.missing_keywords.join(', ') || 'None needed'}
 
-⭐ Fact-Preserving Google XYZ Bullet Rewrites:
+Recommended Google XYZ Bullet Rewrites:
 ${result.bullet_rewrites.map((b, i) => `${i + 1}. Before: "${b.original}"\n   After: "${b.improved}"\n   Rationale: ${b.reason}`).join('\n\n')}
 
-📌 Prioritized Recommendations:
+Actionable Recommendations:
 ${result.recommendations.map((r, i) => `${i + 1}. [${r.priority}] ${r.section}: ${r.issue} -> ${r.howToFix}`).join('\n')}
 
 Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
@@ -303,7 +303,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             {dimension.observableEvidence.length > 0 && (
               <div>
                 <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-500 block mb-1.5">
-                  ✓ Observable Evidence Found
+                  Observable Evidence Found
                 </span>
                 <ul className="space-y-1">
                   {dimension.observableEvidence.map((ev, i) => (
@@ -320,7 +320,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             {dimension.deductions.length > 0 && (
               <div>
                 <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-500 block mb-1.5">
-                  ⚠️ Point Deductions &amp; Gaps
+                  Point Deductions &amp; Gaps
                 </span>
                 <ul className="space-y-1.5">
                   {dimension.deductions.map((d, i) => (
@@ -337,7 +337,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             {dimension.improvementOpportunities.length > 0 && (
               <div>
                 <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)] block mb-1.5">
-                  💡 Actionable Improvement Steps
+                  Actionable Improvement Steps
                 </span>
                 <ul className="space-y-1">
                   {dimension.improvementOpportunities.map((imp, i) => (

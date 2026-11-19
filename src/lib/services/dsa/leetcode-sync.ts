@@ -41,44 +41,15 @@ function resolveStorageFile(): string {
     process.env.VERCEL ||
     process.env.AWS_LAMBDA_FUNCTION_NAME ||
     process.env.LAMBDA_TASK_ROOT ||
+    process.env.NODE_ENV === 'production' ||
     (typeof process.cwd === 'function' && process.cwd().startsWith('/var/task'))
   );
 
   if (isServerless) {
-    const tmpDataDir = path.join(os.tmpdir(), 'stackup_data');
-    try {
-      if (!fs.existsSync(tmpDataDir)) {
-        fs.mkdirSync(tmpDataDir, { recursive: true });
-      }
-    } catch {
-      // Ignore directory creation warnings in locked sandbox
-    }
-    return path.join(tmpDataDir, 'custom_dsa_problems.json');
+    return path.join(os.tmpdir(), 'stackup_data', 'custom_dsa_problems.json');
   }
 
-  const projectDataDir = path.join(process.cwd(), 'data');
-  const projectFile = path.join(projectDataDir, 'custom_dsa_problems.json');
-
-  try {
-    if (!fs.existsSync(projectDataDir)) {
-      fs.mkdirSync(projectDataDir, { recursive: true });
-    }
-    const testFile = path.join(projectDataDir, `.test_write_${process.pid}_${Date.now()}`);
-    fs.writeFileSync(testFile, '1');
-    fs.unlinkSync(testFile);
-    return projectFile;
-  } catch {
-    // Read-only serverless environment fallback
-    const tmpDataDir = path.join(os.tmpdir(), 'stackup_data');
-    try {
-      if (!fs.existsSync(tmpDataDir)) {
-        fs.mkdirSync(tmpDataDir, { recursive: true });
-      }
-    } catch {
-      // Ignore directory creation warnings in locked sandbox
-    }
-    return path.join(tmpDataDir, 'custom_dsa_problems.json');
-  }
+  return path.join(process.cwd(), 'data', 'custom_dsa_problems.json');
 }
 
 /**
@@ -405,14 +376,23 @@ export function saveCustomDsaProblem(problem: DsaProblem, scheduledForDate?: str
   // Update in-memory state immediately
   globalForDsa.__customDsaProblems = filtered;
 
-  // Persist to disk safely
+  // Persist to disk safely with tiered fallback: target file -> /tmp -> in-memory
   try {
     const targetFile = resolveStorageFile();
     const dir = path.dirname(targetFile);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    try {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(targetFile, JSON.stringify(filtered, null, 2), 'utf-8');
+    } catch {
+      // In case primary dir was read-only (e.g. Lambda /var/task), write to os.tmpdir()
+      const fallbackDir = path.join(os.tmpdir(), 'stackup_data');
+      if (!fs.existsSync(fallbackDir)) {
+        fs.mkdirSync(fallbackDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(fallbackDir, 'custom_dsa_problems.json'), JSON.stringify(filtered, null, 2), 'utf-8');
     }
-    fs.writeFileSync(targetFile, JSON.stringify(filtered, null, 2), 'utf-8');
   } catch (err) {
     console.warn('Notice: Non-blocking in-memory fallback for custom DSA problem persistence:', err);
   }
@@ -431,10 +411,18 @@ export function deleteCustomDsaProblem(id: string): boolean {
   try {
     const targetFile = resolveStorageFile();
     const dir = path.dirname(targetFile);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    try {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(targetFile, JSON.stringify(filtered, null, 2), 'utf-8');
+    } catch {
+      const fallbackDir = path.join(os.tmpdir(), 'stackup_data');
+      if (!fs.existsSync(fallbackDir)) {
+        fs.mkdirSync(fallbackDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(fallbackDir, 'custom_dsa_problems.json'), JSON.stringify(filtered, null, 2), 'utf-8');
     }
-    fs.writeFileSync(targetFile, JSON.stringify(filtered, null, 2), 'utf-8');
   } catch (err) {
     console.warn('Notice: Non-blocking in-memory fallback on deleting custom DSA problem:', err);
   }

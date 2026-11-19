@@ -160,7 +160,7 @@ function buildAnalysisResult(
   // 7. Summary Formulation
   let summaryText = '';
   if (parsingReport.isScanned) {
-    summaryText = '⚠️ Scanned Document Warning: This file appears to be an image-only scan without a selectable text layer. ATS engines cannot read image resumes. Please re-export your document directly from Word, Google Docs, or LaTeX.';
+    summaryText = 'Scanned Document Warning: This file appears to be an image-only scan without a selectable text layer. ATS engines cannot read image resumes. Please re-export your document directly from Word, Google Docs, or LaTeX.';
   } else if (jdMatch.hasJobDescription) {
     summaryText = `Your resume scored ${scoring.overallScore}/100 (Grade ${scoring.grade}) with a ${jdMatch.matchScore}% alignment to the ${jdMatch.targetRoleTitle || 'target job description'}. Matched ${jdMatch.requiredSkillsMatched.length} required skill(s) with ${jdMatch.requiredSkillsMissing.length} gap(s).`;
   } else {

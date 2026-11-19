@@ -16,7 +16,9 @@ import {
   Play, 
   CheckCircle2, 
   GraduationCap,
-  ChevronRight
+  ChevronRight,
+  Lightbulb,
+  ShieldCheck
 } from 'lucide-react';
 import { getFastCachedUser, getCurrentUser, type UserSession } from '@/lib/auth/session';
 
@@ -143,8 +145,9 @@ console.log(levelUp(student));`,
                   <span>ZERO TECHNICAL KNOWLEDGE &rarr; CAREER-READY BUILDER</span>
                 </div>
                 {currentUser && (
-                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                    👋 Welcome back, {currentUser.email.split('@')[0]}
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 inline-flex items-center space-x-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                    <span>Welcome back, {currentUser.email.split('@')[0]}</span>
                   </span>
                 )}
               </div>
@@ -236,7 +239,7 @@ console.log(levelUp(student));`,
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                       <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      <span>🎉 High five! You just ran real code.</span>
+                      <span>Execution successful. You ran your first lines of code.</span>
                     </div>
                     <button
                       onClick={() => setHasExecutedInteractive(false)}
@@ -418,8 +421,8 @@ console.log(levelUp(student));`,
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">
-                🌱
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                <Compass className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-[var(--foreground)]">Zero Gatekeeping</h3>
               <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
@@ -428,8 +431,8 @@ console.log(levelUp(student));`,
             </div>
 
             <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-lg">
-                💡
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                <Lightbulb className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-[var(--foreground)]">Vivid Analogies</h3>
               <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
@@ -438,8 +441,8 @@ console.log(levelUp(student));`,
             </div>
 
             <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-lg">
-                🛡️
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
+                <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-[var(--foreground)]">Safe to Make Mistakes</h3>
               <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
@@ -448,8 +451,8 @@ console.log(levelUp(student));`,
             </div>
 
             <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-lg">
-                🚀
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+                <Code2 className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-bold text-[var(--foreground)]">Real Portfolio Proof</h3>
               <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">

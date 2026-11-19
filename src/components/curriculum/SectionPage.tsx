@@ -102,19 +102,41 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [authPromptOpen, isCheatsheetOpen, activeView]);
 
-  // Synchronize category selection when URL hash changes (e.g. /core-cs#os or /aptitude#quant-apt)
+  // Synchronize category or topic selection on mount and when URL hash changes (e.g. /core-cs#os or /core-cs#process-vs-thread)
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
-      if (hash && section.categories.some((c) => c.id === hash)) {
+    const handleHash = () => {
+      if (typeof window === 'undefined') return;
+      const hash = window.location.hash.replace('#', '').trim();
+      if (!hash) {
+        return;
+      }
+
+      // Check if hash points to a topic directly
+      for (const cat of section.categories) {
+        const topic = cat.topics.find(
+          (t) => t.id === hash || t.slug === hash || t.id.toLowerCase() === hash.toLowerCase()
+        );
+        if (topic) {
+          setSelectedCategory(cat.id);
+          setSelectedTopic(topic);
+          setActiveView('notes');
+          setSearchQuery('');
+          return;
+        }
+      }
+
+      // Check if hash points to a category
+      if (section.categories.some((c) => c.id === hash)) {
         setSelectedCategory(hash);
+        setSelectedTopic(null);
+        setActiveView('list');
         setSearchQuery('');
-      } else if (!hash) {
-        setSelectedCategory('all');
       }
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, [section.categories]);
 
   // Metrics
@@ -747,7 +769,7 @@ export default function SectionPage({ sectionKey }: SectionPageProps) {
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
               {[
                 { id: 'all', label: 'All Subjects' },
-                { id: 'foundations', label: '🌱 Beginner & Foundations' },
+                { id: 'foundations', label: 'Beginner Foundations' },
                 { id: 'systems', label: 'Systems & Architecture' },
                 { id: 'algo-theory', label: 'Algorithms & Theory' },
                 { id: 'math', label: 'Mathematics' },
