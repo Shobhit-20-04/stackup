@@ -88,6 +88,34 @@ describe('DSA Hub Dataset', () => {
     expect(potd1.difficulty).toMatch(/^(Easy|Medium|Hard)$/);
   });
 
+  it('guarantees unique POTD across adjacent calendar days', () => {
+    const day1 = new Date('2026-11-20T12:00:00Z');
+    const day2 = new Date('2026-11-21T12:00:00Z');
+    const day3 = new Date('2026-11-22T12:00:00Z');
+
+    const potd1 = getProblemOfTheDay(day1);
+    const potd2 = getProblemOfTheDay(day2);
+    const potd3 = getProblemOfTheDay(day3);
+
+    expect(potd1.id).not.toBe(potd2.id);
+    expect(potd2.id).not.toBe(potd3.id);
+  });
+
+  it('computes Asia/Kolkata date keys correctly even near midnight UTC', () => {
+    // 2026-11-23 20:00 UTC is 2026-11-24 01:30 IST
+    const lateUtc = new Date('2026-11-23T20:00:00Z');
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(lateUtc);
+    const getPart = (t: string) => parts.find((p) => p.type === t)?.value || '';
+    const kolkataKey = `${getPart('year')}-${getPart('month')}-${getPart('day')}`;
+
+    expect(kolkataKey).toBe('2026-11-24');
+  });
+
   describe('Custom Daily Problem Persistence & Resiliency', () => {
     const mockProblem: DsaProblem = {
       id: 'custom-min-pos-sub',

@@ -62,6 +62,8 @@ function DsaHubContent() {
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const showSearchSpinner = searchQuery !== deferredSearchQuery;
   const [showOnlyUnsolved, setShowOnlyUnsolved] = useState(false);
+  const isStriverInitial = tabParam === 'striver' || sheetParam === 'striver';
+  const [curatedSheet, setCuratedSheet] = useState<'all' | 'striver' | 'faang'>(() => (isStriverInitial ? 'striver' : 'all'));
   
   // Expanded Complete Output panel state
   const [expandedProblemId, setExpandedProblemId] = useState<string | null>(null);
@@ -244,6 +246,15 @@ function DsaHubContent() {
   // Filter problems
   const filteredProblems = useMemo(() => {
     return DSA_PROBLEMS.filter((problem) => {
+      // Curated sheet filter
+      if (curatedSheet === 'striver' && !problem.striver_url) {
+        return false;
+      }
+      if (curatedSheet === 'faang') {
+        const faang = ['google', 'amazon', 'meta', 'apple', 'microsoft'];
+        const matchesFaang = problem.companies.some((c) => faang.includes(c.toLowerCase()));
+        if (!matchesFaang) return false;
+      }
       // Category filter
       if (selectedCategory !== 'All' && problem.pattern_tag !== selectedCategory) {
         return false;
@@ -270,10 +281,10 @@ function DsaHubContent() {
       }
       return true;
     });
-  }, [selectedCategory, selectedDifficulty, selectedCompany, showOnlyUnsolved, deferredSearchQuery, solvedIds]);
+  }, [curatedSheet, selectedCategory, selectedDifficulty, selectedCompany, showOnlyUnsolved, deferredSearchQuery, solvedIds]);
 
   // Reset currentPage to 1 whenever filters change (React render-phase pattern)
-  const filterKey = `${selectedCategory}-${selectedDifficulty}-${selectedCompany}-${deferredSearchQuery}-${showOnlyUnsolved}-${pageSize}`;
+  const filterKey = `${curatedSheet}-${selectedCategory}-${selectedDifficulty}-${selectedCompany}-${deferredSearchQuery}-${showOnlyUnsolved}-${pageSize}`;
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
   if (prevFilterKey !== filterKey) {
     setPrevFilterKey(filterKey);
@@ -475,7 +486,15 @@ function DsaHubContent() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <Link
+                href="/practice/potd"
+                className="px-3 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/25 rounded-lg text-xs font-semibold flex items-center transition-all cursor-pointer"
+                title="View interactive calendar, history, and progressive Socratic hints"
+              >
+                <Flame className="w-3.5 h-3.5 mr-1.5 fill-amber-500" />
+                <span>POTD Hub &bull; Calendar</span>
+              </Link>
               <button
                 onClick={() => toggleSolved(potd.id)}
                 className={`px-3 py-2 rounded-lg text-xs font-semibold flex items-center transition-all cursor-pointer ${
@@ -499,8 +518,61 @@ function DsaHubContent() {
           </div>
         </div>
 
-        {/* Controls: Search, Filters */}
+        {/* Controls: Curated Tracks, Search, Filters */}
         <div className="bg-[var(--surface-card)] p-4 sm:p-5 rounded-xl border border-[var(--border-subtle)] shadow-xs space-y-3.5 mb-6">
+          {/* Curated Track Tabs */}
+          <div className="flex items-center gap-2 pb-3 border-b border-[var(--border-subtle)] overflow-x-auto scrollbar-none text-xs">
+            <span className="text-[11px] font-bold text-[var(--foreground-muted)] uppercase tracking-wider shrink-0 mr-1">
+              Curated Track:
+            </span>
+            <button
+              type="button"
+              onClick={() => setCuratedSheet('all')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all shrink-0 cursor-pointer ${
+                curatedSheet === 'all'
+                  ? 'bg-[#103F45] text-white dark:bg-[#D6EEE6] dark:text-[#103F45] shadow-xs'
+                  : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              }`}
+            >
+              All 150 Problems
+            </button>
+            <button
+              type="button"
+              onClick={() => setCuratedSheet('striver')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all shrink-0 cursor-pointer flex items-center space-x-1.5 ${
+                curatedSheet === 'striver'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] hover:text-rose-600'
+              }`}
+            >
+              <span>Striver SDE Sheet</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/10 dark:bg-white/20">
+                {DSA_PROBLEMS.filter((p) => Boolean(p.striver_url)).length}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setCuratedSheet('faang')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all shrink-0 cursor-pointer flex items-center space-x-1.5 ${
+                curatedSheet === 'faang'
+                  ? 'bg-[#4F46E5] text-white shadow-xs'
+                  : 'bg-[var(--surface-sunken)] text-[var(--foreground-muted)] hover:text-[#4F46E5]'
+              }`}
+            >
+              <span>FAANG High-Yield</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/10 dark:bg-white/20">
+                {DSA_PROBLEMS.filter((p) => p.companies.some((c) => ['google', 'amazon', 'meta', 'apple', 'microsoft'].includes(c.toLowerCase()))).length}
+              </span>
+            </button>
+            <Link
+              href="/practice/potd"
+              className="ml-auto shrink-0 inline-flex items-center space-x-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
+            >
+              <Flame className="w-3.5 h-3.5 fill-amber-500" />
+              <span>Dedicated POTD Engine &rarr;</span>
+            </Link>
+          </div>
+
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
             {/* Search Input */}
             <div className="relative flex-1">

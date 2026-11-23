@@ -222,13 +222,21 @@ export default function StudentWorkspaceDashboard() {
                   )}
                 </div>
 
-                <Link
-                  href={`/dsa?problem=${potd.id}`}
-                  className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#4F46E5] hover:bg-[#4338CA] transition-all shadow-xs"
-                >
-                  <span>{isPotdSolved ? 'Review Solution' : 'Solve Today\'s Problem'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                <div className="flex items-center space-x-2">
+                  <Link
+                    href="/practice/potd"
+                    className="inline-flex items-center space-x-1 px-3 py-2 rounded-xl text-xs font-semibold text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-colors"
+                  >
+                    <span>POTD Hub &bull; Calendar</span>
+                  </Link>
+                  <Link
+                    href={`/dsa?problem=${potd.id}`}
+                    className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#4F46E5] hover:bg-[#4338CA] transition-all shadow-xs cursor-pointer"
+                  >
+                    <span>{isPotdSolved ? 'Review Solution' : 'Solve Today\'s Problem'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
             </div>
 

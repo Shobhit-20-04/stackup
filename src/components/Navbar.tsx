@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -14,11 +14,13 @@ import {
   Layers, 
   Menu, 
   X,
-  Home,
-  Compass,
-  FolderGit2,
-  BookA,
-  LayoutDashboard
+  Compass, 
+  FolderGit2, 
+  BookA, 
+  LayoutDashboard,
+  ChevronDown,
+  Flame,
+  Target
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -131,16 +133,45 @@ export default function Navbar() {
     router.refresh();
   };
 
-  const navLinks = [
-    { name: 'Home', href: '/', icon: Home },
+  const primaryLinks = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Start Learning', href: '/learn', icon: Compass },
-    { name: 'Explore Topics', href: '/core-cs', icon: Cpu },
+    { name: 'Learn', href: '/learn', icon: Compass },
+    { name: 'Core CS', href: '/core-cs', icon: Cpu },
     { name: 'Practice', href: '/dsa', icon: Code2 },
-    { name: 'Projects', href: '/projects', icon: FolderGit2 },
-    { name: 'Career', href: '/resume-checker', icon: FileCheck2 },
-    { name: 'Glossary', href: '/glossary', icon: BookA },
+    { name: 'POTD', href: '/practice/potd', icon: Flame, isBadge: true },
   ];
+
+  const moreLinks = [
+    { name: 'Aptitude Hub', href: '/aptitude', icon: Target, subtitle: 'Quantitative, logical & verbal practice' },
+    { name: 'Projects', href: '/projects', icon: FolderGit2, subtitle: 'Production portfolio blueprints' },
+    { name: 'ATS Resume', href: '/resume-checker', icon: FileCheck2, subtitle: 'Resume scoring & Google XYZ formula' },
+    { name: 'Glossary', href: '/glossary', icon: BookA, subtitle: 'Plain-English technical terms' },
+  ];
+
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close more menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setMoreMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Close more menu on Escape
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMoreMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
+
+  const isMoreActive = moreLinks.some((item) => pathname.startsWith(item.href));
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border-subtle)] bg-[var(--surface-card)]/90 backdrop-blur-md transition-colors">
@@ -150,7 +181,7 @@ export default function Navbar() {
           <Link
             href="/"
             onClick={handleLogoClick}
-            className="group flex items-center space-x-2.5 select-none"
+            className="group flex items-center space-x-2.5 select-none shrink-0"
             title="StackUp"
           >
             <div className={`w-8 h-8 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-xs transition-transform duration-200 ease-out group-hover:scale-105 ${
@@ -165,11 +196,11 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center space-x-1" aria-label="Main Navigation">
-            {navLinks.map((item) => {
+          {/* Desktop Streamlined Primary Nav */}
+          <nav className="hidden lg:flex items-center space-x-1" aria-label="Main Navigation">
+            {primaryLinks.map((item) => {
               const Icon = item.icon;
-              const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+              const isActive = pathname.startsWith(item.href);
               return (
                 <Link
                   key={item.name}
@@ -180,8 +211,19 @@ export default function Navbar() {
                       : 'text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-[#E8EEFF] hover:bg-[var(--surface-sunken)]/50 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 transition-transform duration-200 ${isActive ? 'text-[var(--brand-primary)] scale-105' : 'text-slate-400 dark:text-slate-500'}`} />
+                  <Icon className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    item.isBadge
+                      ? 'text-amber-500 fill-amber-500/20'
+                      : isActive
+                      ? 'text-[var(--brand-primary)] scale-105'
+                      : 'text-slate-400 dark:text-slate-500'
+                  }`} />
                   <span>{item.name}</span>
+                  {item.isBadge && (
+                    <span className="text-[9px] font-bold px-1 py-0.2 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase">
+                      Daily
+                    </span>
+                  )}
                   {isActive && (
                     <span
                       aria-hidden="true"
@@ -191,13 +233,67 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* More Menu Dropdown */}
+            <div className="relative" ref={moreMenuRef}>
+              <button
+                type="button"
+                onClick={() => setMoreMenuOpen((prev) => !prev)}
+                className={`relative flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-1 select-none cursor-pointer ${
+                  isMoreActive || moreMenuOpen
+                    ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)] shadow-2xs'
+                    : 'text-[var(--foreground-muted)] hover:text-slate-900 dark:hover:text-[#E8EEFF] hover:bg-[var(--surface-sunken)]/50 border border-transparent'
+                }`}
+                aria-expanded={moreMenuOpen}
+                aria-haspopup="true"
+              >
+                <span>More</span>
+                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${moreMenuOpen ? 'rotate-180' : ''}`} />
+                {isMoreActive && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -bottom-1 left-2.5 right-2.5 h-[2px] bg-[var(--brand-primary)] rounded-full transition-all duration-200 ease-out"
+                  />
+                )}
+              </button>
+
+              {moreMenuOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-2 shadow-lg backdrop-blur-md z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--foreground-muted)] px-2.5 py-1">
+                    Engineering Ecosystem
+                  </div>
+                  {moreLinks.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setMoreMenuOpen(false)}
+                        className={`flex items-start space-x-2.5 p-2 rounded-lg text-xs transition-colors ${
+                          isActive
+                            ? 'bg-[var(--surface-sunken)] text-[var(--foreground)] font-bold'
+                            : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)]/70'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-semibold text-[var(--foreground)]">{item.name}</div>
+                          <div className="text-[11px] text-[var(--foreground-muted)] font-normal">{item.subtitle}</div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Right Action: User Profile / Auth Action / Theme Toggle */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             <ThemeToggle />
 
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="hidden sm:flex items-center space-x-2">
               {!loading && user ? (
                 <div className="flex items-center space-x-2">
                   <Link
@@ -228,7 +324,7 @@ export default function Navbar() {
                     onClick={handleSignOut}
                     title="Sign out"
                     aria-label="Sign out"
-                    className="p-1.5 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 rounded-lg hover:bg-[var(--surface-sunken)]/60 transition-colors"
+                    className="p-1.5 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 rounded-lg hover:bg-[var(--surface-sunken)]/60 transition-colors cursor-pointer"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                   </button>
@@ -246,65 +342,181 @@ export default function Navbar() {
                 <div className="w-16 h-7 bg-[var(--surface-sunken)] rounded-md animate-pulse" />
               )}
             </div>
-          </div>
 
-          {/* Mobile menu trigger */}
-          <div className="flex md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-[var(--surface-sunken)]/60"
-              aria-label="Toggle Menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            {/* Mobile menu trigger */}
+            <div className="flex lg:hidden">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-[var(--surface-sunken)]/60 cursor-pointer"
+                aria-label="Toggle Navigation Drawer"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Structured Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-[var(--border-subtle)] bg-[var(--surface-card)] px-4 pt-2 pb-4 space-y-1 animate-in slide-in-from-top-2 fade-in duration-200 ease-out">
-          {navLinks.map((item) => {
-            const Icon = item.icon;
-            const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
-                  isActive
-                    ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
-                    : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
-                }`}
-              >
-                <Icon className="w-4 h-4 text-[var(--brand-primary)]" />
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
-          <div className="pt-2.5 border-t border-[var(--border-subtle)] space-y-1.5">
-            <div className="px-1 flex items-center justify-between py-1">
-              <span className="text-xs font-semibold text-[var(--foreground-muted)]">Appearance</span>
+        <div className="lg:hidden border-b border-[var(--border-subtle)] bg-[var(--surface-card)] px-4 pt-3 pb-6 space-y-4 animate-in slide-in-from-top-2 fade-in duration-200 ease-out max-h-[85vh] overflow-y-auto">
+          {/* Section 1: Your Workspace */}
+          <div className="space-y-1">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--foreground-muted)] px-3 py-1">
+              Your Workspace
+            </div>
+            <Link
+              href="/dashboard"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname === '/dashboard'
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <LayoutDashboard className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>Dashboard Workspace</span>
+            </Link>
+            <Link
+              href="/practice/potd"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/practice/potd')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <div className="flex items-center space-x-2.5">
+                <Flame className="w-4 h-4 text-amber-500 fill-amber-500/20" />
+                <span>Problem of the Day</span>
+              </div>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase">
+                Daily
+              </span>
+            </Link>
+          </div>
+
+          {/* Section 2: Curriculum & Practice */}
+          <div className="space-y-1 pt-2 border-t border-[var(--border-subtle)]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--foreground-muted)] px-3 py-1">
+              Curriculum &amp; Practice
+            </div>
+            <Link
+              href="/learn"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/learn')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <Compass className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>Beginner Roadmap</span>
+            </Link>
+            <Link
+              href="/core-cs"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/core-cs')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <Cpu className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>Core CS Subjects</span>
+            </Link>
+            <Link
+              href="/dsa"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/dsa') && !pathname.startsWith('/practice/potd')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <Code2 className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>DSA 150 Practice</span>
+            </Link>
+            <Link
+              href="/aptitude"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/aptitude')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <Target className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>Aptitude Practice</span>
+            </Link>
+          </div>
+
+          {/* Section 3: Career Tools */}
+          <div className="space-y-1 pt-2 border-t border-[var(--border-subtle)]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--foreground-muted)] px-3 py-1">
+              Career &amp; Development
+            </div>
+            <Link
+              href="/projects"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/projects')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <FolderGit2 className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>Engineering Projects</span>
+            </Link>
+            <Link
+              href="/resume-checker"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/resume-checker')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <FileCheck2 className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>ATS Resume Evaluator</span>
+            </Link>
+            <Link
+              href="/glossary"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname.startsWith('/glossary')
+                  ? 'text-[var(--foreground)] bg-[var(--surface-sunken)] font-semibold border border-[var(--border-subtle)]'
+                  : 'text-[var(--foreground-muted)] hover:bg-[var(--surface-sunken)]/60 font-medium'
+              }`}
+            >
+              <BookA className="w-4 h-4 text-[var(--brand-primary)]" />
+              <span>Glossary Dictionary</span>
+            </Link>
+          </div>
+
+          {/* Section 4: Settings & Account */}
+          <div className="pt-3 border-t border-[var(--border-subtle)] space-y-2">
+            <div className="px-3 flex items-center justify-between py-1">
+              <span className="text-xs font-semibold text-[var(--foreground-muted)]">Theme Appearance</span>
               <ThemeToggle showLabel />
             </div>
 
             {user ? (
-              <div className="space-y-1">
+              <div className="space-y-1 pt-1">
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--foreground)] hover:bg-[var(--surface-sunken)]/60"
                 >
                   <UserIcon className="w-4 h-4 text-[var(--brand-primary)]" />
-                  <span>Profile Dashboard</span>
+                  <span>Profile Dashboard ({user.full_name || 'Candidate'})</span>
                 </Link>
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     handleSignOut();
                   }}
-                  className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                  className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
@@ -314,7 +526,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center px-4 py-2.5 text-base font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] rounded-xl shadow-xs transition-colors"
+                className="w-full flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] rounded-xl shadow-xs transition-colors"
               >
                 Sign In
               </Link>
