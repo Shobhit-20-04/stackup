@@ -17,7 +17,8 @@ import {
   Home,
   Compass,
   FolderGit2,
-  BookA
+  BookA,
+  LayoutDashboard
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -132,6 +133,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '/', icon: Home },
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Start Learning', href: '/learn', icon: Compass },
     { name: 'Explore Topics', href: '/core-cs', icon: Cpu },
     { name: 'Practice', href: '/dsa', icon: Code2 },

@@ -192,10 +192,17 @@ export default function HomePage() {
             </Link>
 
             <Link
-              href="/learn"
+              href="/dashboard"
               className="px-5 py-3 rounded-xl font-bold text-sm text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-all flex items-center space-x-2 shadow-2xs"
             >
-              <span>View the 6-Stage Roadmap</span>
+              <span>Daily Student Workspace</span>
+            </Link>
+
+            <Link
+              href="/learn"
+              className="px-4 py-3 rounded-xl font-bold text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-all flex items-center space-x-1"
+            >
+              <span>6-Stage Roadmap</span>
             </Link>
           </div>
 

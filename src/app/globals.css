@@ -3,6 +3,23 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  /* Warm Editorial Engineering Design System Tokens */
+  --color-editorial-teal: #103F45;
+  --color-warm-canvas: #F5F2EB;
+  --color-growth-mint: #D6EEE6;
+  --color-soft-terracotta: #F2D8C8;
+  --color-action-indigo: #4F46E5;
+  --color-text-editorial: #242C2A;
+  --color-text-muted-editorial: #6B736F;
+
+  --editorial-teal: #103F45;
+  --warm-canvas: #F5F2EB;
+  --growth-mint: #D6EEE6;
+  --soft-terracotta: #F2D8C8;
+  --action-indigo: #4F46E5;
+  --text-editorial: #242C2A;
+  --text-muted-editorial: #6B736F;
+
   /* Official StackUp Brand Color System (Exact Mandated HEX) */
   --color-deep-teal: #044E62;
   --color-electric-indigo: #0D08CB;
@@ -187,6 +204,15 @@ html[data-theme="obsidian"] {
 }
 
 @theme inline {
+  /* Warm Editorial Engineering Design System Tokens */
+  --color-editorial-teal: #103F45;
+  --color-warm-canvas: #F5F2EB;
+  --color-growth-mint: #D6EEE6;
+  --color-soft-terracotta: #F2D8C8;
+  --color-action-indigo: #4F46E5;
+  --color-text-editorial: #242C2A;
+  --color-text-muted-editorial: #6B736F;
+
   /* Official StackUp Brand Color System */
   --color-deep-teal: #044E62;
   --color-electric-indigo: #0D08CB;

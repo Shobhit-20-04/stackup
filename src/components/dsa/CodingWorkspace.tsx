@@ -43,6 +43,7 @@ import {
   Lock,
   LogIn,
   ShieldAlert,
+  Lightbulb,
 } from 'lucide-react';
 import type { editor } from 'monaco-editor';
 import { loader } from '@monaco-editor/react';
@@ -107,6 +108,163 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
   ),
 });
 
+export interface KindDiagnostic {
+  title: string;
+  explanation: string;
+  tip: string;
+  tone: 'error' | 'warning' | 'info';
+}
+
+export function getKindDiagnostic(rawOutput: string, verdict?: string): KindDiagnostic | null {
+  const text = (rawOutput || '').toLowerCase();
+  const v = (verdict || '').toLowerCase();
+
+  if (text.includes('indexerror') || text.includes('out_of_range') || text.includes('arrayindexoutofboundsexception')) {
+    return {
+      title: 'Array Index Out of Bounds',
+      explanation: 'Your loop or accessor tried to look past the boundary of the list. In 0-indexed arrays with length N, valid indices are 0 to N-1.',
+      tip: 'Check your loop termination condition (< vs <=) and verify that accessing i + 1 or i - 1 is safely guarded.',
+      tone: 'error',
+    };
+  }
+
+  if (text.includes('typeerror') || text.includes('nullpointerexception') || text.includes('cannot read propert') || text.includes('nonetype')) {
+    return {
+      title: 'Null or Type Mismatch',
+      explanation: 'An operation expected a concrete value (like a number or string) but encountered None, null, or an incompatible type.',
+      tip: 'Verify whether a function branch finished without an explicit return statement, causing Python to return None.',
+      tone: 'error',
+    };
+  }
+
+  if (text.includes('syntaxerror') || text.includes('expected \';\'') || text.includes('indentationerror')) {
+    return {
+      title: 'Syntax Formulation Issue',
+      explanation: 'The interpreter or compiler could not parse your code structure.',
+      tip: 'In Python, check for missing colons (:) or inconsistent indentation. In C++/Java, verify closing brackets (}) and semicolons (;).',
+      tone: 'warning',
+    };
+  }
+
+  if (v.includes('time limit') || text.includes('time limit exceeded')) {
+    return {
+      title: 'Time Limit Exceeded (Algorithmic Complexity)',
+      explanation: 'Your solution is conceptually valid for small inputs, but takes too long on larger stress tests (e.g., N >= 10,000).',
+      tip: 'Nested loops typically run in O(N^2) quadratic time. Can you use a Hash Map or Two-Pointer approach to achieve O(N) linear time?',
+      tone: 'warning',
+    };
+  }
+
+  if (v.includes('wrong answer')) {
+    return {
+      title: 'Output Mismatch on Test Case',
+      explanation: 'Your function executed cleanly without crashing, but the returned value did not match the expected answer for this input.',
+      tip: 'Test edge cases: empty input arrays, negative integers, single-element lists, or targets that do not exist.',
+      tone: 'info',
+    };
+  }
+
+  if (text.includes('recursionerror') || text.includes('stack overflow')) {
+    return {
+      title: 'Recursion Depth Exceeded',
+      explanation: 'Your recursive calls did not hit a stopping condition, exhausting memory.',
+      tip: 'Verify that your base case (e.g. if node is None: return) triggers before making further recursive calls.',
+      tone: 'error',
+    };
+  }
+
+  if (rawOutput && rawOutput.trim().length > 0) {
+    return {
+      title: 'Diagnostic Guidance',
+      explanation: 'The code runner produced output details. Check the file and line number shown in the stack trace below.',
+      tip: 'Focus on the first traceback line that points to your solution function.',
+      tone: 'info',
+    };
+  }
+
+  return null;
+}
+
+export interface SocraticHints {
+  metaphor: string;
+  invariants: string[];
+  skeleton: string;
+}
+
+export function getSocraticNudges(pattern: string, title: string): SocraticHints {
+  const p = (pattern || '').toLowerCase();
+
+  if (p.includes('two pointer') || p.includes('pointers')) {
+    return {
+      metaphor: 'Imagine two bookends sliding toward each other along a shelf. If the current sum is too small, advance the left bookend to pick a larger value; if too large, move the right bookend inward.',
+      invariants: [
+        'Is the input array sorted? Two Pointers require sorted order to guarantee directionality.',
+        'What should happen when left and right pointers meet (left === right)?',
+        'Are duplicate values allowed, and should duplicates be skipped?',
+      ],
+      skeleton: `left = 0\nright = len(nums) - 1\nwhile left < right:\n    curr = nums[left] + nums[right]\n    if curr == target:\n        return [left, right]\n    elif curr < target:\n        left += 1\n    else:\n        right -= 1`,
+    };
+  }
+
+  if (p.includes('sliding window') || p.includes('window')) {
+    return {
+      metaphor: 'Like viewing a panoramic landscape through a moving picture frame. Expand the right edge to discover new elements until the window becomes invalid, then shrink the left edge to restore validity.',
+      invariants: [
+        'What condition makes the window invalid (e.g., sum > target, duplicate characters)?',
+        'Do you update the answer when expanding the window, or when contracting it?',
+        'Can the window have zero length?',
+      ],
+      skeleton: `left = 0\nfor right in range(len(nums)):\n    # add nums[right] to state\n    while window_is_invalid:\n        # remove nums[left] from state\n        left += 1\n    # update max/min answer with (right - left + 1)`,
+    };
+  }
+
+  if (p.includes('hash') || p.includes('frequency') || p.includes('map')) {
+    return {
+      metaphor: 'Think of a coat check counter: instead of searching every hanger in the closet, you look up the ticket in O(1) constant time.',
+      invariants: [
+        'For each element x, the complement needed is (target - x).',
+        'Check if the complement is already in the map BEFORE adding the current element to avoid using the same element twice.',
+        'What should you store as the dictionary value: the element itself or its index?',
+      ],
+      skeleton: `seen = {}\nfor i, num in enumerate(nums):\n    complement = target - num\n    if complement in seen:\n        return [seen[complement], i]\n    seen[num] = i`,
+    };
+  }
+
+  if (p.includes('binary search')) {
+    return {
+      metaphor: 'Opening a physical dictionary right in the center. If your target word is alphabetically earlier, you instantly rip out and discard the entire right half of the book.',
+      invariants: [
+        'Use mid = left + (right - left) // 2 to prevent integer overflow in C++/Java.',
+        'Determine whether your loop condition is left <= right or left < right.',
+        'When target is not found, what does left or right represent (insertion point)?',
+      ],
+      skeleton: `left, right = 0, len(nums) - 1\nwhile left <= right:\n    mid = (left + right) // 2\n    if nums[mid] == target:\n        return mid\n    elif nums[mid] < target:\n        left = mid + 1\n    else:\n        right = mid - 1\nreturn -1`,
+    };
+  }
+
+  if (p.includes('tree') || p.includes('depth') || p.includes('breadth') || p.includes('graph')) {
+    return {
+      metaphor: 'Navigating a labyrinth: DFS is walking down a hallway until hitting a dead end before backtracking; BFS is dropping a pebble into water and watching ripples expand one distance level at a time.',
+      invariants: [
+        'What is the stopping condition for a leaf or null node (if not root: return 0)?',
+        'In graphs, how do you prevent infinite cycles (visited set)?',
+        'Does the problem require aggregating bottom-up (post-order) or carrying state top-down (pre-order)?',
+      ],
+      skeleton: `def dfs(node):\n    if not node:\n        return 0\n    left = dfs(node.left)\n    right = dfs(node.right)\n    return 1 + max(left, right)`,
+    };
+  }
+
+  return {
+    metaphor: `Break "${title}" into simpler subproblems. If you knew the answer for N-1, how would you construct the answer for N without recomputing previous steps?`,
+    invariants: [
+      'What are the base cases for N = 0 or N = 1?',
+      'Can you write a recurrence relation connecting current state to previous states?',
+      'Can you memoize repeated calculations with an array or cache?',
+    ],
+    skeleton: `# Base Case\nif n <= 1: return n\n# State Array\ndp = [0] * (n + 1)\ndp[1] = 1\nfor i in range(2, n + 1):\n    dp[i] = dp[i - 1] + dp[i - 2]\nreturn dp[n]`,
+  };
+}
+
 interface CodingWorkspaceProps {
   problemId: string;
   onClose: () => void;
@@ -141,7 +299,12 @@ export default function CodingWorkspace({
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Tab views
-  const [leftTab, setLeftTab] = useState<'description' | 'editorial' | 'solutions' | 'submissions'>('description');
+  const [leftTab, setLeftTab] = useState<'description' | 'editorial' | 'solutions' | 'submissions' | 'hints'>('description');
+  const [revealedHints, setRevealedHints] = useState<{ tier1: boolean; tier2: boolean; tier3: boolean }>({
+    tier1: false,
+    tier2: false,
+    tier3: false,
+  });
   const [bottomTab, setBottomTab] = useState<'testcases' | 'results' | 'console' | 'submission'>('testcases');
   const [mobileTab, setMobileTab] = useState<'problem' | 'editor' | 'results'>('editor');
 
@@ -351,8 +514,14 @@ export default function CodingWorkspace({
       setExecutionLatencyMs(null);
       setIsSolved(isSolvedInitially);
       setProblemPickerOpen(false);
+      setRevealedHints({ tier1: false, tier2: false, tier3: false });
     }
   }
+
+  // Socratic progressive mentor hints
+  const socraticNudges = useMemo(() => {
+    return getSocraticNudges(problem.pattern_tag, problem.title);
+  }, [problem.pattern_tag, problem.title]);
 
   // Keep codeRef in sync with code state outside render
   useEffect(() => {
@@ -1303,6 +1472,7 @@ export default function CodingWorkspace({
             <div className="flex items-center space-x-1 h-full">
               {[
                 { id: 'description', label: 'Description', icon: FileText },
+                { id: 'hints', label: 'Mentor Hints', icon: Lightbulb },
                 { id: 'editorial', label: 'Approach', icon: Sparkles },
                 { id: 'solutions', label: 'Solutions', icon: BookOpen },
               ].map((tab) => {
@@ -1517,6 +1687,148 @@ export default function CodingWorkspace({
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Socratic Mentor Hints Tab (Progressive 3-Tier Nudges) */}
+            {leftTab === 'hints' && (
+              <div className="space-y-4">
+                <div
+                  className={`p-4 rounded-xl border space-y-2 ${
+                    isDark ? 'bg-[#0E1422] border-[#1A2333]' : 'bg-amber-50/40 border-amber-200/60'
+                  }`}
+                >
+                  <div className="flex items-center space-x-2 text-amber-500 font-bold text-xs">
+                    <Lightbulb className="w-4 h-4" />
+                    <span>Socratic Mentor Nudges</span>
+                  </div>
+                  <p className="text-[12px] text-slate-400 leading-relaxed">
+                    Hints are progressively tiered so you can get unstuck without having the complete answer spoiled. Reveal only what you need.
+                  </p>
+                </div>
+
+                {/* Tier 1: Conceptual Metaphor */}
+                <div
+                  className={`p-4 rounded-xl border space-y-2 transition-all ${
+                    revealedHints.tier1
+                      ? isDark
+                        ? 'bg-[#121A2C] border-[#1E293B]'
+                        : 'bg-white border-slate-200 shadow-xs'
+                      : isDark
+                      ? 'bg-[#0E1422]/60 border-dashed border-[#1E293B]'
+                      : 'bg-slate-50 border-dashed border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400 font-mono">
+                      Level 1 &bull; Conceptual Metaphor
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setRevealedHints((prev) => ({ ...prev, tier1: !prev.tier1 }))
+                      }
+                      className="text-[11px] font-semibold text-sky-400 hover:underline cursor-pointer"
+                    >
+                      {revealedHints.tier1 ? 'Hide Hint' : 'Reveal Level 1'}
+                    </button>
+                  </div>
+
+                  {revealedHints.tier1 ? (
+                    <p className="text-[12px] leading-relaxed text-slate-300">
+                      {socraticNudges.metaphor}
+                    </p>
+                  ) : (
+                    <p className="text-[11px] text-slate-500 italic">
+                      Click reveal to see a real-world intuition for {problem.pattern_tag}.
+                    </p>
+                  )}
+                </div>
+
+                {/* Tier 2: Invariants & Edge Cases */}
+                <div
+                  className={`p-4 rounded-xl border space-y-2 transition-all ${
+                    revealedHints.tier2
+                      ? isDark
+                        ? 'bg-[#121A2C] border-[#1E293B]'
+                        : 'bg-white border-slate-200 shadow-xs'
+                      : isDark
+                      ? 'bg-[#0E1422]/60 border-dashed border-[#1E293B]'
+                      : 'bg-slate-50 border-dashed border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400 font-mono">
+                      Level 2 &bull; Invariants &amp; Edge Cases
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setRevealedHints((prev) => ({ ...prev, tier2: !prev.tier2 }))
+                      }
+                      className="text-[11px] font-semibold text-amber-400 hover:underline cursor-pointer"
+                    >
+                      {revealedHints.tier2 ? 'Hide Hint' : 'Reveal Level 2'}
+                    </button>
+                  </div>
+
+                  {revealedHints.tier2 ? (
+                    <ul className="space-y-1.5 text-[12px] text-slate-300 list-disc list-inside">
+                      {socraticNudges.invariants.map((inv, idx) => (
+                        <li key={idx} className="leading-relaxed">
+                          {inv}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-[11px] text-slate-500 italic">
+                      Boundary conditions and questions to ask before writing the main loop.
+                    </p>
+                  )}
+                </div>
+
+                {/* Tier 3: Algorithmic Blueprint (Skeleton) */}
+                <div
+                  className={`p-4 rounded-xl border space-y-2 transition-all ${
+                    revealedHints.tier3
+                      ? isDark
+                        ? 'bg-[#121A2C] border-[#1E293B]'
+                        : 'bg-white border-slate-200 shadow-xs'
+                      : isDark
+                      ? 'bg-[#0E1422]/60 border-dashed border-[#1E293B]'
+                      : 'bg-slate-50 border-dashed border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                      Level 3 &bull; Algorithmic Blueprint
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setRevealedHints((prev) => ({ ...prev, tier3: !prev.tier3 }))
+                      }
+                      className="text-[11px] font-semibold text-emerald-400 hover:underline cursor-pointer"
+                    >
+                      {revealedHints.tier3 ? 'Hide Skeleton' : 'Reveal Level 3'}
+                    </button>
+                  </div>
+
+                  {revealedHints.tier3 ? (
+                    <div className="space-y-2">
+                      <p className="text-[11px] text-slate-400">
+                        High-level pseudo-structure (Python reference):
+                      </p>
+                      <pre className="p-3 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[11px] font-mono text-emerald-300 overflow-x-auto whitespace-pre-wrap">
+                        {socraticNudges.skeleton}
+                      </pre>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-slate-500 italic">
+                      High-level structural outline without the exact final implementation.
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
@@ -2233,6 +2545,29 @@ export default function CodingWorkspace({
                           )}
                         </div>
 
+                        {/* Kind Error Diagnostic Coach for Sample Run */}
+                        {(() => {
+                          const kindDiag = getKindDiagnostic(
+                            runResults.compileOutput || runResults.error || '',
+                            runResults.verdict
+                          );
+                          if (!kindDiag || runResults.verdict === 'Accepted') return null;
+                          return (
+                            <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 space-y-1.5 animate-in fade-in">
+                              <div className="flex items-center space-x-2 text-amber-500 dark:text-amber-400 text-xs font-bold">
+                                <Sparkles className="w-4 h-4 shrink-0" />
+                                <span>Diagnostic Coach: {kindDiag.title}</span>
+                              </div>
+                              <p className="text-[11px] text-slate-300 leading-relaxed">
+                                {kindDiag.explanation}
+                              </p>
+                              <p className="text-[11px] font-medium text-amber-400 leading-relaxed">
+                                <strong>Coach Tip:</strong> {kindDiag.tip}
+                              </p>
+                            </div>
+                          );
+                        })()}
+
                         {/* Compiler Diagnostic Output if any */}
                         {runResults.compileOutput && (
                           <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 space-y-1">
@@ -2411,6 +2746,29 @@ export default function CodingWorkspace({
                             )}
                           </div>
                         </div>
+
+                        {/* Kind Error Diagnostic Coach for Submission */}
+                        {(() => {
+                          const kindDiag = getKindDiagnostic(
+                            submitResult.compileOutput || submitResult.errorDetails || '',
+                            submitResult.verdict
+                          );
+                          if (!kindDiag || submitResult.verdict === 'Accepted') return null;
+                          return (
+                            <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 space-y-1.5 animate-in fade-in">
+                              <div className="flex items-center space-x-2 text-amber-500 dark:text-amber-400 text-xs font-bold">
+                                <Sparkles className="w-4 h-4 shrink-0" />
+                                <span>Diagnostic Coach: {kindDiag.title}</span>
+                              </div>
+                              <p className="text-[11px] text-slate-300 leading-relaxed">
+                                {kindDiag.explanation}
+                              </p>
+                              <p className="text-[11px] font-medium text-amber-400 leading-relaxed">
+                                <strong>Coach Tip:</strong> {kindDiag.tip}
+                              </p>
+                            </div>
+                          );
+                        })()}
 
                         {/* Compiler Diagnostic if failed */}
                         {submitResult.compileOutput && (

@@ -411,7 +411,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
               onClick={() => setQuizMode('exam')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
                 quizMode === 'exam'
-                  ? 'bg-[#0D08CB] text-white shadow-xs'
+                  ? 'bg-[#4F46E5] text-white shadow-xs'
                   : 'text-[var(--foreground-muted)] hover:text-slate-800 dark:hover:text-white'
               }`}
             >
@@ -450,7 +450,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
               className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
                 timeLeft < 30
                   ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 animate-pulse'
-                  : 'border-[#DCD2EC] dark:border-[#044E62]/50 bg-[#E9DEFA]/40 dark:bg-[var(--brand-primary)]/20 text-[#044E62] dark:text-[#E9DEFA]'
+                  : 'border-[#103F45]/20 dark:border-[#D6EEE6]/20 bg-[#D6EEE6]/40 dark:bg-[#103F45]/30 text-[#103F45] dark:text-[#D6EEE6]'
               }`}
             >
               <Clock className="w-4 h-4" />
@@ -468,7 +468,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       {/* Visual Progress Bar */}
       <div className="h-2 w-full bg-[var(--surface-sunken)] rounded-full overflow-hidden -mt-2">
         <div
-          className={`h-full transition-all duration-300 rounded-full ${quizMode === 'practice' ? 'bg-[var(--brand-primary)]' : 'bg-[#0D08CB]'}`}
+          className={`h-full transition-all duration-300 rounded-full ${quizMode === 'practice' ? 'bg-emerald-500' : 'bg-[#4F46E5]'}`}
           style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
         />
       </div>
@@ -476,7 +476,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
       {/* Question Card */}
       <div className="p-6 sm:p-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs space-y-7 animate-in fade-in duration-200">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#044E62] dark:text-[#E9DEFA]">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#103F45] dark:text-[#D6EEE6]">
             Question {currentIndex + 1} of {activeQuestions.length}
           </span>
           {isFlagged && (
@@ -507,7 +507,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                 optionClasses = 'border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 font-semibold ring-1 ring-rose-500';
               }
             } else if (active) {
-              optionClasses = 'border-[#0D08CB] bg-[#E9DEFA]/40 dark:bg-[#0D08CB]/20 text-[#0D08CB] dark:text-[#E9DEFA] shadow-xs ring-1 ring-[#0D08CB]';
+              optionClasses = 'border-[#4F46E5] bg-[#D6EEE6]/20 dark:bg-[#4F46E5]/20 text-[#103F45] dark:text-[#D6EEE6] shadow-xs ring-1 ring-[#4F46E5]';
             }
 
             return (
@@ -525,7 +525,7 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
                         : quizMode === 'practice' && active && !isCorrectChoice
                         ? 'border-rose-600 bg-rose-600 text-white'
                         : active
-                        ? 'border-[#0D08CB] bg-[#0D08CB] text-white'
+                        ? 'border-[#4F46E5] bg-[#4F46E5] text-white'
                         : 'border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--foreground-muted)]'
                     }`}
                   >
@@ -548,8 +548,8 @@ export default function QuizEngine({ topic, sectionSlug, onExitQuiz }: QuizEngin
         {/* Practice Mode Instant Explanation Callout */}
         {quizMode === 'practice' && selectedAnswers[currentIndex] !== undefined && (
           <div className="p-4 sm:p-5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-2 animate-in fade-in duration-200">
-            <div className="flex items-center space-x-2 text-xs font-bold text-[#044E62] dark:text-[#E9DEFA]">
-              <Lightbulb className="w-4 h-4" />
+            <div className="flex items-center space-x-2 text-xs font-bold text-[#103F45] dark:text-[#D6EEE6]">
+              <Lightbulb className="w-4 h-4 text-amber-500" />
               <span>Step-by-Step Solution &amp; Conceptual Explanation:</span>
             </div>
             <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">

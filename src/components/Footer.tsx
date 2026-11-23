@@ -32,9 +32,19 @@ export default function Footer() {
             </div>
             <ul className="space-y-2 text-xs text-[var(--foreground-muted)]">
               <li>
+                <Link href="/dashboard" className="hover:text-[var(--brand-primary)] transition-colors flex items-center space-x-1.5">
+                  <span>Student Daily Workspace</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/learn" className="hover:text-[var(--brand-primary)] transition-colors flex items-center space-x-1.5">
+                  <span>Beginner Digital Foundations</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/dsa" className="hover:text-[var(--brand-primary)] transition-colors flex items-center space-x-1.5">
                   <Code2 className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>DSA Practice Library</span>
+                  <span>DSA Practice Library (150 Problems)</span>
                 </Link>
               </li>
               <li>
