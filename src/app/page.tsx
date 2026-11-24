@@ -1,21 +1,20 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { 
-  Terminal, 
   Code2, 
-  Globe, 
   Cpu, 
-  FolderGit2, 
-  GraduationCap, 
+  FileCheck2, 
+  Flame, 
   ArrowRight, 
   ChevronRight, 
-  Compass, 
-  Laptop,
+  BrainCircuit, 
+  Sparkles, 
+  Clock, 
   Check
 } from 'lucide-react';
-import { getFastCachedUser, type UserSession } from '@/lib/auth/session';
+import { getProblemOfTheDay, type DsaProblem } from '@/lib/data/dsa';
 
 function GithubIcon({ className = 'w-4 h-4' }: { className?: string }) {
   return (
@@ -25,286 +24,295 @@ function GithubIcon({ className = 'w-4 h-4' }: { className?: string }) {
   );
 }
 
+// Representative high-frequency patterns for the interactive matrix
+const FEATURED_PATTERNS = [
+  {
+    name: 'Two Pointers',
+    description: 'Use two converging or parallel pointers to search pairs in sorted sequences in O(N) time with O(1) space.',
+    sampleProblemId: 'dsa-11',
+    sampleTitle: 'Container With Most Water',
+    difficulty: 'Medium',
+    keyInvariant: 'Shrink boundaries by moving the pointer with smaller height to explore higher potential areas.',
+  },
+  {
+    name: 'Sliding Window',
+    description: 'Maintain a dynamic contiguous subarray to find optimal ranges, longest unique substrings, or bounded sums.',
+    sampleProblemId: 'dsa-3',
+    sampleTitle: 'Longest Substring Without Repeating Characters',
+    difficulty: 'Medium',
+    keyInvariant: 'Expand right pointer to discover candidates; advance left pointer only when constraints are violated.',
+  },
+  {
+    name: 'Binary Search',
+    description: 'Cut search spaces in half on monotonically ordered domains, rotated arrays, or monotonic answer spaces.',
+    sampleProblemId: 'dsa-33',
+    sampleTitle: 'Search in Rotated Sorted Array',
+    difficulty: 'Medium',
+    keyInvariant: 'At least one half of the rotated array is always strictly sorted; determine target containment within that half.',
+  },
+  {
+    name: 'Trees & BST',
+    description: 'Decompose hierarchical trees through DFS recursion or BFS level-order traversal with queue structures.',
+    sampleProblemId: 'dsa-102',
+    sampleTitle: 'Binary Tree Level Order Traversal',
+    difficulty: 'Medium',
+    keyInvariant: 'Process nodes batch-by-batch by capturing current queue length before expanding child references.',
+  },
+  {
+    name: 'Graphs & BFS/DFS',
+    description: 'Model network topologies, course dependencies, matrix grids, and connectivity with visited sets.',
+    sampleProblemId: 'dsa-200',
+    sampleTitle: 'Number of Islands',
+    difficulty: 'Medium',
+    keyInvariant: 'Mutate visited land cells in-place or record coordinates in a set to prevent infinite cycles.',
+  },
+  {
+    name: 'Dynamic Programming',
+    description: 'Break complex optimization problems into overlapping subproblems with memoized state transitions.',
+    sampleProblemId: 'dsa-300',
+    sampleTitle: 'Longest Increasing Subsequence',
+    difficulty: 'Medium',
+    keyInvariant: 'State dp[i] represents length of longest subsequence ending at index i.',
+  },
+];
+
+// High-frequency core computer science interview topics
+const CORE_CS_HIGHLIGHTS = [
+  {
+    subject: 'Operating Systems',
+    topic: 'Process vs Thread & Context Switching',
+    insight: 'Processes own isolated virtual address spaces; threads share memory within the same process, requiring synchronization.',
+    href: '/core-cs#operating-systems',
+  },
+  {
+    subject: 'Operating Systems',
+    topic: 'Deadlock: The 4 Coffman Conditions',
+    insight: 'Mutual exclusion, hold and wait, no preemption, and circular wait. Breaking any single condition prevents deadlock entirely.',
+    href: '/core-cs#operating-systems',
+  },
+  {
+    subject: 'DBMS',
+    topic: 'ACID Properties & Transaction Isolation',
+    insight: 'Atomicity, Consistency, Isolation, Durability. Isolation levels (Read Uncommitted to Serializable) balance throughput and anomalies.',
+    href: '/core-cs#database-management-systems',
+  },
+  {
+    subject: 'DBMS',
+    topic: 'B+ Tree Indexing vs Hash Indexing',
+    insight: 'B+ Trees store records in sorted leaf nodes, enabling efficient O(log N) range scans; Hash indexes only support O(1) exact equality.',
+    href: '/core-cs#database-management-systems',
+  },
+  {
+    subject: 'Computer Networks',
+    topic: 'TCP 3-Way Handshake & Connection Teardown',
+    insight: 'SYN -> SYN-ACK -> ACK ensures bidirectional sequence number synchronization before application data flows.',
+    href: '/core-cs#computer-networks',
+  },
+  {
+    subject: 'System Design',
+    topic: 'Horizontal Scaling, Caching & CAP Theorem',
+    insight: 'Distribute load across stateless nodes, cache hot data in Redis/Memcached, and balance Consistency vs Availability during network partitions.',
+    href: '/core-cs#system-design',
+  },
+];
+
 export default function HomePage() {
-  const [currentUser] = useState<UserSession | null>(getFastCachedUser);
-  const [interactiveWord, setInteractiveWord] = useState('Code');
-  const [activeStageTab, setActiveStageTab] = useState<number>(1);
+  const [potd, setPotd] = useState<DsaProblem>(() => getProblemOfTheDay());
+  const [msUntilReset, setMsUntilReset] = useState<number>(0);
+  const [activePatternIndex, setActivePatternIndex] = useState<number>(0);
 
-  // Convert input text to real ASCII binary bits for the interactive workbench
-  const binaryAnalysis = useMemo(() => {
-    const safeText = interactiveWord.slice(0, 8); // keep it tidy
-    return safeText.split('').map((char) => {
-      const ascii = char.charCodeAt(0);
-      const binary = ascii.toString(2).padStart(8, '0');
-      return { char, ascii, binary };
-    });
-  }, [interactiveWord]);
+  useEffect(() => {
+    // Fetch POTD with real-time midnight IST calculation
+    fetch('/api/dsa/potd')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.problem) {
+          setPotd(data.problem);
+          if (data.msUntilMidnight) setMsUntilReset(data.msUntilMidnight);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
-  // 6 Stages - Open Workshop Syllabus
-  const curriculum = [
-    {
-      stage: 1,
-      num: '01',
-      title: 'Digital Foundations',
-      subtitle: 'Understand the machine before writing a line of code.',
-      time: '2–3 weeks · Zero prerequisites',
-      icon: Terminal,
-      href: '/learn#stage-1',
-      description: 'How computers store numbers as electrical states, what CPUs and RAM physically do, how undersea fiber-optic cables route website data across the globe, and how to navigate a terminal without fear.',
-      topics: [
-        'How Computer Hardware Works (CPU, RAM, SSD)',
-        'How the Internet Works (DNS, HTTP, IP Packets)',
-        'What Code Actually Is (Compilers vs Interpreters)',
-        'Your Developer Environment (VS Code & Terminal)'
-      ],
-      milestone: 'Navigating your filesystem and running your first standalone script.'
-    },
-    {
-      stage: 2,
-      num: '02',
-      title: 'Programming Fundamentals',
-      subtitle: 'Teaching a computer to follow a recipe.',
-      time: '3–4 weeks · Hands-on logic',
-      icon: Code2,
-      href: '/learn#stage-2',
-      description: 'Variables as labeled storage cubbies in memory, making decisions with conditional branching (if/else), automating repetitive tasks with loops, and organizing code into reusable functions.',
-      topics: [
-        'Variables & Data Types (Storing information)',
-        'Conditionals & Decisions (If, else if, else)',
-        'Loops & Iteration (Automating repetition)',
-        'Functions (Reusable, modular building blocks)',
-        'Lists & Dictionaries (Organizing collections)'
-      ],
-      milestone: 'Building a terminal-based interactive quiz and text adventure.'
-    },
-    {
-      stage: 3,
-      num: '03',
-      title: 'Web & Software Development',
-      subtitle: 'Building things people can click, use, and share.',
-      time: '4–6 weeks · Full-stack builder',
-      icon: Globe,
-      href: '/learn#stage-3',
-      description: 'HTML5 for page structure, modern CSS for responsive layouts, JavaScript for DOM interactivity, REST APIs for sending JSON data between machines, and PostgreSQL for permanent storage.',
-      topics: [
-        'HTML5 Semantic Structure & Forms',
-        'CSS Layouts, Flexbox & Responsive Design',
-        'JavaScript DOM Manipulation & Event Handling',
-        'Backend Servers, REST APIs & HTTP Verbs',
-        'Relational Databases & SQL Queries',
-        'Version Control with Git & GitHub'
-      ],
-      milestone: 'Deploying an authenticated personal web app with a real database.'
-    },
-    {
-      stage: 4,
-      num: '04',
-      title: 'Computer Science & Systems',
-      subtitle: 'How large-scale systems work under the hood.',
-      time: 'Continuous reference · 221 verified topics',
-      icon: Cpu,
-      href: '/core-cs',
-      description: 'Deep engineering foundations: Operating Systems (processes, threads, deadlocks, paging), Database Internals (indexing, ACID, B-trees), and Computer Networks (TCP/IP, sockets, handshakes).',
-      topics: [
-        'Operating Systems (Processes, Threads, Virtual Memory)',
-        'Database Management Systems (ACID, Transactions, Indexing)',
-        'Computer Networks (TCP/IP, UDP, Routing, Sockets)',
-        'Computer Organization & Architecture (Pipelining, Cache)',
-        'Theory of Computation & Compiler Design'
-      ],
-      milestone: 'Comprehensive notes and exam MCQs across 221 engineering topics.'
-    },
-    {
-      stage: 5,
-      num: '05',
-      title: 'Practical Guided Projects',
-      subtitle: 'Escape tutorial hell by building standalone software.',
-      time: 'Self-paced · Beginner to Advanced',
-      icon: FolderGit2,
-      href: '/projects',
-      description: 'Step-by-step project blueprints with architectural diagrams, technology tradeoffs, milestones, test suites, and instructions on how to explain your engineering choices in an interview.',
-      topics: [
-        'Beginner: Interactive Calculator & Todo Manager',
-        'Intermediate: Weather Dashboard with Live REST APIs',
-        'Full-Stack: Authenticated Cloud Notes with PostgreSQL',
-        'Advanced: Real-Time Collaborative Canvas / Board'
-      ],
-      milestone: 'A public GitHub portfolio of working apps you can explain with pride.'
-    },
-    {
-      stage: 6,
-      num: '06',
-      title: 'Career & Placement Readiness',
-      subtitle: 'Demonstrating technical competence to hiring managers.',
-      time: '4–8 weeks · Interview prep',
-      icon: GraduationCap,
-      href: '/resume-checker',
-      description: '150 curated NeetCode-aligned DSA patterns, campus recruitment aptitude drills, and an automated ATS resume scanner that evaluates quantifiable impact using Google’s XYZ bullet formula.',
-      topics: [
-        '150 Pattern-Based DSA Problems (Arrays to Graphs)',
-        'Problem of the Day with Multi-Language Solutions',
-        'Quantitative, Logical & Verbal Aptitude Modules',
-        'ATS Resume Evaluator with STAR Bullet Rewrites'
-      ],
-      milestone: 'Passing technical screening rounds with confidence.'
-    }
-  ];
+  // Live countdown timer until Midnight IST
+  useEffect(() => {
+    if (!msUntilReset) return;
+    const timer = setInterval(() => {
+      setMsUntilReset((prev) => Math.max(0, prev - 1000));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [msUntilReset]);
+
+  const countdownText = useMemo(() => {
+    if (!msUntilReset) return null;
+    const totalSec = Math.floor(msUntilReset / 1000);
+    const hours = Math.floor(totalSec / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    return `${hours}h ${mins.toString().padStart(2, '0')}m ${secs.toString().padStart(2, '0')}s`;
+  }, [msUntilReset]);
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors selection:bg-[var(--brand-primary)] selection:text-white">
       
       {/* ================================================================= */}
-      {/* 1. QUIET, HONEST MASTHEAD                                         */}
+      {/* 1. HERO MASTHEAD: FOCUSED TECHNICAL LEARNING                      */}
       {/* ================================================================= */}
-      <header className="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/20 pt-16 pb-20 sm:pt-24 sm:pb-28">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <header className="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/20 pt-16 pb-18 sm:pt-20 sm:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
-          {/* Creator Attribution Chip */}
-          <div className="flex items-center space-x-2 text-xs text-[var(--foreground-muted)]">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-            <span className="font-medium">An open-source curriculum built by Shobhit</span>
-            <span>&bull;</span>
-            <span>100% Free &amp; Independent</span>
-          </div>
+          <div className="max-w-3xl space-y-4">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#D6EEE6] text-[#103F45] border border-[#A7D7C5]/50">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Technical Interview Preparation &amp; Engineering Workspace</span>
+            </div>
 
-          {/* Simple, Confident Headline */}
-          <div className="space-y-4">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--foreground)] leading-[1.12]">
-              An honest, quiet guide to understanding technology.
+              Systematic interview preparation for engineering students.
             </h1>
-            <p className="text-base sm:text-lg text-[var(--foreground-muted)] leading-relaxed font-normal max-w-2xl">
-              Most coding websites start in the middle. They throw dry syntax, confusing terminal commands, and 150-problem LeetCode sheets at you without ever explaining how a computer actually works.
-            </p>
-            <p className="text-base sm:text-lg text-[var(--foreground-muted)] leading-relaxed font-normal max-w-2xl">
-              StackUp begins at the physical foundation: what electricity does inside silicon, how internet cables route packets across oceans, why code exists, and how to build real software step-by-step.
+
+            <p className="text-base sm:text-lg text-[var(--foreground-muted)] leading-relaxed font-normal">
+              No generic AI dashboards. No disconnected cards. StackUp provides a focused, deliberate workspace to master 150 curated DSA patterns, revise 15 core computer science subjects, drill campus aptitude rounds, and benchmark your resume.
             </p>
           </div>
 
-          {/* Direct, Uncluttered Entry Points */}
-          <div className="pt-2 flex flex-wrap items-center gap-3">
+          {/* Primary Action Row */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
-              href="/learn#stage-1"
-              className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] transition-all flex items-center space-x-2 shadow-xs cursor-pointer"
+              href="/practice/potd"
+              className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-[#4F46E5] hover:bg-[#4338CA] transition-all flex items-center space-x-2 shadow-xs cursor-pointer"
             >
-              <Compass className="w-4 h-4" />
-              <span>Start Learning: Stage 1 (Digital Foundations)</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <Flame className="w-4 h-4 fill-amber-400 text-amber-400" />
+              <span>Solve Today&apos;s Challenge (POTD)</span>
+              <ArrowRight className="w-4 h-4 ml-0.5" />
             </Link>
 
             <Link
-              href="/dashboard"
+              href="/dsa"
               className="px-5 py-3 rounded-xl font-bold text-sm text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-all flex items-center space-x-2 shadow-2xs"
             >
-              <span>Daily Student Workspace</span>
+              <Code2 className="w-4 h-4 text-emerald-500" />
+              <span>150 Curated DSA Sheet</span>
             </Link>
 
             <Link
-              href="/learn"
-              className="px-4 py-3 rounded-xl font-bold text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-all flex items-center space-x-1"
+              href="/core-cs"
+              className="px-5 py-3 rounded-xl font-bold text-sm text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-all flex items-center space-x-2 shadow-2xs"
             >
-              <span>6-Stage Roadmap</span>
+              <Cpu className="w-4 h-4 text-sky-500" />
+              <span>15 Core CS Subjects</span>
+            </Link>
+
+            <Link
+              href="/resume-checker"
+              className="px-5 py-3 rounded-xl font-bold text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-sunken)] transition-all flex items-center space-x-2"
+            >
+              <FileCheck2 className="w-4 h-4 text-amber-500" />
+              <span>ATS Resume Evaluator</span>
             </Link>
           </div>
 
-          {/* User state or reassurance */}
-          {currentUser ? (
-            <div className="pt-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center space-x-2">
-              <Check className="w-4 h-4 shrink-0" />
-              <span>Signed in as {currentUser.email} &bull; Your notes and quiz progress are automatically saved.</span>
+          {/* Quality Proof Reassurance */}
+          <div className="pt-2 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-[var(--foreground-muted)]">
+            <div className="flex items-center space-x-1.5">
+              <Check className="w-4 h-4 text-emerald-500" />
+              <span>150 Curated Problems (NeetCode &amp; Striver SDE Sheet)</span>
             </div>
-          ) : (
-            <div className="pt-2 text-xs text-[var(--foreground-muted)] flex flex-wrap items-center gap-x-6 gap-y-1">
-              <span>&bull; No account or credit card required to read</span>
-              <span>&bull; Plain English before any code is shown</span>
-              <span>&bull; Real projects, not just multiple-choice quizzes</span>
+            <div className="flex items-center space-x-1.5">
+              <Check className="w-4 h-4 text-emerald-500" />
+              <span>235 Topics with Comprehensive Notes &amp; 710 MCQs</span>
             </div>
-          )}
+            <div className="flex items-center space-x-1.5">
+              <Check className="w-4 h-4 text-emerald-500" />
+              <span>100% Free · Open-Source · Zero Paywalls</span>
+            </div>
+          </div>
 
         </div>
       </header>
 
       {/* ================================================================= */}
-      {/* 2. HANDS-ON WORKBENCH: THE 8-BIT REALITY OF COMPUTERS             */}
+      {/* 2. PROBLEM OF THE DAY (POTD) LIVE SHOWCASE                        */}
       {/* ================================================================= */}
-      <section className="py-16 sm:py-24 border-b border-[var(--border-subtle)] bg-[var(--background)]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="py-12 sm:py-16 border-b border-[var(--border-subtle)] bg-[var(--surface-card)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="space-y-2">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-              Interactive Workbench // What is data?
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
-              Type a word. Watch how your computer physically sees it.
-            </h2>
-            <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed max-w-2xl">
-              Computers do not understand letters, photos, or apps. They only understand tiny microscopic switches holding an electrical charge (1) or no charge (0). Type anything in the box below to see its exact electrical bytes:
-            </p>
-          </div>
-
-          {/* Interactive Input Box */}
-          <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] shadow-xs space-y-6">
-            
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/40 relative overflow-hidden space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[var(--foreground)] block">
-                  Your Input Text:
-                </label>
-                <input
-                  type="text"
-                  maxLength={8}
-                  value={interactiveWord}
-                  onChange={(e) => setInteractiveWord(e.target.value || 'A')}
-                  placeholder="Type a word..."
-                  className="px-4 py-2 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-sm font-mono text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] w-48"
-                />
+                <div className="flex items-center space-x-2">
+                  <span className="inline-flex items-center space-x-1 text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                    <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                    <span>Daily Deliberate Practice</span>
+                  </span>
+                  <span className="text-xs font-mono text-[var(--foreground-muted)]">
+                    Asia/Kolkata (IST)
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)]">
+                  Today&apos;s Challenge: #{potd.id.replace('dsa-', '')}. {potd.title}
+                </h2>
               </div>
 
-              <div className="text-xs text-[var(--foreground-muted)] sm:text-right">
-                <span className="font-mono font-bold text-[var(--foreground)]">{interactiveWord.length} bytes</span> of memory occupied
-                <span className="block text-[11px] text-[var(--foreground-muted)]">Each character requires exactly 8 binary bits</span>
-              </div>
+              {countdownText && (
+                <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] self-start md:self-auto text-xs">
+                  <Clock className="w-4 h-4 text-[#4F46E5]" />
+                  <span className="text-[var(--foreground-muted)]">Resets in:</span>
+                  <span className="font-mono font-bold text-[var(--foreground)]">{countdownText}</span>
+                </div>
+              )}
             </div>
 
-            {/* Binary Bits Visualizer */}
-            <div className="space-y-4 pt-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {binaryAnalysis.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3.5 rounded-xl bg-[var(--surface-sunken)]/60 border border-[var(--border-subtle)]/70 space-y-2"
-                  >
-                    <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="font-bold text-[var(--foreground)] text-sm px-2 py-0.5 rounded bg-[var(--surface-card)] border border-[var(--border-subtle)]">
-                        &apos;{item.char}&apos;
-                      </span>
-                      <span className="text-[var(--foreground-muted)] text-[11px]">
-                        Decimal ASCII: <strong>{item.ascii}</strong>
-                      </span>
-                    </div>
+            {/* Problem Details Preview */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              <div className="lg:col-span-8 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full uppercase ${
+                    potd.difficulty === 'Easy'
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                      : potd.difficulty === 'Medium'
+                      ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                      : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                  }`}>
+                    {potd.difficulty}
+                  </span>
+                  <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                    Pattern: {potd.pattern_tag}
+                  </span>
+                  {potd.companies?.slice(0, 3).map((comp) => (
+                    <span
+                      key={comp}
+                      className="text-xs px-2 py-0.5 rounded bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]"
+                    >
+                      {comp}
+                    </span>
+                  ))}
+                </div>
 
-                    {/* 8-bit switches */}
-                    <div className="flex items-center space-x-1 pt-1 font-mono text-xs">
-                      {item.binary.split('').map((bit, bitIdx) => (
-                        <span
-                          key={bitIdx}
-                          className={`flex-1 py-1 rounded text-center font-bold text-[11px] transition-all ${
-                            bit === '1'
-                              ? 'bg-[var(--brand-primary)] text-white shadow-2xs'
-                              : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] border border-[var(--border-subtle)]'
-                          }`}
-                          title={`Bit ${bitIdx + 1}: ${bit === '1' ? 'High Voltage (1)' : 'Low Voltage (0)'}`}
-                        >
-                          {bit}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed line-clamp-2">
+                  {potd.summary || potd.description.slice(0, 160) + '...'}
+                </p>
               </div>
 
-              <p className="text-xs text-[var(--foreground-muted)] leading-relaxed italic pt-1">
-                &rarr; That is all software is. When you browse Reddit, play a video game, or message a friend, your computer is simply reading and flipping millions of these 8-bit switches every second.
-              </p>
+              <div className="lg:col-span-4 flex flex-wrap md:flex-nowrap items-center justify-start lg:justify-end gap-3">
+                <Link
+                  href="/practice/potd"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-colors flex items-center space-x-1.5"
+                >
+                  <span>POTD Calendar &amp; Hints</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+
+                <Link
+                  href={`/dsa?problem=${potd.id}`}
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-[#4F46E5] hover:bg-[#4338CA] transition-all flex items-center space-x-2 shadow-xs"
+                >
+                  <Code2 className="w-4 h-4" />
+                  <span>Solve in IDE</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
 
           </div>
@@ -313,190 +321,340 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
-      {/* 3. THE 6-STAGE SYLLABUS: OPEN WORKSHOP CURRICULUM                */}
+      {/* 3. FOUR FOUNDATIONAL PILLARS OF PREPARATION                       */}
       {/* ================================================================= */}
-      <section className="py-16 sm:py-24 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <section className="py-16 sm:py-24 border-b border-[var(--border-subtle)] bg-[var(--background)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="space-y-3">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-              The Learning Pathway
+          <div className="max-w-2xl space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#103F45] dark:text-[#D6EEE6]">
+              Platform Architecture // Complete Curriculum
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[var(--foreground)] tracking-tight">
-              Six stages. Designed to be learned in order.
+              Four pillars. Zero gaps in your preparation.
             </h2>
             <p className="text-sm text-[var(--foreground-muted)] leading-relaxed">
-              You do not need to memorize anything. Every lesson is self-contained with plain English explanations, physical analogies, and step-by-step practice.
+              Every major phase of technical screening and engineering recruitment is integrated into one cohesive workspace.
             </p>
           </div>
 
-          {/* Stage Tab Selector */}
-          <div className="flex flex-wrap gap-2 pb-2 border-b border-[var(--border-subtle)]">
-            {curriculum.map((c) => (
-              <button
-                key={c.stage}
-                onClick={() => setActiveStageTab(c.stage)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
-                  activeStageTab === c.stage
-                    ? 'bg-[var(--brand-primary)] text-white shadow-xs'
-                    : 'bg-[var(--surface-card)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border-subtle)]'
-                }`}
-              >
-                {c.num}. {c.title.split(' ')[0]}
-              </button>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            {/* Pillar 1: DSA Practice */}
+            <div className="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[#103F45]/50 transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                  <Code2 className="w-5 h-5" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                    Pillar 01
+                  </span>
+                  <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[#4F46E5] transition-colors">
+                    DSA Practice Hub
+                  </h3>
+                </div>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  150 high-yield problems grouped by 15 algorithmic patterns. Starter code in 4 languages, multi-language solutions, test cases, and Striver SDE sheet alignment.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--border-subtle)]">
+                <Link
+                  href="/dsa"
+                  className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center space-x-1"
+                >
+                  <span>Explore 150 Problems</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Pillar 2: Core Computer Science */}
+            <div className="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[#103F45]/50 transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold">
+                  <Cpu className="w-5 h-5" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[11px] font-mono font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+                    Pillar 02
+                  </span>
+                  <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[#4F46E5] transition-colors">
+                    Core CS &amp; Systems
+                  </h3>
+                </div>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  15 engineering subjects including Operating Systems, DBMS, Computer Networks, System Design, and COA. 235 comprehensive topic notes and 710 practice questions.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--border-subtle)]">
+                <Link
+                  href="/core-cs"
+                  className="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center space-x-1"
+                >
+                  <span>Browse 15 Subjects</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Pillar 3: Aptitude Hub */}
+            <div className="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[#103F45]/50 transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
+                  <BrainCircuit className="w-5 h-5" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[11px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+                    Pillar 03
+                  </span>
+                  <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[#4F46E5] transition-colors">
+                    Aptitude Drills
+                  </h3>
+                </div>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  Pass campus screening rounds with dedicated modules in Quantitative Aptitude, Logical Reasoning, Verbal Ability, and Spatial Reasoning with timed quiz modes.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--border-subtle)]">
+                <Link
+                  href="/aptitude"
+                  className="text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline flex items-center space-x-1"
+                >
+                  <span>Practice Aptitude</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Pillar 4: ATS Resume Evaluator */}
+            <div className="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[#103F45]/50 transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+                  <FileCheck2 className="w-5 h-5" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[11px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                    Pillar 04
+                  </span>
+                  <h3 className="text-lg font-bold text-[var(--foreground)] group-hover:text-[#4F46E5] transition-colors">
+                    ATS Resume Evaluator
+                  </h3>
+                </div>
+                <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                  Upload your engineering resume for instant scoring across 10 dimensions, target role matching, missing keyword detection, and quantifiable STAR bullet rewriting.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--border-subtle)]">
+                <Link
+                  href="/resume-checker"
+                  className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center space-x-1"
+                >
+                  <span>Score Your Resume</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
           </div>
 
-          {/* Active Stage Detailed Breakdown */}
-          {(() => {
-            const active = curriculum.find((c) => c.stage === activeStageTab) || curriculum[0];
-            const Icon = active.icon;
-            return (
-              <div className="p-6 sm:p-8 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] shadow-xs space-y-6">
-                
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-[var(--surface-sunken)] text-[var(--brand-primary)] flex items-center justify-center font-bold">
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <h3 className="text-xl font-bold text-[var(--foreground)]">
-                        Stage {active.num}: {active.title}
-                      </h3>
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* 4. INTERACTIVE ALGORITHMIC PATTERNS EXPLORER                      */}
+      {/* ================================================================= */}
+      <section className="py-16 sm:py-24 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-2 max-w-2xl">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#103F45] dark:text-[#D6EEE6]">
+                Pattern-Driven Learning // Algorithms
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+                Don&apos;t memorize 500 solutions. Master 15 patterns.
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                Interviews do not test memory—they test pattern recognition. Once you understand the core invariant behind a pattern, dozens of seemingly unique problems collapse into the exact same code structure.
+              </p>
+            </div>
+
+            <Link
+              href="/dsa"
+              className="text-xs font-bold text-[#4F46E5] hover:underline flex items-center space-x-1 shrink-0"
+            >
+              <span>View All 15 Patterns in DSA Hub</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Pattern Matrix Navigator */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* Pattern Tabs Column */}
+            <div className="lg:col-span-5 space-y-2">
+              {FEATURED_PATTERNS.map((p, idx) => (
+                <button
+                  key={p.name}
+                  type="button"
+                  onClick={() => setActivePatternIndex(idx)}
+                  className={`w-full text-left p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                    activePatternIndex === idx
+                      ? 'bg-[var(--surface-card)] border-[#103F45] shadow-xs text-[var(--foreground)]'
+                      : 'bg-transparent border-transparent hover:bg-[var(--surface-card)]/50 text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  <div className="space-y-0.5">
+                    <div className="text-sm font-bold">{p.name}</div>
+                    <div className="text-xs text-[var(--foreground-muted)] line-clamp-1">{p.sampleTitle}</div>
+                  </div>
+                  <ChevronRight className={`w-4 h-4 transition-transform ${activePatternIndex === idx ? 'text-[#4F46E5] translate-x-1' : 'opacity-40'}`} />
+                </button>
+              ))}
+            </div>
+
+            {/* Pattern Detail Display */}
+            {(() => {
+              const active = FEATURED_PATTERNS[activePatternIndex];
+              return (
+                <div className="lg:col-span-7 p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-xs space-y-6">
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center space-x-2 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
+                      <span>Pattern Invariant</span>
                     </div>
-                    <p className="text-xs text-[var(--brand-primary)] font-medium">
-                      {active.subtitle}
+                    <h3 className="text-xl font-bold text-[var(--foreground)]">
+                      {active.name} Pattern
+                    </h3>
+                    <p className="text-sm text-[var(--foreground-muted)] leading-relaxed">
+                      {active.description}
                     </p>
                   </div>
 
-                  <span className="text-xs font-mono text-[var(--foreground-muted)] bg-[var(--surface-sunken)] px-3 py-1 rounded-md self-start sm:self-auto border border-[var(--border-subtle)]">
-                    {active.time}
-                  </span>
-                </div>
-
-                <p className="text-sm text-[var(--foreground-muted)] leading-relaxed">
-                  {active.description}
-                </p>
-
-                {/* Core Topics in this Stage */}
-                <div className="space-y-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)] block">
-                    What You Will Study:
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {active.topics.map((t, idx) => (
-                      <div
-                        key={idx}
-                        className="p-2.5 rounded-lg bg-[var(--surface-sunken)]/50 border border-[var(--border-subtle)]/70 text-xs text-[var(--foreground)] flex items-start space-x-2"
-                      >
-                        <span className="text-emerald-500 font-bold shrink-0">&bull;</span>
-                        <span>{t}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Milestone Project */}
-                <div className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                  <div>
-                    <span className="font-bold text-[var(--foreground)] block">Capstone Milestone:</span>
-                    <span className="text-[var(--foreground-muted)]">{active.milestone}</span>
+                  <div className="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] space-y-2">
+                    <span className="text-xs font-bold text-[var(--foreground)] block">
+                      Core Mental Model:
+                    </span>
+                    <p className="text-xs text-[var(--foreground-muted)] leading-relaxed font-mono">
+                      {active.keyInvariant}
+                    </p>
                   </div>
 
-                  <Link
-                    href={active.href}
-                    className="px-4 py-2 rounded-lg bg-[var(--brand-primary)] text-white font-bold hover:bg-[var(--brand-primary-hover)] transition-all flex items-center space-x-1.5 self-start sm:self-auto shrink-0"
-                  >
-                    <span>Open Stage {active.stage} Notes</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-[var(--border-subtle)]">
+                    <div>
+                      <span className="text-[11px] text-[var(--foreground-muted)] block">Representative Problem:</span>
+                      <span className="text-sm font-bold text-[var(--foreground)]">{active.sampleTitle}</span>
+                    </div>
 
-              </div>
-            );
-          })()}
+                    <Link
+                      href={`/dsa?problem=${active.sampleProblemId}`}
+                      className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-[#4F46E5] hover:bg-[#4338CA] transition-all flex items-center space-x-1.5 self-start sm:self-auto cursor-pointer"
+                    >
+                      <Code2 className="w-4 h-4" />
+                      <span>Solve Pattern in IDE</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })()}
+
+          </div>
 
         </div>
       </section>
 
       {/* ================================================================= */}
-      {/* 4. THREE GUIDING PRINCIPLES (ZERO MARKETING FLUFF)               */}
+      {/* 5. HIGH-FREQUENCY CORE CS TOPIC SNEAK PEEK                        */}
       {/* ================================================================= */}
       <section className="py-16 sm:py-24 border-b border-[var(--border-subtle)] bg-[var(--background)]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="space-y-2">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)]">
-              Our Principles
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
-              How we approach teaching technology.
-            </h2>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-2 max-w-2xl">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#103F45] dark:text-[#D6EEE6]">
+                Core Computer Science // Interview Revision
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+                High-frequency questions asked in technical rounds.
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
+                Technical interviews test beyond coding syntax. Review complete chapter notes with architectural diagrams, tradeoffs, and exam MCQs across 15 engineering disciplines.
+              </p>
+            </div>
+
+            <Link
+              href="/core-cs"
+              className="text-xs font-bold text-[#4F46E5] hover:underline flex items-center space-x-1 shrink-0"
+            >
+              <span>Explore All 235 Topics</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          <div className="space-y-6">
-            
-            <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-2">
-              <h3 className="text-base font-bold text-[var(--foreground)] flex items-center space-x-2">
-                <span className="w-6 h-6 rounded-full bg-[var(--surface-sunken)] text-[var(--brand-primary)] inline-flex items-center justify-center font-mono text-xs font-bold">1</span>
-                <span>Concepts before syntax.</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed pl-8">
-                Memorizing code syntax is useless without mental models. We explain why an operating system needs virtual memory, why a database needs indexes, and how functions work in the physical world before asking you to write a single bracket.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {CORE_CS_HIGHLIGHTS.map((item, idx) => (
+              <div
+                key={idx}
+                className="p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] hover:border-[#103F45]/50 transition-all space-y-3 flex flex-col justify-between"
+              >
+                <div className="space-y-2">
+                  <span className="text-[11px] font-mono font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+                    {item.subject}
+                  </span>
+                  <h3 className="text-base font-bold text-[var(--foreground)]">
+                    {item.topic}
+                  </h3>
+                  <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
+                    {item.insight}
+                  </p>
+                </div>
 
-            <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-2">
-              <h3 className="text-base font-bold text-[var(--foreground)] flex items-center space-x-2">
-                <span className="w-6 h-6 rounded-full bg-[var(--surface-sunken)] text-[var(--brand-primary)] inline-flex items-center justify-center font-mono text-xs font-bold">2</span>
-                <span>Error messages are friendly diagnostic clues, not grades.</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed pl-8">
-                In school, a red mark means you failed. In software engineering, an error message is simply a computer being very literal about what it needs. We teach you how to read errors calmly, decompose problems, and debug without panic.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-2">
-              <h3 className="text-base font-bold text-[var(--foreground)] flex items-center space-x-2">
-                <span className="w-6 h-6 rounded-full bg-[var(--surface-sunken)] text-[var(--brand-primary)] inline-flex items-center justify-center font-mono text-xs font-bold">3</span>
-                <span>No paywalls, no advertising, no gatekeeping.</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed pl-8">
-                Software development is one of the few fields where you can build world-changing tools using a standard computer and an internet connection. High-quality foundational education should be accessible to anyone willing to put in the time.
-              </p>
-            </div>
-
+                <div className="pt-3 border-t border-[var(--border-subtle)]">
+                  <Link
+                    href={item.href}
+                    className="text-xs font-bold text-[#103F45] dark:text-[#D6EEE6] hover:underline flex items-center space-x-1"
+                  >
+                    <span>Read Full Revision Notes</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
 
         </div>
       </section>
 
       {/* ================================================================= */}
-      {/* 5. A DIRECT NOTE FROM THE CREATOR                                 */}
+      {/* 6. A GENUINE NOTE FROM THE CREATOR                                */}
       {/* ================================================================= */}
       <section className="py-16 sm:py-20 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-8 sm:p-10 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-4">
             
-            <div className="flex items-center space-x-3 text-xs font-mono font-bold text-[var(--brand-primary)] uppercase tracking-wider">
-              <Laptop className="w-4 h-4" />
-              <span>A Note From Shobhit</span>
+            <div className="flex items-center space-x-2 text-xs font-mono font-bold text-[#103F45] dark:text-[#D6EEE6] uppercase tracking-wider">
+              <span>Why StackUp Exists</span>
             </div>
 
-            <h3 className="text-xl font-bold text-[var(--foreground)]">
-              &quot;If any lesson on this website confuses you, tell me.&quot;
+            <h3 className="text-xl sm:text-2xl font-bold text-[var(--foreground)]">
+              &quot;Interview preparation should reduce anxiety, not create it.&quot;
             </h3>
 
             <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
-              I built StackUp because I was tired of seeing curious, capable people walk away from technology thinking they weren&apos;t &quot;smart enough&quot; to code. The fault was never theirs—it was the way technology was being taught.
+              Most platforms are engineered to make students feel behind. They barrage you with paywalled solution videos, fake countdown sales, and bloated 600-problem lists that trigger choice paralysis.
             </p>
             <p className="text-xs sm:text-sm text-[var(--foreground-muted)] leading-relaxed">
-              StackUp is maintained actively. If you encounter an explanation that makes your head hurt, a topic that skips a crucial step, or a bug in a code example, please let me know. I refine these lessons continuously based on where real learners stumble.
+              StackUp was built as a clean, honest, highly structured alternative. Everything you need to become technically confident—from pattern recognition in algorithms to operating systems internals and resume optimization—is available here, completely free, with clear explanations.
             </p>
 
             <div className="pt-4 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-4 text-xs">
               <span className="text-[var(--foreground-muted)]">
-                StackUp is free, open source, and built for learners everywhere.
+                Built by Shobhit &bull; Free, independent, and open source.
               </span>
 
               <div className="flex items-center space-x-3">
@@ -504,17 +662,17 @@ export default function HomePage() {
                   href="https://github.com/Shobhit-20-04/stackup"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-1.5 text-[var(--foreground)] hover:text-[var(--brand-primary)] font-bold transition-colors"
+                  className="inline-flex items-center space-x-1.5 text-[var(--foreground)] hover:text-[#4F46E5] font-bold transition-colors"
                 >
                   <GithubIcon className="w-4 h-4" />
                   <span>GitHub Repository</span>
                 </a>
                 <span>&bull;</span>
                 <Link
-                  href="/glossary"
-                  className="text-[var(--brand-primary)] hover:underline font-bold"
+                  href="/dashboard"
+                  className="text-[#4F46E5] hover:underline font-bold"
                 >
-                  Plain-English Glossary
+                  Student Workspace
                 </Link>
               </div>
             </div>
@@ -524,32 +682,38 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
-      {/* 6. CLEAN FOOTER CALLOUT                                           */}
+      {/* 7. CALM, PURPOSEFUL FOOTER ENTRY POINTS                           */}
       {/* ================================================================= */}
-      <section className="py-12 bg-[var(--background)] text-center">
+      <footer className="py-14 bg-[var(--background)] text-center border-t border-[var(--border-subtle)]">
         <div className="max-w-2xl mx-auto px-4 space-y-4">
           <h4 className="text-lg font-bold text-[var(--foreground)]">
-            Ready to explore?
+            Ready to prepare for technical interviews?
           </h4>
           <p className="text-xs text-[var(--foreground-muted)]">
-            Start at Stage 1, or jump straight to whatever discipline you are working on.
+            Begin with today&apos;s Problem of the Day or pick up your revision in Core CS.
           </p>
-          <div className="flex justify-center gap-3 pt-2">
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Link
-              href="/learn#stage-1"
-              className="px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] transition-all shadow-xs"
+              href="/practice/potd"
+              className="px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-[#4F46E5] hover:bg-[#4338CA] transition-all shadow-xs"
             >
-              Start Stage 1 (Foundations)
+              Solve Problem of the Day
+            </Link>
+            <Link
+              href="/dsa"
+              className="px-5 py-2.5 rounded-xl font-bold text-xs text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-all"
+            >
+              150 DSA Sheet
             </Link>
             <Link
               href="/core-cs"
-              className="px-4 py-2.5 rounded-xl font-bold text-xs text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-all"
+              className="px-5 py-2.5 rounded-xl font-bold text-xs text-[var(--foreground)] bg-[var(--surface-card)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] transition-all"
             >
-              Browse 221 Core CS Topics
+              Core CS Subjects
             </Link>
           </div>
         </div>
-      </section>
+      </footer>
 
     </div>
   );

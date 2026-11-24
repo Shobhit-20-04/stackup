@@ -34,6 +34,244 @@ import type {
   ScoringDimension 
 } from '@/lib/services/resume/types';
 
+const SAMPLE_RESUME_ANALYSIS: ResumeAnalysisResult = {
+  filename: 'Sample_SDE_Fresher_Resume.pdf',
+  ats_score: 84,
+  grade: 'A',
+  isGeneralQualityScore: false,
+  disclaimer: 'Sample Evaluation: Software Development Engineer (SDE-1)',
+  experienceLevel: 'student_fresher',
+  parsingReport: {
+    text: '',
+    cleanText: '',
+    filename: 'Sample_SDE_Fresher_Resume.pdf',
+    fileSizeBytes: 245000,
+    mimeType: 'application/pdf',
+    pageCount: 1,
+    wordCount: 420,
+    characterCount: 2850,
+    isScanned: false,
+    isEncrypted: false,
+    hasEncodingIssues: false,
+    extractionQualityScore: 98,
+    confidence: 'High',
+    detectedLayoutWarnings: [],
+    sections: {
+      contact: { title: 'Contact', content: 'contact info', bulletPoints: [] },
+      education: { title: 'Education', content: 'B.Tech in Computer Science', bulletPoints: [] },
+      experience: { title: 'Experience', content: 'Software Engineer Intern', bulletPoints: [] },
+      projects: { title: 'Projects', content: 'Distributed Key-Value Store', bulletPoints: [] },
+      skills: { title: 'Skills', content: 'Python, TypeScript, SQL, Docker', bulletPoints: [] },
+    },
+    detectedDates: [],
+    dateConsistencyIssues: [],
+    links: {
+      email: 'alex.chen@example.com',
+      phone: '+91 98765 43210',
+      github: 'https://github.com/alexchen-dev',
+      linkedIn: 'https://linkedin.com/in/alexchen',
+      otherUrls: [],
+    },
+  },
+  jobDescriptionMatch: {
+    hasJobDescription: true,
+    targetRoleTitle: 'Software Development Engineer (SDE-1)',
+    jobDescriptionText: '',
+    requiredSkillsMatched: [
+      { name: 'Python', category: 'Languages', matchedAs: 'Python', context: 'Built backend services in Python', isExplicit: true },
+      { name: 'TypeScript', category: 'Languages', matchedAs: 'TypeScript', context: 'Engineered frontend in TypeScript', isExplicit: true },
+      { name: 'PostgreSQL', category: 'Databases', matchedAs: 'PostgreSQL', context: 'Designed database schema in PostgreSQL', isExplicit: true },
+      { name: 'Docker', category: 'DevOps', matchedAs: 'Docker', context: 'Containerized services with Docker', isExplicit: true },
+    ],
+    requiredSkillsMissing: ['Kubernetes'],
+    preferredSkillsMatched: [
+      { name: 'Redis', category: 'Databases', matchedAs: 'Redis', context: 'Cached queries with Redis', isExplicit: true },
+      { name: 'REST API', category: 'Backend', matchedAs: 'REST API', context: 'Built REST APIs', isExplicit: true },
+    ],
+    preferredSkillsMissing: ['GraphQL', 'AWS ECS'],
+    keywordGaps: ['Kubernetes', 'CI/CD Pipelines'],
+    matchedResponsibilities: [
+      { responsibility: 'Design, develop, and maintain high-performance web applications', evidenceContext: 'Architected distributed e-commerce backend in Python/PostgreSQL' },
+      { responsibility: 'Collaborate with cross-functional teams in an agile environment', evidenceContext: 'Participated in bi-weekly sprints, code reviews, and pair programming' },
+    ],
+    unmatchedResponsibilities: ['Experience deploying microservices to production cloud infrastructure'],
+    qualificationGaps: [],
+    matchScore: 85,
+  },
+  dimensions: {
+    jobDescriptionAlignment: {
+      id: 'jd-alignment',
+      name: 'Target Role Alignment',
+      score: 85,
+      weightPct: 30,
+      weightedScore: 25.5,
+      maxWeightedScore: 30,
+      observableEvidence: [
+        'Strong overlap with core SDE requirements (Python, TypeScript, SQL, Docker).',
+        'Demonstrated understanding of database querying and web protocols.',
+      ],
+      deductions: [
+        { reason: 'Missing container orchestration exposure (Kubernetes).', points: 3 },
+      ],
+      improvementOpportunities: [
+        'Mention basic container orchestration or deploy your side-projects on a cloud provider (GCP, AWS).',
+      ],
+    },
+    skillsAndQualifications: {
+      id: 'skills',
+      name: 'Skills & Technical Depth',
+      score: 90,
+      weightPct: 20,
+      weightedScore: 18.0,
+      maxWeightedScore: 20,
+      observableEvidence: [
+        'Well-categorized skills section (Languages, Frameworks, Databases, Tools).',
+        'Specific technology mentions matched against practical project context.',
+      ],
+      deductions: [],
+      improvementOpportunities: [
+        'Group skills logically by domain rather than a single long list.',
+      ],
+    },
+    experienceAndProjects: {
+      id: 'experience-projects',
+      name: 'Projects & Practical Experience',
+      score: 88,
+      weightPct: 15,
+      weightedScore: 13.2,
+      maxWeightedScore: 15,
+      observableEvidence: [
+        'Projects include live links to GitHub repositories and interactive demos.',
+        'Technical stack clearly stated for every individual project entry.',
+      ],
+      deductions: [
+        { reason: 'One project lacks measurable user adoption or latency figures.', points: 2 },
+      ],
+      improvementOpportunities: [
+        'Add performance or usage metrics to your second project (e.g. queries per second, dataset size).',
+      ],
+    },
+    impactAndAchievements: {
+      id: 'impact-metrics',
+      name: 'Quantifiable Impact & STAR Metrics',
+      score: 78,
+      weightPct: 10,
+      weightedScore: 7.8,
+      maxWeightedScore: 10,
+      observableEvidence: [
+        'Strong use of Google XYZ formula in internship experience.',
+        'Clear metric: "reduced query latency by 45% for 200k daily active users".',
+      ],
+      deductions: [
+        { reason: 'Two bullet points describe tasks rather than outcomes.', points: 2 },
+      ],
+      improvementOpportunities: [
+        'Rewrite passive responsibilities using the XYZ formula: Accomplished [X] as measured by [Y] by doing [Z].',
+      ],
+    },
+    structureAndReadability: {
+      id: 'structure-readability',
+      name: 'Structure & ATS Parseability',
+      score: 95,
+      weightPct: 10,
+      weightedScore: 9.5,
+      maxWeightedScore: 10,
+      observableEvidence: [
+        'Clean single-column layout, standard heading conventions, and zero tabular layout glitches.',
+        'Word count (420 words) is optimal for a 1-page student resume.',
+      ],
+      deductions: [],
+      improvementOpportunities: [
+        'Maintain consistent date format across all sections (e.g. Month Year - Month Year).',
+      ],
+    },
+    atsCompatibility: {
+      id: 'ats-compatibility',
+      name: 'File Format & Keyword Density',
+      score: 92,
+      weightPct: 10,
+      weightedScore: 9.2,
+      maxWeightedScore: 10,
+      observableEvidence: [
+        'True searchable text layer; not a scanned/flattened graphic.',
+        'Natural keyword distribution without keyword-stuffing flags.',
+      ],
+      deductions: [],
+      improvementOpportunities: [
+        'Avoid custom graphics, rating stars, or skill percentage bars that confuse ATS parsers.',
+      ],
+    },
+    educationAndCredentials: {
+      id: 'education-credentials',
+      name: 'Education & Relevant Coursework',
+      score: 90,
+      weightPct: 5,
+      weightedScore: 4.5,
+      maxWeightedScore: 5,
+      observableEvidence: [
+        'Accredited B.Tech/B.E. degree with graduation year clearly stated.',
+        'Relevant coursework listed: Data Structures, Operating Systems, DBMS, Networks.',
+      ],
+      deductions: [],
+      improvementOpportunities: [
+        'Include GPA/percentage only if it meets or exceeds 7.5 CGPA or 70%.',
+      ],
+    },
+  },
+  summary: 'Strong candidate profile for entry-level Software Development Engineer (SDE-1) roles. Well-structured single-page format with excellent technical skill taxonomy and strong project demonstrations.',
+  matched_keywords: ['Python', 'TypeScript', 'PostgreSQL', 'Docker', 'REST API', 'Redis', 'React', 'Git', 'Data Structures', 'Operating Systems'],
+  missing_keywords: ['Kubernetes', 'CI/CD Pipelines', 'Unit Testing'],
+  keyword_stuffing_detected: false,
+  formatting_issues: [],
+  recommendations: [
+    {
+      priority: 'Important',
+      section: 'Experience',
+      issue: 'Passive phrasing in secondary internship bullet point',
+      whyItMatters: 'Hiring managers spend ~6 seconds scanning. Action verbs capture attention immediately.',
+      howToFix: 'Replace "Was responsible for backend bugs" with "Resolved 25+ critical backend defects, reducing crash frequency by 30%".',
+      expectedImpact: '+3 ATS points and stronger recruiter impressions.',
+    },
+    {
+      priority: 'Optional',
+      section: 'Skills',
+      issue: 'Cloud deployment credentials',
+      whyItMatters: 'Demonstrates ability to take code from localhost to production independently.',
+      howToFix: 'Add one bullet describing how your project was hosted (e.g., AWS, GCP, Vercel, Supabase).',
+      expectedImpact: 'Improves hiring manager confidence for full-stack tasks.',
+    },
+  ],
+  section_suggestions: {
+    contact: ['Ensure LinkedIn and GitHub profiles have clean vanity URLs.'],
+    experience: ['Quantify project impact with user counts, database sizes, or throughput numbers.'],
+    skills: ['Keep skills strictly categorized into Languages, Frameworks, Databases, and Tools.'],
+    projects: ['Always include live demo and GitHub repository hyperlinks.'],
+    education: ['List key relevant coursework to reinforce CS fundamentals.'],
+  },
+  bullet_rewrites: [
+    {
+      original: 'Built a full-stack shopping application using React and Node.js with database integration.',
+      improved: 'Architected full-stack e-commerce platform using React, Node.js, and PostgreSQL, supporting 500+ simulated users with sub-200ms API response latency.',
+      reason: 'Replaced generic description with concrete architectural stack, user scale, and latency metric.',
+      formula: 'XYZ',
+      placeholderMetrics: ['500+ users', 'sub-200ms latency'],
+    },
+    {
+      original: 'Worked on database queries and fixed multiple backend bugs in our team sprint.',
+      improved: 'Optimized PostgreSQL relational queries and designed B-tree index coverage, reducing p99 database response times by 42%.',
+      reason: 'Demonstrated direct engineering capability, performance measurement, and concrete impact.',
+      formula: 'XYZ',
+      placeholderMetrics: ['42% latency reduction'],
+    },
+  ],
+  breakdown: {
+    contact_score: 95,
+    experience_score: 84,
+    skills_score: 90,
+    formatting_score: 92,
+  },
+};
+
 export default function ResumeCheckerPage() {
   const [file, setFile] = useState<File | null>(null);
   const [targetRole, setTargetRole] = useState<string>('');
@@ -45,6 +283,7 @@ export default function ResumeCheckerPage() {
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [copiedReport, setCopiedReport] = useState(false);
   const [result, setResult] = useState<ResumeAnalysisResult | null>(null);
+  const [isSampleMode, setIsSampleMode] = useState(false);
   const [expandedDimension, setExpandedDimension] = useState<string | null>('jd-alignment');
   const [currentUser, setCurrentUser] = useState<UserSession | null>(getFastCachedUser);
   const [authLoading, setAuthLoading] = useState(() => (typeof window !== 'undefined' ? !getFastCachedUser() : true));
@@ -59,6 +298,12 @@ export default function ResumeCheckerPage() {
         setAuthLoading(false);
       });
   }, []);
+
+  const handleLoadSample = () => {
+    setResult(SAMPLE_RESUME_ANALYSIS);
+    setIsSampleMode(true);
+    setErrorMsg('');
+  };
 
   // File drag & drop state
   const [isDragging, setIsDragging] = useState(false);
@@ -237,6 +482,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
   const handleReset = () => {
     setFile(null);
     setResult(null);
+    setIsSampleMode(false);
     setErrorMsg('');
     setSavedSuccess(false);
     setCopiedReport(false);
@@ -399,7 +645,7 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
             <Loader2 className="w-7 h-7 animate-spin text-[var(--brand-primary)]" />
             <p className="text-xs text-[var(--foreground-muted)]">Verifying student session...</p>
           </div>
-        ) : !currentUser ? (
+        ) : !currentUser && !result ? (
           /* Locked State for Unauthenticated Visitors */
           <div className="p-8 sm:p-12 border border-[var(--border-subtle)] rounded-lg text-center bg-[var(--surface-card)] shadow-xs space-y-6">
             <div className="max-w-md mx-auto flex flex-col items-center">
@@ -410,25 +656,27 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
                 Authentication Required
               </span>
               <h3 className="text-xl font-bold text-[var(--foreground)]">
-                Sign in to save your resume progress
+                Sign in to analyze your resume
               </h3>
               <p className="text-xs sm:text-sm text-[var(--foreground-muted)] mt-1.5 mb-6 leading-relaxed">
-                Connect your free StackUp account so your ATS scores, targeted role alignments, and polished bullet point suggestions are securely saved to your career dashboard.
+                Connect your free StackUp account to get 10-point ATS grading, job description matching, and action-verb STAR bullet optimizations.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <Link
                   href="/login?redirect=/resume-checker"
-                  className="w-full sm:w-auto px-5 py-2.5 bg-[var(--brand-primary)] hover:opacity-95 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-xs inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-2.5 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-xs inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
                 >
                   <span>Sign In to Continue</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <Link
-                  href="/login?redirect=/resume-checker"
-                  className="w-full sm:w-auto px-5 py-2.5 border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground)] text-xs sm:text-sm font-medium rounded-lg transition-all cursor-pointer"
+                <button
+                  type="button"
+                  onClick={handleLoadSample}
+                  className="w-full sm:w-auto px-5 py-2.5 border border-[var(--border-subtle)] bg-[var(--surface-sunken)] hover:bg-[var(--surface-card)] text-[var(--foreground)] text-xs sm:text-sm font-semibold rounded-lg transition-all cursor-pointer flex items-center justify-center space-x-1.5"
                 >
-                  <span>Create Account</span>
-                </Link>
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>Preview Sample SDE Analysis</span>
+                </button>
               </div>
             </div>
           </div>
@@ -717,6 +965,21 @@ Diagnosed via StackUp: https://stackup-zeta.vercel.app/resume-checker`;
         ) : (
           /* Scorecard Result View */
           <div className="space-y-6">
+            {/* Sample Mode Banner */}
+            {isSampleMode && (
+              <div className="p-4 sm:p-5 rounded-xl border border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
+                  <span>You are viewing an interactive sample evaluation for a Software Development Engineer (SDE-1) resume.</span>
+                </div>
+                <Link
+                  href="/login?redirect=/resume-checker"
+                  className="px-3.5 py-1.5 rounded-lg bg-[#4F46E5] text-white font-bold hover:bg-[#4338CA] transition-colors self-start sm:self-auto shrink-0 shadow-xs cursor-pointer"
+                >
+                  Sign In to Analyze Your Own &rarr;
+                </Link>
+              </div>
+            )}
             {/* Scanned Document Warning Banner (if image-only PDF detected) */}
             {result.parsingReport.isScanned && (
               <div className="p-4 sm:p-5 rounded-lg bg-amber-500/10 border-2 border-amber-500/40 text-amber-600 dark:text-amber-400 space-y-2">

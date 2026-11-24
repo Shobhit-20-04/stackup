@@ -264,10 +264,10 @@ export default function StudentWorkspaceDashboard() {
                   ) : (
                     <>
                       <h3 className="text-xl font-bold text-[var(--foreground)]">
-                        Start with Digital Foundations
+                        Start with Core Problem Patterns
                       </h3>
                       <p className="text-xs text-[var(--foreground-muted)] leading-relaxed">
-                        New to programming? Explore Stage 1: How computers execute code, memory models, and command-line basics.
+                        Begin with Two Pointers &amp; Arrays—the fundamental patterns tested in technical interviews.
                       </p>
                     </>
                   )}
@@ -283,24 +283,24 @@ export default function StudentWorkspaceDashboard() {
                   {lastProblem ? (
                     <span>Last viewed problem</span>
                   ) : (
-                    <span>Recommended for new learners</span>
+                    <span>Recommended starting point</span>
                   )}
                 </div>
 
                 {lastProblem ? (
                   <Link
                     href={`/dsa?problem=${lastProblem.id}`}
-                    className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[var(--foreground)] bg-[var(--surface-sunken)] hover:bg-[var(--border-subtle)] transition-colors border border-[var(--border-subtle)]"
+                    className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[var(--foreground)] bg-[var(--surface-sunken)] hover:bg-[var(--border-subtle)] transition-colors border border-[var(--border-subtle)] cursor-pointer"
                   >
                     <span>Resume Problem</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 ) : (
                   <Link
-                    href="/learn"
-                    className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[var(--foreground)] bg-[var(--surface-sunken)] hover:bg-[var(--border-subtle)] transition-colors border border-[var(--border-subtle)]"
+                    href="/dsa"
+                    className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[var(--foreground)] bg-[var(--surface-sunken)] hover:bg-[var(--border-subtle)] transition-colors border border-[var(--border-subtle)] cursor-pointer"
                   >
-                    <span>Open Stage 1 Foundations</span>
+                    <span>Explore 150 DSA Sheet</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 )}

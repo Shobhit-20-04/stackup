@@ -351,82 +351,42 @@ function DsaHubContent() {
   const solvedCount = solvedIds.length;
   const progressPercent = Math.round((solvedCount / totalCount) * 100);
 
-  const easyTotal = DSA_PROBLEMS.filter((p) => p.difficulty === 'Easy').length;
-  const easySolved = DSA_PROBLEMS.filter((p) => p.difficulty === 'Easy' && solvedIds.includes(p.id)).length;
-
-  const mediumTotal = DSA_PROBLEMS.filter((p) => p.difficulty === 'Medium').length;
-  const mediumSolved = DSA_PROBLEMS.filter((p) => p.difficulty === 'Medium' && solvedIds.includes(p.id)).length;
-
-  const hardTotal = DSA_PROBLEMS.filter((p) => p.difficulty === 'Hard').length;
-  const hardSolved = DSA_PROBLEMS.filter((p) => p.difficulty === 'Hard' && solvedIds.includes(p.id)).length;
-
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-20 page-enter">
       {/* Header Banner */}
       <div className="bg-[var(--surface-card)] border-b border-[var(--border-subtle)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-7">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="text-xs font-semibold text-[var(--foreground-muted)] mb-1.5 uppercase tracking-wider">
-                Algorithms &amp; Data Structures Roadmap
+              <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 mb-1">
+                <Code2 className="w-3.5 h-3.5" />
+                <span>150 Curated Problems · 15 Patterns</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] tracking-tight">
                 DSA Practice Hub
               </h1>
-              <p className="mt-2 text-[var(--foreground-muted)] max-w-2xl text-xs sm:text-sm leading-relaxed">
-                A hand-picked roadmap of high-frequency interview patterns with direct links to LeetCode, TakeUForward guides, and video solutions. Complete problem statements, examples, and optimal multi-language code snippets.
+              <p className="mt-1 text-[var(--foreground-muted)] text-xs max-w-xl">
+                High-yield algorithmic patterns aligned with NeetCode 150 &amp; Striver SDE sheet. Multi-language starter code and in-browser testing.
               </p>
-              
             </div>
 
-            {/* Quick Progress Badge */}
-            <div className="bg-[var(--surface-sunken)] p-4 sm:p-5 rounded-xl border border-[var(--border-subtle)] min-w-[280px]">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground-muted)]">
-                  Completion Status
-                </span>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                  {solvedCount > 0 ? (
-                    `${solvedCount} of ${totalCount} Solved (${progressPercent}%)`
-                  ) : (
-                    `0 Solved • ${totalCount} Available`
-                  )}
-                </span>
-              </div>
-              <div className="w-full bg-slate-200 dark:bg-[#0B1020] h-2 rounded-full overflow-hidden mb-3 border border-slate-300/30 dark:border-white/5">
-                <div 
-                  className="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out" 
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-
-              {/* Sub-breakdown */}
-              <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
-                  <span className="block text-emerald-600 dark:text-emerald-400 font-bold font-mono">
-                    {easySolved > 0 ? `${easySolved} Solved` : `${easyTotal} Available`}
-                  </span>
-                  <span className="text-[var(--foreground-muted)] text-[10px]">
-                    {easySolved > 0 ? `of ${easyTotal} Easy` : 'Easy Track'}
-                  </span>
+            {/* Compact Progress Indicator */}
+            <div className="flex items-center space-x-4 bg-[var(--surface-sunken)] px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] shrink-0 self-start sm:self-auto">
+              <div className="space-y-1">
+                <div className="text-[11px] text-[var(--foreground-muted)] font-medium flex items-center justify-between gap-4">
+                  <span>Solved Progress</span>
+                  <span className="font-mono font-bold text-[var(--foreground)]">{solvedCount} / {totalCount}</span>
                 </div>
-                <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
-                  <span className="block text-amber-600 dark:text-amber-400 font-bold font-mono">
-                    {mediumSolved > 0 ? `${mediumSolved} Solved` : `${mediumTotal} Available`}
-                  </span>
-                  <span className="text-[var(--foreground-muted)] text-[10px]">
-                    {mediumSolved > 0 ? `of ${mediumTotal} Med` : 'Medium Track'}
-                  </span>
-                </div>
-                <div className="bg-[var(--surface-card)] p-2 rounded-lg border border-[var(--border-subtle)]">
-                  <span className="block text-rose-600 dark:text-rose-400 font-bold font-mono">
-                    {hardSolved > 0 ? `${hardSolved} Solved` : `${hardTotal} Available`}
-                  </span>
-                  <span className="text-[var(--foreground-muted)] text-[10px]">
-                    {hardSolved > 0 ? `of ${hardTotal} Hard` : 'Hard Track'}
-                  </span>
+                <div className="w-36 bg-slate-200 dark:bg-[#0B1020] h-1.5 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out" 
+                    style={{ width: `${progressPercent}%` }}
+                  />
                 </div>
               </div>
+              <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 pl-1">
+                {progressPercent}%
+              </span>
             </div>
           </div>
         </div>
