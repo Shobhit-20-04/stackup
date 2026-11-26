@@ -6,7 +6,7 @@ StackUp maintains a multi-tier automated testing strategy encompassing unit test
 
 ## 1. Automated Vitest Test Suite
 
-The test suite runs via Vitest and covers 15 distinct test files with **234 automated tests**:
+The test suite runs via Vitest and covers 16 distinct test files with **249 automated tests**:
 
 ```bash
 npm test
@@ -20,18 +20,19 @@ npm test
 | `tests/admin.test.ts` | Salted scrypt password hashing, timing-attack resistance, code expiry | 23 |
 | `tests/security.test.ts` | XSS sanitization, CSRF verification, rate limiting, injection defense | 39 |
 | `tests/session.test.ts` | Session heartbeat, idle timeouts, local storage sync | 13 |
-| `tests/dsa.test.ts` | Problem data integrity, slug generation, starter code formats | 4 |
+| `tests/dsa.test.ts` | Problem data integrity, slug generation, starter code formats | 10 |
 | `tests/coding-workspace.test.ts` | Monaco editor configuration, theme sync, keyboard shortcuts | 38 |
 | `tests/striver.test.ts` | Striver SDE sheet mapping, canonical redirects, progress calculation | 22 |
 | `tests/curriculum.test.ts` | Notes depth, question bounds, category IDs, quiz answer validation | 8 |
-| `tests/content-audit.test.ts` | Exhaustive audit of all 150 DSA problems and 221 Core CS topics | 4 |
+| `tests/beginner-curriculum.test.ts` | Digital foundations, programming fundamentals, web development | 9 |
+| `tests/content-audit.test.ts` | Exhaustive audit of all 150 DSA problems and 235 Core CS topics | 4 |
 | `tests/learning-intelligence.test.ts` | SM-2 algorithm intervals, mistake logging, weak topic detection | 24 |
 | `tests/ai-evaluation.test.ts` | Gemini provider, in-memory RAG, streaming, code syntax validator | 20 |
 | `tests/chat.test.ts` | Chat endpoint validation, rate limits, history budgeting | 3 |
 | `tests/resume.test.ts` | PDF parsing, encryption detection, scanned PDF diagnosis, ATS scoring | 16 |
 | `tests/theme.test.ts` | CSS custom property tokens, dark/light theme switching | 8 |
 | `tests/progress.test.ts` | Section progress calculations, completion metrics | 3 |
-| **Total** | **Comprehensive Full-Stack Coverage** | **234** |
+| **Total** | **Comprehensive Full-Stack Coverage** | **249** |
 
 ---
 

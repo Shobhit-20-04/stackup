@@ -6,7 +6,7 @@
 [![React](https://img.shields.io/badge/React-19.2.8-blue?style=flat&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-38bdf8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
-[![Vitest](https://img.shields.io/badge/Tests-234%20Passing-green?style=flat&logo=vitest)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Tests-249%20Passing-green?style=flat&logo=vitest)](https://vitest.dev/)
 [![200--User Tested](https://img.shields.io/badge/200--User%20Concurrency-P95%20384ms-success)](docs/TESTING.md)
 
 ---
@@ -17,10 +17,10 @@ Technical interview preparation is often fragmented across multiple disjointed t
 
 **StackUp unifies this entire interview lifecycle into one coherent, evidence-based workspace:**
 1. **Interactive DSA Coding Workspace:** 150 curated algorithmic problems with Monaco Editor, multi-language execution (Python, C++, Java, TS), and Judge0 sandboxing.
-2. **Core CS Curriculum:** 221 in-depth revision topics across Operating Systems, DBMS, Computer Networks, COA, Compiler Design, OOPs, and System Design with 668 verified quiz questions.
+2. **Core CS Curriculum:** 235 in-depth revision topics across 22 Computer Science and Aptitude subjects with 710 verified quiz questions.
 3. **Quantitative & Logical Aptitude:** 4 structured modules (Quant, Logical Reasoning, Verbal, Spatial) with speed-solving shortcuts and timed practice tests.
 4. **ATS Resume Checker:** Ingests PDF, DOCX, and TXT files, diagnosing scanned documents, font encoding, keyword density, and transforming bullets via Google's XYZ formula.
-5. **Google Gemini AI Assistant:** Integrated via `@google/genai` (`gemini-3.5-flash-lite`), with in-memory RAG grounded in StackUp's 221 topics and real-time SSE streaming.
+5. **Google Gemini AI Assistant:** Integrated via `@google/genai` (`gemini-3.5-flash-lite`), with in-memory RAG grounded in StackUp's 235 topics and real-time SSE streaming.
 6. **Learning Intelligence (SM-2):** Tracks student mistakes across submissions and quizzes, scheduling spaced-repetition active recall reviews to eliminate weak topics.
 
 ---
@@ -50,7 +50,7 @@ Full methodology and telemetry: [docs/TESTING.md](docs/TESTING.md).
 | **AI Intelligence** | Google Gemini (`@google/genai`), in-memory RAG, Server-Sent Events |
 | **Database & Auth** | Supabase (PostgreSQL with Row Level Security), HMAC session tokens |
 | **Document Processing** | `pdf-parse`, `mammoth` (DOCX), magic-byte format validation |
-| **Testing** | Vitest 5.0.1 (234 tests across 15 test suites) |
+| **Testing** | Vitest 5.0.1 (249 tests across 16 test suites) |
 | **Deployment** | Vercel (Edge network), Supabase Cloud, Judge0 sandbox |
 
 ---
@@ -60,13 +60,13 @@ Full methodology and telemetry: [docs/TESTING.md](docs/TESTING.md).
 ```
 stackup/
 ├── .github/workflows/       # Automated CI and Supabase daily keep-alive cron
+├── data/                    # Persistent runtime storage directory (.gitkeep)
 ├── docs/                    # Technical architecture, testing, and deployment docs
 │   ├── ARCHITECTURE.md      # Detailed system blueprint and security model
 │   ├── DEVELOPMENT.md       # Local developer setup and standards
 │   ├── DEPLOYMENT.md        # Vercel and production deployment guide
 │   ├── TESTING.md           # Vitest and 200-user concurrency test guide
-│   └── archive/             # Historical audit and research reports
-├── public/                  # Static assets and favicons
+│   └── product/             # Product specifications and Warm Editorial design system
 ├── scripts/                 # Utility scripts (benchmark, password reset, secret scan)
 │   ├── load-test-200-users.mjs   # 200-user concurrency benchmark engine
 │   ├── security-audit-scan.mjs  # Secret and credential scanner
@@ -78,16 +78,18 @@ stackup/
 │   │   ├── aptitude/        # Aptitude modules and timed quizzes
 │   │   ├── core-cs/         # Core Computer Science curriculum and quizzes
 │   │   ├── dsa/             # DSA Problem Hub, Striver sheet, and Coding Workspace
+│   │   ├── practice/        # Practice hub and dedicated Problem of the Day (POTD)
 │   │   ├── profile/         # Student profile, Learning Intelligence, and streaks
 │   │   └── resume-checker/  # ATS Resume Analyzer
 │   ├── components/          # Reusable UI components (Navbar, Monaco Workspace, Chat)
 │   └── lib/                 # Core business logic and shared services
 │       ├── auth/            # Server auth, session verification, scrypt hashing
-│       ├── data/            # Static problem catalog and 221 Core CS topics
+│       ├── data/            # Static problem catalog and 235 Core CS topics
 │       ├── security/        # XSS sanitization, rate limiting, and CSRF defense
 │       ├── services/        # AI orchestrator, Judge0 adapter, ATS parser, SM-2
 │       └── supabase/        # Database clients and middleware
-├── tests/                   # Vitest automated test suites (234 tests)
+├── supabase/migrations/     # PostgreSQL schema and security migrations
+├── tests/                   # Vitest automated test suites (249 tests)
 ├── .env.example             # Safe environment template
 ├── package.json             # Project dependencies and npm scripts
 └── README.md                # Project documentation
